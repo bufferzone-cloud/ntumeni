@@ -9,6 +9,7 @@
     <link rel="apple-touch-icon" href="logo.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
     <script type="importmap">
         {
             "imports": {
@@ -653,6 +654,9 @@
             animation: spin 0.8s linear infinite;
             z-index: 4;
         }
+
+        .upload-box.is-loading .upload-label,
+        .upload-box.is-loading i.upload-icon { opacity: 0.25; }
 
         /* ==========================================================
            BUTTONS
@@ -1366,9 +1370,6 @@
     </div>
 </div>
 
-<!-- Hidden shared file input -->
-<input type="file" id="hiddenFileInput" accept="image/*" style="display:none;">
-
 <script type="module">
     import { initializeApp } from "firebase/app";
     import {
@@ -1391,6 +1392,12 @@
         messagingSenderId: "751127478739",
         appId: "1:751127478739:web:3a1003fcc0184b40f16f26"
     };
+
+    /* ============================================================
+       CLOUDINARY CONFIG  (same account as UTOM)
+       ============================================================ */
+    const CLOUD_NAME    = 'dd3lcymrk';
+    const UPLOAD_PRESET = 'h3eyhc2o';
 
     const app      = initializeApp(firebaseConfig);
     const auth     = getAuth(app);
@@ -1427,87 +1434,84 @@
     const NAME_REGEX  = /^[A-Za-zÀ-ÖØ-öø-ÿ\s\-']+$/;
 
     /* ============================================================
-       IMAGE HANDLING  (compressed data-URL, no Storage needed)
+       CLOUDINARY UPLOAD
        ============================================================ */
-    function fileToCompressedDataUrl(file, maxDim, quality) {
+    function openCloudUpload(opts) {
         return new Promise((resolve, reject) => {
-            if (!file || !file.type || !file.type.startsWith('image/')) {
-                return reject(new Error('Please choose an image file.'));
-            }
-            if (file.size > 12 * 1024 * 1024) {
-                return reject(new Error('Image is too large (max 12 MB).'));
+            if (typeof cloudinary === 'undefined' || !cloudinary.openUploadWidget) {
+                reject(new Error('Upload widget is not available. Check your connection.'));
+                return;
             }
 
-            const reader = new FileReader();
-            reader.onerror = () => reject(new Error('Could not read the image.'));
-            reader.onload = () => {
-                const img = new Image();
-                img.onerror = () => reject(new Error('That image could not be loaded.'));
-                img.onload = () => {
-                    let w = img.naturalWidth  || img.width;
-                    let h = img.naturalHeight || img.height;
-                    const scale = Math.min(1, maxDim / Math.max(w, h));
-                    w = Math.max(1, Math.round(w * scale));
-                    h = Math.max(1, Math.round(h * scale));
+            const settings = Object.assign({
+                cloudName: CLOUD_NAME,
+                uploadPreset: UPLOAD_PRESET,
+                sources: ['local', 'camera', 'url'],
+                maxFileSize: 155000000,
+                maxFiles: 1,
+                multiple: false,
+                cropping: false,
+                showAdvancedOptions: false,
+                folder: 'ntumeni'
+            }, opts || {});
 
-                    const canvas = document.createElement('canvas');
-                    canvas.width  = w;
-                    canvas.height = h;
-                    const ctx = canvas.getContext('2d');
-                    ctx.fillStyle = '#ffffff';
-                    ctx.fillRect(0, 0, w, h);
-                    ctx.drawImage(img, 0, 0, w, h);
-                    resolve(canvas.toDataURL('image/jpeg', quality));
-                };
-                img.src = reader.result;
-            };
-            reader.readAsDataURL(file);
+            cloudinary.openUploadWidget(settings, (err, res) => {
+                if (err) {
+                    reject(err);
+                    return;
+                }
+                if (!res) return;
+                if (res.event === 'success' && res.info && res.info.secure_url) {
+                    resolve(res.info.secure_url);
+                }
+            });
         });
     }
 
     /* ---- Shared upload-box wiring ---- */
-    const hiddenFileInput = document.getElementById('hiddenFileInput');
-    let pendingUpload = null;
-
-    function wireUploadBox(boxId, hiddenInputId, errEl, opts) {
+    function wireUploadBox(boxId, hiddenId, errEl, opts) {
         const box = document.getElementById(boxId);
-        const hid = document.getElementById(hiddenInputId);
+        const hid = document.getElementById(hiddenId);
         if (!box || !hid) return;
 
-        const settings = Object.assign({ maxDim: 900, quality: 0.75 }, opts || {});
+        const uploadOpts = Object.assign({
+            resourceType: 'image',
+            clientAllowedFormats: ['jpg', 'jpeg', 'png', 'webp', 'heic'],
+            maxImageWidth: 1600,
+            maxImageHeight: 1600,
+            croppingAspectRatio: 1
+        }, opts || {});
 
-        box.addEventListener('click', () => {
-            pendingUpload = { box, hid, settings, errEl };
-            hiddenFileInput.value = '';
-            hiddenFileInput.click();
+        box.addEventListener('click', async () => {
+            if (box.classList.contains('is-loading')) return;
+
+            if (errEl) errEl.innerText = '';
+            box.classList.add('is-loading');
+
+            try {
+                const url = await openCloudUpload(uploadOpts);
+
+                if (!url) {
+                    throw new Error('Upload did not return an image URL.');
+                }
+
+                hid.value = url;
+
+                box.querySelectorAll('img').forEach(i => i.remove());
+                const img = document.createElement('img');
+                img.src = url;
+                img.alt = 'Uploaded image';
+                box.appendChild(img);
+                box.classList.add('has-image');
+
+            } catch (e) {
+                const msg = (e && (e.message || e.statusText)) || 'Upload cancelled or failed.';
+                if (errEl) errEl.innerText = 'Upload failed: ' + msg;
+            } finally {
+                box.classList.remove('is-loading');
+            }
         });
     }
-
-    hiddenFileInput.addEventListener('change', async (e) => {
-        const file = e.target.files && e.target.files[0];
-        if (!file || !pendingUpload) return;
-
-        const { box, hid, settings, errEl } = pendingUpload;
-        if (errEl) errEl.innerText = '';
-        box.classList.add('is-loading');
-
-        try {
-            const dataUrl = await fileToCompressedDataUrl(file, settings.maxDim, settings.quality);
-            hid.value = dataUrl;
-
-            box.querySelectorAll('img').forEach(i => i.remove());
-            const img = document.createElement('img');
-            img.src = dataUrl;
-            img.alt = 'Uploaded image';
-            box.appendChild(img);
-            box.classList.add('has-image');
-        } catch (err) {
-            if (errEl) errEl.innerText = err.message || String(err);
-        } finally {
-            box.classList.remove('is-loading');
-            pendingUpload = null;
-        }
-    });
 
     function resetUploadBox(boxId, hiddenInputId) {
         const box = document.getElementById(boxId);
@@ -1516,6 +1520,7 @@
         if (box) {
             box.querySelectorAll('img').forEach(i => i.remove());
             box.classList.remove('has-image');
+            box.classList.remove('is-loading');
         }
     }
 
@@ -1698,15 +1703,11 @@
         mouseDown = false;
     });
 
-    let suppressClick = false;
-
     splitTop.addEventListener('click', () => {
-        if (suppressClick) return;
         openCustomerPanel();
     });
 
     splitBottom.addEventListener('click', () => {
-        if (suppressClick) return;
         openProviderPanel();
     });
 
@@ -1757,7 +1758,14 @@
     const custSignupSuccess  = document.getElementById('custSignupSuccess');
     const custRegisterBtn    = document.getElementById('custRegisterBtn');
 
-    wireUploadBox('custProfileUpload', 'custProfileUrl', custSignupError, { maxDim: 500, quality: 0.82 });
+    /* Cloudinary-backed profile upload for customer */
+    wireUploadBox('custProfileUpload', 'custProfileUrl', custSignupError, {
+        cropping: true,
+        croppingAspectRatio: 1,
+        showSkipCropButton: false,
+        croppingShowDimensions: true,
+        sources: ['local', 'camera']
+    });
 
     document.getElementById('openCustTermsBtn')
         .addEventListener('click', () => openTermsModal('customer', custTermsCheckbox));
@@ -1805,6 +1813,7 @@
                 phoneDigits: normalisePhone(phone),
                 profileUrl: photo,
                 role: 'customer',
+                banned: false,
                 createdAt: Date.now()
             });
 
@@ -1941,9 +1950,23 @@
     const provSignupSuccess   = document.getElementById('provSignupSuccess');
     const provRegisterBtn     = document.getElementById('provRegisterBtn');
 
-    wireUploadBox('provProfileUpload',  'provProfileUrl',  provSignupError, { maxDim: 500,  quality: 0.82 });
-    wireUploadBox('provNrcFrontUpload', 'provNrcFrontUrl', provSignupError, { maxDim: 1100, quality: 0.72 });
-    wireUploadBox('provNrcBackUpload',  'provNrcBackUrl',  provSignupError, { maxDim: 1100, quality: 0.72 });
+    /* Cloudinary-backed uploads for provider */
+    wireUploadBox('provProfileUpload', 'provProfileUrl', provSignupError, {
+        cropping: true,
+        croppingAspectRatio: 1,
+        showSkipCropButton: false,
+        sources: ['local', 'camera']
+    });
+
+    wireUploadBox('provNrcFrontUpload', 'provNrcFrontUrl', provSignupError, {
+        cropping: false,
+        sources: ['local', 'camera']
+    });
+
+    wireUploadBox('provNrcBackUpload', 'provNrcBackUrl', provSignupError, {
+        cropping: false,
+        sources: ['local', 'camera']
+    });
 
     document.getElementById('openProvTermsBtn')
         .addEventListener('click', () => openTermsModal('provider', provTermsCheckbox));
