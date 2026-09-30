@@ -648,6 +648,57 @@ input { font-family: inherit; }
   margin: 0 16px 0 42px;
 }
 
+/* Search radius chip row */
+.search-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.radius-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  color: var(--text-secondary);
+  background: var(--fill-gray);
+  padding: 6px 11px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+}
+.radius-chip i { font-size: 0.66rem; }
+
+.radius-options {
+  display: inline-flex;
+  gap: 4px;
+  background: var(--fill-gray);
+  border-radius: 999px;
+  padding: 3px;
+  border: 1px solid var(--line);
+}
+
+.radius-btn {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  color: var(--text-secondary);
+  padding: 5px 10px;
+  border-radius: 999px;
+  transition: background 0.22s var(--ease-smooth), color 0.22s;
+}
+.radius-btn.active {
+  background: #0a0a0a;
+  color: #ffffff;
+}
+.radius-btn:not(.active):hover {
+  color: var(--text-primary);
+}
+
 .results-area {
   flex: 1; min-height: 0;
   overflow-y: auto;
@@ -665,6 +716,26 @@ input { font-family: inherit; }
 .results-hint i {
   display: block; font-size: 1.9rem;
   margin-bottom: 12px; color: #d8d8dc;
+}
+
+/* Results section heading */
+.results-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px 8px;
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+.results-heading .rh-count {
+  font-weight: 700;
+  color: var(--text-secondary);
+  letter-spacing: 0.4px;
+  text-transform: none;
+  font-size: 0.7rem;
 }
 
 .result-item {
@@ -707,6 +778,7 @@ input { font-family: inherit; }
   flex-shrink: 0; white-space: nowrap;
 }
 .result-item:hover .result-dist { background: #ffffff; }
+.result-dist.far { color: var(--text-tertiary); }
 
 .loader-row {
   display: flex; align-items: center; justify-content: center;
@@ -754,7 +826,7 @@ input { font-family: inherit; }
   100% { transform: scale(1.25); opacity: 0; }
 }
 
-/* Leaflet tweaks */
+/* Leaflet tweaks — OpenStreetMap tiles */
 .leaflet-container { font-family: inherit; background: #eceef0; }
 .leaflet-control-attribution {
   font-size: 9px !important; background: rgba(255,255,255,0.78) !important;
@@ -1040,12 +1112,26 @@ input { font-family: inherit; }
           </button>
         </div>
       </div>
+
+      <div class="search-meta">
+        <span class="radius-chip" id="radiusChip">
+          <i class="fas fa-satellite-dish"></i>
+          <span id="radiusChipText">Within 5 km of you</span>
+        </span>
+
+        <div class="radius-options" role="group" aria-label="Search radius">
+          <button type="button" class="radius-btn" data-radius="2">2 km</button>
+          <button type="button" class="radius-btn active" data-radius="5">5 km</button>
+          <button type="button" class="radius-btn" data-radius="15">15 km</button>
+          <button type="button" class="radius-btn" data-radius="0">Any</button>
+        </div>
+      </div>
     </div>
 
     <div class="results-area" id="resultsArea">
       <div class="results-hint">
         <i class="fas fa-magnifying-glass-location"></i>
-        Start typing a destination to see places near your pickup point.
+        Start typing a destination — nearest places appear first.
       </div>
     </div>
   </div>
@@ -1093,6 +1179,15 @@ const FARE = {
   demandMultiplier:  0,     // surge
   minimumFare:       10     // K
 };
+
+/* ============================================================
+   SEARCH CONFIG  (nearest-first)
+   ============================================================ */
+const SEARCH_DEFAULT_RADIUS_KM = 5;    // default radius used for biasing/sorting
+const SEARCH_MAX_RAW_RESULTS   = 25;   // how many to ask Nominatim for
+const SEARCH_SHOWN_RESULTS     = 12;   // how many to actually render
+
+let searchRadiusKm = SEARCH_DEFAULT_RADIUS_KM;   // 0 = "Any" (no radius filter)
 
 /* ============================================================
    DOM
@@ -1155,6 +1250,8 @@ const destInputRow      = $('destInputRow');
 const pickupClearBtn    = $('pickupClearBtn');
 const destClearBtn      = $('destClearBtn');
 const resultsArea       = $('resultsArea');
+const radiusChipText    = $('radiusChipText');
+const radiusBtns        = document.querySelectorAll('.radius-btn');
 
 const toastEl           = $('toast');
 
@@ -1178,6 +1275,7 @@ let currentRoute    = null;   // { distance, duration, geometry }
 let searchMode      = 'destination'; // 'pickup' | 'destination'
 let searchTimer     = null;
 let searchAbort     = null;
+let lastSearchQuery = '';
 
 const DEFAULT_LOCATION = { lat: -15.4167, lng: 28.2833 }; // Lusaka fallback
 
@@ -1291,7 +1389,7 @@ function showBanned(reason) {
 }
 
 /* ============================================================
-   MAP
+   MAP — OpenStreetMap tiles (no API key required)
    ============================================================ */
 function initMap() {
   if (map) return;
@@ -1300,15 +1398,16 @@ function initMap() {
     zoomControl: false,
     attributionControl: true,
     preferCanvas: true,
-    maxZoom: 20,
+    maxZoom: 19,
     minZoom: 3
   }).setView([DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lng], 17);
 
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-    attribution: '&copy; OpenStreetMap &copy; CARTO',
-    subdomains: 'abcd',
-    maxZoom: 20,
-    maxNativeZoom: 19
+  /* Standard OpenStreetMap raster tiles — no key needed */
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    subdomains: 'abc',
+    maxZoom: 19,
+    crossOrigin: true
   }).addTo(map);
 }
 
@@ -1364,6 +1463,7 @@ function setDropoffMarker(lat, lng) {
 }
 
 function clearTripLayers() {
+  if (!map) return;
   if (routeLayer) { map.removeLayer(routeLayer); routeLayer = null; }
   if (dropoffMarker) { map.removeLayer(dropoffMarker); dropoffMarker = null; }
   if (pickupMarker) { map.removeLayer(pickupMarker); pickupMarker = null; }
@@ -1475,7 +1575,7 @@ function showPane(which) {
    RIDE PAGE — SEARCH
    ============================================================ */
 function openRidePage(mode) {
-  searchMode = mode || (pickupLocation && !dropoffLocation ? 'destination' : 'destination');
+  searchMode = mode || 'destination';
 
   /* Pre-fill pickup */
   if (pickupLocation) {
@@ -1489,20 +1589,23 @@ function openRidePage(mode) {
     destInput.value = '';
   }
 
+  syncClearButtons();
+  updateRadiusChip();
+
   ridePage.classList.add('open');
 
   setTimeout(() => {
     if (searchMode === 'pickup') {
       pickupInput.focus();
       pickupInput.select();
-      runSearch(pickupInput.value.trim(), 'pickup');
+      const q = pickupInput.value.trim();
+      if (q.length >= 3) runSearch(q, 'pickup');
+      else showSearchHint();
     } else {
       destInput.focus();
-      if (destInput.value.trim().length >= 3) {
-        runSearch(destInput.value.trim(), 'destination');
-      } else {
-        showSearchHint();
-      }
+      const q = destInput.value.trim();
+      if (q.length >= 3) runSearch(q, 'destination');
+      else showSearchHint();
     }
     if (map) map.invalidateSize();
   }, 480);
@@ -1547,10 +1650,34 @@ destClearBtn.addEventListener('click', (e) => {
   showSearchHint();
 });
 
-/* Show/hide clear buttons */
 function syncClearButtons() {
   pickupClearBtn.style.display = pickupInput.value.trim() ? 'flex' : 'none';
   destClearBtn.style.display   = destInput.value.trim()   ? 'flex' : 'none';
+}
+
+/* ---- Radius selector ---- */
+radiusBtns.forEach((btn) => {
+  btn.addEventListener('click', () => {
+    radiusBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const r = parseInt(btn.dataset.radius, 10) || 0;
+    searchRadiusKm = r;
+    updateRadiusChip();
+
+    /* Re-run the current search if there is a query */
+    const q = searchMode === 'pickup' ? pickupInput.value.trim() : destInput.value.trim();
+    if (q.length >= 3) runSearch(q, searchMode);
+  });
+});
+
+function updateRadiusChip() {
+  if (!radiusChipText) return;
+  if (!searchRadiusKm || searchRadiusKm <= 0) {
+    radiusChipText.textContent = 'Searching anywhere';
+    return;
+  }
+  radiusChipText.textContent = 'Within ' + searchRadiusKm + ' km of you';
 }
 
 /* ---- Search hint ---- */
@@ -1558,76 +1685,141 @@ function showSearchHint() {
   resultsArea.innerHTML = `
     <div class="results-hint">
       <i class="fas fa-magnifying-glass-location"></i>
-      Start typing a destination to see places near your pickup point.
+      Start typing a destination — nearest places appear first.
     </div>`;
 }
 
 function showLoadingResults() {
   resultsArea.innerHTML = `
     <div class="loader-row">
-      <span class="mini-spin"></span> Searching…
+      <span class="mini-spin"></span> Searching nearby…
     </div>`;
 }
 
-/* ---- Nominatim search ---- */
-async function searchPlaces(query) {
-  /* Bias results around the current pickup point */
-  const anchor = pickupLocation || userLocation || DEFAULT_LOCATION;
-  const delta = 0.35;
+/* ============================================================
+   NOMINATIM SEARCH — nearest-first
+   ============================================================ */
 
-  const viewbox = [
-    anchor.lng - delta,
-    anchor.lat + delta,
-    anchor.lng + delta,
-    anchor.lat - delta
-  ].join(',');
+/* Anchor point that all distances will be measured from. */
+function getSearchAnchor() {
+  if (searchMode === 'pickup') {
+    return dropoffLocation || userLocation || DEFAULT_LOCATION;
+  }
+  return pickupLocation || userLocation || DEFAULT_LOCATION;
+}
 
-  const url =
-    'https://nominatim.openstreetmap.org/search' +
-    '?format=json&addressdetails=1&limit=8' +
-    '&q=' + encodeURIComponent(query) +
-    '&viewbox=' + viewbox +
-    '&bounded=0';
+/* Build the Nominatim URL with a viewbox bias around the anchor. */
+function buildNominatimUrl(query, anchor, radiusKm) {
+  let viewbox = '';
+  let bounded = '0';
+
+  if (anchor && radiusKm > 0) {
+    /* Convert km to degrees lat/lng offset (roughly). */
+    const latDelta = radiusKm / 111; // 1° lat ≈ 111 km
+    const lngDelta = radiusKm / (111 * Math.max(0.15, Math.cos(anchor.lat * Math.PI / 180)));
+
+    viewbox = [
+      anchor.lng - lngDelta, // left
+      anchor.lat + latDelta, // top
+      anchor.lng + lngDelta, // right
+      anchor.lat - latDelta  // bottom
+    ].join(',');
+
+    /* bounded=1 restricts to that box — we use 0 so results outside the
+       box can still be found (they'll just sort further down). */
+    bounded = '0';
+  }
+
+  const params = new URLSearchParams({
+    format: 'json',
+    addressdetails: '1',
+    limit: String(SEARCH_MAX_RAW_RESULTS),
+    q: query,
+    dedupe: '1'
+  });
+
+  if (viewbox) {
+    params.set('viewbox', viewbox);
+    params.set('bounded', bounded);
+  }
+
+  return 'https://nominatim.openstreetmap.org/search?' + params.toString();
+}
+
+/* Fetch raw results from Nominatim. */
+async function fetchRawPlaces(query, anchor, radiusKm, signal) {
+  const url = buildNominatimUrl(query, anchor, radiusKm);
 
   const res = await fetch(url, {
-    headers: { 'Accept': 'application/json' }
+    headers: { 'Accept': 'application/json' },
+    signal
   });
 
   if (!res.ok) throw new Error('Search failed');
   return res.json();
 }
 
+/* Sort places by great-circle distance from anchor (nearest first),
+   then filter out results further than the radius (unless radius = 0). */
+function rankPlacesByDistance(rawPlaces, anchor, radiusKm) {
+  const anchorLat = anchor.lat;
+  const anchorLng = anchor.lng;
+
+  const enriched = [];
+
+  for (const p of (rawPlaces || [])) {
+    const lat = parseFloat(p.lat);
+    const lon = parseFloat(p.lon);
+    if (!isFinite(lat) || !isFinite(lon)) continue;
+
+    const distMeters = haversineMeters(anchorLat, anchorLng, lat, lon);
+
+    /* Skip results clearly outside the radius (with a small tolerance
+       so borderline results don't disappear). */
+    if (radiusKm > 0 && distMeters > radiusKm * 1000 * 1.25) continue;
+
+    enriched.push({
+      raw: p,
+      lat,
+      lon,
+      distanceMeters: distMeters
+    });
+  }
+
+  /* Nearest first */
+  enriched.sort((a, b) => a.distanceMeters - b.distanceMeters);
+
+  return enriched.slice(0, SEARCH_SHOWN_RESULTS);
+}
+
 /* ---- Render results ---- */
-function renderResults(places, mode) {
-  if (!places || places.length === 0) {
+function renderResults(rankedPlaces, mode) {
+  if (!rankedPlaces || rankedPlaces.length === 0) {
     resultsArea.innerHTML = `
       <div class="results-hint">
         <i class="fas fa-circle-question"></i>
-        No places found. Try a different search term.
+        No places found nearby. Try a different search term, or widen the radius.
       </div>`;
     return;
   }
 
-  /* Anchor point for distance calculation */
-  const anchor = mode === 'pickup'
-    ? (dropoffLocation || userLocation)
-    : (pickupLocation || userLocation);
+  const nearest = rankedPlaces[0];
 
-  let html = '';
+  let html = `
+    <div class="results-heading">
+      <span>Nearest results</span>
+      <span class="rh-count">${rankedPlaces.length} ${rankedPlaces.length === 1 ? 'place' : 'places'} · closest ${escapeHtml(formatDistance(nearest.distanceMeters))}</span>
+    </div>
+  `;
 
-  places.forEach((place, idx) => {
-    const lat = parseFloat(place.lat);
-    const lon = parseFloat(place.lon);
-    if (!isFinite(lat) || !isFinite(lon)) return;
+  rankedPlaces.forEach((item, idx) => {
+    const p = item.raw;
+    const primary   = p.name || (p.display_name || '').split(',')[0] || 'Unknown place';
+    const secondary = p.display_name || '';
+    const distText  = formatDistance(item.distanceMeters);
 
-    const primary   = place.name || (place.display_name || '').split(',')[0] || 'Unknown place';
-    const secondary = place.display_name || '';
-
-    let distText = '';
-    if (anchor) {
-      const d = haversineMeters(anchor.lat, anchor.lng, lat, lon);
-      distText = formatDistance(d);
-    }
+    /* Mark results that are outside the chosen radius (only when radius > 0). */
+    const isFar = searchRadiusKm > 0 && item.distanceMeters > searchRadiusKm * 1000;
 
     html += `
       <button class="result-item" data-idx="${idx}">
@@ -1636,27 +1828,19 @@ function renderResults(places, mode) {
           <strong>${escapeHtml(primary)}</strong>
           <span>${escapeHtml(secondary)}</span>
         </span>
-        ${distText ? `<span class="result-dist">${escapeHtml(distText)}</span>` : ''}
+        <span class="result-dist${isFar ? ' far' : ''}">${escapeHtml(distText)}</span>
       </button>
     `;
   });
 
-  if (!html) {
-    resultsArea.innerHTML = `
-      <div class="results-hint">
-        <i class="fas fa-circle-question"></i>
-        No usable results. Try a different search term.
-      </div>`;
-    return;
-  }
-
   resultsArea.innerHTML = html;
 
+  /* Wire clicks */
   resultsArea.querySelectorAll('.result-item').forEach((btn) => {
     btn.addEventListener('click', () => {
       const idx = parseInt(btn.dataset.idx, 10);
-      const place = places[idx];
-      if (place) handlePlaceSelected(place, mode);
+      const item = rankedPlaces[idx];
+      if (item) handlePlaceSelected(item.raw, mode);
     });
   });
 }
@@ -1674,8 +1858,9 @@ function handlePlaceSelected(place, mode) {
     setActiveRow('destination');
     destInput.focus();
 
-    if (destInput.value.trim().length >= 3) {
-      runSearch(destInput.value.trim(), 'destination');
+    const q = destInput.value.trim();
+    if (q.length >= 3) {
+      runSearch(q, 'destination');
     } else {
       showSearchHint();
     }
@@ -1687,7 +1872,6 @@ function handlePlaceSelected(place, mode) {
   destInput.value = label;
   syncClearButtons();
 
-  /* Close page, draw route, show summary */
   closeRidePage();
   setTimeout(() => {
     buildTrip();
@@ -1700,7 +1884,10 @@ const debouncedSearch = debounce((query, mode) => {
 }, 420);
 
 async function runSearch(query, mode) {
-  if (!query || query.trim().length < 3) {
+  const trimmed = (query || '').trim();
+  lastSearchQuery = trimmed;
+
+  if (!trimmed || trimmed.length < 3) {
     showSearchHint();
     return;
   }
@@ -1710,12 +1897,19 @@ async function runSearch(query, mode) {
 
   showLoadingResults();
 
+  const anchor = getSearchAnchor();
+  const radius = searchRadiusKm;
+
   try {
-    const places = await searchPlaces(query);
-    /* Only render if this is still the active mode & query matches */
+    const raw = await fetchRawPlaces(trimmed, anchor, radius, searchAbort.signal);
+
+    /* Bail out if user typed something else while we were fetching */
     const currentVal = mode === 'pickup' ? pickupInput.value.trim() : destInput.value.trim();
-    if (currentVal !== query) return;
-    renderResults(places, mode);
+    if (currentVal !== trimmed) return;
+
+    const ranked = rankPlacesByDistance(raw, anchor, radius);
+    renderResults(ranked, mode);
+
   } catch (err) {
     if (err.name === 'AbortError') return;
     resultsArea.innerHTML = `
@@ -1763,6 +1957,8 @@ async function fetchRoute(from, to) {
 }
 
 function drawRoute(geometry) {
+  if (!map) return;
+
   if (routeLayer) {
     map.removeLayer(routeLayer);
     routeLayer = null;
@@ -1899,7 +2095,7 @@ cancelTripBtn.addEventListener('click', () => {
   clearTripLayers();
   showPane('home');
 
-  if (userLocation) {
+  if (userLocation && map) {
     map.setView([userLocation.lat, userLocation.lng], 18, { animate: true });
   }
 });
@@ -1966,7 +2162,6 @@ async function checkMaintenance() {
       }
     }
   } catch (err) {
-    /* If we can't read the node, assume no maintenance */
     console.warn('Maintenance check failed:', err);
   }
   return { maintenance: false };
@@ -2027,7 +2222,6 @@ onAuthStateChanged(auth, async (user) => {
     const customer = await checkCustomerRecord(user.uid);
 
     if (!customer) {
-      /* Not a customer account — send back to login */
       await signOut(auth);
       window.location.href = 'index.html';
       return;
@@ -2046,7 +2240,7 @@ onAuthStateChanged(auth, async (user) => {
 
     appRoot.classList.remove('hidden');
 
-    /* 5. Init map + location (deferred so layout settles) */
+    /* 5. Init map + location */
     requestAnimationFrame(() => {
       initMap();
       if (map) map.invalidateSize();
@@ -2066,12 +2260,10 @@ onAuthStateChanged(auth, async (user) => {
 /* ============================================================
    MISC
    ============================================================ */
-/* Prevent iOS rubber-band on the map half */
 document.addEventListener('touchmove', (e) => {
   if (e.target.closest('.leaflet-container')) return;
 }, { passive: true });
 
-/* Keyboard escape closes overlays */
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     if (ridePage.classList.contains('open')) closeRidePage();
@@ -2079,7 +2271,6 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-/* Map resize on orientation change */
 window.addEventListener('orientationchange', () => {
   setTimeout(() => { if (map) map.invalidateSize(); }, 320);
 });
@@ -2088,7 +2279,6 @@ window.addEventListener('resize', () => {
   if (map) map.invalidateSize();
 });
 
-/* Safety: if boot never completes in 12s, hide the loader */
 setTimeout(() => {
   if (!bootDone) hideLoading();
 }, 12000);
