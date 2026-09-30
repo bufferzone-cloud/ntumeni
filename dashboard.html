@@ -73,7 +73,7 @@ body {
 }
 
 button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
-input { font-family: inherit; }
+input, textarea { font-family: inherit; }
 
 .hidden { display: none !important; }
 
@@ -104,7 +104,7 @@ input { font-family: inherit; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* ==========================================================
-   BLOCKING OVERLAYS (maintenance / banned)
+   BLOCKING OVERLAYS
    ========================================================== */
 .block-overlay {
   position: fixed; inset: 0; z-index: 8000;
@@ -199,7 +199,7 @@ input { font-family: inherit; }
 .topbar-logo span { font-size: 0.5rem; font-weight: 800; color: var(--ink); letter-spacing: -0.2px; }
 
 /* ==========================================================
-   MAIN LAYOUT — half map / half actions
+   MAIN LAYOUT
    ========================================================== */
 .app-main {
   flex: 1 1 auto;
@@ -400,10 +400,11 @@ input { font-family: inherit; }
   margin: 0 16px;
 }
 
+/* Simplified fare card — price, time, distance only */
 .fare-card {
   background: #0a0a0a; color: #ffffff;
   border-radius: var(--radius);
-  padding: 18px 20px;
+  padding: 22px 22px;
   margin-bottom: 14px;
   flex-shrink: 0;
   box-shadow: 0 12px 30px -14px rgba(0,0,0,0.55);
@@ -411,45 +412,32 @@ input { font-family: inherit; }
 
 .fare-top {
   display: flex; align-items: flex-end; justify-content: space-between;
-  margin-bottom: 14px; gap: 12px;
+  gap: 14px;
 }
 .fare-top .fare-label {
   font-size: 0.63rem; font-weight: 700;
   letter-spacing: 1.4px; text-transform: uppercase;
-  color: rgba(255,255,255,0.5); margin-bottom: 4px;
+  color: rgba(255,255,255,0.5); margin-bottom: 6px;
 }
 .fare-top .fare-amount {
-  font-size: 1.85rem; font-weight: 800; letter-spacing: -1px;
+  font-size: 2.1rem; font-weight: 800; letter-spacing: -1.2px;
   line-height: 1;
 }
-.fare-top .fare-amount small { font-size: 1rem; font-weight: 700; opacity: 0.65; margin-right: 2px; }
+.fare-top .fare-amount small { font-size: 1.05rem; font-weight: 700; opacity: 0.65; margin-right: 3px; }
 
-.fare-stats { display: flex; gap: 10px; }
+.fare-stats { display: flex; gap: 8px; }
 .fare-stat {
-  flex: 1; background: rgba(255,255,255,0.08);
-  border-radius: 12px; padding: 10px 12px;
+  background: rgba(255,255,255,0.09);
+  border-radius: 12px; padding: 10px 13px;
+  min-width: 76px;
+  text-align: center;
 }
 .fare-stat small {
-  display: block; font-size: 0.6rem; font-weight: 700;
+  display: block; font-size: 0.58rem; font-weight: 700;
   letter-spacing: 1px; text-transform: uppercase;
-  color: rgba(255,255,255,0.48); margin-bottom: 3px;
+  color: rgba(255,255,255,0.48); margin-bottom: 4px;
 }
 .fare-stat strong { font-size: 0.92rem; font-weight: 700; letter-spacing: -0.2px; }
-
-.fare-breakdown {
-  border-top: 1px solid rgba(255,255,255,0.12);
-  padding-top: 12px; margin-top: 14px;
-}
-.fare-line {
-  display: flex; justify-content: space-between;
-  font-size: 0.79rem; padding: 4px 0;
-  color: rgba(255,255,255,0.68);
-}
-.fare-line.total {
-  color: #ffffff; font-weight: 800; font-size: 0.9rem;
-  border-top: 1px solid rgba(255,255,255,0.12);
-  margin-top: 8px; padding-top: 10px;
-}
 
 .confirm-btn {
   width: 100%; padding: 16px;
@@ -561,9 +549,9 @@ input { font-family: inherit; }
 .logout-btn i { width: 22px; text-align: center; font-size: 1rem; }
 
 /* ==========================================================
-   RIDE REQUEST PAGE
+   SHARED SEARCH PAGE (RIDE + DELIVERY)
    ========================================================== */
-#ridePage {
+#ridePage, #deliveryPage {
   position: fixed; inset: 0; z-index: 3000;
   background: #ffffff;
   display: flex; flex-direction: column;
@@ -572,7 +560,7 @@ input { font-family: inherit; }
   will-change: transform;
   visibility: hidden;
 }
-#ridePage.open { transform: translateY(0); visibility: visible; }
+#ridePage.open, #deliveryPage.open { transform: translateY(0); visibility: visible; }
 
 .ride-head {
   flex: 0 0 auto;
@@ -648,57 +636,6 @@ input { font-family: inherit; }
   margin: 0 16px 0 42px;
 }
 
-/* Search radius chip row */
-.search-meta {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  margin-top: 10px;
-  flex-wrap: wrap;
-}
-
-.radius-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.3px;
-  color: var(--text-secondary);
-  background: var(--fill-gray);
-  padding: 6px 11px;
-  border-radius: 999px;
-  border: 1px solid var(--line);
-}
-.radius-chip i { font-size: 0.66rem; }
-
-.radius-options {
-  display: inline-flex;
-  gap: 4px;
-  background: var(--fill-gray);
-  border-radius: 999px;
-  padding: 3px;
-  border: 1px solid var(--line);
-}
-
-.radius-btn {
-  font-size: 0.66rem;
-  font-weight: 700;
-  letter-spacing: 0.2px;
-  color: var(--text-secondary);
-  padding: 5px 10px;
-  border-radius: 999px;
-  transition: background 0.22s var(--ease-smooth), color 0.22s;
-}
-.radius-btn.active {
-  background: #0a0a0a;
-  color: #ffffff;
-}
-.radius-btn:not(.active):hover {
-  color: var(--text-primary);
-}
-
 .results-area {
   flex: 1; min-height: 0;
   overflow-y: auto;
@@ -718,7 +655,6 @@ input { font-family: inherit; }
   margin-bottom: 12px; color: #d8d8dc;
 }
 
-/* Results section heading */
 .results-heading {
   display: flex;
   align-items: center;
@@ -778,7 +714,6 @@ input { font-family: inherit; }
   flex-shrink: 0; white-space: nowrap;
 }
 .result-item:hover .result-dist { background: #ffffff; }
-.result-dist.far { color: var(--text-tertiary); }
 
 .loader-row {
   display: flex; align-items: center; justify-content: center;
@@ -790,6 +725,383 @@ input { font-family: inherit; }
   border: 2px solid rgba(0,0,0,0.14); border-top-color: var(--ink);
   animation: spin 0.8s linear infinite;
 }
+
+/* ==========================================================
+   DELIVERY PAGE
+   ========================================================== */
+.delivery-body {
+  flex: 1; min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.delivery-scroll {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 16px 16px 32px;
+}
+
+.delivery-results {
+  margin-top: 6px;
+  background: #fff;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 0 0 1px var(--line);
+}
+
+.delivery-form {
+  margin-top: 6px;
+}
+
+.pill-input {
+  width: 100%;
+  padding: 13px 16px 13px 42px;
+  font-family: inherit;
+  font-size: 0.94rem;
+  font-weight: 400;
+  border: 1.5px solid transparent;
+  border-radius: var(--radius-sm);
+  background: var(--fill-gray);
+  outline: none;
+  color: var(--text-primary);
+  transition:
+    background 0.3s var(--ease-smooth),
+    border-color 0.3s var(--ease-smooth),
+    box-shadow 0.3s var(--ease-smooth);
+  user-select: text;
+  -webkit-user-select: text;
+}
+.pill-input::placeholder { color: var(--text-tertiary); font-weight: 400; }
+.pill-input:hover        { background: var(--fill-gray-hover); }
+.pill-input:focus {
+  background: #ffffff;
+  border-color: #0a0a0a;
+  box-shadow: 0 0 0 4px rgba(0,0,0,0.10);
+}
+
+.pill-textarea {
+  resize: vertical;
+  min-height: 78px;
+  padding-top: 13px;
+  line-height: 1.45;
+}
+
+.input-icon-group {
+  position: relative;
+  width: 100%;
+  margin-bottom: 0.85rem;
+}
+.input-icon-group > i {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-tertiary);
+  font-size: 0.95rem;
+  pointer-events: none;
+  z-index: 1;
+}
+.input-icon-group.textarea-group > i {
+  top: 22px;
+  transform: none;
+}
+.input-icon-group:focus-within > i { color: #0a0a0a; }
+
+.section-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin: 1.1rem 0 0.55rem;
+}
+
+.error-msg {
+  color: #d92d20;
+  font-size: 0.78rem;
+  font-weight: 500;
+  margin: 0.4rem 0 0.75rem 4px;
+  line-height: 1.45;
+  white-space: pre-wrap;
+}
+.error-msg:empty { display: none; }
+
+.btn {
+  font-family: inherit;
+  font-size: 0.94rem;
+  font-weight: 600;
+  letter-spacing: -0.1px;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 14px 20px;
+  width: 100%;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  transition: transform 0.35s var(--spring), box-shadow 0.35s var(--ease-smooth);
+}
+.btn-primary {
+  background: linear-gradient(180deg, #2b2b2e 0%, #0a0a0a 60%, #000000 100%);
+  color: #ffffff;
+  box-shadow: 0 8px 20px -6px rgba(0,0,0,0.40);
+  margin-top: 6px;
+}
+.btn-primary:hover:not(:disabled) { transform: translateY(-2px); }
+.btn-primary:active:not(:disabled) { transform: translateY(0) scale(0.975); }
+.btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+/* ==========================================================
+   VEHICLE SELECTION SHEET
+   ========================================================== */
+.sheet-overlay {
+  position: fixed; inset: 0; z-index: 3500;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0;
+}
+.sheet-overlay.open { display: flex; animation: fadeIn 0.24s var(--ease-out); }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.sheet {
+  background: #ffffff;
+  border-radius: 26px 26px 0 0;
+  width: 100%;
+  max-width: 560px;
+  padding: 12px 20px 28px;
+  animation: sheetUp 0.42s var(--panel-ease);
+  box-shadow: 0 -12px 40px rgba(0,0,0,0.28);
+}
+
+@keyframes sheetUp {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+
+.sheet-handle {
+  width: 42px;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(0,0,0,0.14);
+  margin: 4px auto 18px;
+}
+
+.sheet-head { text-align: center; margin-bottom: 18px; }
+.sheet-head h3 {
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: -0.35px;
+  margin-bottom: 4px;
+}
+.sheet-head p {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.vehicle-list {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin-bottom: 14px;
+}
+
+.vehicle-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  background: #ffffff;
+  box-shadow: 0 0 0 1.5px var(--line);
+  text-align: left;
+  transition: transform 0.28s var(--spring), box-shadow 0.24s var(--ease-smooth), background 0.22s;
+}
+.vehicle-item:hover  {
+  background: #fafafa;
+  box-shadow: 0 0 0 1.5px rgba(0,0,0,0.20);
+  transform: translateY(-1px);
+}
+.vehicle-item:active { transform: scale(0.985); }
+
+.vehicle-icon {
+  width: 46px; height: 46px; border-radius: 13px;
+  background: #0a0a0a;
+  color: #ffffff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.15rem; flex-shrink: 0;
+}
+
+.vehicle-info { flex: 1; min-width: 0; }
+.vehicle-info strong {
+  display: block;
+  font-size: 0.94rem;
+  font-weight: 800;
+  letter-spacing: -0.25px;
+  margin-bottom: 2px;
+}
+.vehicle-info span {
+  display: block;
+  font-size: 0.74rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.vehicle-price {
+  text-align: right;
+  flex-shrink: 0;
+}
+.vehicle-price strong {
+  display: block;
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+  color: var(--text-primary);
+}
+.vehicle-price small {
+  display: block;
+  font-size: 0.66rem;
+  color: var(--text-tertiary);
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  margin-top: 2px;
+}
+
+.sheet-cancel {
+  width: 100%;
+  padding: 14px;
+  border-radius: var(--radius-sm);
+  background: var(--fill-gray);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  font-weight: 700;
+  transition: background 0.22s;
+}
+.sheet-cancel:hover { background: var(--fill-gray-hover); }
+
+/* ==========================================================
+   SEARCHING OVERLAY
+   ========================================================== */
+.searching-overlay {
+  position: fixed; inset: 0; z-index: 4000;
+  background: rgba(10,10,10,0.72);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.searching-overlay.open { display: flex; animation: fadeIn 0.32s var(--ease-out); }
+
+.searching-card {
+  background: #ffffff;
+  border-radius: 26px;
+  padding: 36px 28px 28px;
+  max-width: 360px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.4);
+  animation: modalIn 0.42s var(--spring);
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.94) translateY(16px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.searching-radar {
+  position: relative;
+  width: 110px;
+  height: 110px;
+  margin: 0 auto 22px;
+}
+
+.searching-radar .radar-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2.5px solid #0a0a0a;
+  opacity: 0;
+  animation: radarPulse 2.4s var(--ease-smooth) infinite;
+}
+.searching-radar .radar-ring:nth-child(2) { animation-delay: 0.8s; }
+.searching-radar .radar-ring:nth-child(3) { animation-delay: 1.6s; }
+
+@keyframes radarPulse {
+  0%   { transform: scale(0.4); opacity: 0.85; }
+  100% { transform: scale(1.65); opacity: 0; }
+}
+
+.searching-radar .radar-center {
+  position: absolute;
+  inset: 32px;
+  border-radius: 50%;
+  background: #0a0a0a;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  z-index: 2;
+  box-shadow: 0 0 0 6px rgba(255,255,255,0.9);
+}
+
+.searching-card h2 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+  margin-bottom: 6px;
+}
+
+.searching-card p {
+  font-size: 0.84rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.searching-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 22px;
+}
+.searching-dots span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #0a0a0a;
+  opacity: 0.3;
+  animation: dotBounce 1.2s var(--ease-smooth) infinite;
+}
+.searching-dots span:nth-child(2) { animation-delay: 0.15s; }
+.searching-dots span:nth-child(3) { animation-delay: 0.30s; }
+
+@keyframes dotBounce {
+  0%, 100% { opacity: 0.3; transform: translateY(0); }
+  50%      { opacity: 1;   transform: translateY(-5px); }
+}
+
+.searching-cancel {
+  width: 100%;
+  padding: 13px;
+  border-radius: var(--radius-sm);
+  background: var(--fill-gray);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  font-weight: 700;
+  transition: background 0.22s, transform 0.28s var(--spring);
+}
+.searching-cancel:hover  { background: var(--fill-gray-hover); }
+.searching-cancel:active { transform: scale(0.97); }
 
 /* ==========================================================
    MARKERS
@@ -826,7 +1138,7 @@ input { font-family: inherit; }
   100% { transform: scale(1.25); opacity: 0; }
 }
 
-/* Leaflet tweaks — OpenStreetMap tiles */
+/* Leaflet tweaks */
 .leaflet-container { font-family: inherit; background: #eceef0; }
 .leaflet-control-attribution {
   font-size: 9px !important; background: rgba(255,255,255,0.78) !important;
@@ -858,7 +1170,7 @@ input { font-family: inherit; }
   .btn-ride { padding: 22px 18px; }
   .btn-ride .ride-ico { width: 42px; height: 42px; font-size: 1.1rem; }
   .btn-ride .ride-txt strong { font-size: 0.98rem; }
-  .fare-top .fare-amount { font-size: 1.6rem; }
+  .fare-top .fare-amount { font-size: 1.75rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -976,7 +1288,7 @@ input { font-family: inherit; }
       <!-- TRIP SUMMARY -->
       <div class="action-pane" id="paneTrip">
         <div class="trip-head">
-          <h2>Your Trip</h2>
+          <h2 id="tripTitle">Your Trip</h2>
           <button id="cancelTripBtn"><i class="fas fa-xmark"></i> Cancel</button>
         </div>
 
@@ -1002,10 +1314,11 @@ input { font-family: inherit; }
           </button>
         </div>
 
+        <!-- Simplified fare card: price, time, distance only -->
         <div class="fare-card">
           <div class="fare-top">
             <div>
-              <div class="fare-label">Estimated fare</div>
+              <div class="fare-label">Estimated price</div>
               <div class="fare-amount"><small>K</small><span id="fareTotal">0.00</span></div>
             </div>
             <div class="fare-stats">
@@ -1018,15 +1331,6 @@ input { font-family: inherit; }
                 <strong id="fareDuration">0 min</strong>
               </div>
             </div>
-          </div>
-
-          <div class="fare-breakdown">
-            <div class="fare-line"><span>Base fare</span><span id="bdBase">K 0.00</span></div>
-            <div class="fare-line"><span>Distance fare</span><span id="bdDistance">K 0.00</span></div>
-            <div class="fare-line"><span>Time fare</span><span id="bdTime">K 0.00</span></div>
-            <div class="fare-line" id="bdWaitRow" style="display:none;"><span>Waiting fare</span><span id="bdWait">K 0.00</span></div>
-            <div class="fare-line" id="bdSurgeRow" style="display:none;"><span>Surge</span><span id="bdSurge">K 0.00</span></div>
-            <div class="fare-line total"><span>Total</span><span id="bdTotal">K 0.00</span></div>
           </div>
         </div>
 
@@ -1112,28 +1416,142 @@ input { font-family: inherit; }
           </button>
         </div>
       </div>
-
-      <div class="search-meta">
-        <span class="radius-chip" id="radiusChip">
-          <i class="fas fa-satellite-dish"></i>
-          <span id="radiusChipText">Within 5 km of you</span>
-        </span>
-
-        <div class="radius-options" role="group" aria-label="Search radius">
-          <button type="button" class="radius-btn" data-radius="2">2 km</button>
-          <button type="button" class="radius-btn active" data-radius="5">5 km</button>
-          <button type="button" class="radius-btn" data-radius="15">15 km</button>
-          <button type="button" class="radius-btn" data-radius="0">Any</button>
-        </div>
-      </div>
     </div>
 
     <div class="results-area" id="resultsArea">
       <div class="results-hint">
         <i class="fas fa-magnifying-glass-location"></i>
-        Start typing a destination — nearest places appear first.
+        Start typing a destination — nearest places within 15 km appear first.
       </div>
     </div>
+  </div>
+</div>
+
+<!-- ==========================================================
+     DELIVERY PAGE
+     ========================================================== -->
+<div id="deliveryPage">
+  <div class="ride-head">
+    <button class="icon-btn" id="deliveryBackBtn" aria-label="Back">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+    <div style="flex:1;">
+      <h2>New Delivery</h2>
+      <div class="ride-head-sub">Pickup, drop-off &amp; parcel</div>
+    </div>
+  </div>
+
+  <div class="delivery-body">
+    <div class="delivery-scroll">
+
+      <div class="input-card">
+        <div class="input-row" id="deliveryPickupRow">
+          <span class="row-dot"></span>
+          <input type="text" id="deliveryPickupInput" placeholder="Pickup location" autocomplete="off">
+          <button class="row-clear" id="deliveryPickupClear" aria-label="Clear" style="display:none;">
+            <i class="fas fa-xmark"></i>
+          </button>
+        </div>
+
+        <div class="input-divider"></div>
+
+        <div class="input-row" id="deliveryDestRow">
+          <span class="row-dot square"></span>
+          <input type="text" id="deliveryDestInput" placeholder="Drop-off location" autocomplete="off">
+          <button class="row-clear" id="deliveryDestClear" aria-label="Clear" style="display:none;">
+            <i class="fas fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Search results appear here while typing; form is hidden -->
+      <div class="delivery-results" id="deliveryResultsArea" style="display:none;"></div>
+
+      <!-- Form fields -->
+      <div class="delivery-form" id="deliveryFormArea">
+
+        <div class="section-label">Sender details</div>
+        <div class="input-icon-group">
+          <input type="text" id="delSenderName" class="pill-input" placeholder="Sender name" autocomplete="name">
+          <i class="fas fa-user"></i>
+        </div>
+        <div class="input-icon-group">
+          <input type="tel" id="delSenderPhone" class="pill-input" placeholder="Sender phone number" autocomplete="tel">
+          <i class="fas fa-phone-alt"></i>
+        </div>
+
+        <div class="section-label">Receiver details</div>
+        <div class="input-icon-group">
+          <input type="text" id="delReceiverName" class="pill-input" placeholder="Receiver name">
+          <i class="fas fa-user-check"></i>
+        </div>
+        <div class="input-icon-group">
+          <input type="tel" id="delReceiverPhone" class="pill-input" placeholder="Receiver phone number">
+          <i class="fas fa-phone-volume"></i>
+        </div>
+
+        <div class="section-label">Parcel details</div>
+        <div class="input-icon-group">
+          <input type="text" id="delParcelName" class="pill-input" placeholder="Parcel name (e.g. Documents)">
+          <i class="fas fa-box"></i>
+        </div>
+        <div class="input-icon-group textarea-group">
+          <textarea id="delParcelDesc" class="pill-input pill-textarea"
+                    placeholder="Parcel description — size, weight, handling notes…"></textarea>
+          <i class="fas fa-align-left"></i>
+        </div>
+
+        <div id="deliveryError" class="error-msg"></div>
+
+        <button type="button" class="btn btn-primary" id="requestDeliveryBtn">
+          <i class="fas fa-paper-plane"></i> REQUEST DELIVERY
+        </button>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==========================================================
+     VEHICLE SELECTION SHEET
+     ========================================================== -->
+<div class="sheet-overlay" id="vehicleSheet">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+
+    <div class="sheet-head">
+      <h3>Choose delivery type</h3>
+      <p>Prices are based on your route distance and time.</p>
+    </div>
+
+    <div class="vehicle-list" id="vehicleList"></div>
+
+    <button class="sheet-cancel" id="vehicleSheetCancel">Cancel</button>
+  </div>
+</div>
+
+<!-- ==========================================================
+     SEARCHING OVERLAY
+     ========================================================== -->
+<div class="searching-overlay" id="searchingOverlay">
+  <div class="searching-card">
+    <div class="searching-radar">
+      <div class="radar-ring"></div>
+      <div class="radar-ring"></div>
+      <div class="radar-ring"></div>
+      <div class="radar-center">
+        <i class="fas fa-car" id="searchingIcon"></i>
+      </div>
+    </div>
+
+    <h2 id="searchingTitle">Searching for a driver</h2>
+    <p id="searchingSubtitle">Looking for someone nearby…</p>
+
+    <div class="searching-dots">
+      <span></span><span></span><span></span>
+    </div>
+
+    <button class="searching-cancel" id="cancelSearchBtn">Cancel</button>
   </div>
 </div>
 
@@ -1168,26 +1586,57 @@ const auth     = getAuth(app);
 const database = getDatabase(app);
 
 /* ============================================================
-   FARE CONFIG
+   RIDE FARE CONFIG
    ============================================================ */
 const FARE = {
-  baseFare:          5,     // K
-  pricePerKm:        8,     // K per km
-  pricePerMinute:    1,     // K per minute
-  waitingRate:       0,     // K per waiting minute
-  waitingMinutes:    0,
-  demandMultiplier:  0,     // surge
-  minimumFare:       10     // K
+  baseFare:          5,
+  pricePerKm:        8,
+  pricePerMinute:    1,
+  minimumFare:       10
 };
 
 /* ============================================================
-   SEARCH CONFIG  (nearest-first)
+   DELIVERY VEHICLE CONFIG
    ============================================================ */
-const SEARCH_DEFAULT_RADIUS_KM = 5;    // default radius used for biasing/sorting
-const SEARCH_MAX_RAW_RESULTS   = 25;   // how many to ask Nominatim for
-const SEARCH_SHOWN_RESULTS     = 12;   // how many to actually render
+const DELIVERY_VEHICLES = {
+  motorbike: {
+    id: 'motorbike',
+    label: 'Motorbike',
+    description: 'Fastest for small parcels',
+    icon: 'fa-motorcycle',
+    baseFare: 4,
+    pricePerKm: 6,
+    pricePerMinute: 0.5,
+    minimumFare: 8
+  },
+  cyclist: {
+    id: 'cyclist',
+    label: 'Cyclist',
+    description: 'Eco-friendly & affordable',
+    icon: 'fa-bicycle',
+    baseFare: 3,
+    pricePerKm: 4,
+    pricePerMinute: 0.3,
+    minimumFare: 6
+  },
+  walker: {
+    id: 'walker',
+    label: 'Walker',
+    description: 'Best for very short distances',
+    icon: 'fa-person-walking',
+    baseFare: 2,
+    pricePerKm: 2,
+    pricePerMinute: 0.2,
+    minimumFare: 5
+  }
+};
 
-let searchRadiusKm = SEARCH_DEFAULT_RADIUS_KM;   // 0 = "Any" (no radius filter)
+/* ============================================================
+   SEARCH CONFIG — always 15 km, no user control
+   ============================================================ */
+const SEARCH_RADIUS_KM = 15;
+const SEARCH_MAX_RAW_RESULTS = 30;
+const SEARCH_SHOWN_RESULTS = 12;
 
 /* ============================================================
    DOM
@@ -1222,6 +1671,7 @@ const errandBtn         = $('errandBtn');
 
 const paneHome          = $('paneHome');
 const paneTrip          = $('paneTrip');
+const tripTitle         = $('tripTitle');
 const summaryPickup     = $('summaryPickup');
 const summaryDropoff    = $('summaryDropoff');
 const pickupRowBtn      = $('pickupRowBtn');
@@ -1232,14 +1682,6 @@ const confirmRideBtn    = $('confirmRideBtn');
 const fareTotal         = $('fareTotal');
 const fareDistance      = $('fareDistance');
 const fareDuration      = $('fareDuration');
-const bdBase            = $('bdBase');
-const bdDistance        = $('bdDistance');
-const bdTime            = $('bdTime');
-const bdWaitRow         = $('bdWaitRow');
-const bdWait            = $('bdWait');
-const bdSurgeRow        = $('bdSurgeRow');
-const bdSurge           = $('bdSurge');
-const bdTotal           = $('bdTotal');
 
 const ridePage          = $('ridePage');
 const rideBackBtn       = $('rideBackBtn');
@@ -1250,10 +1692,37 @@ const destInputRow      = $('destInputRow');
 const pickupClearBtn    = $('pickupClearBtn');
 const destClearBtn      = $('destClearBtn');
 const resultsArea       = $('resultsArea');
-const radiusChipText    = $('radiusChipText');
-const radiusBtns        = document.querySelectorAll('.radius-btn');
 
-const toastEl           = $('toast');
+const deliveryPage          = $('deliveryPage');
+const deliveryBackBtn       = $('deliveryBackBtn');
+const deliveryPickupInput   = $('deliveryPickupInput');
+const deliveryDestInput     = $('deliveryDestInput');
+const deliveryPickupRow     = $('deliveryPickupRow');
+const deliveryDestRow       = $('deliveryDestRow');
+const deliveryPickupClear   = $('deliveryPickupClear');
+const deliveryDestClear     = $('deliveryDestClear');
+const deliveryResultsArea   = $('deliveryResultsArea');
+const deliveryFormArea      = $('deliveryFormArea');
+const deliveryError         = $('deliveryError');
+const requestDeliveryBtn    = $('requestDeliveryBtn');
+const delSenderName         = $('delSenderName');
+const delSenderPhone        = $('delSenderPhone');
+const delReceiverName       = $('delReceiverName');
+const delReceiverPhone      = $('delReceiverPhone');
+const delParcelName         = $('delParcelName');
+const delParcelDesc         = $('delParcelDesc');
+
+const vehicleSheet          = $('vehicleSheet');
+const vehicleList           = $('vehicleList');
+const vehicleSheetCancel    = $('vehicleSheetCancel');
+
+const searchingOverlay      = $('searchingOverlay');
+const searchingIcon         = $('searchingIcon');
+const searchingTitle        = $('searchingTitle');
+const searchingSubtitle     = $('searchingSubtitle');
+const cancelSearchBtn       = $('cancelSearchBtn');
+
+const toastEl               = $('toast');
 
 /* ============================================================
    STATE
@@ -1267,17 +1736,21 @@ let pickupMarker    = null;
 let dropoffMarker   = null;
 let routeLayer      = null;
 
-let userLocation    = null;   // { lat, lng }
-let pickupLocation  = null;   // { lat, lng, label }
-let dropoffLocation = null;   // { lat, lng, label }
-let currentRoute    = null;   // { distance, duration, geometry }
+let userLocation    = null;
+let pickupLocation  = null;             // ride pickup
+let dropoffLocation = null;             // ride dropoff
+let currentRoute    = null;
 
-let searchMode      = 'destination'; // 'pickup' | 'destination'
-let searchTimer     = null;
+let deliveryPickupLocation  = null;
+let deliveryDropoffLocation = null;
+let deliveryRoute           = null;
+let deliveryVehicle         = null;
+
+let searchField     = 'destination';
+let currentPage     = 'home';           // 'home' | 'ride' | 'delivery'
 let searchAbort     = null;
-let lastSearchQuery = '';
 
-const DEFAULT_LOCATION = { lat: -15.4167, lng: 28.2833 }; // Lusaka fallback
+const DEFAULT_LOCATION = { lat: -15.4167, lng: 28.2833 };
 
 /* ============================================================
    HELPERS
@@ -1338,33 +1811,35 @@ function escapeHtml(str) {
     .replace(/'/g, '&#39;');
 }
 
+function isValidPhone(raw) {
+  const digits = String(raw || '').replace(/\D/g, '');
+  return digits.length >= 9 && digits.length <= 15;
+}
+
 /* ============================================================
-   FARE CALCULATION
+   FARE CALCULATIONS
    ============================================================ */
-function computeFare(distanceMeters, durationSeconds) {
-  const distanceKm    = (distanceMeters || 0) / 1000;
-  const durationMin   = (durationSeconds || 0) / 60;
-
-  const distanceFare  = distanceKm * FARE.pricePerKm;
-  const timeFare      = durationMin * FARE.pricePerMinute;
-
-  const subtotal      = FARE.baseFare + distanceFare + timeFare;
-
-  const waitingFare   = FARE.waitingMinutes * FARE.waitingRate;
-  const surgeFare     = subtotal * FARE.demandMultiplier;
-
-  const rawTotal      = subtotal + waitingFare + surgeFare;
-  const finalFare     = Math.max(FARE.minimumFare, rawTotal);
-
+function computeRideFare(distanceMeters, durationSeconds) {
+  const distanceKm  = (distanceMeters || 0) / 1000;
+  const durationMin = (durationSeconds || 0) / 60;
+  const subtotal    = FARE.baseFare + (distanceKm * FARE.pricePerKm) + (durationMin * FARE.pricePerMinute);
   return {
     distanceKm,
     durationMin,
-    distanceFare,
-    timeFare,
-    subtotal,
-    waitingFare,
-    surgeFare,
-    finalFare
+    finalFare: Math.max(FARE.minimumFare, subtotal)
+  };
+}
+
+function computeDeliveryFare(vehicleCfg, distanceMeters, durationSeconds) {
+  const distanceKm  = (distanceMeters || 0) / 1000;
+  const durationMin = (durationSeconds || 0) / 60;
+  const subtotal    = vehicleCfg.baseFare +
+                      (distanceKm * vehicleCfg.pricePerKm) +
+                      (durationMin * vehicleCfg.pricePerMinute);
+  return {
+    distanceKm,
+    durationMin,
+    finalFare: Math.max(vehicleCfg.minimumFare, subtotal)
   };
 }
 
@@ -1389,7 +1864,8 @@ function showBanned(reason) {
 }
 
 /* ============================================================
-   MAP — OpenStreetMap tiles (no API key required)
+   MAP — OpenStreetMap standard tiles (no API key required)
+   Styled to resemble the default Google Maps look.
    ============================================================ */
 function initMap() {
   if (map) return;
@@ -1402,7 +1878,6 @@ function initMap() {
     minZoom: 3
   }).setView([DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lng], 17);
 
-  /* Standard OpenStreetMap raster tiles — no key needed */
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     subdomains: 'abc',
@@ -1413,14 +1888,12 @@ function initMap() {
 
 function setUserMarker(lat, lng) {
   if (!map) return;
-
   const icon = L.divIcon({
     className: '',
     html: '<div class="mk-user"></div>',
     iconSize: [16, 16],
     iconAnchor: [8, 8]
   });
-
   if (userMarker) {
     userMarker.setLatLng([lat, lng]);
   } else {
@@ -1430,14 +1903,12 @@ function setUserMarker(lat, lng) {
 
 function setPickupMarker(lat, lng) {
   if (!map) return;
-
   const icon = L.divIcon({
     className: '',
     html: '<div class="mk-dot"></div>',
     iconSize: [18, 18],
     iconAnchor: [9, 9]
   });
-
   if (pickupMarker) {
     pickupMarker.setLatLng([lat, lng]);
   } else {
@@ -1447,14 +1918,12 @@ function setPickupMarker(lat, lng) {
 
 function setDropoffMarker(lat, lng) {
   if (!map) return;
-
   const icon = L.divIcon({
     className: '',
     html: '<div class="mk-pin"></div>',
     iconSize: [20, 20],
     iconAnchor: [10, 20]
   });
-
   if (dropoffMarker) {
     dropoffMarker.setLatLng([lat, lng]);
   } else {
@@ -1480,6 +1949,8 @@ function locateUser({ center = true, silent = false } = {}) {
     mapBadgeText.textContent = 'Default location';
     setUserMarker(DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lng);
     if (center && map) map.setView([DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lng], 18);
+    if (!pickupLocation) pickupLocation = { lat: DEFAULT_LOCATION.lat, lng: DEFAULT_LOCATION.lng, label: 'Approximate location' };
+    if (!deliveryPickupLocation) deliveryPickupLocation = { lat: DEFAULT_LOCATION.lat, lng: DEFAULT_LOCATION.lng, label: 'Approximate location' };
     return;
   }
 
@@ -1489,26 +1960,19 @@ function locateUser({ center = true, silent = false } = {}) {
     (pos) => {
       const { latitude, longitude } = pos.coords;
       userLocation = { lat: latitude, lng: longitude };
-
       setUserMarker(latitude, longitude);
       mapBadgeText.textContent = 'You are here';
-
-      if (center && map) {
-        map.setView([latitude, longitude], 18);
-      }
-
-      if (!pickupLocation) {
-        pickupLocation = { lat: latitude, lng: longitude, label: 'Current location' };
-      }
+      if (center && map) map.setView([latitude, longitude], 18);
+      if (!pickupLocation) pickupLocation = { lat: latitude, lng: longitude, label: 'Current location' };
+      if (!deliveryPickupLocation) deliveryPickupLocation = { lat: latitude, lng: longitude, label: 'Current location' };
     },
     (err) => {
       console.warn('Geolocation error:', err);
       userLocation = { ...DEFAULT_LOCATION };
       setUserMarker(DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lng);
       mapBadgeText.textContent = 'Approximate location';
-      if (!pickupLocation) {
-        pickupLocation = { lat: DEFAULT_LOCATION.lat, lng: DEFAULT_LOCATION.lng, label: 'Approximate location' };
-      }
+      if (!pickupLocation) pickupLocation = { lat: DEFAULT_LOCATION.lat, lng: DEFAULT_LOCATION.lng, label: 'Approximate location' };
+      if (!deliveryPickupLocation) deliveryPickupLocation = { lat: DEFAULT_LOCATION.lat, lng: DEFAULT_LOCATION.lng, label: 'Approximate location' };
       if (!silent) showToast('Location permission denied — using approximate location.');
       if (center && map) map.setView([DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lng], 18);
     },
@@ -1548,11 +2012,7 @@ logoutBtn.addEventListener('click', doLogout);
 bannedLogoutBtn.addEventListener('click', doLogout);
 
 async function doLogout() {
-  try {
-    await signOut(auth);
-  } catch (err) {
-    console.warn(err);
-  }
+  try { await signOut(auth); } catch (err) { console.warn(err); }
   localStorage.removeItem('customerUid');
   localStorage.removeItem('customerPhone');
   window.location.href = 'index.html';
@@ -1565,6 +2025,7 @@ function showPane(which) {
   if (which === 'home') {
     paneTrip.classList.remove('active');
     paneHome.classList.add('active');
+    currentPage = 'home';
   } else {
     paneHome.classList.remove('active');
     paneTrip.classList.add('active');
@@ -1572,40 +2033,31 @@ function showPane(which) {
 }
 
 /* ============================================================
-   RIDE PAGE — SEARCH
+   RIDE PAGE
    ============================================================ */
 function openRidePage(mode) {
-  searchMode = mode || 'destination';
+  currentPage = 'ride';
+  searchField = mode || 'destination';
 
-  /* Pre-fill pickup */
-  if (pickupLocation) {
-    pickupInput.value = pickupLocation.label || 'Current location';
-  }
-
-  /* Pre-fill destination if we already have one */
-  if (dropoffLocation) {
-    destInput.value = dropoffLocation.label || '';
-  } else {
-    destInput.value = '';
-  }
+  if (pickupLocation) pickupInput.value = pickupLocation.label || 'Current location';
+  if (dropoffLocation) destInput.value = dropoffLocation.label || '';
+  else destInput.value = '';
 
   syncClearButtons();
-  updateRadiusChip();
-
   ridePage.classList.add('open');
 
   setTimeout(() => {
-    if (searchMode === 'pickup') {
+    if (searchField === 'pickup') {
       pickupInput.focus();
       pickupInput.select();
       const q = pickupInput.value.trim();
       if (q.length >= 3) runSearch(q, 'pickup');
-      else showSearchHint();
+      else showSearchHint('ride');
     } else {
       destInput.focus();
       const q = destInput.value.trim();
       if (q.length >= 3) runSearch(q, 'destination');
-      else showSearchHint();
+      else showSearchHint('ride');
     }
     if (map) map.invalidateSize();
   }, 480);
@@ -1618,116 +2070,140 @@ function closeRidePage() {
 
 rideBackBtn.addEventListener('click', closeRidePage);
 
-/* Active input highlighting */
-function setActiveRow(which) {
-  pickupInputRow.classList.toggle('focused', which === 'pickup');
-  destInputRow.classList.toggle('focused', which === 'destination');
-  searchMode = which;
+function setActiveRow(which, page) {
+  if (page === 'ride') {
+    pickupInputRow.classList.toggle('focused', which === 'pickup');
+    destInputRow.classList.toggle('focused', which === 'destination');
+  } else {
+    deliveryPickupRow.classList.toggle('focused', which === 'pickup');
+    deliveryDestRow.classList.toggle('focused', which === 'destination');
+  }
+  searchField = which;
 }
 
-pickupInput.addEventListener('focus', () => setActiveRow('pickup'));
-destInput.addEventListener('focus',   () => setActiveRow('destination'));
+pickupInput.addEventListener('focus', () => setActiveRow('pickup', 'ride'));
+destInput.addEventListener('focus',   () => setActiveRow('destination', 'ride'));
+pickupInput.addEventListener('click', () => setActiveRow('pickup', 'ride'));
+destInput.addEventListener('click',   () => setActiveRow('destination', 'ride'));
 
-pickupInput.addEventListener('click', () => setActiveRow('pickup'));
-destInput.addEventListener('click',   () => setActiveRow('destination'));
-
-/* Clear buttons */
 pickupClearBtn.addEventListener('click', (e) => {
   e.stopPropagation();
   pickupInput.value = '';
-  pickupClearBtn.style.display = 'none';
-  setActiveRow('pickup');
+  syncClearButtons();
+  setActiveRow('pickup', 'ride');
   pickupInput.focus();
-  showSearchHint();
+  showSearchHint('ride');
 });
 
 destClearBtn.addEventListener('click', (e) => {
   e.stopPropagation();
   destInput.value = '';
-  destClearBtn.style.display = 'none';
-  setActiveRow('destination');
+  syncClearButtons();
+  setActiveRow('destination', 'ride');
   destInput.focus();
-  showSearchHint();
+  showSearchHint('ride');
 });
 
 function syncClearButtons() {
   pickupClearBtn.style.display = pickupInput.value.trim() ? 'flex' : 'none';
   destClearBtn.style.display   = destInput.value.trim()   ? 'flex' : 'none';
-}
-
-/* ---- Radius selector ---- */
-radiusBtns.forEach((btn) => {
-  btn.addEventListener('click', () => {
-    radiusBtns.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-
-    const r = parseInt(btn.dataset.radius, 10) || 0;
-    searchRadiusKm = r;
-    updateRadiusChip();
-
-    /* Re-run the current search if there is a query */
-    const q = searchMode === 'pickup' ? pickupInput.value.trim() : destInput.value.trim();
-    if (q.length >= 3) runSearch(q, searchMode);
-  });
-});
-
-function updateRadiusChip() {
-  if (!radiusChipText) return;
-  if (!searchRadiusKm || searchRadiusKm <= 0) {
-    radiusChipText.textContent = 'Searching anywhere';
-    return;
-  }
-  radiusChipText.textContent = 'Within ' + searchRadiusKm + ' km of you';
-}
-
-/* ---- Search hint ---- */
-function showSearchHint() {
-  resultsArea.innerHTML = `
-    <div class="results-hint">
-      <i class="fas fa-magnifying-glass-location"></i>
-      Start typing a destination — nearest places appear first.
-    </div>`;
-}
-
-function showLoadingResults() {
-  resultsArea.innerHTML = `
-    <div class="loader-row">
-      <span class="mini-spin"></span> Searching nearby…
-    </div>`;
+  deliveryPickupClear.style.display = deliveryPickupInput.value.trim() ? 'flex' : 'none';
+  deliveryDestClear.style.display   = deliveryDestInput.value.trim()   ? 'flex' : 'none';
 }
 
 /* ============================================================
-   NOMINATIM SEARCH — nearest-first
+   DELIVERY PAGE
    ============================================================ */
+function openDeliveryPage() {
+  currentPage = 'delivery';
 
-/* Anchor point that all distances will be measured from. */
+  if (deliveryPickupLocation) deliveryPickupInput.value = deliveryPickupLocation.label || 'Current location';
+  else if (pickupLocation)    deliveryPickupInput.value = pickupLocation.label || 'Current location';
+
+  if (deliveryDropoffLocation) deliveryDestInput.value = deliveryDropoffLocation.label || '';
+  else deliveryDestInput.value = '';
+
+  syncClearButtons();
+  deliveryResultsArea.style.display = 'none';
+  deliveryFormArea.style.display = 'block';
+
+  deliveryPage.classList.add('open');
+
+  setTimeout(() => {
+    if (map) map.invalidateSize();
+  }, 480);
+}
+
+function closeDeliveryPage() {
+  deliveryPage.classList.remove('open');
+  setTimeout(() => { if (map) map.invalidateSize(); }, 500);
+}
+
+deliveryBackBtn.addEventListener('click', closeDeliveryPage);
+
+deliveryPickupInput.addEventListener('focus', () => setActiveRow('pickup', 'delivery'));
+deliveryDestInput.addEventListener('focus',   () => setActiveRow('destination', 'delivery'));
+deliveryPickupInput.addEventListener('click', () => setActiveRow('pickup', 'delivery'));
+deliveryDestInput.addEventListener('click',   () => setActiveRow('destination', 'delivery'));
+
+deliveryPickupClear.addEventListener('click', (e) => {
+  e.stopPropagation();
+  deliveryPickupInput.value = '';
+  syncClearButtons();
+  setActiveRow('pickup', 'delivery');
+  deliveryPickupInput.focus();
+  hideDeliveryResults();
+});
+
+deliveryDestClear.addEventListener('click', (e) => {
+  e.stopPropagation();
+  deliveryDestInput.value = '';
+  syncClearButtons();
+  setActiveRow('destination', 'delivery');
+  deliveryDestInput.focus();
+  hideDeliveryResults();
+});
+
+function hideDeliveryResults() {
+  deliveryResultsArea.style.display = 'none';
+  deliveryFormArea.style.display = 'block';
+}
+
+function showDeliveryResults() {
+  deliveryResultsArea.style.display = 'block';
+  deliveryFormArea.style.display = 'none';
+}
+
+/* ============================================================
+   NOMINATIM SEARCH — nearest-first, always 15 km
+   ============================================================ */
 function getSearchAnchor() {
-  if (searchMode === 'pickup') {
+  if (currentPage === 'delivery') {
+    if (searchField === 'pickup') {
+      return deliveryDropoffLocation || userLocation || DEFAULT_LOCATION;
+    }
+    return deliveryPickupLocation || userLocation || DEFAULT_LOCATION;
+  }
+  if (searchField === 'pickup') {
     return dropoffLocation || userLocation || DEFAULT_LOCATION;
   }
   return pickupLocation || userLocation || DEFAULT_LOCATION;
 }
 
-/* Build the Nominatim URL with a viewbox bias around the anchor. */
-function buildNominatimUrl(query, anchor, radiusKm) {
+function buildNominatimUrl(query, anchor) {
   let viewbox = '';
-  let bounded = '0';
+  const radiusKm = SEARCH_RADIUS_KM;
 
   if (anchor && radiusKm > 0) {
-    /* Convert km to degrees lat/lng offset (roughly). */
-    const latDelta = radiusKm / 111; // 1° lat ≈ 111 km
+    const latDelta = radiusKm / 111;
     const lngDelta = radiusKm / (111 * Math.max(0.15, Math.cos(anchor.lat * Math.PI / 180)));
 
     viewbox = [
-      anchor.lng - lngDelta, // left
-      anchor.lat + latDelta, // top
-      anchor.lng + lngDelta, // right
-      anchor.lat - latDelta  // bottom
+      anchor.lng - lngDelta,
+      anchor.lat + latDelta,
+      anchor.lng + lngDelta,
+      anchor.lat - latDelta
     ].join(',');
-
-    /* bounded=1 restricts to that box — we use 0 so results outside the
-       box can still be found (they'll just sort further down). */
-    bounded = '0';
   }
 
   const params = new URLSearchParams({
@@ -1740,28 +2216,23 @@ function buildNominatimUrl(query, anchor, radiusKm) {
 
   if (viewbox) {
     params.set('viewbox', viewbox);
-    params.set('bounded', bounded);
+    params.set('bounded', '0');
   }
 
   return 'https://nominatim.openstreetmap.org/search?' + params.toString();
 }
 
-/* Fetch raw results from Nominatim. */
-async function fetchRawPlaces(query, anchor, radiusKm, signal) {
-  const url = buildNominatimUrl(query, anchor, radiusKm);
-
+async function fetchRawPlaces(query, anchor, signal) {
+  const url = buildNominatimUrl(query, anchor);
   const res = await fetch(url, {
     headers: { 'Accept': 'application/json' },
     signal
   });
-
   if (!res.ok) throw new Error('Search failed');
   return res.json();
 }
 
-/* Sort places by great-circle distance from anchor (nearest first),
-   then filter out results further than the radius (unless radius = 0). */
-function rankPlacesByDistance(rawPlaces, anchor, radiusKm) {
+function rankPlacesByDistance(rawPlaces, anchor) {
   const anchorLat = anchor.lat;
   const anchorLng = anchor.lng;
 
@@ -1774,9 +2245,8 @@ function rankPlacesByDistance(rawPlaces, anchor, radiusKm) {
 
     const distMeters = haversineMeters(anchorLat, anchorLng, lat, lon);
 
-    /* Skip results clearly outside the radius (with a small tolerance
-       so borderline results don't disappear). */
-    if (radiusKm > 0 && distMeters > radiusKm * 1000 * 1.25) continue;
+    /* Keep only results within the search radius (plus 25% tolerance). */
+    if (SEARCH_RADIUS_KM > 0 && distMeters > SEARCH_RADIUS_KM * 1000 * 1.25) continue;
 
     enriched.push({
       raw: p,
@@ -1786,19 +2256,19 @@ function rankPlacesByDistance(rawPlaces, anchor, radiusKm) {
     });
   }
 
-  /* Nearest first */
   enriched.sort((a, b) => a.distanceMeters - b.distanceMeters);
-
   return enriched.slice(0, SEARCH_SHOWN_RESULTS);
 }
 
-/* ---- Render results ---- */
-function renderResults(rankedPlaces, mode) {
+/* ---- Render search results ---- */
+function renderResults(rankedPlaces, mode, page) {
+  const targetEl = page === 'delivery' ? deliveryResultsArea : resultsArea;
+
   if (!rankedPlaces || rankedPlaces.length === 0) {
-    resultsArea.innerHTML = `
+    targetEl.innerHTML = `
       <div class="results-hint">
         <i class="fas fa-circle-question"></i>
-        No places found nearby. Try a different search term, or widen the radius.
+        No places found nearby. Try a different search term.
       </div>`;
     return;
   }
@@ -1818,9 +2288,6 @@ function renderResults(rankedPlaces, mode) {
     const secondary = p.display_name || '';
     const distText  = formatDistance(item.distanceMeters);
 
-    /* Mark results that are outside the chosen radius (only when radius > 0). */
-    const isFar = searchRadiusKm > 0 && item.distanceMeters > searchRadiusKm * 1000;
-
     html += `
       <button class="result-item" data-idx="${idx}">
         <span class="result-ico"><i class="fas fa-location-dot"></i></span>
@@ -1828,91 +2295,128 @@ function renderResults(rankedPlaces, mode) {
           <strong>${escapeHtml(primary)}</strong>
           <span>${escapeHtml(secondary)}</span>
         </span>
-        <span class="result-dist${isFar ? ' far' : ''}">${escapeHtml(distText)}</span>
+        <span class="result-dist">${escapeHtml(distText)}</span>
       </button>
     `;
   });
 
-  resultsArea.innerHTML = html;
+  targetEl.innerHTML = html;
 
-  /* Wire clicks */
-  resultsArea.querySelectorAll('.result-item').forEach((btn) => {
+  targetEl.querySelectorAll('.result-item').forEach((btn) => {
     btn.addEventListener('click', () => {
       const idx = parseInt(btn.dataset.idx, 10);
       const item = rankedPlaces[idx];
-      if (item) handlePlaceSelected(item.raw, mode);
+      if (item) handlePlaceSelected(item.raw, mode, page);
     });
   });
 }
 
 /* ---- Place selected ---- */
-function handlePlaceSelected(place, mode) {
+function handlePlaceSelected(place, mode, page) {
   const lat = parseFloat(place.lat);
   const lon = parseFloat(place.lon);
   const label = place.name || (place.display_name || '').split(',')[0] || 'Selected place';
 
-  if (mode === 'pickup') {
-    pickupLocation = { lat, lng: lon, label: label, address: place.display_name || label };
-    pickupInput.value = label;
-    syncClearButtons();
-    setActiveRow('destination');
-    destInput.focus();
-
-    const q = destInput.value.trim();
-    if (q.length >= 3) {
-      runSearch(q, 'destination');
-    } else {
-      showSearchHint();
+  if (page === 'delivery') {
+    if (mode === 'pickup') {
+      deliveryPickupLocation = { lat, lng: lon, label, address: place.display_name || label };
+      deliveryPickupInput.value = label;
+      syncClearButtons();
+      setActiveRow('destination', 'delivery');
+      deliveryDestInput.focus();
+      hideDeliveryResults();
+      return;
     }
+    deliveryDropoffLocation = { lat, lng: lon, label, address: place.display_name || label };
+    deliveryDestInput.value = label;
+    syncClearButtons();
+    hideDeliveryResults();
+    deliveryDestInput.blur();
     return;
   }
 
-  /* Destination chosen */
-  dropoffLocation = { lat, lng: lon, label: label, address: place.display_name || label };
+  /* Ride page */
+  if (mode === 'pickup') {
+    pickupLocation = { lat, lng: lon, label, address: place.display_name || label };
+    pickupInput.value = label;
+    syncClearButtons();
+    setActiveRow('destination', 'ride');
+    destInput.focus();
+
+    const q = destInput.value.trim();
+    if (q.length >= 3) runSearch(q, 'destination');
+    else showSearchHint('ride');
+    return;
+  }
+
+  dropoffLocation = { lat, lng: lon, label, address: place.display_name || label };
   destInput.value = label;
   syncClearButtons();
 
   closeRidePage();
-  setTimeout(() => {
-    buildTrip();
-  }, 320);
+  setTimeout(() => buildRideTrip(), 320);
 }
 
-/* ---- Debounced search runner ---- */
-const debouncedSearch = debounce((query, mode) => {
-  runSearch(query, mode);
+/* ---- Search hint ---- */
+function showSearchHint(page) {
+  const targetEl = page === 'delivery' ? deliveryResultsArea : resultsArea;
+  targetEl.innerHTML = `
+    <div class="results-hint">
+      <i class="fas fa-magnifying-glass-location"></i>
+      Start typing a destination — nearest places within ${SEARCH_RADIUS_KM} km appear first.
+    </div>`;
+  if (page === 'delivery') showDeliveryResults();
+}
+
+function showLoadingResults(page) {
+  const targetEl = page === 'delivery' ? deliveryResultsArea : resultsArea;
+  targetEl.innerHTML = `
+    <div class="loader-row">
+      <span class="mini-spin"></span> Searching nearby…
+    </div>`;
+  if (page === 'delivery') showDeliveryResults();
+}
+
+/* ---- Search runner ---- */
+const debouncedSearch = debounce((query, mode, page) => {
+  runSearch(query, mode, page);
 }, 420);
 
-async function runSearch(query, mode) {
+async function runSearch(query, mode, page) {
+  page = page || (currentPage === 'delivery' ? 'delivery' : 'ride');
+
   const trimmed = (query || '').trim();
-  lastSearchQuery = trimmed;
 
   if (!trimmed || trimmed.length < 3) {
-    showSearchHint();
+    if (page === 'delivery') hideDeliveryResults();
+    else showSearchHint('ride');
     return;
   }
 
   if (searchAbort) searchAbort.abort();
   searchAbort = new AbortController();
 
-  showLoadingResults();
+  showLoadingResults(page);
 
   const anchor = getSearchAnchor();
-  const radius = searchRadiusKm;
 
   try {
-    const raw = await fetchRawPlaces(trimmed, anchor, radius, searchAbort.signal);
+    const raw = await fetchRawPlaces(trimmed, anchor, searchAbort.signal);
 
-    /* Bail out if user typed something else while we were fetching */
-    const currentVal = mode === 'pickup' ? pickupInput.value.trim() : destInput.value.trim();
+    /* Verify the input hasn't changed */
+    const currentVal = page === 'delivery'
+      ? (mode === 'pickup' ? deliveryPickupInput.value.trim() : deliveryDestInput.value.trim())
+      : (mode === 'pickup' ? pickupInput.value.trim() : destInput.value.trim());
+
     if (currentVal !== trimmed) return;
 
-    const ranked = rankPlacesByDistance(raw, anchor, radius);
-    renderResults(ranked, mode);
+    const ranked = rankPlacesByDistance(raw, anchor);
+    renderResults(ranked, mode, page);
 
   } catch (err) {
     if (err.name === 'AbortError') return;
-    resultsArea.innerHTML = `
+    const targetEl = page === 'delivery' ? deliveryResultsArea : resultsArea;
+    targetEl.innerHTML = `
       <div class="results-hint">
         <i class="fas fa-triangle-exclamation"></i>
         Could not reach the search service. Check your connection and try again.
@@ -1920,17 +2424,30 @@ async function runSearch(query, mode) {
   }
 }
 
-/* ---- Input listeners ---- */
+/* ---- Ride input listeners ---- */
 pickupInput.addEventListener('input', () => {
   syncClearButtons();
-  setActiveRow('pickup');
-  debouncedSearch(pickupInput.value.trim(), 'pickup');
+  setActiveRow('pickup', 'ride');
+  debouncedSearch(pickupInput.value.trim(), 'pickup', 'ride');
 });
 
 destInput.addEventListener('input', () => {
   syncClearButtons();
-  setActiveRow('destination');
-  debouncedSearch(destInput.value.trim(), 'destination');
+  setActiveRow('destination', 'ride');
+  debouncedSearch(destInput.value.trim(), 'destination', 'ride');
+});
+
+/* ---- Delivery input listeners ---- */
+deliveryPickupInput.addEventListener('input', () => {
+  syncClearButtons();
+  setActiveRow('pickup', 'delivery');
+  debouncedSearch(deliveryPickupInput.value.trim(), 'pickup', 'delivery');
+});
+
+deliveryDestInput.addEventListener('input', () => {
+  syncClearButtons();
+  setActiveRow('destination', 'delivery');
+  debouncedSearch(deliveryDestInput.value.trim(), 'destination', 'delivery');
 });
 
 /* ============================================================
@@ -1965,10 +2482,8 @@ function drawRoute(geometry) {
   }
 
   const coords = geometry.coordinates.map(([lng, lat]) => [lat, lng]);
-
   routeLayer = L.layerGroup().addTo(map);
 
-  /* Outline */
   L.polyline(coords, {
     color: '#ffffff',
     weight: 8,
@@ -1977,7 +2492,6 @@ function drawRoute(geometry) {
     lineCap: 'round'
   }).addTo(routeLayer);
 
-  /* Main route */
   L.polyline(coords, {
     color: '#0a0a0a',
     weight: 4.5,
@@ -1998,9 +2512,9 @@ function drawRoute(geometry) {
 }
 
 /* ============================================================
-   BUILD TRIP  (draw route + fare + summary)
+   RIDE TRIP
    ============================================================ */
-async function buildTrip() {
+async function buildRideTrip() {
   if (!pickupLocation || !dropoffLocation) {
     showPane('home');
     return;
@@ -2008,17 +2522,19 @@ async function buildTrip() {
 
   if (!map) initMap();
 
-  /* Markers */
   setPickupMarker(pickupLocation.lat, pickupLocation.lng);
   setDropoffMarker(dropoffLocation.lat, dropoffLocation.lng);
 
-  /* Summary text */
+  tripTitle.textContent = 'Your Ride';
+  confirmRideBtn.innerHTML = '<i class="fas fa-circle-check"></i> Confirm Request';
+
   summaryPickup.textContent  = pickupLocation.label || 'Pickup';
   summaryDropoff.textContent = dropoffLocation.label || 'Drop-off';
 
-  showPane('trip');
+  paneHome.classList.remove('active');
+  paneTrip.classList.add('active');
+  currentPage = 'trip-ride';
 
-  /* Loading state on fare */
   fareTotal.textContent = '…';
   fareDistance.textContent = '…';
   fareDuration.textContent = '…';
@@ -2029,32 +2545,11 @@ async function buildTrip() {
 
     drawRoute(route.geometry);
 
-    const fare = computeFare(route.distance, route.duration);
+    const fare = computeRideFare(route.distance, route.duration);
 
-    /* Fare display */
     fareTotal.textContent    = formatMoney(fare.finalFare);
     fareDistance.textContent = formatDistance(route.distance);
     fareDuration.textContent = formatDuration(route.duration);
-
-    bdBase.textContent     = 'K ' + formatMoney(FARE.baseFare);
-    bdDistance.textContent = 'K ' + formatMoney(fare.distanceFare);
-    bdTime.textContent     = 'K ' + formatMoney(fare.timeFare);
-
-    if (fare.waitingFare > 0) {
-      bdWaitRow.style.display = 'flex';
-      bdWait.textContent = 'K ' + formatMoney(fare.waitingFare);
-    } else {
-      bdWaitRow.style.display = 'none';
-    }
-
-    if (fare.surgeFare > 0) {
-      bdSurgeRow.style.display = 'flex';
-      bdSurge.textContent = 'K ' + formatMoney(fare.surgeFare);
-    } else {
-      bdSurgeRow.style.display = 'none';
-    }
-
-    bdTotal.textContent = 'K ' + formatMoney(fare.finalFare);
 
   } catch (err) {
     console.warn(err);
@@ -2062,24 +2557,18 @@ async function buildTrip() {
     fareDistance.textContent = '—';
     fareDuration.textContent = '—';
 
-    /* Fallback to straight-line distance */
     const straight = haversineMeters(
       pickupLocation.lat, pickupLocation.lng,
       dropoffLocation.lat, dropoffLocation.lng
     );
 
     if (straight > 0) {
-      const estDuration = (straight / 1000) / 30 * 3600; /* ~30 km/h */
-      const fare = computeFare(straight, estDuration);
+      const estDuration = (straight / 1000) / 30 * 3600;
+      const fare = computeRideFare(straight, estDuration);
 
       fareTotal.textContent    = formatMoney(fare.finalFare);
       fareDistance.textContent = formatDistance(straight);
       fareDuration.textContent = formatDuration(estDuration);
-
-      bdBase.textContent     = 'K ' + formatMoney(FARE.baseFare);
-      bdDistance.textContent = 'K ' + formatMoney(fare.distanceFare);
-      bdTime.textContent     = 'K ' + formatMoney(fare.timeFare);
-      bdTotal.textContent    = 'K ' + formatMoney(fare.finalFare);
     }
 
     showToast('Could not load the exact route — showing an estimate.');
@@ -2090,22 +2579,24 @@ async function buildTrip() {
    TRIP PANE INTERACTIONS
    ============================================================ */
 cancelTripBtn.addEventListener('click', () => {
-  dropoffLocation = null;
-  currentRoute = null;
   clearTripLayers();
+  dropoffLocation = null;
+  deliveryDropoffLocation = null;
+  deliveryVehicle = null;
   showPane('home');
-
   if (userLocation && map) {
     map.setView([userLocation.lat, userLocation.lng], 18, { animate: true });
   }
 });
 
 pickupRowBtn.addEventListener('click', () => {
-  openRidePage('pickup');
+  if (currentPage === 'trip-delivery') openDeliveryPage();
+  else openRidePage('pickup');
 });
 
 dropoffRowBtn.addEventListener('click', () => {
-  openRidePage('destination');
+  if (currentPage === 'trip-delivery') openDeliveryPage();
+  else openRidePage('destination');
 });
 
 confirmRideBtn.addEventListener('click', () => {
@@ -2113,14 +2604,13 @@ confirmRideBtn.addEventListener('click', () => {
     showToast('Please wait for the route to load.');
     return;
   }
-  showToast('Ride request sent! A driver will be assigned shortly.');
+  openSearchingOverlay('driver');
 });
 
 /* ============================================================
    HOME ACTIONS
    ============================================================ */
 requestRideBtn.addEventListener('click', () => {
-  /* Ensure we have a pickup point */
   if (!pickupLocation) {
     if (userLocation) {
       pickupLocation = { lat: userLocation.lat, lng: userLocation.lng, label: 'Current location' };
@@ -2131,7 +2621,6 @@ requestRideBtn.addEventListener('click', () => {
     }
   }
 
-  /* Clear any previous trip */
   dropoffLocation = null;
   currentRoute = null;
   clearTripLayers();
@@ -2139,11 +2628,242 @@ requestRideBtn.addEventListener('click', () => {
   openRidePage('destination');
 });
 
-deliveryBtn.addEventListener('click', () => showToast('Delivery — coming soon'));
-errandBtn.addEventListener('click',   () => showToast('Post Errand — coming soon'));
+deliveryBtn.addEventListener('click', () => {
+  if (!deliveryPickupLocation) {
+    if (userLocation) {
+      deliveryPickupLocation = { lat: userLocation.lat, lng: userLocation.lng, label: 'Current location' };
+    } else if (pickupLocation) {
+      deliveryPickupLocation = { ...pickupLocation };
+    } else {
+      showToast('Waiting for your location…');
+      locateUser({ center: true });
+      return;
+    }
+  }
+
+  deliveryDropoffLocation = null;
+  deliveryRoute = null;
+  deliveryVehicle = null;
+
+  /* Pre-fill pickup input */
+  deliveryPickupInput.value = deliveryPickupLocation.label || 'Current location';
+  deliveryDestInput.value = '';
+
+  /* Pre-fill form fields from last time if present */
+  deliveryError.innerText = '';
+
+  openDeliveryPage();
+});
+
+errandBtn.addEventListener('click', () => showToast('Post Errand — coming soon'));
 
 locateBtn.addEventListener('click', () => {
   locateUser({ center: true });
+});
+
+/* ============================================================
+   DELIVERY SUBMIT → VEHICLE SHEET
+   ============================================================ */
+requestDeliveryBtn.addEventListener('click', async () => {
+  deliveryError.innerText = '';
+
+  /* 1. Ensure locations */
+  if (!deliveryPickupLocation) {
+    if (pickupLocation) {
+      deliveryPickupLocation = { ...pickupLocation };
+    } else {
+      deliveryError.innerText = 'Please choose a pickup location.';
+      return;
+    }
+  }
+
+  if (!deliveryDropoffLocation) {
+    deliveryError.innerText = 'Please choose a drop-off location.';
+    return;
+  }
+
+  /* 2. Validate form fields */
+  const senderName   = delSenderName.value.trim();
+  const senderPhone  = delSenderPhone.value.trim();
+  const receiverName = delReceiverName.value.trim();
+  const receiverPhone= delReceiverPhone.value.trim();
+  const parcelName   = delParcelName.value.trim();
+  const parcelDesc   = delParcelDesc.value.trim();
+
+  if (!senderName) { deliveryError.innerText = 'Please enter the sender name.'; return; }
+  if (!senderPhone || !isValidPhone(senderPhone)) { deliveryError.innerText = 'Enter a valid sender phone number.'; return; }
+  if (!receiverName) { deliveryError.innerText = 'Please enter the receiver name.'; return; }
+  if (!receiverPhone || !isValidPhone(receiverPhone)) { deliveryError.innerText = 'Enter a valid receiver phone number.'; return; }
+  if (!parcelName) { deliveryError.innerText = 'Please enter the parcel name.'; return; }
+  if (!parcelDesc) { deliveryError.innerText = 'Please describe the parcel.'; return; }
+
+  /* 3. Fetch route */
+  requestDeliveryBtn.disabled = true;
+  requestDeliveryBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Calculating…';
+
+  try {
+    const route = await fetchRoute(deliveryPickupLocation, deliveryDropoffLocation);
+    deliveryRoute = route;
+
+    /* 4. Build vehicle prices */
+    const prices = {};
+    Object.values(DELIVERY_VEHICLES).forEach((v) => {
+      const fare = computeDeliveryFare(v, route.distance, route.duration);
+      prices[v.id] = fare.finalFare;
+    });
+
+    /* 5. Show vehicle sheet */
+    renderVehicleSheet(prices);
+    vehicleSheet.classList.add('open');
+
+  } catch (err) {
+    console.warn(err);
+    /* Fallback straight-line */
+    const straight = haversineMeters(
+      deliveryPickupLocation.lat, deliveryPickupLocation.lng,
+      deliveryDropoffLocation.lat, deliveryDropoffLocation.lng
+    );
+    const estDuration = (straight / 1000) / 30 * 3600;
+
+    deliveryRoute = { distance: straight, duration: estDuration, geometry: null };
+
+    const prices = {};
+    Object.values(DELIVERY_VEHICLES).forEach((v) => {
+      const fare = computeDeliveryFare(v, straight, estDuration);
+      prices[v.id] = fare.finalFare;
+    });
+
+    renderVehicleSheet(prices);
+    vehicleSheet.classList.add('open');
+    showToast('Could not load the exact route — showing an estimate.');
+  } finally {
+    requestDeliveryBtn.disabled = false;
+    requestDeliveryBtn.innerHTML = '<i class="fas fa-paper-plane"></i> REQUEST DELIVERY';
+  }
+});
+
+/* ============================================================
+   VEHICLE SHEET
+   ============================================================ */
+function renderVehicleSheet(prices) {
+  vehicleList.innerHTML = '';
+
+  Object.values(DELIVERY_VEHICLES).forEach((v) => {
+    const price = prices[v.id] || 0;
+
+    const btn = document.createElement('button');
+    btn.className = 'vehicle-item';
+    btn.type = 'button';
+    btn.innerHTML = `
+      <span class="vehicle-icon"><i class="fas ${escapeHtml(v.icon)}"></i></span>
+      <span class="vehicle-info">
+        <strong>${escapeHtml(v.label)}</strong>
+        <span>${escapeHtml(v.description)}</span>
+      </span>
+      <span class="vehicle-price">
+        <strong>K ${escapeHtml(formatMoney(price))}</strong>
+        <small>ESTIMATE</small>
+      </span>
+    `;
+
+    btn.addEventListener('click', () => {
+      deliveryVehicle = v;
+      chooseDeliveryVehicle();
+    });
+
+    vehicleList.appendChild(btn);
+  });
+}
+
+vehicleSheetCancel.addEventListener('click', () => {
+  vehicleSheet.classList.remove('open');
+});
+
+vehicleSheet.addEventListener('click', (e) => {
+  if (e.target === vehicleSheet) {
+    vehicleSheet.classList.remove('open');
+  }
+});
+
+/* ============================================================
+   VEHICLE CHOSEN → DRAW ROUTE + SEARCHING OVERLAY
+   ============================================================ */
+function chooseDeliveryVehicle() {
+  if (!deliveryVehicle || !deliveryRoute) return;
+
+  vehicleSheet.classList.remove('open');
+  closeDeliveryPage();
+
+  /* Draw the route on the map */
+  setTimeout(() => {
+    if (!map) initMap();
+
+    setPickupMarker(deliveryPickupLocation.lat, deliveryPickupLocation.lng);
+    setDropoffMarker(deliveryDropoffLocation.lat, deliveryDropoffLocation.lng);
+
+    if (deliveryRoute.geometry) {
+      drawRoute(deliveryRoute.geometry);
+    } else {
+      /* Fallback: draw a straight line */
+      const fake = {
+        coordinates: [
+          [deliveryPickupLocation.lng, deliveryPickupLocation.lat],
+          [deliveryDropoffLocation.lng, deliveryDropoffLocation.lat]
+        ]
+      };
+      drawRoute(fake);
+
+      map.fitBounds(L.latLngBounds([
+        [deliveryPickupLocation.lat, deliveryPickupLocation.lng],
+        [deliveryDropoffLocation.lat, deliveryDropoffLocation.lng]
+      ]), { padding: [40, 40], maxZoom: 17 });
+    }
+
+    /* Show the searching overlay for the chosen vehicle */
+    const searchLabels = {
+      motorbike: { icon: 'fa-motorcycle', title: 'Searching for a motorbike rider' },
+      cyclist:   { icon: 'fa-bicycle',    title: 'Searching for a cyclist' },
+      walker:    { icon: 'fa-person-walking', title: 'Searching for a walker' }
+    };
+
+    const meta = searchLabels[deliveryVehicle.id] || searchLabels.motorbike;
+
+    openSearchingOverlay('delivery', meta);
+
+  }, 420);
+}
+
+/* ============================================================
+   SEARCHING OVERLAY
+   ============================================================ */
+function openSearchingOverlay(kind, meta) {
+  if (kind === 'driver') {
+    searchingIcon.className = 'fas fa-car';
+    searchingTitle.textContent = 'Searching for a driver';
+    searchingSubtitle.textContent = 'Looking for someone nearby to accept your ride…';
+  } else {
+    searchingIcon.className = 'fas ' + (meta?.icon || 'fa-motorcycle');
+    searchingTitle.textContent = meta?.title || 'Searching for a rider';
+    searchingSubtitle.textContent = 'Looking for someone nearby to accept your delivery…';
+  }
+
+  searchingOverlay.classList.add('open');
+}
+
+function closeSearchingOverlay() {
+  searchingOverlay.classList.remove('open');
+}
+
+cancelSearchBtn.addEventListener('click', () => {
+  closeSearchingOverlay();
+  showToast('Search cancelled');
+  setTimeout(() => {
+    clearTripLayers();
+    dropoffLocation = null;
+    deliveryDropoffLocation = null;
+    deliveryVehicle = null;
+    showPane('home');
+  }, 220);
 });
 
 /* ============================================================
@@ -2190,7 +2910,6 @@ function applyCustomerProfile(customer) {
 
   homeGreeting.textContent = `${greeting}, ${first || full} 👋`;
 
-  /* Avatar */
   if (customer.profileUrl) {
     sidebarAvatar.innerHTML = `<img src="${escapeHtml(customer.profileUrl)}" alt="Profile">`;
   } else {
@@ -2210,7 +2929,6 @@ onAuthStateChanged(auth, async (user) => {
   currentUser = user;
 
   try {
-    /* 1. Maintenance gate */
     const maint = await checkMaintenance();
     if (maint.maintenance) {
       showMaintenance(maint.message);
@@ -2218,7 +2936,6 @@ onAuthStateChanged(auth, async (user) => {
       return;
     }
 
-    /* 2. Customer record */
     const customer = await checkCustomerRecord(user.uid);
 
     if (!customer) {
@@ -2227,20 +2944,16 @@ onAuthStateChanged(auth, async (user) => {
       return;
     }
 
-    /* 3. Ban gate */
     if (customer.banned === true) {
       showBanned(customer.banReason || '');
       hideLoading();
       return;
     }
 
-    /* 4. All good */
     customerData = customer;
     applyCustomerProfile(customer);
-
     appRoot.classList.remove('hidden');
 
-    /* 5. Init map + location */
     requestAnimationFrame(() => {
       initMap();
       if (map) map.invalidateSize();
@@ -2260,14 +2973,19 @@ onAuthStateChanged(auth, async (user) => {
 /* ============================================================
    MISC
    ============================================================ */
-document.addEventListener('touchmove', (e) => {
-  if (e.target.closest('.leaflet-container')) return;
-}, { passive: true });
-
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
-    if (ridePage.classList.contains('open')) closeRidePage();
-    else if (sidebar.classList.contains('open')) closeSidebar();
+    if (searchingOverlay.classList.contains('open')) {
+      closeSearchingOverlay();
+    } else if (vehicleSheet.classList.contains('open')) {
+      vehicleSheet.classList.remove('open');
+    } else if (deliveryPage.classList.contains('open')) {
+      closeDeliveryPage();
+    } else if (ridePage.classList.contains('open')) {
+      closeRidePage();
+    } else if (sidebar.classList.contains('open')) {
+      closeSidebar();
+    }
   }
 });
 
