@@ -11,6 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
 <script type="importmap">
 {
   "imports": {
@@ -26,39 +27,32 @@
    ========================================================== */
 :root {
   --ink: #0a0a0a;
-  --ink-soft: #1c1c1e;
   --paper: #ffffff;
-
   --text-primary: #0a0a0a;
   --text-secondary: #6e6e73;
   --text-tertiary: #aeaeb2;
-
   --fill-gray: #f4f4f5;
   --fill-gray-hover: #ebebed;
   --line: rgba(0,0,0,0.08);
-
   --danger: #d92d20;
   --danger-soft: #fef3f2;
-
+  --success: #12b76a;
+  --success-soft: #ecfdf3;
+  --warn: #f79009;
+  --warn-soft: #fffaeb;
+  --info: #2e90fa;
+  --info-soft: #eff8ff;
   --radius: 16px;
   --radius-sm: 12px;
-
   --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
   --panel-ease: cubic-bezier(0.32, 0.72, 0, 1);
-
   --topbar-h: 58px;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
-html, body {
-  height: 100%;
-  width: 100%;
-  overflow: hidden;
-  -webkit-text-size-adjust: 100%;
-}
+html, body { height: 100%; width: 100%; overflow: hidden; -webkit-text-size-adjust: 100%; }
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -74,7 +68,6 @@ body {
 
 button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
 input, textarea { font-family: inherit; }
-
 .hidden { display: none !important; }
 
 /* ==========================================================
@@ -94,7 +87,7 @@ input, textarea { font-family: inherit; }
   overflow: hidden; box-shadow: 0 0 0 6px rgba(255,255,255,0.12);
 }
 #loadingScreen .l-logo img { width: 62px; height: 62px; object-fit: contain; }
-#loadingScreen .l-logo span { color: #0a0a0a; font-weight: 800; font-size: 0.7rem; letter-spacing: -0.3px; }
+#loadingScreen .l-logo span { color: #0a0a0a; font-weight: 800; font-size: 0.7rem; }
 #loadingScreen .l-name { font-weight: 800; letter-spacing: 3px; font-size: 0.9rem; text-transform: uppercase; }
 #loadingScreen .l-spinner {
   width: 22px; height: 22px; border-radius: 50%;
@@ -113,7 +106,6 @@ input, textarea { font-family: inherit; }
   padding: 32px 24px; text-align: center;
 }
 .block-overlay.open { display: flex; }
-
 .block-icon {
   width: 88px; height: 88px; border-radius: 50%;
   background: #0a0a0a; color: #fff;
@@ -122,23 +114,19 @@ input, textarea { font-family: inherit; }
   box-shadow: 0 16px 40px -12px rgba(0,0,0,0.45);
   animation: blockIconIn 0.5s var(--spring) both;
 }
-.block-overlay.danger .block-icon { background: var(--danger); box-shadow: 0 16px 40px -12px rgba(217,45,32,0.45); }
-
+.block-overlay.danger .block-icon { background: var(--danger); }
 @keyframes blockIconIn {
   from { opacity: 0; transform: scale(0.6); }
   to   { opacity: 1; transform: scale(1); }
 }
-
 .block-overlay h1 { font-size: 1.45rem; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 10px; }
 .block-overlay p  { font-size: 0.92rem; color: var(--text-secondary); line-height: 1.6; max-width: 340px; }
-
 .block-reason {
   margin-top: 18px; padding: 14px 18px;
   background: var(--danger-soft); border: 1px solid rgba(217,45,32,0.18);
   border-radius: var(--radius); font-size: 0.88rem; color: #912018;
   font-weight: 600; max-width: 380px; line-height: 1.5;
 }
-
 .block-btn {
   margin-top: 26px; padding: 13px 30px; border-radius: 999px;
   background: #0a0a0a; color: #fff; font-weight: 700; font-size: 0.9rem;
@@ -162,7 +150,6 @@ input, textarea { font-family: inherit; }
   border-bottom: 1px solid var(--line);
   position: relative; z-index: 500;
 }
-
 .icon-btn {
   width: 42px; height: 42px; border-radius: 12px;
   display: flex; align-items: center; justify-content: center;
@@ -172,7 +159,6 @@ input, textarea { font-family: inherit; }
 }
 .icon-btn:hover  { background: var(--fill-gray-hover); }
 .icon-btn:active { transform: scale(0.92); }
-
 .topbar-user {
   flex: 1;
   text-align: center;
@@ -188,7 +174,6 @@ input, textarea { font-family: inherit; }
   letter-spacing: 1.4px; text-transform: uppercase;
   color: var(--text-tertiary); margin-top: 1px;
 }
-
 .topbar-logo {
   width: 42px; height: 42px; border-radius: 12px;
   display: flex; align-items: center; justify-content: center;
@@ -196,7 +181,7 @@ input, textarea { font-family: inherit; }
   overflow: hidden; flex-shrink: 0;
 }
 .topbar-logo img { width: 30px; height: 30px; object-fit: contain; }
-.topbar-logo span { font-size: 0.5rem; font-weight: 800; color: var(--ink); letter-spacing: -0.2px; }
+.topbar-logo span { font-size: 0.5rem; font-weight: 800; color: var(--ink); }
 
 /* ==========================================================
    MAIN LAYOUT
@@ -207,17 +192,14 @@ input, textarea { font-family: inherit; }
   display: flex;
   flex-direction: column;
 }
-
 .map-half {
   flex: 1 1 50%;
   min-height: 0;
   position: relative;
-  background: #eceef0;
+  background: #e8eaed;
   overflow: hidden;
 }
-
 #map { position: absolute; inset: 0; z-index: 1; }
-
 .map-overlay-btn {
   position: absolute; z-index: 400;
   width: 42px; height: 42px; border-radius: 12px;
@@ -225,13 +207,10 @@ input, textarea { font-family: inherit; }
   display: flex; align-items: center; justify-content: center;
   font-size: 1rem; color: var(--ink);
   box-shadow: 0 4px 16px rgba(0,0,0,0.14), 0 0 0 1px rgba(0,0,0,0.05);
-  transition: transform 0.3s var(--spring), box-shadow 0.25s;
+  transition: transform 0.3s var(--spring);
 }
-.map-overlay-btn:hover  { box-shadow: 0 6px 20px rgba(0,0,0,0.2), 0 0 0 1px rgba(0,0,0,0.06); }
 .map-overlay-btn:active { transform: scale(0.92); }
-
 #locateBtn { right: 12px; bottom: 12px; }
-
 .map-badge {
   position: absolute; top: 12px; left: 12px; z-index: 400;
   background: rgba(10,10,10,0.86);
@@ -241,7 +220,6 @@ input, textarea { font-family: inherit; }
   display: inline-flex; align-items: center; gap: 7px;
   backdrop-filter: blur(6px);
 }
-.map-badge i { font-size: 0.66rem; }
 
 /* ==========================================================
    ACTION HALF
@@ -257,27 +235,14 @@ input, textarea { font-family: inherit; }
   flex-direction: column;
   border-top: 1px solid var(--line);
 }
-
 .action-pane { display: none; flex-direction: column; flex: 1; min-height: 0; }
 .action-pane.active { display: flex; animation: paneIn 0.4s var(--ease-out); }
-
 @keyframes paneIn {
   from { opacity: 0; transform: translateY(12px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-
-/* ---- Home actions ---- */
-.home-greeting {
-  font-size: 1.15rem;
-  font-weight: 800;
-  letter-spacing: -0.4px;
-  margin-bottom: 3px;
-}
-.home-sub {
-  font-size: 0.82rem;
-  color: var(--text-secondary);
-  margin-bottom: 16px;
-}
+.home-greeting { font-size: 1.15rem; font-weight: 800; letter-spacing: -0.4px; margin-bottom: 3px; }
+.home-sub { font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 16px; }
 
 .btn-ride {
   width: 100%;
@@ -292,9 +257,8 @@ input, textarea { font-family: inherit; }
   margin-bottom: 12px;
   flex-shrink: 0;
 }
-.btn-ride:hover  { transform: translateY(-2px); box-shadow: 0 16px 34px -10px rgba(0,0,0,0.6); }
+.btn-ride:hover  { transform: translateY(-2px); }
 .btn-ride:active { transform: translateY(0) scale(0.982); }
-
 .btn-ride .ride-ico {
   width: 48px; height: 48px; border-radius: 14px;
   background: rgba(255,255,255,0.14);
@@ -318,7 +282,6 @@ input, textarea { font-family: inherit; }
   gap: 12px;
   flex-shrink: 0;
 }
-
 .btn-square {
   aspect-ratio: 1 / 1;
   border-radius: var(--radius);
@@ -329,9 +292,8 @@ input, textarea { font-family: inherit; }
   transition: transform 0.35s var(--spring), box-shadow 0.3s var(--ease-smooth), background 0.25s;
   padding: 14px;
 }
-.btn-square:hover  { transform: translateY(-3px); background: #fafafa; box-shadow: 0 0 0 1px rgba(0,0,0,0.14), 0 12px 26px -10px rgba(0,0,0,0.28); }
+.btn-square:hover  { transform: translateY(-3px); background: #fafafa; }
 .btn-square:active { transform: translateY(0) scale(0.97); }
-
 .btn-square .sq-ico {
   width: 46px; height: 46px; border-radius: 14px;
   background: var(--fill-gray);
@@ -343,7 +305,7 @@ input, textarea { font-family: inherit; }
   color: var(--text-primary); text-align: center; line-height: 1.25;
 }
 
-/* ---- Trip summary pane ---- */
+/* Trip summary */
 .trip-head {
   display: flex; align-items: center; justify-content: space-between;
   margin-bottom: 12px; flex-shrink: 0;
@@ -352,10 +314,7 @@ input, textarea { font-family: inherit; }
 .trip-head button {
   font-size: 0.78rem; font-weight: 700; color: var(--text-secondary);
   padding: 7px 12px; border-radius: 999px; background: var(--fill-gray);
-  transition: background 0.25s;
 }
-.trip-head button:hover { background: var(--fill-gray-hover); }
-
 .points-card {
   position: relative;
   background: var(--fill-gray);
@@ -364,7 +323,6 @@ input, textarea { font-family: inherit; }
   margin-bottom: 14px;
   flex-shrink: 0;
 }
-
 .point-row {
   display: flex; align-items: center; gap: 13px;
   width: 100%; padding: 13px 14px;
@@ -372,15 +330,12 @@ input, textarea { font-family: inherit; }
   transition: background 0.22s var(--ease-smooth);
 }
 .point-row:hover { background: rgba(255,255,255,0.85); }
-.point-row:active { background: #ffffff; }
-
 .point-dot {
   width: 12px; height: 12px; border-radius: 50%;
   background: var(--ink); flex-shrink: 0;
   box-shadow: 0 0 0 3.5px rgba(10,10,10,0.13);
 }
 .point-dot.square { border-radius: 3.5px; }
-
 .point-txt { flex: 1; min-width: 0; }
 .point-txt small {
   display: block; font-size: 0.62rem; font-weight: 700;
@@ -392,28 +347,18 @@ input, textarea { font-family: inherit; }
   color: var(--text-primary); line-height: 1.3;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-
 .point-edit { font-size: 0.78rem; color: var(--text-tertiary); flex-shrink: 0; }
+.points-divider { height: 1px; background: rgba(0,0,0,0.06); margin: 0 16px; }
 
-.points-divider {
-  height: 1px; background: rgba(0,0,0,0.06);
-  margin: 0 16px;
-}
-
-/* Simplified fare card — price, time, distance only */
 .fare-card {
   background: #0a0a0a; color: #ffffff;
   border-radius: var(--radius);
-  padding: 22px 22px;
+  padding: 22px;
   margin-bottom: 14px;
   flex-shrink: 0;
   box-shadow: 0 12px 30px -14px rgba(0,0,0,0.55);
 }
-
-.fare-top {
-  display: flex; align-items: flex-end; justify-content: space-between;
-  gap: 14px;
-}
+.fare-top { display: flex; align-items: flex-end; justify-content: space-between; gap: 14px; }
 .fare-top .fare-label {
   font-size: 0.63rem; font-weight: 700;
   letter-spacing: 1.4px; text-transform: uppercase;
@@ -424,13 +369,11 @@ input, textarea { font-family: inherit; }
   line-height: 1;
 }
 .fare-top .fare-amount small { font-size: 1.05rem; font-weight: 700; opacity: 0.65; margin-right: 3px; }
-
 .fare-stats { display: flex; gap: 8px; }
 .fare-stat {
   background: rgba(255,255,255,0.09);
   border-radius: 12px; padding: 10px 13px;
-  min-width: 76px;
-  text-align: center;
+  min-width: 76px; text-align: center;
 }
 .fare-stat small {
   display: block; font-size: 0.58rem; font-weight: 700;
@@ -446,10 +389,9 @@ input, textarea { font-family: inherit; }
   font-size: 0.95rem; font-weight: 800; letter-spacing: -0.2px;
   display: flex; align-items: center; justify-content: center; gap: 10px;
   box-shadow: 0 10px 26px -12px rgba(0,0,0,0.6);
-  transition: transform 0.35s var(--spring), box-shadow 0.3s;
+  transition: transform 0.35s var(--spring);
   flex-shrink: 0;
 }
-.confirm-btn:hover  { transform: translateY(-2px); box-shadow: 0 16px 32px -12px rgba(0,0,0,0.65); }
 .confirm-btn:active { transform: scale(0.978); }
 .confirm-btn:disabled { opacity: 0.5; pointer-events: none; }
 
@@ -465,7 +407,6 @@ input, textarea { font-family: inherit; }
   transition: opacity 0.36s var(--ease-out), visibility 0.36s;
 }
 #sidebarOverlay.open { opacity: 1; visibility: visible; }
-
 #sidebar {
   position: fixed; top: 0; left: 0; bottom: 0; z-index: 2000;
   width: 292px; max-width: 84vw;
@@ -474,10 +415,8 @@ input, textarea { font-family: inherit; }
   transform: translateX(-100%);
   transition: transform 0.46s var(--panel-ease);
   box-shadow: 14px 0 46px rgba(0,0,0,0.20);
-  will-change: transform;
 }
 #sidebar.open { transform: translateX(0); }
-
 .sidebar-head {
   padding: 26px 22px 20px;
   border-bottom: 1px solid var(--line);
@@ -493,24 +432,16 @@ input, textarea { font-family: inherit; }
 }
 .sidebar-avatar img { width: 100%; height: 100%; object-fit: cover; }
 .sidebar-avatar i { font-size: 1.4rem; color: var(--text-tertiary); }
-
 .sidebar-meta { min-width: 0; flex: 1; }
 .sidebar-meta strong {
   display: block; font-size: 0.98rem; font-weight: 800;
-  letter-spacing: -0.3px; white-space: nowrap;
-  overflow: hidden; text-overflow: ellipsis;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .sidebar-meta span {
   display: block; font-size: 0.76rem; color: var(--text-secondary);
   margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-
-.sidebar-nav {
-  flex: 1; overflow-y: auto;
-  padding: 14px 12px;
-  -webkit-overflow-scrolling: touch;
-}
-
+.sidebar-nav { flex: 1; overflow-y: auto; padding: 14px 12px; }
 .nav-item {
   width: 100%;
   display: flex; align-items: center; gap: 15px;
@@ -519,19 +450,25 @@ input, textarea { font-family: inherit; }
   font-size: 0.92rem; font-weight: 600;
   color: var(--text-primary);
   text-align: left;
-  transition: background 0.22s var(--ease-smooth), transform 0.3s var(--spring);
+  transition: background 0.22s var(--ease-smooth);
   margin-bottom: 3px;
+  position: relative;
 }
 .nav-item:hover  { background: var(--fill-gray); }
-.nav-item:active { transform: scale(0.975); }
-
 .nav-item i {
   width: 22px; text-align: center;
   font-size: 1rem; color: var(--text-secondary);
-  transition: color 0.22s;
 }
 .nav-item:hover i { color: var(--ink); }
-
+.nav-badge {
+  position: absolute;
+  right: 14px; top: 50%;
+  transform: translateY(-50%);
+  background: #0a0a0a; color: #fff;
+  font-size: 0.62rem; font-weight: 800;
+  padding: 3px 8px; border-radius: 999px;
+  letter-spacing: 0.2px;
+}
 .sidebar-foot {
   padding: 14px 12px 20px;
   border-top: 1px solid var(--line);
@@ -549,20 +486,23 @@ input, textarea { font-family: inherit; }
 .logout-btn i { width: 22px; text-align: center; font-size: 1rem; }
 
 /* ==========================================================
-   SHARED SEARCH PAGE (RIDE + DELIVERY)
+   SHARED PAGES
    ========================================================== */
-#ridePage, #deliveryPage {
+#ridePage, #deliveryPage, #postErrandPage, #postedErrandsPage, #errandDetailsPage, #chatPage {
   position: fixed; inset: 0; z-index: 3000;
   background: #ffffff;
   display: flex; flex-direction: column;
   transform: translateY(100%);
   transition: transform 0.5s var(--panel-ease);
-  will-change: transform;
   visibility: hidden;
 }
-#ridePage.open, #deliveryPage.open { transform: translateY(0); visibility: visible; }
+#ridePage.open, #deliveryPage.open, #postErrandPage.open,
+#postedErrandsPage.open, #errandDetailsPage.open, #chatPage.open {
+  transform: translateY(0); visibility: visible;
+}
+#chatPage { z-index: 3100; }
 
-.ride-head {
+.page-head {
   flex: 0 0 auto;
   display: flex; align-items: center; gap: 12px;
   padding: 14px 16px;
@@ -571,31 +511,32 @@ input, textarea { font-family: inherit; }
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
 }
-.ride-head h2 { font-size: 1rem; font-weight: 800; letter-spacing: -0.3px; }
-.ride-head .ride-head-sub {
+.page-head h2 { font-size: 1rem; font-weight: 800; letter-spacing: -0.3px; }
+.page-head .page-head-sub {
   font-size: 0.68rem; font-weight: 600; color: var(--text-tertiary);
   letter-spacing: 0.6px; text-transform: uppercase;
 }
-
-.ride-body {
+.page-body {
   flex: 1; min-height: 0;
-  display: flex; flex-direction: column;
-  overflow: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.page-scroll {
+  max-width: 620px;
+  margin: 0 auto;
+  padding: 16px 16px 40px;
 }
 
-.ride-inputs {
-  flex: 0 0 auto;
-  padding: 16px 16px 12px;
-  border-bottom: 1px solid var(--line);
-}
-
+/* ==========================================================
+   SEARCH INPUTS
+   ========================================================== */
+.ride-body { flex: 1; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+.ride-inputs { flex: 0 0 auto; padding: 16px 16px 12px; border-bottom: 1px solid var(--line); }
 .input-card {
   background: var(--fill-gray);
   border-radius: var(--radius);
   padding: 4px;
-  position: relative;
 }
-
 .input-row {
   display: flex; align-items: center; gap: 13px;
   padding: 11px 14px;
@@ -603,38 +544,28 @@ input, textarea { font-family: inherit; }
   transition: background 0.22s var(--ease-smooth);
 }
 .input-row.focused { background: #ffffff; box-shadow: 0 0 0 1.5px var(--ink); }
-
 .input-row .row-dot {
   width: 12px; height: 12px; border-radius: 50%;
   background: var(--ink); flex-shrink: 0;
   box-shadow: 0 0 0 3.5px rgba(10,10,10,0.13);
 }
 .input-row .row-dot.square { border-radius: 3.5px; }
-
 .input-row input {
   flex: 1; min-width: 0;
   border: none; outline: none; background: transparent;
   font-size: 0.9rem; font-weight: 500;
   color: var(--text-primary);
   padding: 3px 0;
-  user-select: text; -webkit-user-select: text;
 }
 .input-row input::placeholder { color: var(--text-tertiary); font-weight: 400; }
-
 .row-clear {
   width: 24px; height: 24px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   font-size: 0.7rem; color: var(--text-secondary);
   background: rgba(0,0,0,0.07);
   flex-shrink: 0;
-  transition: background 0.2s;
 }
-.row-clear:hover { background: rgba(0,0,0,0.13); }
-
-.input-divider {
-  height: 1px; background: rgba(0,0,0,0.07);
-  margin: 0 16px 0 42px;
-}
+.input-divider { height: 1px; background: rgba(0,0,0,0.07); margin: 0 16px 0 42px; }
 
 .results-area {
   flex: 1; min-height: 0;
@@ -642,7 +573,6 @@ input, textarea { font-family: inherit; }
   -webkit-overflow-scrolling: touch;
   padding: 6px 0 24px;
 }
-
 .results-hint {
   padding: 30px 24px;
   text-align: center;
@@ -650,10 +580,7 @@ input, textarea { font-family: inherit; }
   font-size: 0.84rem;
   line-height: 1.6;
 }
-.results-hint i {
-  display: block; font-size: 1.9rem;
-  margin-bottom: 12px; color: #d8d8dc;
-}
+.results-hint i { display: block; font-size: 1.9rem; margin-bottom: 12px; color: #d8d8dc; }
 
 .results-heading {
   display: flex;
@@ -684,7 +611,6 @@ input, textarea { font-family: inherit; }
 }
 .result-item:hover  { background: var(--fill-gray); }
 .result-item:active { background: var(--fill-gray-hover); }
-
 .result-ico {
   width: 40px; height: 40px; border-radius: 12px;
   background: var(--fill-gray);
@@ -692,8 +618,6 @@ input, textarea { font-family: inherit; }
   font-size: 0.92rem; color: var(--ink);
   flex-shrink: 0;
 }
-.result-item:hover .result-ico { background: #ffffff; }
-
 .result-txt { flex: 1; min-width: 0; }
 .result-txt strong {
   display: block; font-size: 0.88rem; font-weight: 600;
@@ -705,16 +629,13 @@ input, textarea { font-family: inherit; }
   margin-top: 2px; white-space: nowrap;
   overflow: hidden; text-overflow: ellipsis;
 }
-
 .result-dist {
   font-size: 0.76rem; font-weight: 800;
   color: var(--text-primary);
   background: var(--fill-gray);
   padding: 5px 11px; border-radius: 999px;
-  flex-shrink: 0; white-space: nowrap;
+  flex-shrink: 0;
 }
-.result-item:hover .result-dist { background: #ffffff; }
-
 .loader-row {
   display: flex; align-items: center; justify-content: center;
   gap: 10px; padding: 26px;
@@ -727,32 +648,8 @@ input, textarea { font-family: inherit; }
 }
 
 /* ==========================================================
-   DELIVERY PAGE
+   FORM ELEMENTS
    ========================================================== */
-.delivery-body {
-  flex: 1; min-height: 0;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-.delivery-scroll {
-  max-width: 560px;
-  margin: 0 auto;
-  padding: 16px 16px 32px;
-}
-
-.delivery-results {
-  margin-top: 6px;
-  background: #fff;
-  border-radius: var(--radius);
-  overflow: hidden;
-  box-shadow: 0 0 0 1px var(--line);
-}
-
-.delivery-form {
-  margin-top: 6px;
-}
-
 .pill-input {
   width: 100%;
   padding: 13px 16px 13px 42px;
@@ -764,27 +661,16 @@ input, textarea { font-family: inherit; }
   background: var(--fill-gray);
   outline: none;
   color: var(--text-primary);
-  transition:
-    background 0.3s var(--ease-smooth),
-    border-color 0.3s var(--ease-smooth),
-    box-shadow 0.3s var(--ease-smooth);
-  user-select: text;
-  -webkit-user-select: text;
+  transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
 }
 .pill-input::placeholder { color: var(--text-tertiary); font-weight: 400; }
-.pill-input:hover        { background: var(--fill-gray-hover); }
+.pill-input:hover { background: var(--fill-gray-hover); }
 .pill-input:focus {
   background: #ffffff;
   border-color: #0a0a0a;
   box-shadow: 0 0 0 4px rgba(0,0,0,0.10);
 }
-
-.pill-textarea {
-  resize: vertical;
-  min-height: 78px;
-  padding-top: 13px;
-  line-height: 1.45;
-}
+.pill-textarea { resize: vertical; min-height: 96px; line-height: 1.5; }
 
 .input-icon-group {
   position: relative;
@@ -801,10 +687,7 @@ input, textarea { font-family: inherit; }
   pointer-events: none;
   z-index: 1;
 }
-.input-icon-group.textarea-group > i {
-  top: 22px;
-  transform: none;
-}
+.input-icon-group.textarea-group > i { top: 22px; transform: none; }
 .input-icon-group:focus-within > i { color: #0a0a0a; }
 
 .section-label {
@@ -830,7 +713,6 @@ input, textarea { font-family: inherit; }
   font-family: inherit;
   font-size: 0.94rem;
   font-weight: 600;
-  letter-spacing: -0.1px;
   border: none;
   border-radius: var(--radius-sm);
   padding: 14px 20px;
@@ -840,10 +722,10 @@ input, textarea { font-family: inherit; }
   align-items: center;
   justify-content: center;
   gap: 9px;
-  transition: transform 0.35s var(--spring), box-shadow 0.35s var(--ease-smooth);
+  transition: transform 0.35s var(--spring), box-shadow 0.35s;
 }
 .btn-primary {
-  background: linear-gradient(180deg, #2b2b2e 0%, #0a0a0a 60%, #000000 100%);
+  background: linear-gradient(180deg, #2b2b2e 0%, #0a0a0a 60%, #000 100%);
   color: #ffffff;
   box-shadow: 0 8px 20px -6px rgba(0,0,0,0.40);
   margin-top: 6px;
@@ -852,8 +734,499 @@ input, textarea { font-family: inherit; }
 .btn-primary:active:not(:disabled) { transform: translateY(0) scale(0.975); }
 .btn:disabled { opacity: 0.55; cursor: not-allowed; }
 
+/* Pickup helper */
+.pickup-actions {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.pickup-action-btn {
+  flex: 1;
+  padding: 11px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--fill-gray);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background 0.22s;
+}
+.pickup-action-btn:hover { background: var(--fill-gray-hover); }
+.pickup-action-btn i { font-size: 0.86rem; }
+
+/* Upload box */
+.upload-box {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  background: var(--fill-gray);
+  border: 2px dashed rgba(0,0,0,0.14);
+  border-radius: var(--radius);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: border-color 0.3s, background 0.3s;
+}
+.upload-box:hover {
+  border-color: #0a0a0a;
+  background: #ffffff;
+}
+.upload-box.has-image { border-style: solid; border-color: #0a0a0a; }
+.upload-box img {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+.upload-box .upload-label {
+  font-size: 0.76rem; font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+.upload-box i.upload-icon {
+  font-size: 1.8rem;
+  color: var(--text-tertiary);
+}
+.upload-box.has-image .upload-label,
+.upload-box.has-image i.upload-icon { display: none; }
+.upload-box.is-loading::after {
+  content: '';
+  position: absolute;
+  width: 26px; height: 26px;
+  border: 3px solid rgba(0,0,0,0.15);
+  border-top-color: #0a0a0a;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  z-index: 4;
+}
+
 /* ==========================================================
-   VEHICLE SELECTION SHEET
+   FACEBOOK-STYLE ERRAND CARDS
+   ========================================================== */
+.fb-card {
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 0 0 1px var(--line), 0 2px 8px rgba(0,0,0,0.04);
+  margin-bottom: 14px;
+  overflow: hidden;
+  animation: fbCardIn 0.4s var(--ease-out);
+}
+@keyframes fbCardIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fb-card-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px 10px;
+}
+.fb-avatar {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: var(--fill-gray);
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.fb-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.fb-avatar i { color: var(--text-tertiary); font-size: 1.1rem; }
+
+.fb-meta { flex: 1; min-width: 0; }
+.fb-meta strong {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.fb-meta span {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  margin-top: 1px;
+}
+
+.fb-status {
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+.fb-status.pending   { background: var(--warn-soft);    color: #b54708; }
+.fb-status.accepted  { background: var(--success-soft); color: #027a48; }
+.fb-status.rejected  { background: var(--danger-soft);  color: #b42318; }
+.fb-status.completed { background: var(--info-soft);    color: #175cd3; }
+
+.fb-card-body { padding: 4px 16px 12px; }
+.fb-card-body h4 {
+  font-size: 0.98rem;
+  font-weight: 800;
+  letter-spacing: -0.25px;
+  margin-bottom: 6px;
+  color: var(--text-primary);
+}
+.fb-card-body p {
+  font-size: 0.86rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 10px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.fb-image {
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 10px;
+  background: var(--fill-gray);
+  max-height: 320px;
+}
+.fb-image img {
+  width: 100%;
+  max-height: 320px;
+  object-fit: cover;
+  display: block;
+}
+
+.fb-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+.fb-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: var(--fill-gray);
+  padding: 5px 10px;
+  border-radius: 999px;
+}
+.fb-tag i { font-size: 0.7rem; }
+.fb-tag.price {
+  background: #0a0a0a;
+  color: #fff;
+  font-weight: 800;
+}
+
+.fb-card-stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  border-top: 1px solid var(--line);
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+.fb-card-stats .stat-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.fb-card-footer {
+  display: flex;
+  border-top: 1px solid var(--line);
+}
+.fb-card-footer button {
+  flex: 1;
+  padding: 12px 8px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  transition: background 0.2s;
+}
+.fb-card-footer button:hover { background: var(--fill-gray); }
+.fb-card-footer button + button { border-left: 1px solid var(--line); }
+.fb-card-footer button.primary { background: #0a0a0a; color: #fff; }
+.fb-card-footer button.primary:hover { background: #1c1c1e; }
+.fb-card-footer button i { font-size: 0.78rem; }
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: 50px 24px;
+  color: var(--text-secondary);
+}
+.empty-state i {
+  font-size: 3rem;
+  color: #d8d8dc;
+  margin-bottom: 16px;
+  display: block;
+}
+.empty-state h3 {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+  letter-spacing: -0.3px;
+}
+.empty-state p {
+  font-size: 0.86rem;
+  line-height: 1.55;
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+/* ==========================================================
+   OFFERS (in errand details)
+   ========================================================== */
+.offer-card {
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 0 0 1px var(--line), 0 2px 8px rgba(0,0,0,0.04);
+  padding: 16px;
+  margin-bottom: 10px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  animation: fbCardIn 0.4s var(--ease-out);
+}
+.offer-avatar {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: var(--fill-gray);
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.offer-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.offer-avatar i { color: var(--text-tertiary); font-size: 1.2rem; }
+.offer-body { flex: 1; min-width: 0; }
+.offer-body strong {
+  display: block;
+  font-size: 0.94rem;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+  margin-bottom: 3px;
+}
+.offer-body .offer-message {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 10px;
+  word-break: break-word;
+}
+.offer-price-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.offer-price {
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+.offer-price small { font-size: 0.78rem; font-weight: 700; opacity: 0.6; margin-right: 2px; }
+.offer-accept-btn {
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: #0a0a0a;
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  transition: transform 0.28s var(--spring);
+}
+.offer-accept-btn:active { transform: scale(0.95); }
+.offer-accept-btn:disabled { opacity: 0.5; }
+
+.offers-empty {
+  text-align: center;
+  padding: 34px 20px;
+  color: var(--text-secondary);
+  background: var(--fill-gray);
+  border-radius: 14px;
+}
+.offers-empty .mini-spin {
+  width: 22px; height: 22px;
+  margin: 0 auto 14px;
+  display: block;
+  border-width: 2.5px;
+}
+.offers-empty strong {
+  display: block;
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+.offers-empty p {
+  font-size: 0.82rem;
+  line-height: 1.5;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+/* Detail header card */
+.detail-head-card {
+  background: #0a0a0a;
+  color: #fff;
+  border-radius: 14px;
+  padding: 18px;
+  margin-bottom: 16px;
+}
+.detail-head-card h3 {
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  margin-bottom: 6px;
+}
+.detail-head-card p {
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.5;
+  margin-bottom: 12px;
+  word-break: break-word;
+}
+.detail-head-stats {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.detail-head-stat {
+  background: rgba(255,255,255,0.1);
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.detail-head-stat i { font-size: 0.7rem; opacity: 0.8; }
+
+/* ==========================================================
+   CHAT PAGE
+   ========================================================== */
+.chat-body {
+  flex: 1; min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px 16px 12px;
+  background: #f7f8fa;
+}
+.chat-messages {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 620px;
+  margin: 0 auto;
+}
+.chat-msg {
+  max-width: 78%;
+  padding: 10px 14px;
+  border-radius: 18px;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  word-break: break-word;
+  white-space: pre-wrap;
+  animation: chatIn 0.24s var(--ease-out);
+}
+@keyframes chatIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.chat-msg.them {
+  background: #ffffff;
+  color: var(--text-primary);
+  align-self: flex-start;
+  border-bottom-left-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.chat-msg.me {
+  background: #0a0a0a;
+  color: #fff;
+  align-self: flex-end;
+  border-bottom-right-radius: 6px;
+}
+.chat-msg-meta {
+  font-size: 0.64rem;
+  font-weight: 700;
+  opacity: 0.55;
+  margin-top: 4px;
+  display: block;
+}
+.chat-empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-secondary);
+  font-size: 0.86rem;
+}
+.chat-empty i {
+  display: block;
+  font-size: 2.4rem;
+  color: #d8d8dc;
+  margin-bottom: 14px;
+}
+
+.chat-input-row {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  padding: 12px 16px 16px;
+  background: #ffffff;
+  border-top: 1px solid var(--line);
+}
+.chat-input-row textarea {
+  flex: 1;
+  min-height: 44px;
+  max-height: 120px;
+  padding: 11px 14px;
+  border-radius: 22px;
+  border: 1.5px solid transparent;
+  background: var(--fill-gray);
+  outline: none;
+  font-size: 0.9rem;
+  resize: none;
+  font-family: inherit;
+  line-height: 1.4;
+  transition: background 0.22s, border-color 0.22s;
+}
+.chat-input-row textarea:focus {
+  background: #ffffff;
+  border-color: #0a0a0a;
+}
+.chat-send-btn {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: #0a0a0a;
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+  transition: transform 0.28s var(--spring);
+}
+.chat-send-btn:active { transform: scale(0.92); }
+.chat-send-btn:disabled { opacity: 0.5; }
+
+/* ==========================================================
+   VEHICLE SHEET
    ========================================================== */
 .sheet-overlay {
   position: fixed; inset: 0; z-index: 3500;
@@ -863,12 +1236,9 @@ input, textarea { font-family: inherit; }
   display: none;
   align-items: flex-end;
   justify-content: center;
-  padding: 0;
 }
 .sheet-overlay.open { display: flex; animation: fadeIn 0.24s var(--ease-out); }
-
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
 .sheet {
   background: #ffffff;
   border-radius: 26px 26px 0 0;
@@ -878,102 +1248,66 @@ input, textarea { font-family: inherit; }
   animation: sheetUp 0.42s var(--panel-ease);
   box-shadow: 0 -12px 40px rgba(0,0,0,0.28);
 }
-
 @keyframes sheetUp {
   from { transform: translateY(100%); }
   to   { transform: translateY(0); }
 }
-
 .sheet-handle {
-  width: 42px;
-  height: 4px;
+  width: 42px; height: 4px;
   border-radius: 999px;
   background: rgba(0,0,0,0.14);
   margin: 4px auto 18px;
 }
-
 .sheet-head { text-align: center; margin-bottom: 18px; }
 .sheet-head h3 {
-  font-size: 1.05rem;
-  font-weight: 800;
-  letter-spacing: -0.35px;
-  margin-bottom: 4px;
+  font-size: 1.05rem; font-weight: 800;
+  letter-spacing: -0.35px; margin-bottom: 4px;
 }
 .sheet-head p {
-  font-size: 0.78rem;
-  color: var(--text-secondary);
-  font-weight: 500;
+  font-size: 0.78rem; color: var(--text-secondary); font-weight: 500;
 }
-
-.vehicle-list {
-  display: flex;
-  flex-direction: column;
-  gap: 9px;
-  margin-bottom: 14px;
-}
-
+.vehicle-list { display: flex; flex-direction: column; gap: 9px; margin-bottom: 14px; }
 .vehicle-item {
   width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 14px;
+  display: flex; align-items: center; gap: 14px;
   padding: 14px 16px;
   border-radius: var(--radius-sm);
   background: #ffffff;
   box-shadow: 0 0 0 1.5px var(--line);
   text-align: left;
-  transition: transform 0.28s var(--spring), box-shadow 0.24s var(--ease-smooth), background 0.22s;
+  transition: transform 0.28s var(--spring), box-shadow 0.24s;
 }
-.vehicle-item:hover  {
+.vehicle-item:hover {
   background: #fafafa;
   box-shadow: 0 0 0 1.5px rgba(0,0,0,0.20);
   transform: translateY(-1px);
 }
 .vehicle-item:active { transform: scale(0.985); }
-
 .vehicle-icon {
   width: 46px; height: 46px; border-radius: 13px;
-  background: #0a0a0a;
-  color: #ffffff;
+  background: #0a0a0a; color: #ffffff;
   display: flex; align-items: center; justify-content: center;
   font-size: 1.15rem; flex-shrink: 0;
 }
-
 .vehicle-info { flex: 1; min-width: 0; }
 .vehicle-info strong {
-  display: block;
-  font-size: 0.94rem;
-  font-weight: 800;
-  letter-spacing: -0.25px;
-  margin-bottom: 2px;
+  display: block; font-size: 0.94rem; font-weight: 800;
+  letter-spacing: -0.25px; margin-bottom: 2px;
 }
 .vehicle-info span {
-  display: block;
-  font-size: 0.74rem;
-  color: var(--text-secondary);
-  font-weight: 500;
+  display: block; font-size: 0.74rem;
+  color: var(--text-secondary); font-weight: 500;
 }
-
-.vehicle-price {
-  text-align: right;
-  flex-shrink: 0;
-}
+.vehicle-price { text-align: right; flex-shrink: 0; }
 .vehicle-price strong {
-  display: block;
-  font-size: 1.05rem;
-  font-weight: 800;
+  display: block; font-size: 1.1rem; font-weight: 800;
   letter-spacing: -0.4px;
-  color: var(--text-primary);
 }
 .vehicle-price small {
-  display: block;
-  font-size: 0.66rem;
-  color: var(--text-tertiary);
-  font-weight: 700;
-  letter-spacing: 0.4px;
-  margin-top: 2px;
+  display: block; font-size: 0.66rem;
+  color: var(--text-tertiary); font-weight: 700;
+  letter-spacing: 0.4px; margin-top: 2px;
 }
-
 .sheet-cancel {
   width: 100%;
   padding: 14px;
@@ -982,7 +1316,6 @@ input, textarea { font-family: inherit; }
   color: var(--text-primary);
   font-size: 0.9rem;
   font-weight: 700;
-  transition: background 0.22s;
 }
 .sheet-cancel:hover { background: var(--fill-gray-hover); }
 
@@ -1000,7 +1333,6 @@ input, textarea { font-family: inherit; }
   padding: 24px;
 }
 .searching-overlay.open { display: flex; animation: fadeIn 0.32s var(--ease-out); }
-
 .searching-card {
   background: #ffffff;
   border-radius: 26px;
@@ -1011,22 +1343,17 @@ input, textarea { font-family: inherit; }
   box-shadow: 0 24px 64px rgba(0,0,0,0.4);
   animation: modalIn 0.42s var(--spring);
 }
-
 @keyframes modalIn {
   from { opacity: 0; transform: scale(0.94) translateY(16px); }
   to   { opacity: 1; transform: scale(1) translateY(0); }
 }
-
 .searching-radar {
   position: relative;
-  width: 110px;
-  height: 110px;
+  width: 110px; height: 110px;
   margin: 0 auto 22px;
 }
-
 .searching-radar .radar-ring {
-  position: absolute;
-  inset: 0;
+  position: absolute; inset: 0;
   border-radius: 50%;
   border: 2.5px solid #0a0a0a;
   opacity: 0;
@@ -1034,49 +1361,38 @@ input, textarea { font-family: inherit; }
 }
 .searching-radar .radar-ring:nth-child(2) { animation-delay: 0.8s; }
 .searching-radar .radar-ring:nth-child(3) { animation-delay: 1.6s; }
-
 @keyframes radarPulse {
   0%   { transform: scale(0.4); opacity: 0.85; }
   100% { transform: scale(1.65); opacity: 0; }
 }
-
 .searching-radar .radar-center {
   position: absolute;
   inset: 32px;
   border-radius: 50%;
-  background: #0a0a0a;
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: #0a0a0a; color: #ffffff;
+  display: flex; align-items: center; justify-content: center;
   font-size: 1.35rem;
   z-index: 2;
   box-shadow: 0 0 0 6px rgba(255,255,255,0.9);
 }
-
 .searching-card h2 {
   font-size: 1.15rem;
   font-weight: 800;
   letter-spacing: -0.4px;
   margin-bottom: 6px;
 }
-
 .searching-card p {
   font-size: 0.84rem;
   color: var(--text-secondary);
   line-height: 1.5;
   margin-bottom: 16px;
 }
-
 .searching-dots {
-  display: flex;
-  justify-content: center;
-  gap: 6px;
-  margin-bottom: 22px;
+  display: flex; justify-content: center;
+  gap: 6px; margin-bottom: 22px;
 }
 .searching-dots span {
-  width: 8px;
-  height: 8px;
+  width: 8px; height: 8px;
   border-radius: 50%;
   background: #0a0a0a;
   opacity: 0.3;
@@ -1084,12 +1400,10 @@ input, textarea { font-family: inherit; }
 }
 .searching-dots span:nth-child(2) { animation-delay: 0.15s; }
 .searching-dots span:nth-child(3) { animation-delay: 0.30s; }
-
 @keyframes dotBounce {
   0%, 100% { opacity: 0.3; transform: translateY(0); }
   50%      { opacity: 1;   transform: translateY(-5px); }
 }
-
 .searching-cancel {
   width: 100%;
   padding: 13px;
@@ -1098,9 +1412,8 @@ input, textarea { font-family: inherit; }
   color: var(--text-primary);
   font-size: 0.9rem;
   font-weight: 700;
-  transition: background 0.22s, transform 0.28s var(--spring);
+  transition: background 0.22s, transform 0.28s;
 }
-.searching-cancel:hover  { background: var(--fill-gray-hover); }
 .searching-cancel:active { transform: scale(0.97); }
 
 /* ==========================================================
@@ -1138,11 +1451,16 @@ input, textarea { font-family: inherit; }
   100% { transform: scale(1.25); opacity: 0; }
 }
 
-/* Leaflet tweaks */
-.leaflet-container { font-family: inherit; background: #eceef0; }
+/* Google-like map tint (subtle warmth/de-saturation) */
+.leaflet-tile-pane {
+  filter: saturate(0.85) contrast(1.05) brightness(1.02);
+}
+.leaflet-container { font-family: inherit; background: #e8eaed; }
 .leaflet-control-attribution {
-  font-size: 9px !important; background: rgba(255,255,255,0.78) !important;
-  color: #8e8e93 !important; padding: 1px 5px !important;
+  font-size: 9px !important;
+  background: rgba(255,255,255,0.78) !important;
+  color: #8e8e93 !important;
+  padding: 1px 5px !important;
 }
 .leaflet-control-attribution a { color: #6e6e73 !important; }
 
@@ -1172,7 +1490,6 @@ input, textarea { font-family: inherit; }
   .btn-ride .ride-txt strong { font-size: 0.98rem; }
   .fare-top .fare-amount { font-size: 1.75rem; }
 }
-
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.001ms !important;
@@ -1184,9 +1501,7 @@ input, textarea { font-family: inherit; }
 </head>
 <body>
 
-<!-- ==========================================================
-     LOADING
-     ========================================================== -->
+<!-- LOADING -->
 <div id="loadingScreen">
   <div class="l-logo">
     <img src="logo.png" alt="NTUMENI" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
@@ -1196,9 +1511,7 @@ input, textarea { font-family: inherit; }
   <div class="l-spinner"></div>
 </div>
 
-<!-- ==========================================================
-     MAINTENANCE OVERLAY
-     ========================================================== -->
+<!-- MAINTENANCE -->
 <div class="block-overlay" id="maintenanceOverlay">
   <div class="block-icon"><i class="fas fa-screwdriver-wrench"></i></div>
   <h1>Under Maintenance</h1>
@@ -1206,9 +1519,7 @@ input, textarea { font-family: inherit; }
   <button class="block-btn" onclick="location.reload()">Retry</button>
 </div>
 
-<!-- ==========================================================
-     BANNED OVERLAY
-     ========================================================== -->
+<!-- BANNED -->
 <div class="block-overlay danger" id="bannedOverlay">
   <div class="block-icon"><i class="fas fa-ban"></i></div>
   <h1>Account Suspended</h1>
@@ -1217,49 +1528,38 @@ input, textarea { font-family: inherit; }
   <button class="block-btn" id="bannedLogoutBtn">Sign Out</button>
 </div>
 
-<!-- ==========================================================
-     APP
-     ========================================================== -->
+<!-- APP -->
 <div id="app" class="hidden" style="display:flex; flex-direction:column; height:100%; width:100%;">
 
-  <!-- TOPBAR -->
   <header class="topbar">
     <button class="icon-btn" id="sidebarBtn" aria-label="Open menu">
       <i class="fas fa-bars"></i>
     </button>
-
-    <div class="topbar-user" id="topbarUser">
+    <div class="topbar-user">
       <span id="topbarName">Customer</span>
       <small>Customer</small>
     </div>
-
     <div class="topbar-logo">
       <img src="logo.png" alt="NTUMENI" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
       <span style="display:none;">NTM</span>
     </div>
   </header>
 
-  <!-- MAIN -->
   <main class="app-main">
 
-    <!-- MAP HALF -->
     <section class="map-half">
       <div id="map"></div>
-
-      <div class="map-badge" id="mapBadge">
+      <div class="map-badge">
         <i class="fas fa-location-dot"></i>
         <span id="mapBadgeText">Locating…</span>
       </div>
-
       <button class="map-overlay-btn" id="locateBtn" aria-label="Recenter">
         <i class="fas fa-crosshairs"></i>
       </button>
     </section>
 
-    <!-- ACTION HALF -->
     <section class="action-half">
 
-      <!-- HOME ACTIONS -->
       <div class="action-pane active" id="paneHome">
         <div class="home-greeting" id="homeGreeting">Hello 👋</div>
         <div class="home-sub">Where are you headed today?</div>
@@ -1285,7 +1585,6 @@ input, textarea { font-family: inherit; }
         </div>
       </div>
 
-      <!-- TRIP SUMMARY -->
       <div class="action-pane" id="paneTrip">
         <div class="trip-head">
           <h2 id="tripTitle">Your Trip</h2>
@@ -1301,9 +1600,7 @@ input, textarea { font-family: inherit; }
             </span>
             <i class="fas fa-pen-to-square point-edit"></i>
           </button>
-
           <div class="points-divider"></div>
-
           <button class="point-row" id="dropoffRowBtn">
             <span class="point-dot square"></span>
             <span class="point-txt">
@@ -1314,12 +1611,11 @@ input, textarea { font-family: inherit; }
           </button>
         </div>
 
-        <!-- Simplified fare card: price, time, distance only -->
         <div class="fare-card">
           <div class="fare-top">
             <div>
               <div class="fare-label">Estimated price</div>
-              <div class="fare-amount"><small>K</small><span id="fareTotal">0.00</span></div>
+              <div class="fare-amount"><small>K</small><span id="fareTotal">0</span></div>
             </div>
             <div class="fare-stats">
               <div class="fare-stat">
@@ -1343,22 +1639,16 @@ input, textarea { font-family: inherit; }
   </main>
 </div>
 
-<!-- ==========================================================
-     SIDEBAR
-     ========================================================== -->
+<!-- SIDEBAR -->
 <div id="sidebarOverlay"></div>
-
 <aside id="sidebar">
   <div class="sidebar-head">
-    <div class="sidebar-avatar" id="sidebarAvatar">
-      <i class="fas fa-user"></i>
-    </div>
+    <div class="sidebar-avatar" id="sidebarAvatar"><i class="fas fa-user"></i></div>
     <div class="sidebar-meta">
       <strong id="sidebarName">Customer</strong>
       <span id="sidebarPhone">—</span>
     </div>
   </div>
-
   <nav class="sidebar-nav">
     <button class="nav-item" data-nav="history">
       <i class="fas fa-clock-rotate-left"></i> History
@@ -1366,14 +1656,14 @@ input, textarea { font-family: inherit; }
     <button class="nav-item" data-nav="transactions">
       <i class="fas fa-receipt"></i> Transactions
     </button>
-    <button class="nav-item" data-nav="errands">
-      <i class="fas fa-clipboard-list"></i> Errands
+    <button class="nav-item" data-nav="postedErrands">
+      <i class="fas fa-clipboard-list"></i> Posted Errands
+      <span class="nav-badge" id="errandsBadge" style="display:none;">0</span>
     </button>
     <button class="nav-item" data-nav="account">
       <i class="fas fa-user-gear"></i> Account
     </button>
   </nav>
-
   <div class="sidebar-foot">
     <button class="logout-btn" id="logoutBtn">
       <i class="fas fa-arrow-right-from-bracket"></i> Sign Out
@@ -1381,20 +1671,15 @@ input, textarea { font-family: inherit; }
   </div>
 </aside>
 
-<!-- ==========================================================
-     RIDE REQUEST PAGE
-     ========================================================== -->
+<!-- RIDE PAGE -->
 <div id="ridePage">
-  <div class="ride-head">
-    <button class="icon-btn" id="rideBackBtn" aria-label="Back">
-      <i class="fas fa-arrow-left"></i>
-    </button>
+  <div class="page-head">
+    <button class="icon-btn" id="rideBackBtn" aria-label="Back"><i class="fas fa-arrow-left"></i></button>
     <div style="flex:1;">
       <h2>Plan your trip</h2>
-      <div class="ride-head-sub">Pickup &amp; destination</div>
+      <div class="page-head-sub">Pickup &amp; destination</div>
     </div>
   </div>
-
   <div class="ride-body">
     <div class="ride-inputs">
       <div class="input-card">
@@ -1405,9 +1690,7 @@ input, textarea { font-family: inherit; }
             <i class="fas fa-xmark"></i>
           </button>
         </div>
-
         <div class="input-divider"></div>
-
         <div class="input-row" id="destInputRow">
           <span class="row-dot square"></span>
           <input type="text" id="destInput" placeholder="Where to?" autocomplete="off">
@@ -1417,32 +1700,26 @@ input, textarea { font-family: inherit; }
         </div>
       </div>
     </div>
-
     <div class="results-area" id="resultsArea">
       <div class="results-hint">
         <i class="fas fa-magnifying-glass-location"></i>
-        Start typing a destination — nearest places within 15 km appear first.
+        Start typing — closest matches within 15 km appear first.
       </div>
     </div>
   </div>
 </div>
 
-<!-- ==========================================================
-     DELIVERY PAGE
-     ========================================================== -->
+<!-- DELIVERY PAGE -->
 <div id="deliveryPage">
-  <div class="ride-head">
-    <button class="icon-btn" id="deliveryBackBtn" aria-label="Back">
-      <i class="fas fa-arrow-left"></i>
-    </button>
+  <div class="page-head">
+    <button class="icon-btn" id="deliveryBackBtn" aria-label="Back"><i class="fas fa-arrow-left"></i></button>
     <div style="flex:1;">
       <h2>New Delivery</h2>
-      <div class="ride-head-sub">Pickup, drop-off &amp; parcel</div>
+      <div class="page-head-sub">Pickup, drop-off &amp; parcel</div>
     </div>
   </div>
-
-  <div class="delivery-body">
-    <div class="delivery-scroll">
+  <div class="page-body">
+    <div class="page-scroll">
 
       <div class="input-card">
         <div class="input-row" id="deliveryPickupRow">
@@ -1452,9 +1729,7 @@ input, textarea { font-family: inherit; }
             <i class="fas fa-xmark"></i>
           </button>
         </div>
-
         <div class="input-divider"></div>
-
         <div class="input-row" id="deliveryDestRow">
           <span class="row-dot square"></span>
           <input type="text" id="deliveryDestInput" placeholder="Drop-off location" autocomplete="off">
@@ -1464,12 +1739,9 @@ input, textarea { font-family: inherit; }
         </div>
       </div>
 
-      <!-- Search results appear here while typing; form is hidden -->
-      <div class="delivery-results" id="deliveryResultsArea" style="display:none;"></div>
+      <div id="deliveryResultsArea" style="display:none; margin-top:12px;"></div>
 
-      <!-- Form fields -->
-      <div class="delivery-form" id="deliveryFormArea">
-
+      <div id="deliveryFormArea" style="margin-top:12px;">
         <div class="section-label">Sender details</div>
         <div class="input-icon-group">
           <input type="text" id="delSenderName" class="pill-input" placeholder="Sender name" autocomplete="name">
@@ -1506,33 +1778,143 @@ input, textarea { font-family: inherit; }
         <button type="button" class="btn btn-primary" id="requestDeliveryBtn">
           <i class="fas fa-paper-plane"></i> REQUEST DELIVERY
         </button>
-
       </div>
     </div>
   </div>
 </div>
 
-<!-- ==========================================================
-     VEHICLE SELECTION SHEET
-     ========================================================== -->
+<!-- POST ERRAND PAGE -->
+<div id="postErrandPage">
+  <div class="page-head">
+    <button class="icon-btn" id="postErrandBackBtn" aria-label="Back"><i class="fas fa-arrow-left"></i></button>
+    <div style="flex:1;">
+      <h2>Post an Errand</h2>
+      <div class="page-head-sub">Let providers bid for your task</div>
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="page-scroll">
+
+      <div class="input-icon-group">
+        <input type="text" id="errandTitle" class="pill-input" placeholder="Errand title (e.g. Buy groceries)" maxlength="80">
+        <i class="fas fa-heading"></i>
+      </div>
+
+      <div class="input-icon-group textarea-group">
+        <textarea id="errandDescription" class="pill-input pill-textarea"
+                  placeholder="Describe what needs to be done…" maxlength="500"></textarea>
+        <i class="fas fa-align-left"></i>
+      </div>
+
+      <div class="section-label">Pickup location</div>
+
+      <div class="input-card" style="margin-bottom:10px;">
+        <div class="input-row" id="errandPickupRow">
+          <span class="row-dot"></span>
+          <input type="text" id="errandPickupInput" placeholder="Search pickup location…" autocomplete="off">
+          <button class="row-clear" id="errandPickupClear" aria-label="Clear" style="display:none;">
+            <i class="fas fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+
+      <div id="errandPickupResults" style="display:none; margin-bottom:12px;"></div>
+
+      <div class="pickup-actions">
+        <button type="button" class="pickup-action-btn" id="errandUseCurrentBtn">
+          <i class="fas fa-crosshairs"></i> Use current location
+        </button>
+      </div>
+
+      <div class="section-label">Errand photo (optional)</div>
+      <div class="upload-box" id="errandUpload">
+        <i class="fas fa-camera upload-icon"></i>
+        <span class="upload-label">Tap to add a photo</span>
+      </div>
+      <input type="hidden" id="errandImageUrl">
+
+      <div class="section-label">Willing to pay</div>
+      <div class="input-icon-group">
+        <input type="number" id="errandWillingToPay" class="pill-input" placeholder="Amount in Kwacha" min="0" step="1">
+        <i class="fas fa-money-bill-wave"></i>
+      </div>
+
+      <div id="errandError" class="error-msg"></div>
+
+      <button type="button" class="btn btn-primary" id="submitErrandBtn">
+        <i class="fas fa-paper-plane"></i> POST ERRAND
+      </button>
+
+    </div>
+  </div>
+</div>
+
+<!-- POSTED ERRANDS PAGE -->
+<div id="postedErrandsPage">
+  <div class="page-head">
+    <button class="icon-btn" id="postedErrandsBackBtn" aria-label="Back"><i class="fas fa-arrow-left"></i></button>
+    <div style="flex:1;">
+      <h2>My Posted Errands</h2>
+      <div class="page-head-sub">Track offers &amp; status</div>
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="page-scroll" id="postedErrandsList">
+      <div class="loader-row" style="padding:60px 20px;">
+        <span class="mini-spin"></span> Loading your errands…
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ERRAND DETAILS PAGE -->
+<div id="errandDetailsPage">
+  <div class="page-head">
+    <button class="icon-btn" id="errandDetailsBackBtn" aria-label="Back"><i class="fas fa-arrow-left"></i></button>
+    <div style="flex:1;">
+      <h2 id="errandDetailsTitle">Errand</h2>
+      <div class="page-head-sub">Offers from providers</div>
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="page-scroll" id="errandDetailsBody"></div>
+  </div>
+</div>
+
+<!-- CHAT PAGE -->
+<div id="chatPage">
+  <div class="page-head">
+    <button class="icon-btn" id="chatBackBtn" aria-label="Back"><i class="fas fa-arrow-left"></i></button>
+    <div style="flex:1;">
+      <h2 id="chatTitle">Chat</h2>
+      <div class="page-head-sub" id="chatSubtitle">Provider</div>
+    </div>
+  </div>
+  <div class="chat-body">
+    <div class="chat-messages" id="chatMessages"></div>
+  </div>
+  <div class="chat-input-row">
+    <textarea id="chatInput" placeholder="Type a message…" rows="1"></textarea>
+    <button class="chat-send-btn" id="chatSendBtn" aria-label="Send">
+      <i class="fas fa-paper-plane"></i>
+    </button>
+  </div>
+</div>
+
+<!-- VEHICLE SHEET -->
 <div class="sheet-overlay" id="vehicleSheet">
   <div class="sheet">
     <div class="sheet-handle"></div>
-
     <div class="sheet-head">
       <h3>Choose delivery type</h3>
       <p>Prices are based on your route distance and time.</p>
     </div>
-
     <div class="vehicle-list" id="vehicleList"></div>
-
     <button class="sheet-cancel" id="vehicleSheetCancel">Cancel</button>
   </div>
 </div>
 
-<!-- ==========================================================
-     SEARCHING OVERLAY
-     ========================================================== -->
+<!-- SEARCHING OVERLAY -->
 <div class="searching-overlay" id="searchingOverlay">
   <div class="searching-card">
     <div class="searching-radar">
@@ -1543,30 +1925,21 @@ input, textarea { font-family: inherit; }
         <i class="fas fa-car" id="searchingIcon"></i>
       </div>
     </div>
-
     <h2 id="searchingTitle">Searching for a driver</h2>
     <p id="searchingSubtitle">Looking for someone nearby…</p>
-
-    <div class="searching-dots">
-      <span></span><span></span><span></span>
-    </div>
-
+    <div class="searching-dots"><span></span><span></span><span></span></div>
     <button class="searching-cancel" id="cancelSearchBtn">Cancel</button>
   </div>
 </div>
 
-<!-- ==========================================================
-     TOAST
-     ========================================================== -->
 <div id="toast"></div>
 
-<!-- ==========================================================
-     APP SCRIPT
-     ========================================================== -->
 <script type="module">
 import { initializeApp } from "firebase/app";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
-import { getDatabase, ref, get } from "firebase/database";
+import {
+  getDatabase, ref, set, get, update, push, onValue, off, serverTimestamp
+} from "firebase/database";
 
 /* ============================================================
    FIREBASE
@@ -1586,7 +1959,13 @@ const auth     = getAuth(app);
 const database = getDatabase(app);
 
 /* ============================================================
-   RIDE FARE CONFIG
+   CLOUDINARY
+   ============================================================ */
+const CLOUD_NAME = 'dd3lcymrk';
+const UPLOAD_PRESET = 'h3eyhc2o';
+
+/* ============================================================
+   FARE CONFIG
    ============================================================ */
 const FARE = {
   baseFare:          5,
@@ -1595,45 +1974,27 @@ const FARE = {
   minimumFare:       10
 };
 
-/* ============================================================
-   DELIVERY VEHICLE CONFIG
-   ============================================================ */
 const DELIVERY_VEHICLES = {
   motorbike: {
-    id: 'motorbike',
-    label: 'Motorbike',
+    id: 'motorbike', label: 'Motorbike',
     description: 'Fastest for small parcels',
     icon: 'fa-motorcycle',
-    baseFare: 4,
-    pricePerKm: 6,
-    pricePerMinute: 0.5,
-    minimumFare: 8
+    baseFare: 4, pricePerKm: 6, pricePerMinute: 0.5, minimumFare: 8
   },
   cyclist: {
-    id: 'cyclist',
-    label: 'Cyclist',
+    id: 'cyclist', label: 'Cyclist',
     description: 'Eco-friendly & affordable',
     icon: 'fa-bicycle',
-    baseFare: 3,
-    pricePerKm: 4,
-    pricePerMinute: 0.3,
-    minimumFare: 6
+    baseFare: 3, pricePerKm: 4, pricePerMinute: 0.3, minimumFare: 6
   },
   walker: {
-    id: 'walker',
-    label: 'Walker',
+    id: 'walker', label: 'Walker',
     description: 'Best for very short distances',
     icon: 'fa-person-walking',
-    baseFare: 2,
-    pricePerKm: 2,
-    pricePerMinute: 0.2,
-    minimumFare: 5
+    baseFare: 2, pricePerKm: 2, pricePerMinute: 0.2, minimumFare: 5
   }
 };
 
-/* ============================================================
-   SEARCH CONFIG — always 15 km, no user control
-   ============================================================ */
 const SEARCH_RADIUS_KM = 15;
 const SEARCH_MAX_RAW_RESULTS = 30;
 const SEARCH_SHOWN_RESULTS = 12;
@@ -1643,112 +2004,156 @@ const SEARCH_SHOWN_RESULTS = 12;
    ============================================================ */
 const $ = (id) => document.getElementById(id);
 
-const loadingScreen     = $('loadingScreen');
-const maintenanceOverlay= $('maintenanceOverlay');
-const maintenanceMsg    = $('maintenanceMsg');
-const bannedOverlay     = $('bannedOverlay');
-const banReasonBox      = $('banReasonBox');
-const bannedLogoutBtn   = $('bannedLogoutBtn');
+const loadingScreen      = $('loadingScreen');
+const maintenanceOverlay = $('maintenanceOverlay');
+const maintenanceMsg     = $('maintenanceMsg');
+const bannedOverlay      = $('bannedOverlay');
+const banReasonBox       = $('banReasonBox');
+const bannedLogoutBtn    = $('bannedLogoutBtn');
 
-const appRoot           = $('app');
-const topbarName        = $('topbarName');
-const homeGreeting      = $('homeGreeting');
+const appRoot      = $('app');
+const topbarName   = $('topbarName');
+const homeGreeting = $('homeGreeting');
 
-const sidebarBtn        = $('sidebarBtn');
-const sidebar           = $('sidebar');
-const sidebarOverlay    = $('sidebarOverlay');
-const sidebarName       = $('sidebarName');
-const sidebarPhone      = $('sidebarPhone');
-const sidebarAvatar     = $('sidebarAvatar');
-const logoutBtn         = $('logoutBtn');
+const sidebarBtn     = $('sidebarBtn');
+const sidebar        = $('sidebar');
+const sidebarOverlay = $('sidebarOverlay');
+const sidebarName    = $('sidebarName');
+const sidebarPhone   = $('sidebarPhone');
+const sidebarAvatar  = $('sidebarAvatar');
+const logoutBtn      = $('logoutBtn');
+const errandsBadge   = $('errandsBadge');
 
-const mapBadgeText      = $('mapBadgeText');
-const locateBtn         = $('locateBtn');
+const mapBadgeText = $('mapBadgeText');
+const locateBtn    = $('locateBtn');
 
-const requestRideBtn    = $('requestRideBtn');
-const deliveryBtn       = $('deliveryBtn');
-const errandBtn         = $('errandBtn');
+const requestRideBtn = $('requestRideBtn');
+const deliveryBtn    = $('deliveryBtn');
+const errandBtn      = $('errandBtn');
 
-const paneHome          = $('paneHome');
-const paneTrip          = $('paneTrip');
-const tripTitle         = $('tripTitle');
-const summaryPickup     = $('summaryPickup');
-const summaryDropoff    = $('summaryDropoff');
-const pickupRowBtn      = $('pickupRowBtn');
-const dropoffRowBtn     = $('dropoffRowBtn');
-const cancelTripBtn     = $('cancelTripBtn');
-const confirmRideBtn    = $('confirmRideBtn');
+const paneHome      = $('paneHome');
+const paneTrip      = $('paneTrip');
+const tripTitle     = $('tripTitle');
+const summaryPickup = $('summaryPickup');
+const summaryDropoff= $('summaryDropoff');
+const pickupRowBtn  = $('pickupRowBtn');
+const dropoffRowBtn = $('dropoffRowBtn');
+const cancelTripBtn = $('cancelTripBtn');
+const confirmRideBtn= $('confirmRideBtn');
 
-const fareTotal         = $('fareTotal');
-const fareDistance      = $('fareDistance');
-const fareDuration      = $('fareDuration');
+const fareTotal    = $('fareTotal');
+const fareDistance = $('fareDistance');
+const fareDuration = $('fareDuration');
 
-const ridePage          = $('ridePage');
-const rideBackBtn       = $('rideBackBtn');
-const pickupInput       = $('pickupInput');
-const destInput         = $('destInput');
-const pickupInputRow    = $('pickupInputRow');
-const destInputRow      = $('destInputRow');
-const pickupClearBtn    = $('pickupClearBtn');
-const destClearBtn      = $('destClearBtn');
-const resultsArea       = $('resultsArea');
+const ridePage       = $('ridePage');
+const rideBackBtn    = $('rideBackBtn');
+const pickupInput    = $('pickupInput');
+const destInput      = $('destInput');
+const pickupInputRow = $('pickupInputRow');
+const destInputRow   = $('destInputRow');
+const pickupClearBtn = $('pickupClearBtn');
+const destClearBtn   = $('destClearBtn');
+const resultsArea    = $('resultsArea');
 
-const deliveryPage          = $('deliveryPage');
-const deliveryBackBtn       = $('deliveryBackBtn');
-const deliveryPickupInput   = $('deliveryPickupInput');
-const deliveryDestInput     = $('deliveryDestInput');
-const deliveryPickupRow     = $('deliveryPickupRow');
-const deliveryDestRow       = $('deliveryDestRow');
-const deliveryPickupClear   = $('deliveryPickupClear');
-const deliveryDestClear     = $('deliveryDestClear');
-const deliveryResultsArea   = $('deliveryResultsArea');
-const deliveryFormArea      = $('deliveryFormArea');
-const deliveryError         = $('deliveryError');
-const requestDeliveryBtn    = $('requestDeliveryBtn');
-const delSenderName         = $('delSenderName');
-const delSenderPhone        = $('delSenderPhone');
-const delReceiverName       = $('delReceiverName');
-const delReceiverPhone      = $('delReceiverPhone');
-const delParcelName         = $('delParcelName');
-const delParcelDesc         = $('delParcelDesc');
+const deliveryPage        = $('deliveryPage');
+const deliveryBackBtn     = $('deliveryBackBtn');
+const deliveryPickupInput = $('deliveryPickupInput');
+const deliveryDestInput   = $('deliveryDestInput');
+const deliveryPickupRow   = $('deliveryPickupRow');
+const deliveryDestRow     = $('deliveryDestRow');
+const deliveryPickupClear = $('deliveryPickupClear');
+const deliveryDestClear   = $('deliveryDestClear');
+const deliveryResultsArea = $('deliveryResultsArea');
+const deliveryFormArea    = $('deliveryFormArea');
+const deliveryError       = $('deliveryError');
+const requestDeliveryBtn  = $('requestDeliveryBtn');
+const delSenderName       = $('delSenderName');
+const delSenderPhone      = $('delSenderPhone');
+const delReceiverName     = $('delReceiverName');
+const delReceiverPhone    = $('delReceiverPhone');
+const delParcelName       = $('delParcelName');
+const delParcelDesc       = $('delParcelDesc');
 
-const vehicleSheet          = $('vehicleSheet');
-const vehicleList           = $('vehicleList');
-const vehicleSheetCancel    = $('vehicleSheetCancel');
+const postErrandPage    = $('postErrandPage');
+const postErrandBackBtn = $('postErrandBackBtn');
+const errandTitle       = $('errandTitle');
+const errandDescription = $('errandDescription');
+const errandPickupRow   = $('errandPickupRow');
+const errandPickupInput = $('errandPickupInput');
+const errandPickupClear = $('errandPickupClear');
+const errandPickupResults = $('errandPickupResults');
+const errandUseCurrentBtn = $('errandUseCurrentBtn');
+const errandUpload      = $('errandUpload');
+const errandImageUrl    = $('errandImageUrl');
+const errandWillingToPay= $('errandWillingToPay');
+const errandError       = $('errandError');
+const submitErrandBtn   = $('submitErrandBtn');
 
-const searchingOverlay      = $('searchingOverlay');
-const searchingIcon         = $('searchingIcon');
-const searchingTitle        = $('searchingTitle');
-const searchingSubtitle     = $('searchingSubtitle');
-const cancelSearchBtn       = $('cancelSearchBtn');
+const postedErrandsPage     = $('postedErrandsPage');
+const postedErrandsBackBtn  = $('postedErrandsBackBtn');
+const postedErrandsList     = $('postedErrandsList');
 
-const toastEl               = $('toast');
+const errandDetailsPage     = $('errandDetailsPage');
+const errandDetailsBackBtn  = $('errandDetailsBackBtn');
+const errandDetailsTitle    = $('errandDetailsTitle');
+const errandDetailsBody     = $('errandDetailsBody');
+
+const chatPage     = $('chatPage');
+const chatBackBtn  = $('chatBackBtn');
+const chatTitle    = $('chatTitle');
+const chatSubtitle = $('chatSubtitle');
+const chatMessages = $('chatMessages');
+const chatInput    = $('chatInput');
+const chatSendBtn  = $('chatSendBtn');
+
+const vehicleSheet       = $('vehicleSheet');
+const vehicleList        = $('vehicleList');
+const vehicleSheetCancel = $('vehicleSheetCancel');
+
+const searchingOverlay  = $('searchingOverlay');
+const searchingIcon     = $('searchingIcon');
+const searchingTitle    = $('searchingTitle');
+const searchingSubtitle = $('searchingSubtitle');
+const cancelSearchBtn   = $('cancelSearchBtn');
+
+const toastEl = $('toast');
 
 /* ============================================================
    STATE
    ============================================================ */
-let currentUser     = null;
-let customerData    = null;
+let currentUser  = null;
+let customerData = null;
 
-let map             = null;
-let userMarker      = null;
-let pickupMarker    = null;
-let dropoffMarker   = null;
-let routeLayer      = null;
+let map = null;
+let userMarker = null;
+let pickupMarker = null;
+let dropoffMarker = null;
+let routeLayer = null;
 
-let userLocation    = null;
-let pickupLocation  = null;             // ride pickup
-let dropoffLocation = null;             // ride dropoff
-let currentRoute    = null;
+let userLocation = null;
+let pickupLocation = null;
+let dropoffLocation = null;
+let currentRoute = null;
 
 let deliveryPickupLocation  = null;
 let deliveryDropoffLocation = null;
 let deliveryRoute           = null;
 let deliveryVehicle         = null;
 
-let searchField     = 'destination';
-let currentPage     = 'home';           // 'home' | 'ride' | 'delivery'
-let searchAbort     = null;
+let errandPickupLocation = null;
+
+let searchField = 'destination';
+let searchPage  = 'ride';        // 'ride' | 'delivery' | 'errand'
+let currentPage = 'home';
+let searchAbort = null;
+
+let postedErrandsCache = {};
+let errandsListenerUnsub = null;
+let errandOffersUnsub = null;
+
+let activeChatErrandId = null;
+let activeChatProviderId = null;
+let chatUnsub = null;
 
 const DEFAULT_LOCATION = { lat: -15.4167, lng: 28.2833 };
 
@@ -1788,9 +2193,10 @@ function formatDuration(seconds) {
   return h + 'h ' + m + 'm';
 }
 
-function formatMoney(amount) {
-  if (amount == null || !isFinite(amount)) return '0.00';
-  return amount.toFixed(2);
+/* ROUNDED PRICE — whole numbers only */
+function formatPrice(amount) {
+  if (amount == null || !isFinite(amount)) return '0';
+  return String(Math.round(amount));
 }
 
 function debounce(fn, wait) {
@@ -1816,31 +2222,94 @@ function isValidPhone(raw) {
   return digits.length >= 9 && digits.length <= 15;
 }
 
+function timeAgo(ts) {
+  if (!ts) return 'just now';
+  const diff = Date.now() - ts;
+  const m = Math.floor(diff / 60000);
+  if (m < 1) return 'just now';
+  if (m < 60) return m + 'm ago';
+  const h = Math.floor(m / 60);
+  if (h < 24) return h + 'h ago';
+  const d = Math.floor(h / 24);
+  if (d < 7) return d + 'd ago';
+  return new Date(ts).toLocaleDateString();
+}
+
 /* ============================================================
    FARE CALCULATIONS
    ============================================================ */
 function computeRideFare(distanceMeters, durationSeconds) {
   const distanceKm  = (distanceMeters || 0) / 1000;
   const durationMin = (durationSeconds || 0) / 60;
-  const subtotal    = FARE.baseFare + (distanceKm * FARE.pricePerKm) + (durationMin * FARE.pricePerMinute);
-  return {
-    distanceKm,
-    durationMin,
-    finalFare: Math.max(FARE.minimumFare, subtotal)
-  };
+  const subtotal = FARE.baseFare + (distanceKm * FARE.pricePerKm) + (durationMin * FARE.pricePerMinute);
+  return { finalFare: Math.max(FARE.minimumFare, subtotal) };
 }
 
-function computeDeliveryFare(vehicleCfg, distanceMeters, durationSeconds) {
+function computeDeliveryFare(cfg, distanceMeters, durationSeconds) {
   const distanceKm  = (distanceMeters || 0) / 1000;
   const durationMin = (durationSeconds || 0) / 60;
-  const subtotal    = vehicleCfg.baseFare +
-                      (distanceKm * vehicleCfg.pricePerKm) +
-                      (durationMin * vehicleCfg.pricePerMinute);
-  return {
-    distanceKm,
-    durationMin,
-    finalFare: Math.max(vehicleCfg.minimumFare, subtotal)
-  };
+  const subtotal = cfg.baseFare + (distanceKm * cfg.pricePerKm) + (durationMin * cfg.pricePerMinute);
+  return { finalFare: Math.max(cfg.minimumFare, subtotal) };
+}
+
+/* ============================================================
+   CLOUDINARY UPLOAD
+   ============================================================ */
+function openCloudUpload(opts) {
+  return new Promise((resolve, reject) => {
+    if (typeof cloudinary === 'undefined' || !cloudinary.openUploadWidget) {
+      reject(new Error('Upload widget is not available.'));
+      return;
+    }
+    const settings = Object.assign({
+      cloudName: CLOUD_NAME,
+      uploadPreset: UPLOAD_PRESET,
+      sources: ['local', 'camera'],
+      maxFileSize: 155000000,
+      maxFiles: 1,
+      multiple: false,
+      cropping: false,
+      folder: 'ntumeni/errands'
+    }, opts || {});
+
+    cloudinary.openUploadWidget(settings, (err, res) => {
+      if (err) return reject(err);
+      if (!res) return;
+      if (res.event === 'success' && res.info && res.info.secure_url) {
+        resolve(res.info.secure_url);
+      }
+    });
+  });
+}
+
+function wireUploadBox(boxEl, hiddenEl, errEl) {
+  if (!boxEl || !hiddenEl) return;
+  boxEl.addEventListener('click', async () => {
+    if (boxEl.classList.contains('is-loading')) return;
+    if (errEl) errEl.innerText = '';
+    boxEl.classList.add('is-loading');
+    try {
+      const url = await openCloudUpload({
+        resourceType: 'image',
+        clientAllowedFormats: ['jpg', 'jpeg', 'png', 'webp', 'heic'],
+        maxImageWidth: 1600,
+        maxImageHeight: 1600
+      });
+      if (!url) throw new Error('No URL returned');
+      hiddenEl.value = url;
+      boxEl.querySelectorAll('img').forEach(i => i.remove());
+      const img = document.createElement('img');
+      img.src = url;
+      img.alt = 'Errand';
+      boxEl.appendChild(img);
+      boxEl.classList.add('has-image');
+    } catch (e) {
+      const msg = (e && (e.message || e.statusText)) || 'Upload failed.';
+      if (errEl) errEl.innerText = 'Upload failed: ' + msg;
+    } finally {
+      boxEl.classList.remove('is-loading');
+    }
+  });
 }
 
 /* ============================================================
@@ -1850,13 +2319,11 @@ function hideLoading() {
   loadingScreen.classList.add('done');
   setTimeout(() => { loadingScreen.style.display = 'none'; }, 500);
 }
-
 function showMaintenance(message) {
   appRoot.classList.add('hidden');
   maintenanceMsg.textContent = message || 'NTUMENI is currently undergoing scheduled maintenance. Please check back shortly.';
   maintenanceOverlay.classList.add('open');
 }
-
 function showBanned(reason) {
   appRoot.classList.add('hidden');
   banReasonBox.textContent = 'Reason: ' + (reason || 'Please contact support for more information.');
@@ -1864,8 +2331,7 @@ function showBanned(reason) {
 }
 
 /* ============================================================
-   MAP — OpenStreetMap standard tiles (no API key required)
-   Styled to resemble the default Google Maps look.
+   MAP — OpenStreetMap tiles with Google-like tint
    ============================================================ */
 function initMap() {
   if (map) return;
@@ -1879,7 +2345,7 @@ function initMap() {
   }).setView([DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lng], 17);
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    attribution: '&copy; OpenStreetMap contributors',
     subdomains: 'abc',
     maxZoom: 19,
     crossOrigin: true
@@ -1888,49 +2354,22 @@ function initMap() {
 
 function setUserMarker(lat, lng) {
   if (!map) return;
-  const icon = L.divIcon({
-    className: '',
-    html: '<div class="mk-user"></div>',
-    iconSize: [16, 16],
-    iconAnchor: [8, 8]
-  });
-  if (userMarker) {
-    userMarker.setLatLng([lat, lng]);
-  } else {
-    userMarker = L.marker([lat, lng], { icon, zIndexOffset: 800, interactive: false }).addTo(map);
-  }
+  const icon = L.divIcon({ className: '', html: '<div class="mk-user"></div>', iconSize: [16,16], iconAnchor: [8,8] });
+  if (userMarker) userMarker.setLatLng([lat, lng]);
+  else userMarker = L.marker([lat, lng], { icon, zIndexOffset: 800, interactive: false }).addTo(map);
 }
-
 function setPickupMarker(lat, lng) {
   if (!map) return;
-  const icon = L.divIcon({
-    className: '',
-    html: '<div class="mk-dot"></div>',
-    iconSize: [18, 18],
-    iconAnchor: [9, 9]
-  });
-  if (pickupMarker) {
-    pickupMarker.setLatLng([lat, lng]);
-  } else {
-    pickupMarker = L.marker([lat, lng], { icon, zIndexOffset: 1000 }).addTo(map);
-  }
+  const icon = L.divIcon({ className: '', html: '<div class="mk-dot"></div>', iconSize: [18,18], iconAnchor: [9,9] });
+  if (pickupMarker) pickupMarker.setLatLng([lat, lng]);
+  else pickupMarker = L.marker([lat, lng], { icon, zIndexOffset: 1000 }).addTo(map);
 }
-
 function setDropoffMarker(lat, lng) {
   if (!map) return;
-  const icon = L.divIcon({
-    className: '',
-    html: '<div class="mk-pin"></div>',
-    iconSize: [20, 20],
-    iconAnchor: [10, 20]
-  });
-  if (dropoffMarker) {
-    dropoffMarker.setLatLng([lat, lng]);
-  } else {
-    dropoffMarker = L.marker([lat, lng], { icon, zIndexOffset: 1000 }).addTo(map);
-  }
+  const icon = L.divIcon({ className: '', html: '<div class="mk-pin"></div>', iconSize: [20,20], iconAnchor: [10,20] });
+  if (dropoffMarker) dropoffMarker.setLatLng([lat, lng]);
+  else dropoffMarker = L.marker([lat, lng], { icon, zIndexOffset: 1000 }).addTo(map);
 }
-
 function clearTripLayers() {
   if (!map) return;
   if (routeLayer) { map.removeLayer(routeLayer); routeLayer = null; }
@@ -1944,7 +2383,7 @@ function clearTripLayers() {
    ============================================================ */
 function locateUser({ center = true, silent = false } = {}) {
   if (!navigator.geolocation) {
-    if (!silent) showToast('Geolocation is not supported on this device.');
+    if (!silent) showToast('Geolocation is not supported.');
     userLocation = { ...DEFAULT_LOCATION };
     mapBadgeText.textContent = 'Default location';
     setUserMarker(DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lng);
@@ -1953,9 +2392,7 @@ function locateUser({ center = true, silent = false } = {}) {
     if (!deliveryPickupLocation) deliveryPickupLocation = { lat: DEFAULT_LOCATION.lat, lng: DEFAULT_LOCATION.lng, label: 'Approximate location' };
     return;
   }
-
   mapBadgeText.textContent = 'Locating…';
-
   navigator.geolocation.getCurrentPosition(
     (pos) => {
       const { latitude, longitude } = pos.coords;
@@ -1973,7 +2410,7 @@ function locateUser({ center = true, silent = false } = {}) {
       mapBadgeText.textContent = 'Approximate location';
       if (!pickupLocation) pickupLocation = { lat: DEFAULT_LOCATION.lat, lng: DEFAULT_LOCATION.lng, label: 'Approximate location' };
       if (!deliveryPickupLocation) deliveryPickupLocation = { lat: DEFAULT_LOCATION.lat, lng: DEFAULT_LOCATION.lng, label: 'Approximate location' };
-      if (!silent) showToast('Location permission denied — using approximate location.');
+      if (!silent) showToast('Location permission denied — using approximate.');
       if (center && map) map.setView([DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lng], 18);
     },
     { enableHighAccuracy: true, timeout: 12000, maximumAge: 30000 }
@@ -1983,14 +2420,8 @@ function locateUser({ center = true, silent = false } = {}) {
 /* ============================================================
    SIDEBAR
    ============================================================ */
-function openSidebar() {
-  sidebar.classList.add('open');
-  sidebarOverlay.classList.add('open');
-}
-function closeSidebar() {
-  sidebar.classList.remove('open');
-  sidebarOverlay.classList.remove('open');
-}
+function openSidebar() { sidebar.classList.add('open'); sidebarOverlay.classList.add('open'); }
+function closeSidebar() { sidebar.classList.remove('open'); sidebarOverlay.classList.remove('open'); }
 
 sidebarBtn.addEventListener('click', openSidebar);
 sidebarOverlay.addEventListener('click', closeSidebar);
@@ -2002,7 +2433,7 @@ document.querySelectorAll('.nav-item').forEach((btn) => {
     setTimeout(() => {
       if (nav === 'history')       showToast('History — coming soon');
       else if (nav === 'transactions') showToast('Transactions — coming soon');
-      else if (nav === 'errands')      showToast('Errands — coming soon');
+      else if (nav === 'postedErrands') openPostedErrandsPage();
       else if (nav === 'account')      showToast('Account settings — coming soon');
     }, 220);
   });
@@ -2033,30 +2464,268 @@ function showPane(which) {
 }
 
 /* ============================================================
+   SEARCH — shared
+   ============================================================ */
+function getSearchAnchor() {
+  if (searchPage === 'errand') return userLocation || DEFAULT_LOCATION;
+  if (searchPage === 'delivery') {
+    return searchField === 'pickup'
+      ? (deliveryDropoffLocation || userLocation || DEFAULT_LOCATION)
+      : (deliveryPickupLocation || userLocation || DEFAULT_LOCATION);
+  }
+  return searchField === 'pickup'
+    ? (dropoffLocation || userLocation || DEFAULT_LOCATION)
+    : (pickupLocation || userLocation || DEFAULT_LOCATION);
+}
+
+function buildNominatimUrl(query, anchor) {
+  let viewbox = '';
+  if (anchor) {
+    const latDelta = SEARCH_RADIUS_KM / 111;
+    const lngDelta = SEARCH_RADIUS_KM / (111 * Math.max(0.15, Math.cos(anchor.lat * Math.PI / 180)));
+    viewbox = [
+      anchor.lng - lngDelta, anchor.lat + latDelta,
+      anchor.lng + lngDelta, anchor.lat - latDelta
+    ].join(',');
+  }
+  const params = new URLSearchParams({
+    format: 'json',
+    addressdetails: '1',
+    limit: String(SEARCH_MAX_RAW_RESULTS),
+    q: query,
+    dedupe: '1'
+  });
+  if (viewbox) {
+    params.set('viewbox', viewbox);
+    params.set('bounded', '0');
+  }
+  return 'https://nominatim.openstreetmap.org/search?' + params.toString();
+}
+
+async function fetchRawPlaces(query, anchor, signal) {
+  const url = buildNominatimUrl(query, anchor);
+  const res = await fetch(url, { headers: { 'Accept': 'application/json' }, signal });
+  if (!res.ok) throw new Error('Search failed');
+  return res.json();
+}
+
+function rankPlacesByDistance(rawPlaces, anchor) {
+  const anchorLat = anchor.lat;
+  const anchorLng = anchor.lng;
+  const enriched = [];
+  for (const p of (rawPlaces || [])) {
+    const lat = parseFloat(p.lat);
+    const lon = parseFloat(p.lon);
+    if (!isFinite(lat) || !isFinite(lon)) continue;
+    const distMeters = haversineMeters(anchorLat, anchorLng, lat, lon);
+    if (SEARCH_RADIUS_KM > 0 && distMeters > SEARCH_RADIUS_KM * 1000 * 1.5) continue;
+    enriched.push({ raw: p, lat, lon, distanceMeters: distMeters });
+  }
+  enriched.sort((a, b) => a.distanceMeters - b.distanceMeters);
+  return enriched.slice(0, SEARCH_SHOWN_RESULTS);
+}
+
+function getResultsTarget() {
+  if (searchPage === 'delivery') return deliveryResultsArea;
+  if (searchPage === 'errand')   return errandPickupResults;
+  return resultsArea;
+}
+
+function renderResults(rankedPlaces, mode) {
+  const targetEl = getResultsTarget();
+  if (!rankedPlaces || rankedPlaces.length === 0) {
+    targetEl.innerHTML = `
+      <div class="results-hint">
+        <i class="fas fa-circle-question"></i>
+        No places found nearby. Try a different search.
+      </div>`;
+    return;
+  }
+
+  const nearest = rankedPlaces[0];
+  let html = `
+    <div class="results-heading">
+      <span>Closest matches</span>
+      <span class="rh-count">${rankedPlaces.length} result${rankedPlaces.length === 1 ? '' : 's'} · ${escapeHtml(formatDistance(nearest.distanceMeters))}</span>
+    </div>
+  `;
+
+  rankedPlaces.forEach((item, idx) => {
+    const p = item.raw;
+    const primary   = p.name || (p.display_name || '').split(',')[0] || 'Unknown place';
+    const secondary = p.display_name || '';
+    const distText  = formatDistance(item.distanceMeters);
+    html += `
+      <button class="result-item" data-idx="${idx}">
+        <span class="result-ico"><i class="fas fa-location-dot"></i></span>
+        <span class="result-txt">
+          <strong>${escapeHtml(primary)}</strong>
+          <span>${escapeHtml(secondary)}</span>
+        </span>
+        <span class="result-dist">${escapeHtml(distText)}</span>
+      </button>`;
+  });
+  targetEl.innerHTML = html;
+
+  targetEl.querySelectorAll('.result-item').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.dataset.idx, 10);
+      const item = rankedPlaces[idx];
+      if (item) handlePlaceSelected(item.raw, mode);
+    });
+  });
+}
+
+function handlePlaceSelected(place, mode) {
+  const lat = parseFloat(place.lat);
+  const lon = parseFloat(place.lon);
+  const label = place.name || (place.display_name || '').split(',')[0] || 'Selected place';
+  const address = place.display_name || label;
+
+  if (searchPage === 'errand') {
+    errandPickupLocation = { lat, lng: lon, label, address };
+    errandPickupInput.value = label;
+    errandPickupResults.style.display = 'none';
+    errandPickupClear.style.display = 'flex';
+    return;
+  }
+
+  if (searchPage === 'delivery') {
+    if (mode === 'pickup') {
+      deliveryPickupLocation = { lat, lng: lon, label, address };
+      deliveryPickupInput.value = label;
+      deliveryResultsArea.style.display = 'none';
+      deliveryFormArea.style.display = 'block';
+      syncClearButtons();
+      setActiveRow('destination', 'delivery');
+      deliveryDestInput.focus();
+      return;
+    }
+    deliveryDropoffLocation = { lat, lng: lon, label, address };
+    deliveryDestInput.value = label;
+    deliveryResultsArea.style.display = 'none';
+    deliveryFormArea.style.display = 'block';
+    syncClearButtons();
+    deliveryDestInput.blur();
+    return;
+  }
+
+  /* ride */
+  if (mode === 'pickup') {
+    pickupLocation = { lat, lng: lon, label, address };
+    pickupInput.value = label;
+    syncClearButtons();
+    setActiveRow('destination', 'ride');
+    destInput.focus();
+    const q = destInput.value.trim();
+    if (q.length >= 2) runSearch(q, 'destination');
+    else showSearchHint('ride');
+    return;
+  }
+  dropoffLocation = { lat, lng: lon, label, address };
+  destInput.value = label;
+  syncClearButtons();
+  closeRidePage();
+  setTimeout(() => buildRideTrip(), 320);
+}
+
+function showSearchHint(page) {
+  const targetEl = page === 'delivery' ? deliveryResultsArea : (page === 'errand' ? errandPickupResults : resultsArea);
+  targetEl.innerHTML = `
+    <div class="results-hint">
+      <i class="fas fa-magnifying-glass-location"></i>
+      Keep typing — closest matches appear in real time within ${SEARCH_RADIUS_KM} km.
+    </div>`;
+}
+
+function showLoadingResults(page) {
+  const targetEl = page === 'delivery' ? deliveryResultsArea : (page === 'errand' ? errandPickupResults : resultsArea);
+  targetEl.innerHTML = `<div class="loader-row"><span class="mini-spin"></span> Searching…</div>`;
+}
+
+/* Real-time debounce — 220 ms for a snappy feel */
+const debouncedSearch = debounce((q, mode) => runSearch(q, mode), 220);
+
+async function runSearch(query, mode) {
+  const trimmed = (query || '').trim();
+
+  if (!trimmed || trimmed.length < 2) {
+    if (searchPage === 'delivery') {
+      deliveryResultsArea.style.display = 'none';
+      deliveryFormArea.style.display = 'block';
+    } else if (searchPage === 'errand') {
+      errandPickupResults.style.display = 'none';
+    } else {
+      showSearchHint('ride');
+    }
+    return;
+  }
+
+  if (searchAbort) searchAbort.abort();
+  searchAbort = new AbortController();
+
+  const page = searchPage;
+  const targetEl = getResultsTarget();
+  targetEl.style.display = 'block';
+  if (page === 'delivery') {
+    deliveryResultsArea.style.display = 'block';
+    deliveryFormArea.style.display = 'none';
+  }
+
+  showLoadingResults(page);
+
+  const anchor = getSearchAnchor();
+
+  try {
+    const raw = await fetchRawPlaces(trimmed, anchor, searchAbort.signal);
+
+    /* Make sure the input hasn't changed */
+    let currentVal = '';
+    if (page === 'errand') currentVal = errandPickupInput.value.trim();
+    else if (page === 'delivery') currentVal = (mode === 'pickup' ? deliveryPickupInput.value : deliveryDestInput.value).trim();
+    else currentVal = (mode === 'pickup' ? pickupInput.value : destInput.value).trim();
+
+    if (currentVal !== trimmed) return;
+
+    const ranked = rankPlacesByDistance(raw, anchor);
+    renderResults(ranked, mode);
+
+  } catch (err) {
+    if (err.name === 'AbortError') return;
+    const tEl = getResultsTarget();
+    tEl.innerHTML = `
+      <div class="results-hint">
+        <i class="fas fa-triangle-exclamation"></i>
+        Could not reach the search service. Try again.
+      </div>`;
+  }
+}
+
+/* ============================================================
    RIDE PAGE
    ============================================================ */
 function openRidePage(mode) {
+  searchPage = 'ride';
   currentPage = 'ride';
   searchField = mode || 'destination';
 
   if (pickupLocation) pickupInput.value = pickupLocation.label || 'Current location';
   if (dropoffLocation) destInput.value = dropoffLocation.label || '';
   else destInput.value = '';
-
   syncClearButtons();
-  ridePage.classList.add('open');
 
+  ridePage.classList.add('open');
   setTimeout(() => {
     if (searchField === 'pickup') {
       pickupInput.focus();
       pickupInput.select();
       const q = pickupInput.value.trim();
-      if (q.length >= 3) runSearch(q, 'pickup');
+      if (q.length >= 2) runSearch(q, 'pickup');
       else showSearchHint('ride');
     } else {
       destInput.focus();
       const q = destInput.value.trim();
-      if (q.length >= 3) runSearch(q, 'destination');
+      if (q.length >= 2) runSearch(q, 'destination');
       else showSearchHint('ride');
     }
     if (map) map.invalidateSize();
@@ -2067,24 +2736,24 @@ function closeRidePage() {
   ridePage.classList.remove('open');
   setTimeout(() => { if (map) map.invalidateSize(); }, 500);
 }
-
 rideBackBtn.addEventListener('click', closeRidePage);
 
+/* Active input state */
 function setActiveRow(which, page) {
-  if (page === 'ride') {
-    pickupInputRow.classList.toggle('focused', which === 'pickup');
-    destInputRow.classList.toggle('focused', which === 'destination');
-  } else {
+  if (page === 'delivery') {
     deliveryPickupRow.classList.toggle('focused', which === 'pickup');
     deliveryDestRow.classList.toggle('focused', which === 'destination');
+  } else {
+    pickupInputRow.classList.toggle('focused', which === 'pickup');
+    destInputRow.classList.toggle('focused', which === 'destination');
   }
   searchField = which;
 }
 
-pickupInput.addEventListener('focus', () => setActiveRow('pickup', 'ride'));
-destInput.addEventListener('focus',   () => setActiveRow('destination', 'ride'));
-pickupInput.addEventListener('click', () => setActiveRow('pickup', 'ride'));
-destInput.addEventListener('click',   () => setActiveRow('destination', 'ride'));
+pickupInput.addEventListener('focus', () => { searchPage = 'ride'; setActiveRow('pickup', 'ride'); });
+destInput.addEventListener('focus',   () => { searchPage = 'ride'; setActiveRow('destination', 'ride'); });
+pickupInput.addEventListener('click', () => { searchPage = 'ride'; setActiveRow('pickup', 'ride'); });
+destInput.addEventListener('click',   () => { searchPage = 'ride'; setActiveRow('destination', 'ride'); });
 
 pickupClearBtn.addEventListener('click', (e) => {
   e.stopPropagation();
@@ -2094,7 +2763,6 @@ pickupClearBtn.addEventListener('click', (e) => {
   pickupInput.focus();
   showSearchHint('ride');
 });
-
 destClearBtn.addEventListener('click', (e) => {
   e.stopPropagation();
   destInput.value = '';
@@ -2109,12 +2777,27 @@ function syncClearButtons() {
   destClearBtn.style.display   = destInput.value.trim()   ? 'flex' : 'none';
   deliveryPickupClear.style.display = deliveryPickupInput.value.trim() ? 'flex' : 'none';
   deliveryDestClear.style.display   = deliveryDestInput.value.trim()   ? 'flex' : 'none';
+  errandPickupClear.style.display   = errandPickupInput.value.trim()   ? 'flex' : 'none';
 }
+
+pickupInput.addEventListener('input', () => {
+  syncClearButtons();
+  searchPage = 'ride';
+  setActiveRow('pickup', 'ride');
+  debouncedSearch(pickupInput.value.trim(), 'pickup');
+});
+destInput.addEventListener('input', () => {
+  syncClearButtons();
+  searchPage = 'ride';
+  setActiveRow('destination', 'ride');
+  debouncedSearch(destInput.value.trim(), 'destination');
+});
 
 /* ============================================================
    DELIVERY PAGE
    ============================================================ */
 function openDeliveryPage() {
+  searchPage = 'delivery';
   currentPage = 'delivery';
 
   if (deliveryPickupLocation) deliveryPickupInput.value = deliveryPickupLocation.label || 'Current location';
@@ -2126,25 +2809,35 @@ function openDeliveryPage() {
   syncClearButtons();
   deliveryResultsArea.style.display = 'none';
   deliveryFormArea.style.display = 'block';
+  deliveryError.innerText = '';
 
   deliveryPage.classList.add('open');
-
-  setTimeout(() => {
-    if (map) map.invalidateSize();
-  }, 480);
+  setTimeout(() => { if (map) map.invalidateSize(); }, 480);
 }
 
 function closeDeliveryPage() {
   deliveryPage.classList.remove('open');
   setTimeout(() => { if (map) map.invalidateSize(); }, 500);
 }
-
 deliveryBackBtn.addEventListener('click', closeDeliveryPage);
 
-deliveryPickupInput.addEventListener('focus', () => setActiveRow('pickup', 'delivery'));
-deliveryDestInput.addEventListener('focus',   () => setActiveRow('destination', 'delivery'));
-deliveryPickupInput.addEventListener('click', () => setActiveRow('pickup', 'delivery'));
-deliveryDestInput.addEventListener('click',   () => setActiveRow('destination', 'delivery'));
+deliveryPickupInput.addEventListener('focus', () => { searchPage = 'delivery'; setActiveRow('pickup', 'delivery'); });
+deliveryDestInput.addEventListener('focus',   () => { searchPage = 'delivery'; setActiveRow('destination', 'delivery'); });
+deliveryPickupInput.addEventListener('click', () => { searchPage = 'delivery'; setActiveRow('pickup', 'delivery'); });
+deliveryDestInput.addEventListener('click',   () => { searchPage = 'delivery'; setActiveRow('destination', 'delivery'); });
+
+deliveryPickupInput.addEventListener('input', () => {
+  syncClearButtons();
+  searchPage = 'delivery';
+  setActiveRow('pickup', 'delivery');
+  debouncedSearch(deliveryPickupInput.value.trim(), 'pickup');
+});
+deliveryDestInput.addEventListener('input', () => {
+  syncClearButtons();
+  searchPage = 'delivery';
+  setActiveRow('destination', 'delivery');
+  debouncedSearch(deliveryDestInput.value.trim(), 'destination');
+});
 
 deliveryPickupClear.addEventListener('click', (e) => {
   e.stopPropagation();
@@ -2152,302 +2845,546 @@ deliveryPickupClear.addEventListener('click', (e) => {
   syncClearButtons();
   setActiveRow('pickup', 'delivery');
   deliveryPickupInput.focus();
-  hideDeliveryResults();
+  deliveryResultsArea.style.display = 'none';
+  deliveryFormArea.style.display = 'block';
 });
-
 deliveryDestClear.addEventListener('click', (e) => {
   e.stopPropagation();
   deliveryDestInput.value = '';
   syncClearButtons();
   setActiveRow('destination', 'delivery');
   deliveryDestInput.focus();
-  hideDeliveryResults();
-});
-
-function hideDeliveryResults() {
   deliveryResultsArea.style.display = 'none';
   deliveryFormArea.style.display = 'block';
+});
+
+/* ============================================================
+   POST ERRAND PAGE
+   ============================================================ */
+function openPostErrandPage() {
+  searchPage = 'errand';
+  currentPage = 'errand';
+
+  if (errandPickupLocation) errandPickupInput.value = errandPickupLocation.label || '';
+  syncClearButtons();
+  errandPickupResults.style.display = 'none';
+  errandError.innerText = '';
+
+  postErrandPage.classList.add('open');
+  setTimeout(() => { if (map) map.invalidateSize(); }, 480);
 }
 
-function showDeliveryResults() {
-  deliveryResultsArea.style.display = 'block';
-  deliveryFormArea.style.display = 'none';
+function closePostErrandPage() {
+  postErrandPage.classList.remove('open');
+  setTimeout(() => { if (map) map.invalidateSize(); }, 500);
+}
+postErrandBackBtn.addEventListener('click', closePostErrandPage);
+
+errandPickupInput.addEventListener('focus', () => { searchPage = 'errand'; });
+errandPickupInput.addEventListener('click', () => { searchPage = 'errand'; });
+
+errandPickupInput.addEventListener('input', () => {
+  syncClearButtons();
+  searchPage = 'errand';
+  debouncedSearch(errandPickupInput.value.trim(), 'pickup');
+});
+
+errandPickupClear.addEventListener('click', (e) => {
+  e.stopPropagation();
+  errandPickupInput.value = '';
+  errandPickupLocation = null;
+  syncClearButtons();
+  errandPickupResults.style.display = 'none';
+  errandPickupInput.focus();
+});
+
+errandUseCurrentBtn.addEventListener('click', () => {
+  if (!userLocation) {
+    showToast('Waiting for your location…');
+    locateUser({ center: false });
+    return;
+  }
+  errandPickupLocation = { lat: userLocation.lat, lng: userLocation.lng, label: 'Current location' };
+  errandPickupInput.value = 'Current location';
+  errandPickupResults.style.display = 'none';
+  syncClearButtons();
+  showToast('Using current location');
+});
+
+/* Cloudinary upload for errand photo */
+wireUploadBox(errandUpload, errandImageUrl, errandError);
+
+submitErrandBtn.addEventListener('click', submitErrand);
+
+async function submitErrand() {
+  errandError.innerText = '';
+
+  const title = errandTitle.value.trim();
+  const description = errandDescription.value.trim();
+  const willingToPayRaw = errandWillingToPay.value;
+  const willingToPay = parseInt(willingToPayRaw, 10);
+  const imageUrl = errandImageUrl.value;
+
+  if (!title) { errandError.innerText = 'Please enter a title for the errand.'; return; }
+  if (!description) { errandError.innerText = 'Please describe what needs to be done.'; return; }
+  if (!errandPickupLocation) { errandError.innerText = 'Please choose a pickup location.'; return; }
+  if (!willingToPayRaw || !isFinite(willingToPay) || willingToPay <= 0) {
+    errandError.innerText = 'Please enter how much you are willing to pay.';
+    return;
+  }
+  if (!currentUser || !customerData) {
+    errandError.innerText = 'Session expired. Please sign in again.';
+    return;
+  }
+
+  const originalHtml = submitErrandBtn.innerHTML;
+  submitErrandBtn.disabled = true;
+  submitErrandBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Posting…';
+
+  try {
+    const errandRef = push(ref(database, 'errands'));
+    const errandId = errandRef.key;
+
+    await set(errandRef, {
+      errandId,
+      customerId: currentUser.uid,
+      customerName: customerData.fullName || `${customerData.firstName || ''} ${customerData.lastName || ''}`.trim() || 'Customer',
+      customerPhone: customerData.phone || '',
+      customerPhoto: customerData.profileUrl || '',
+      title,
+      description,
+      pickup: errandPickupLocation,
+      imageUrl: imageUrl || '',
+      willingToPay,
+      status: 'pending',    // pending | accepted | rejected | completed
+      createdAt: Date.now()
+    });
+
+    /* Reset form */
+    errandTitle.value = '';
+    errandDescription.value = '';
+    errandWillingToPay.value = '';
+    errandPickupInput.value = '';
+    errandPickupLocation = null;
+    errandPickupResults.style.display = 'none';
+    errandUpload.querySelectorAll('img').forEach(i => i.remove());
+    errandUpload.classList.remove('has-image');
+    errandImageUrl.value = '';
+    syncClearButtons();
+
+    showToast('✅ Errand posted! Providers will start sending offers.');
+    closePostErrandPage();
+    showPane('home');
+
+  } catch (err) {
+    console.error(err);
+    errandError.innerText = 'Could not post errand: ' + (err.message || err);
+  } finally {
+    submitErrandBtn.disabled = false;
+    submitErrandBtn.innerHTML = originalHtml;
+  }
 }
 
 /* ============================================================
-   NOMINATIM SEARCH — nearest-first, always 15 km
+   POSTED ERRANDS PAGE
    ============================================================ */
-function getSearchAnchor() {
-  if (currentPage === 'delivery') {
-    if (searchField === 'pickup') {
-      return deliveryDropoffLocation || userLocation || DEFAULT_LOCATION;
+function openPostedErrandsPage() {
+  currentPage = 'postedErrands';
+  postedErrandsPage.classList.add('open');
+  loadPostedErrands();
+}
+
+function closePostedErrandsPage() {
+  postedErrandsPage.classList.remove('open');
+  if (errandsListenerUnsub) {
+    errandsListenerUnsub();
+    errandsListenerUnsub = null;
+  }
+}
+postedErrandsBackBtn.addEventListener('click', closePostedErrandsPage);
+
+function loadPostedErrands() {
+  if (!currentUser) return;
+
+  if (errandsListenerUnsub) {
+    errandsListenerUnsub();
+    errandsListenerUnsub = null;
+  }
+
+  const errandsRef = ref(database, 'errands');
+
+  errandsListenerUnsub = onValue(errandsRef, (snap) => {
+    const data = snap.val() || {};
+    const mine = [];
+    for (const id in data) {
+      const e = data[id];
+      if (e && e.customerId === currentUser.uid) {
+        mine.push({ ...e, errandId: id });
+      }
     }
-    return deliveryPickupLocation || userLocation || DEFAULT_LOCATION;
-  }
-  if (searchField === 'pickup') {
-    return dropoffLocation || userLocation || DEFAULT_LOCATION;
-  }
-  return pickupLocation || userLocation || DEFAULT_LOCATION;
-}
+    mine.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+    postedErrandsCache = {};
+    mine.forEach(e => { postedErrandsCache[e.errandId] = e; });
 
-function buildNominatimUrl(query, anchor) {
-  let viewbox = '';
-  const radiusKm = SEARCH_RADIUS_KM;
-
-  if (anchor && radiusKm > 0) {
-    const latDelta = radiusKm / 111;
-    const lngDelta = radiusKm / (111 * Math.max(0.15, Math.cos(anchor.lat * Math.PI / 180)));
-
-    viewbox = [
-      anchor.lng - lngDelta,
-      anchor.lat + latDelta,
-      anchor.lng + lngDelta,
-      anchor.lat - latDelta
-    ].join(',');
-  }
-
-  const params = new URLSearchParams({
-    format: 'json',
-    addressdetails: '1',
-    limit: String(SEARCH_MAX_RAW_RESULTS),
-    q: query,
-    dedupe: '1'
+    renderPostedErrands(mine);
+    updateErrandsBadge(mine);
+  }, (err) => {
+    console.warn('Errands listener error:', err);
+    postedErrandsList.innerHTML = `
+      <div class="empty-state">
+        <i class="fas fa-triangle-exclamation"></i>
+        <h3>Could not load errands</h3>
+        <p>Check your connection and try again.</p>
+      </div>`;
   });
+}
 
-  if (viewbox) {
-    params.set('viewbox', viewbox);
-    params.set('bounded', '0');
+function updateErrandsBadge(errands) {
+  if (!errandsBadge) return;
+  const activeCount = errands.filter(e => e.status === 'pending' || e.status === 'accepted').length;
+  if (activeCount > 0) {
+    errandsBadge.textContent = String(activeCount);
+    errandsBadge.style.display = 'inline-flex';
+  } else {
+    errandsBadge.style.display = 'none';
   }
-
-  return 'https://nominatim.openstreetmap.org/search?' + params.toString();
 }
 
-async function fetchRawPlaces(query, anchor, signal) {
-  const url = buildNominatimUrl(query, anchor);
-  const res = await fetch(url, {
-    headers: { 'Accept': 'application/json' },
-    signal
-  });
-  if (!res.ok) throw new Error('Search failed');
-  return res.json();
-}
-
-function rankPlacesByDistance(rawPlaces, anchor) {
-  const anchorLat = anchor.lat;
-  const anchorLng = anchor.lng;
-
-  const enriched = [];
-
-  for (const p of (rawPlaces || [])) {
-    const lat = parseFloat(p.lat);
-    const lon = parseFloat(p.lon);
-    if (!isFinite(lat) || !isFinite(lon)) continue;
-
-    const distMeters = haversineMeters(anchorLat, anchorLng, lat, lon);
-
-    /* Keep only results within the search radius (plus 25% tolerance). */
-    if (SEARCH_RADIUS_KM > 0 && distMeters > SEARCH_RADIUS_KM * 1000 * 1.25) continue;
-
-    enriched.push({
-      raw: p,
-      lat,
-      lon,
-      distanceMeters: distMeters
-    });
-  }
-
-  enriched.sort((a, b) => a.distanceMeters - b.distanceMeters);
-  return enriched.slice(0, SEARCH_SHOWN_RESULTS);
-}
-
-/* ---- Render search results ---- */
-function renderResults(rankedPlaces, mode, page) {
-  const targetEl = page === 'delivery' ? deliveryResultsArea : resultsArea;
-
-  if (!rankedPlaces || rankedPlaces.length === 0) {
-    targetEl.innerHTML = `
-      <div class="results-hint">
-        <i class="fas fa-circle-question"></i>
-        No places found nearby. Try a different search term.
+function renderPostedErrands(errands) {
+  if (!errands.length) {
+    postedErrandsList.innerHTML = `
+      <div class="empty-state">
+        <i class="fas fa-clipboard-list"></i>
+        <h3>No errands yet</h3>
+        <p>Post your first errand and let providers bid for it.</p>
       </div>`;
     return;
   }
 
-  const nearest = rankedPlaces[0];
+  let html = '';
+  errands.forEach(e => {
+    html += renderErrandCard(e, true);
+  });
+  postedErrandsList.innerHTML = html;
 
-  let html = `
-    <div class="results-heading">
-      <span>Nearest results</span>
-      <span class="rh-count">${rankedPlaces.length} ${rankedPlaces.length === 1 ? 'place' : 'places'} · closest ${escapeHtml(formatDistance(nearest.distanceMeters))}</span>
+  postedErrandsList.querySelectorAll('[data-open-errand]').forEach(btn => {
+    btn.addEventListener('click', (ev) => {
+      ev.stopPropagation();
+      openErrandDetails(btn.dataset.openErrand);
+    });
+  });
+}
+
+function renderErrandCard(e, withActions) {
+  const statusClass = ['pending', 'accepted', 'rejected', 'completed'].includes(e.status)
+    ? e.status : 'pending';
+  const statusLabel = statusClass.charAt(0).toUpperCase() + statusClass.slice(1);
+
+  const pickupLabel = e.pickup && e.pickup.label ? e.pickup.label : 'Pickup';
+  const photo = e.customerPhoto
+    ? `<img src="${escapeHtml(e.customerPhoto)}" alt="">`
+    : `<i class="fas fa-user"></i>`;
+
+  const imageBlock = e.imageUrl
+    ? `<div class="fb-image"><img src="${escapeHtml(e.imageUrl)}" alt="Errand"></div>`
+    : '';
+
+  const actions = withActions
+    ? `<div class="fb-card-footer">
+         <button data-open-errand="${escapeHtml(e.errandId)}">
+           <i class="fas fa-comments"></i> View Offers
+         </button>
+       </div>`
+    : '';
+
+  return `
+    <article class="fb-card" data-errand="${escapeHtml(e.errandId)}">
+      <div class="fb-card-head">
+        <div class="fb-avatar">${photo}</div>
+        <div class="fb-meta">
+          <strong>${escapeHtml(e.customerName || 'You')}</strong>
+          <span>${escapeHtml(timeAgo(e.createdAt))} · Errand</span>
+        </div>
+        <span class="fb-status ${statusClass}">${escapeHtml(statusLabel)}</span>
+      </div>
+      <div class="fb-card-body">
+        <h4>${escapeHtml(e.title || 'Untitled errand')}</h4>
+        <p>${escapeHtml(e.description || '')}</p>
+        ${imageBlock}
+        <div class="fb-tags">
+          <span class="fb-tag"><i class="fas fa-location-dot"></i> ${escapeHtml(pickupLabel)}</span>
+          <span class="fb-tag price"><i class="fas fa-money-bill-wave"></i> K ${escapeHtml(formatPrice(e.willingToPay))}</span>
+        </div>
+      </div>
+      <div class="fb-card-stats">
+        <span class="stat-pill"><i class="fas fa-clock"></i> ${escapeHtml(timeAgo(e.createdAt))}</span>
+        <span class="stat-pill"><i class="fas fa-comments"></i> Offers</span>
+      </div>
+      ${actions}
+    </article>
+  `;
+}
+
+/* ============================================================
+   ERRAND DETAILS + OFFERS
+   ============================================================ */
+function openErrandDetails(errandId) {
+  const errand = postedErrandsCache[errandId];
+  if (!errand) { showToast('Errand not found'); return; }
+
+  currentPage = 'errandDetails';
+  errandDetailsTitle.textContent = errand.title || 'Errand';
+  errandDetailsBody.innerHTML = '<div class="loader-row" style="padding:40px;"><span class="mini-spin"></span> Loading offers…</div>';
+  errandDetailsPage.classList.add('open');
+
+  if (errandOffersUnsub) { errandOffersUnsub(); errandOffersUnsub = null; }
+
+  const offersRef = ref(database, `errands/${errandId}/offers`);
+  errandOffersUnsub = onValue(offersRef, (snap) => {
+    const data = snap.val() || {};
+    const offers = Object.values(data).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+    renderErrandDetails(errand, offers);
+  }, (err) => {
+    console.warn('Offers listener error:', err);
+    errandDetailsBody.innerHTML = `<div class="empty-state"><i class="fas fa-triangle-exclamation"></i><h3>Could not load offers</h3></div>`;
+  });
+}
+
+function closeErrandDetailsPage() {
+  errandDetailsPage.classList.remove('open');
+  if (errandOffersUnsub) { errandOffersUnsub(); errandOffersUnsub = null; }
+}
+errandDetailsBackBtn.addEventListener('click', closeErrandDetailsPage);
+
+function renderErrandDetails(errand, offers) {
+  const statusClass = ['pending', 'accepted', 'rejected', 'completed'].includes(errand.status)
+    ? errand.status : 'pending';
+  const statusLabel = statusClass.charAt(0).toUpperCase() + statusClass.slice(1);
+  const pickupLabel = errand.pickup && errand.pickup.label ? errand.pickup.label : 'Pickup';
+
+  const headCard = `
+    <div class="detail-head-card">
+      <h3>${escapeHtml(errand.title || 'Errand')}</h3>
+      <p>${escapeHtml(errand.description || '')}</p>
+      <div class="detail-head-stats">
+        <span class="detail-head-stat"><i class="fas fa-location-dot"></i> ${escapeHtml(pickupLabel)}</span>
+        <span class="detail-head-stat"><i class="fas fa-money-bill-wave"></i> K ${escapeHtml(formatPrice(errand.willingToPay))}</span>
+        <span class="detail-head-stat"><i class="fas fa-circle-info"></i> ${escapeHtml(statusLabel)}</span>
+      </div>
     </div>
   `;
 
-  rankedPlaces.forEach((item, idx) => {
-    const p = item.raw;
-    const primary   = p.name || (p.display_name || '').split(',')[0] || 'Unknown place';
-    const secondary = p.display_name || '';
-    const distText  = formatDistance(item.distanceMeters);
-
-    html += `
-      <button class="result-item" data-idx="${idx}">
-        <span class="result-ico"><i class="fas fa-location-dot"></i></span>
-        <span class="result-txt">
-          <strong>${escapeHtml(primary)}</strong>
-          <span>${escapeHtml(secondary)}</span>
-        </span>
-        <span class="result-dist">${escapeHtml(distText)}</span>
-      </button>
+  let offersHtml = '';
+  if (!offers.length) {
+    offersHtml = `
+      <div class="offers-empty">
+        <span class="mini-spin"></span>
+        <strong>Waiting for offers…</strong>
+        <p>Providers will appear here with their prices as soon as they bid on your errand.</p>
+      </div>
     `;
+  } else {
+    offersHtml = offers.map(o => {
+      const avatar = o.providerPhoto
+        ? `<img src="${escapeHtml(o.providerPhoto)}" alt="">`
+        : `<i class="fas fa-user"></i>`;
+
+      const alreadyAccepted = errand.status === 'accepted';
+      const isThisAccepted  = o.status === 'accepted';
+      const isRejected      = o.status === 'rejected';
+
+      let actionBtn = '';
+      if (isThisAccepted) {
+        actionBtn = `<button class="offer-accept-btn" data-open-chat="${escapeHtml(o.providerId)}" style="background:#12b76a;">
+          <i class="fas fa-comments"></i> Open Chat
+        </button>`;
+      } else if (alreadyAccepted || isRejected) {
+        actionBtn = `<button class="offer-accept-btn" disabled style="background:#aeaeb2;">
+          <i class="fas fa-ban"></i> ${isRejected ? 'Rejected' : 'Not selected'}
+        </button>`;
+      } else {
+        actionBtn = `<button class="offer-accept-btn" data-accept-offer="${escapeHtml(o.providerId)}">
+          <i class="fas fa-check"></i> Accept
+        </button>`;
+      }
+
+      return `
+        <div class="offer-card">
+          <div class="offer-avatar">${avatar}</div>
+          <div class="offer-body">
+            <strong>${escapeHtml(o.providerName || 'Provider')}</strong>
+            <div class="offer-message">${escapeHtml(o.message || 'I can handle this errand.')}</div>
+            <div class="offer-price-row">
+              <div class="offer-price"><small>K</small>${escapeHtml(formatPrice(o.price))}</div>
+              ${actionBtn}
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  errandDetailsBody.innerHTML = headCard + offersHtml;
+
+  /* Wire Accept buttons */
+  errandDetailsBody.querySelectorAll('[data-accept-offer]').forEach(btn => {
+    btn.addEventListener('click', () => acceptOffer(errand, btn.dataset.acceptOffer));
   });
 
-  targetEl.innerHTML = html;
-
-  targetEl.querySelectorAll('.result-item').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const idx = parseInt(btn.dataset.idx, 10);
-      const item = rankedPlaces[idx];
-      if (item) handlePlaceSelected(item.raw, mode, page);
-    });
+  /* Wire Open Chat buttons */
+  errandDetailsBody.querySelectorAll('[data-open-chat]').forEach(btn => {
+    btn.addEventListener('click', () => openChat(errand, btn.dataset.openChat));
   });
 }
 
-/* ---- Place selected ---- */
-function handlePlaceSelected(place, mode, page) {
-  const lat = parseFloat(place.lat);
-  const lon = parseFloat(place.lon);
-  const label = place.name || (place.display_name || '').split(',')[0] || 'Selected place';
-
-  if (page === 'delivery') {
-    if (mode === 'pickup') {
-      deliveryPickupLocation = { lat, lng: lon, label, address: place.display_name || label };
-      deliveryPickupInput.value = label;
-      syncClearButtons();
-      setActiveRow('destination', 'delivery');
-      deliveryDestInput.focus();
-      hideDeliveryResults();
-      return;
-    }
-    deliveryDropoffLocation = { lat, lng: lon, label, address: place.display_name || label };
-    deliveryDestInput.value = label;
-    syncClearButtons();
-    hideDeliveryResults();
-    deliveryDestInput.blur();
-    return;
-  }
-
-  /* Ride page */
-  if (mode === 'pickup') {
-    pickupLocation = { lat, lng: lon, label, address: place.display_name || label };
-    pickupInput.value = label;
-    syncClearButtons();
-    setActiveRow('destination', 'ride');
-    destInput.focus();
-
-    const q = destInput.value.trim();
-    if (q.length >= 3) runSearch(q, 'destination');
-    else showSearchHint('ride');
-    return;
-  }
-
-  dropoffLocation = { lat, lng: lon, label, address: place.display_name || label };
-  destInput.value = label;
-  syncClearButtons();
-
-  closeRidePage();
-  setTimeout(() => buildRideTrip(), 320);
-}
-
-/* ---- Search hint ---- */
-function showSearchHint(page) {
-  const targetEl = page === 'delivery' ? deliveryResultsArea : resultsArea;
-  targetEl.innerHTML = `
-    <div class="results-hint">
-      <i class="fas fa-magnifying-glass-location"></i>
-      Start typing a destination — nearest places within ${SEARCH_RADIUS_KM} km appear first.
-    </div>`;
-  if (page === 'delivery') showDeliveryResults();
-}
-
-function showLoadingResults(page) {
-  const targetEl = page === 'delivery' ? deliveryResultsArea : resultsArea;
-  targetEl.innerHTML = `
-    <div class="loader-row">
-      <span class="mini-spin"></span> Searching nearby…
-    </div>`;
-  if (page === 'delivery') showDeliveryResults();
-}
-
-/* ---- Search runner ---- */
-const debouncedSearch = debounce((query, mode, page) => {
-  runSearch(query, mode, page);
-}, 420);
-
-async function runSearch(query, mode, page) {
-  page = page || (currentPage === 'delivery' ? 'delivery' : 'ride');
-
-  const trimmed = (query || '').trim();
-
-  if (!trimmed || trimmed.length < 3) {
-    if (page === 'delivery') hideDeliveryResults();
-    else showSearchHint('ride');
-    return;
-  }
-
-  if (searchAbort) searchAbort.abort();
-  searchAbort = new AbortController();
-
-  showLoadingResults(page);
-
-  const anchor = getSearchAnchor();
+/* ============================================================
+   ACCEPT OFFER + OPEN CHAT
+   ============================================================ */
+async function acceptOffer(errand, providerId) {
+  if (!errand || !providerId) return;
+  if (!confirm('Accept this offer? Other offers will be closed.')) return;
 
   try {
-    const raw = await fetchRawPlaces(trimmed, anchor, searchAbort.signal);
+    const updates = {};
+    updates[`errands/${errand.errandId}/status`] = 'accepted';
+    updates[`errands/${errand.errandId}/acceptedProviderId`] = providerId;
+    updates[`errands/${errand.errandId}/acceptedAt`] = Date.now();
+    updates[`errands/${errand.errandId}/offers/${providerId}/status`] = 'accepted';
 
-    /* Verify the input hasn't changed */
-    const currentVal = page === 'delivery'
-      ? (mode === 'pickup' ? deliveryPickupInput.value.trim() : deliveryDestInput.value.trim())
-      : (mode === 'pickup' ? pickupInput.value.trim() : destInput.value.trim());
+    /* Reject other offers */
+    const offers = errand.offers || {};
+    for (const oid in offers) {
+      if (oid !== providerId) {
+        updates[`errands/${errand.errandId}/offers/${oid}/status`] = 'rejected';
+      }
+    }
 
-    if (currentVal !== trimmed) return;
+    await update(ref(database), updates);
 
-    const ranked = rankPlacesByDistance(raw, anchor);
-    renderResults(ranked, mode, page);
+    showToast('✅ Offer accepted! Chat is opening…');
+
+    /* Cache update */
+    errand.status = 'accepted';
+    postedErrandsCache[errand.errandId] = errand;
+
+    /* Open chat */
+    setTimeout(() => openChat(errand, providerId), 500);
 
   } catch (err) {
-    if (err.name === 'AbortError') return;
-    const targetEl = page === 'delivery' ? deliveryResultsArea : resultsArea;
-    targetEl.innerHTML = `
-      <div class="results-hint">
-        <i class="fas fa-triangle-exclamation"></i>
-        Could not reach the search service. Check your connection and try again.
-      </div>`;
+    console.error(err);
+    showToast('Could not accept offer: ' + (err.message || err));
   }
 }
 
-/* ---- Ride input listeners ---- */
-pickupInput.addEventListener('input', () => {
-  syncClearButtons();
-  setActiveRow('pickup', 'ride');
-  debouncedSearch(pickupInput.value.trim(), 'pickup', 'ride');
+/* ============================================================
+   CHAT
+   ============================================================ */
+function openChat(errand, providerId) {
+  if (!errand || !providerId) return;
+  if (!currentUser) return;
+
+  activeChatErrandId = errand.errandId;
+  activeChatProviderId = providerId;
+
+  const offer = (errand.offers && errand.offers[providerId]) || {};
+  const providerName = offer.providerName || 'Provider';
+
+  chatTitle.textContent = providerName;
+  chatSubtitle.textContent = errand.title || 'Errand chat';
+
+  chatMessages.innerHTML = '<div class="chat-empty"><i class="fas fa-comments"></i>Say hi to your provider…</div>';
+
+  chatPage.classList.add('open');
+  setTimeout(() => {
+    chatInput.focus();
+    scrollChatToBottom();
+  }, 480);
+
+  /* Listen to messages */
+  if (chatUnsub) { chatUnsub(); chatUnsub = null; }
+  const messagesRef = ref(database, `errands/${errand.errandId}/chat`);
+
+  chatUnsub = onValue(messagesRef, (snap) => {
+    const data = snap.val() || {};
+    const msgs = Object.entries(data)
+      .map(([id, m]) => ({ ...m, id }))
+      .sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+    renderChatMessages(msgs);
+  }, (err) => {
+    console.warn('Chat listener error:', err);
+  });
+}
+
+function closeChatPage() {
+  chatPage.classList.remove('open');
+  if (chatUnsub) { chatUnsub(); chatUnsub = null; }
+  activeChatErrandId = null;
+  activeChatProviderId = null;
+}
+chatBackBtn.addEventListener('click', closeChatPage);
+
+function renderChatMessages(messages) {
+  if (!messages.length) {
+    chatMessages.innerHTML = '<div class="chat-empty"><i class="fas fa-comments"></i>Say hi to your provider…</div>';
+    return;
+  }
+
+  let html = '';
+  messages.forEach(m => {
+    const mine = m.senderId === currentUser.uid;
+    const cls = mine ? 'me' : 'them';
+    html += `
+      <div class="chat-msg ${cls}">
+        ${escapeHtml(m.text || '')}
+        <span class="chat-msg-meta">${escapeHtml(timeAgo(m.createdAt))}</span>
+      </div>
+    `;
+  });
+  chatMessages.innerHTML = html;
+  scrollChatToBottom();
+}
+
+function scrollChatToBottom() {
+  const body = chatMessages.parentElement;
+  if (body) body.scrollTop = body.scrollHeight;
+}
+
+async function sendChatMessage() {
+  const text = chatInput.value.trim();
+  if (!text) return;
+  if (!activeChatErrandId) return;
+  if (!currentUser) return;
+
+  chatInput.value = '';
+  chatInput.style.height = 'auto';
+
+  try {
+    const msgRef = push(ref(database, `errands/${activeChatErrandId}/chat`));
+    await set(msgRef, {
+      senderId: currentUser.uid,
+      senderName: customerData.fullName || 'Customer',
+      senderRole: 'customer',
+      text,
+      createdAt: Date.now()
+    });
+  } catch (err) {
+    console.error(err);
+    showToast('Could not send message.');
+  }
+}
+
+chatSendBtn.addEventListener('click', sendChatMessage);
+
+chatInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendChatMessage();
+  }
 });
 
-destInput.addEventListener('input', () => {
-  syncClearButtons();
-  setActiveRow('destination', 'ride');
-  debouncedSearch(destInput.value.trim(), 'destination', 'ride');
-});
-
-/* ---- Delivery input listeners ---- */
-deliveryPickupInput.addEventListener('input', () => {
-  syncClearButtons();
-  setActiveRow('pickup', 'delivery');
-  debouncedSearch(deliveryPickupInput.value.trim(), 'pickup', 'delivery');
-});
-
-deliveryDestInput.addEventListener('input', () => {
-  syncClearButtons();
-  setActiveRow('destination', 'delivery');
-  debouncedSearch(deliveryDestInput.value.trim(), 'destination', 'delivery');
+chatInput.addEventListener('input', () => {
+  chatInput.style.height = 'auto';
+  chatInput.style.height = Math.min(120, chatInput.scrollHeight) + 'px';
 });
 
 /* ============================================================
@@ -2458,13 +3395,10 @@ async function fetchRoute(from, to) {
     'https://router.project-osrm.org/route/v1/driving/' +
     `${from.lng},${from.lat};${to.lng},${to.lat}` +
     '?overview=full&geometries=geojson&steps=false';
-
   const res = await fetch(url);
   if (!res.ok) throw new Error('Routing failed');
-
   const data = await res.json();
   if (!data.routes || data.routes.length === 0) throw new Error('No route found');
-
   const route = data.routes[0];
   return {
     distance: route.distance,
@@ -2475,38 +3409,14 @@ async function fetchRoute(from, to) {
 
 function drawRoute(geometry) {
   if (!map) return;
-
-  if (routeLayer) {
-    map.removeLayer(routeLayer);
-    routeLayer = null;
-  }
-
+  if (routeLayer) { map.removeLayer(routeLayer); routeLayer = null; }
   const coords = geometry.coordinates.map(([lng, lat]) => [lat, lng]);
   routeLayer = L.layerGroup().addTo(map);
-
-  L.polyline(coords, {
-    color: '#ffffff',
-    weight: 8,
-    opacity: 0.95,
-    lineJoin: 'round',
-    lineCap: 'round'
-  }).addTo(routeLayer);
-
-  L.polyline(coords, {
-    color: '#0a0a0a',
-    weight: 4.5,
-    opacity: 1,
-    lineJoin: 'round',
-    lineCap: 'round'
-  }).addTo(routeLayer);
-
+  L.polyline(coords, { color: '#ffffff', weight: 8, opacity: 0.95, lineJoin: 'round', lineCap: 'round' }).addTo(routeLayer);
+  L.polyline(coords, { color: '#0a0a0a', weight: 4.5, opacity: 1, lineJoin: 'round', lineCap: 'round' }).addTo(routeLayer);
   if (coords.length > 1) {
     map.fitBounds(L.latLngBounds(coords), {
-      paddingTopLeft: [30, 50],
-      paddingBottomRight: [30, 30],
-      maxZoom: 17,
-      animate: true,
-      duration: 0.9
+      paddingTopLeft: [30, 50], paddingBottomRight: [30, 30], maxZoom: 17, animate: true, duration: 0.9
     });
   }
 }
@@ -2515,11 +3425,7 @@ function drawRoute(geometry) {
    RIDE TRIP
    ============================================================ */
 async function buildRideTrip() {
-  if (!pickupLocation || !dropoffLocation) {
-    showPane('home');
-    return;
-  }
-
+  if (!pickupLocation || !dropoffLocation) { showPane('home'); return; }
   if (!map) initMap();
 
   setPickupMarker(pickupLocation.lat, pickupLocation.lng);
@@ -2542,68 +3448,48 @@ async function buildRideTrip() {
   try {
     const route = await fetchRoute(pickupLocation, dropoffLocation);
     currentRoute = route;
-
     drawRoute(route.geometry);
-
     const fare = computeRideFare(route.distance, route.duration);
-
-    fareTotal.textContent    = formatMoney(fare.finalFare);
+    fareTotal.textContent    = formatPrice(fare.finalFare);
     fareDistance.textContent = formatDistance(route.distance);
     fareDuration.textContent = formatDuration(route.duration);
-
   } catch (err) {
     console.warn(err);
     fareTotal.textContent = '—';
     fareDistance.textContent = '—';
     fareDuration.textContent = '—';
-
-    const straight = haversineMeters(
-      pickupLocation.lat, pickupLocation.lng,
-      dropoffLocation.lat, dropoffLocation.lng
-    );
-
+    const straight = haversineMeters(pickupLocation.lat, pickupLocation.lng, dropoffLocation.lat, dropoffLocation.lng);
     if (straight > 0) {
       const estDuration = (straight / 1000) / 30 * 3600;
       const fare = computeRideFare(straight, estDuration);
-
-      fareTotal.textContent    = formatMoney(fare.finalFare);
+      fareTotal.textContent    = formatPrice(fare.finalFare);
       fareDistance.textContent = formatDistance(straight);
       fareDuration.textContent = formatDuration(estDuration);
     }
-
     showToast('Could not load the exact route — showing an estimate.');
   }
 }
 
-/* ============================================================
-   TRIP PANE INTERACTIONS
-   ============================================================ */
 cancelTripBtn.addEventListener('click', () => {
   clearTripLayers();
   dropoffLocation = null;
   deliveryDropoffLocation = null;
   deliveryVehicle = null;
   showPane('home');
-  if (userLocation && map) {
-    map.setView([userLocation.lat, userLocation.lng], 18, { animate: true });
-  }
+  if (userLocation && map) map.setView([userLocation.lat, userLocation.lng], 18, { animate: true });
 });
 
 pickupRowBtn.addEventListener('click', () => {
   if (currentPage === 'trip-delivery') openDeliveryPage();
   else openRidePage('pickup');
 });
-
 dropoffRowBtn.addEventListener('click', () => {
   if (currentPage === 'trip-delivery') openDeliveryPage();
   else openRidePage('destination');
 });
 
 confirmRideBtn.addEventListener('click', () => {
-  if (!currentRoute) {
-    showToast('Please wait for the route to load.');
-    return;
-  }
+  if (!currentRoute) { showToast('Please wait for the route to load.'); return; }
   openSearchingOverlay('driver');
 });
 
@@ -2612,54 +3498,35 @@ confirmRideBtn.addEventListener('click', () => {
    ============================================================ */
 requestRideBtn.addEventListener('click', () => {
   if (!pickupLocation) {
-    if (userLocation) {
-      pickupLocation = { lat: userLocation.lat, lng: userLocation.lng, label: 'Current location' };
-    } else {
-      showToast('Waiting for your location…');
-      locateUser({ center: true });
-      return;
-    }
+    if (userLocation) pickupLocation = { lat: userLocation.lat, lng: userLocation.lng, label: 'Current location' };
+    else { showToast('Waiting for your location…'); locateUser({ center: true }); return; }
   }
-
   dropoffLocation = null;
   currentRoute = null;
   clearTripLayers();
-
   openRidePage('destination');
 });
 
 deliveryBtn.addEventListener('click', () => {
   if (!deliveryPickupLocation) {
-    if (userLocation) {
-      deliveryPickupLocation = { lat: userLocation.lat, lng: userLocation.lng, label: 'Current location' };
-    } else if (pickupLocation) {
-      deliveryPickupLocation = { ...pickupLocation };
-    } else {
-      showToast('Waiting for your location…');
-      locateUser({ center: true });
-      return;
-    }
+    if (userLocation) deliveryPickupLocation = { lat: userLocation.lat, lng: userLocation.lng, label: 'Current location' };
+    else if (pickupLocation) deliveryPickupLocation = { ...pickupLocation };
+    else { showToast('Waiting for your location…'); locateUser({ center: true }); return; }
   }
-
   deliveryDropoffLocation = null;
   deliveryRoute = null;
   deliveryVehicle = null;
-
-  /* Pre-fill pickup input */
   deliveryPickupInput.value = deliveryPickupLocation.label || 'Current location';
   deliveryDestInput.value = '';
-
-  /* Pre-fill form fields from last time if present */
   deliveryError.innerText = '';
-
   openDeliveryPage();
 });
 
-errandBtn.addEventListener('click', () => showToast('Post Errand — coming soon'));
-
-locateBtn.addEventListener('click', () => {
-  locateUser({ center: true });
+errandBtn.addEventListener('click', () => {
+  openPostErrandPage();
 });
+
+locateBtn.addEventListener('click', () => locateUser({ center: true }));
 
 /* ============================================================
    DELIVERY SUBMIT → VEHICLE SHEET
@@ -2667,28 +3534,18 @@ locateBtn.addEventListener('click', () => {
 requestDeliveryBtn.addEventListener('click', async () => {
   deliveryError.innerText = '';
 
-  /* 1. Ensure locations */
   if (!deliveryPickupLocation) {
-    if (pickupLocation) {
-      deliveryPickupLocation = { ...pickupLocation };
-    } else {
-      deliveryError.innerText = 'Please choose a pickup location.';
-      return;
-    }
+    if (pickupLocation) deliveryPickupLocation = { ...pickupLocation };
+    else { deliveryError.innerText = 'Please choose a pickup location.'; return; }
   }
+  if (!deliveryDropoffLocation) { deliveryError.innerText = 'Please choose a drop-off location.'; return; }
 
-  if (!deliveryDropoffLocation) {
-    deliveryError.innerText = 'Please choose a drop-off location.';
-    return;
-  }
-
-  /* 2. Validate form fields */
-  const senderName   = delSenderName.value.trim();
-  const senderPhone  = delSenderPhone.value.trim();
+  const senderName = delSenderName.value.trim();
+  const senderPhone = delSenderPhone.value.trim();
   const receiverName = delReceiverName.value.trim();
-  const receiverPhone= delReceiverPhone.value.trim();
-  const parcelName   = delParcelName.value.trim();
-  const parcelDesc   = delParcelDesc.value.trim();
+  const receiverPhone = delReceiverPhone.value.trim();
+  const parcelName = delParcelName.value.trim();
+  const parcelDesc = delParcelDesc.value.trim();
 
   if (!senderName) { deliveryError.innerText = 'Please enter the sender name.'; return; }
   if (!senderPhone || !isValidPhone(senderPhone)) { deliveryError.innerText = 'Enter a valid sender phone number.'; return; }
@@ -2697,42 +3554,32 @@ requestDeliveryBtn.addEventListener('click', async () => {
   if (!parcelName) { deliveryError.innerText = 'Please enter the parcel name.'; return; }
   if (!parcelDesc) { deliveryError.innerText = 'Please describe the parcel.'; return; }
 
-  /* 3. Fetch route */
   requestDeliveryBtn.disabled = true;
   requestDeliveryBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Calculating…';
 
   try {
     const route = await fetchRoute(deliveryPickupLocation, deliveryDropoffLocation);
     deliveryRoute = route;
-
-    /* 4. Build vehicle prices */
     const prices = {};
     Object.values(DELIVERY_VEHICLES).forEach((v) => {
       const fare = computeDeliveryFare(v, route.distance, route.duration);
       prices[v.id] = fare.finalFare;
     });
-
-    /* 5. Show vehicle sheet */
     renderVehicleSheet(prices);
     vehicleSheet.classList.add('open');
-
   } catch (err) {
     console.warn(err);
-    /* Fallback straight-line */
     const straight = haversineMeters(
       deliveryPickupLocation.lat, deliveryPickupLocation.lng,
       deliveryDropoffLocation.lat, deliveryDropoffLocation.lng
     );
     const estDuration = (straight / 1000) / 30 * 3600;
-
     deliveryRoute = { distance: straight, duration: estDuration, geometry: null };
-
     const prices = {};
     Object.values(DELIVERY_VEHICLES).forEach((v) => {
       const fare = computeDeliveryFare(v, straight, estDuration);
       prices[v.id] = fare.finalFare;
     });
-
     renderVehicleSheet(prices);
     vehicleSheet.classList.add('open');
     showToast('Could not load the exact route — showing an estimate.');
@@ -2747,10 +3594,8 @@ requestDeliveryBtn.addEventListener('click', async () => {
    ============================================================ */
 function renderVehicleSheet(prices) {
   vehicleList.innerHTML = '';
-
   Object.values(DELIVERY_VEHICLES).forEach((v) => {
     const price = prices[v.id] || 0;
-
     const btn = document.createElement('button');
     btn.className = 'vehicle-item';
     btn.type = 'button';
@@ -2761,75 +3606,55 @@ function renderVehicleSheet(prices) {
         <span>${escapeHtml(v.description)}</span>
       </span>
       <span class="vehicle-price">
-        <strong>K ${escapeHtml(formatMoney(price))}</strong>
+        <strong>K ${escapeHtml(formatPrice(price))}</strong>
         <small>ESTIMATE</small>
       </span>
     `;
-
     btn.addEventListener('click', () => {
       deliveryVehicle = v;
       chooseDeliveryVehicle();
     });
-
     vehicleList.appendChild(btn);
   });
 }
 
-vehicleSheetCancel.addEventListener('click', () => {
-  vehicleSheet.classList.remove('open');
-});
-
+vehicleSheetCancel.addEventListener('click', () => vehicleSheet.classList.remove('open'));
 vehicleSheet.addEventListener('click', (e) => {
-  if (e.target === vehicleSheet) {
-    vehicleSheet.classList.remove('open');
-  }
+  if (e.target === vehicleSheet) vehicleSheet.classList.remove('open');
 });
 
-/* ============================================================
-   VEHICLE CHOSEN → DRAW ROUTE + SEARCHING OVERLAY
-   ============================================================ */
 function chooseDeliveryVehicle() {
   if (!deliveryVehicle || !deliveryRoute) return;
-
   vehicleSheet.classList.remove('open');
   closeDeliveryPage();
 
-  /* Draw the route on the map */
   setTimeout(() => {
     if (!map) initMap();
-
     setPickupMarker(deliveryPickupLocation.lat, deliveryPickupLocation.lng);
     setDropoffMarker(deliveryDropoffLocation.lat, deliveryDropoffLocation.lng);
 
     if (deliveryRoute.geometry) {
       drawRoute(deliveryRoute.geometry);
     } else {
-      /* Fallback: draw a straight line */
-      const fake = {
+      drawRoute({
         coordinates: [
           [deliveryPickupLocation.lng, deliveryPickupLocation.lat],
           [deliveryDropoffLocation.lng, deliveryDropoffLocation.lat]
         ]
-      };
-      drawRoute(fake);
-
+      });
       map.fitBounds(L.latLngBounds([
         [deliveryPickupLocation.lat, deliveryPickupLocation.lng],
         [deliveryDropoffLocation.lat, deliveryDropoffLocation.lng]
       ]), { padding: [40, 40], maxZoom: 17 });
     }
 
-    /* Show the searching overlay for the chosen vehicle */
-    const searchLabels = {
+    const labels = {
       motorbike: { icon: 'fa-motorcycle', title: 'Searching for a motorbike rider' },
       cyclist:   { icon: 'fa-bicycle',    title: 'Searching for a cyclist' },
       walker:    { icon: 'fa-person-walking', title: 'Searching for a walker' }
     };
-
-    const meta = searchLabels[deliveryVehicle.id] || searchLabels.motorbike;
-
+    const meta = labels[deliveryVehicle.id] || labels.motorbike;
     openSearchingOverlay('delivery', meta);
-
   }, 420);
 }
 
@@ -2846,13 +3671,9 @@ function openSearchingOverlay(kind, meta) {
     searchingTitle.textContent = meta?.title || 'Searching for a rider';
     searchingSubtitle.textContent = 'Looking for someone nearby to accept your delivery…';
   }
-
   searchingOverlay.classList.add('open');
 }
-
-function closeSearchingOverlay() {
-  searchingOverlay.classList.remove('open');
-}
+function closeSearchingOverlay() { searchingOverlay.classList.remove('open'); }
 
 cancelSearchBtn.addEventListener('click', () => {
   closeSearchingOverlay();
@@ -2875,15 +3696,10 @@ async function checkMaintenance() {
     if (snap.exists()) {
       const data = snap.val() || {};
       if (data.enabled === true) {
-        return {
-          maintenance: true,
-          message: data.message || 'NTUMENI is currently undergoing scheduled maintenance. Please check back shortly.'
-        };
+        return { maintenance: true, message: data.message || 'NTUMENI is currently undergoing scheduled maintenance.' };
       }
     }
-  } catch (err) {
-    console.warn('Maintenance check failed:', err);
-  }
+  } catch (err) { console.warn('Maintenance check failed:', err); }
   return { maintenance: false };
 }
 
@@ -2917,32 +3733,19 @@ function applyCustomerProfile(customer) {
   }
 }
 
-/* ---- Auth state ---- */
+/* Boot */
 let bootDone = false;
 
 onAuthStateChanged(auth, async (user) => {
-  if (!user) {
-    window.location.href = 'index.html';
-    return;
-  }
-
+  if (!user) { window.location.href = 'index.html'; return; }
   currentUser = user;
 
   try {
     const maint = await checkMaintenance();
-    if (maint.maintenance) {
-      showMaintenance(maint.message);
-      hideLoading();
-      return;
-    }
+    if (maint.maintenance) { showMaintenance(maint.message); hideLoading(); return; }
 
     const customer = await checkCustomerRecord(user.uid);
-
-    if (!customer) {
-      await signOut(auth);
-      window.location.href = 'index.html';
-      return;
-    }
+    if (!customer) { await signOut(auth); window.location.href = 'index.html'; return; }
 
     if (customer.banned === true) {
       showBanned(customer.banReason || '');
@@ -2960,46 +3763,55 @@ onAuthStateChanged(auth, async (user) => {
       locateUser({ center: true, silent: false });
     });
 
+    /* Preload errand badge */
+    loadErrandsForBadge();
+
     hideLoading();
     bootDone = true;
-
   } catch (err) {
     console.error('Boot error:', err);
-    showToast('Could not load your account. Please try again.');
+    showToast('Could not load your account.');
     hideLoading();
   }
 });
+
+function loadErrandsForBadge() {
+  if (!currentUser) return;
+  const errandsRef = ref(database, 'errands');
+  onValue(errandsRef, (snap) => {
+    const data = snap.val() || {};
+    const mine = [];
+    for (const id in data) {
+      const e = data[id];
+      if (e && e.customerId === currentUser.uid) mine.push(e);
+    }
+    updateErrandsBadge(mine);
+  });
+}
 
 /* ============================================================
    MISC
    ============================================================ */
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
-    if (searchingOverlay.classList.contains('open')) {
-      closeSearchingOverlay();
-    } else if (vehicleSheet.classList.contains('open')) {
-      vehicleSheet.classList.remove('open');
-    } else if (deliveryPage.classList.contains('open')) {
-      closeDeliveryPage();
-    } else if (ridePage.classList.contains('open')) {
-      closeRidePage();
-    } else if (sidebar.classList.contains('open')) {
-      closeSidebar();
-    }
+    if (searchingOverlay.classList.contains('open')) closeSearchingOverlay();
+    else if (vehicleSheet.classList.contains('open')) vehicleSheet.classList.remove('open');
+    else if (chatPage.classList.contains('open')) closeChatPage();
+    else if (errandDetailsPage.classList.contains('open')) closeErrandDetailsPage();
+    else if (postedErrandsPage.classList.contains('open')) closePostedErrandsPage();
+    else if (postErrandPage.classList.contains('open')) closePostErrandPage();
+    else if (deliveryPage.classList.contains('open')) closeDeliveryPage();
+    else if (ridePage.classList.contains('open')) closeRidePage();
+    else if (sidebar.classList.contains('open')) closeSidebar();
   }
 });
 
 window.addEventListener('orientationchange', () => {
   setTimeout(() => { if (map) map.invalidateSize(); }, 320);
 });
+window.addEventListener('resize', () => { if (map) map.invalidateSize(); });
 
-window.addEventListener('resize', () => {
-  if (map) map.invalidateSize();
-});
-
-setTimeout(() => {
-  if (!bootDone) hideLoading();
-}, 12000);
+setTimeout(() => { if (!bootDone) hideLoading(); }, 12000);
 </script>
 </body>
 </html>
