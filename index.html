@@ -1,0 +1,2150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+    <title>NTUMENI | Secure Access</title>
+    <link rel="icon" href="logo.png">
+    <meta name="theme-color" content="#0a0a0a">
+    <link rel="apple-touch-icon" href="logo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script type="importmap">
+        {
+            "imports": {
+                "firebase/app": "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js",
+                "firebase/auth": "https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js",
+                "firebase/database": "https://www.gstatic.com/firebasejs/12.12.0/firebase-database.js"
+            }
+        }
+    </script>
+    <style>
+        /* ==========================================================
+           DESIGN TOKENS — MONOCHROME
+           ========================================================== */
+        :root {
+            --ink:            #0a0a0a;
+            --ink-soft:       #1c1c1e;
+            --ink-line:       rgba(255, 255, 255, 0.14);
+
+            --paper:          #ffffff;
+
+            --accent:         #0a0a0a;
+            --accent-light:   #2b2b2e;
+            --accent-dark:    #000000;
+            --accent-glow:    rgba(0, 0, 0, 0.26);
+            --accent-soft:    rgba(0, 0, 0, 0.045);
+            --accent-tint:    rgba(0, 0, 0, 0.10);
+
+            --text-primary:   #0a0a0a;
+            --text-secondary: #6e6e73;
+            --text-tertiary:  #aeaeb2;
+
+            --fill-gray:      #f4f4f5;
+            --fill-gray-hover:#ebebed;
+
+            --radius-input:   14px;
+            --radius-btn:     14px;
+
+            --spring:      cubic-bezier(0.34, 1.56, 0.64, 1);
+            --ease-out:    cubic-bezier(0.22, 1, 0.36, 1);
+            --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+            --panel-ease:  cubic-bezier(0.32, 0.72, 0, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            color: var(--text-primary);
+            background: #ffffff;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        /* ==========================================================
+           SPLIT LANDING
+           ========================================================== */
+        .split-landing {
+            position: fixed;
+            inset: 0;
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: filter 0.55s var(--panel-ease), transform 0.55s var(--panel-ease);
+            will-change: filter, transform;
+        }
+
+        body.panel-open .split-landing {
+            filter: blur(10px) brightness(0.9);
+            transform: scale(1.03);
+        }
+
+        .split-half {
+            position: relative;
+            flex: 1 1 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            overflow: hidden;
+            transition: transform 0.55s var(--panel-ease);
+            will-change: transform;
+            touch-action: none;
+        }
+
+        .split-top {
+            background: #ffffff;
+            color: var(--text-primary);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .split-bottom {
+            background: linear-gradient(180deg, #17171a 0%, #000000 100%);
+            color: #ffffff;
+        }
+
+        .split-top.drag-active    { transform: translateY(var(--drag-y, 0)); }
+        .split-bottom.drag-active { transform: translateY(var(--drag-y, 0)); }
+
+        .half-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            text-align: center;
+            padding: 1rem;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .half-chevron {
+            font-size: 1.5rem;
+            opacity: 0.85;
+            animation: bobDown 1.9s var(--ease-smooth) infinite;
+        }
+
+        .split-bottom .half-chevron { animation-name: bobUp; }
+
+        @keyframes bobDown {
+            0%, 100% { transform: translateY(0);    opacity: 0.45; }
+            50%      { transform: translateY(7px);  opacity: 1; }
+        }
+
+        @keyframes bobUp {
+            0%, 100% { transform: translateY(0);     opacity: 0.45; }
+            50%      { transform: translateY(-7px);  opacity: 1; }
+        }
+
+        .half-icon {
+            font-size: 2.8rem;
+            line-height: 1;
+            margin: 6px 0 2px;
+        }
+
+        .split-top .half-icon    { color: #0a0a0a; }
+        .split-bottom .half-icon { color: #ffffff; }
+
+        .half-title {
+            font-size: 1.55rem;
+            font-weight: 800;
+            letter-spacing: -0.6px;
+            text-transform: uppercase;
+        }
+
+        .split-top .half-title    { color: var(--text-primary); }
+        .split-bottom .half-title { color: #ffffff; }
+
+        .half-hint {
+            font-size: 0.82rem;
+            font-weight: 500;
+            letter-spacing: 0.2px;
+        }
+
+        .split-top .half-hint    { color: var(--text-tertiary); }
+        .split-bottom .half-hint { color: rgba(255, 255, 255, 0.55); }
+
+        .center-logo {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 3;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 86px;
+            height: 86px;
+            border-radius: 50%;
+            background: #ffffff;
+            box-shadow:
+                0 10px 28px -8px rgba(0, 0, 0, 0.30),
+                0 0 0 5px rgba(255, 255, 255, 0.98),
+                0 0 0 7px rgba(0, 0, 0, 0.85);
+            animation: centerLogoIn 0.8s var(--spring) both;
+        }
+
+        @keyframes centerLogoIn {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.7); }
+            to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        .center-logo img {
+            width: 62px;
+            height: 62px;
+            object-fit: contain;
+            display: block;
+            border-radius: 50%;
+        }
+
+        .center-logo .logo-fallback {
+            font-size: 0.72rem;
+            font-weight: 800;
+            color: #0a0a0a;
+            letter-spacing: -0.4px;
+        }
+
+        /* ==========================================================
+           SLIDE PANELS
+           ========================================================== */
+        .slide-panel {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            background: #ffffff;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            transition: transform 0.62s var(--panel-ease), opacity 0.4s var(--ease-out);
+            will-change: transform;
+            pointer-events: none;
+            visibility: hidden;
+            opacity: 0;
+            touch-action: auto;
+            user-select: text;
+            -webkit-user-select: text;
+        }
+
+        .slide-panel.active {
+            pointer-events: auto;
+            visibility: visible;
+            opacity: 1;
+        }
+
+        #customerPanel {
+            transform: translateY(-8%);
+            background: linear-gradient(180deg, #fafafa 0%, #ffffff 55%);
+        }
+        #customerPanel.active { transform: translateY(0); }
+
+        #providerPanel {
+            transform: translateY(8%);
+            background: linear-gradient(180deg, #f6f6f7 0%, #ffffff 55%);
+        }
+        #providerPanel.active { transform: translateY(0); }
+
+        /* ==========================================================
+           PANEL TOPBAR
+           ========================================================== */
+        .panel-topbar {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.86);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+        }
+
+        .back-btn {
+            background: var(--fill-gray);
+            border: none;
+            font-family: inherit;
+            font-size: 0.84rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            padding: 9px 15px;
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            cursor: pointer;
+            transition: background 0.25s var(--ease-smooth), transform 0.35s var(--spring);
+        }
+
+        .back-btn:hover  { background: var(--fill-gray-hover); }
+        .back-btn:active { transform: scale(0.94); }
+
+        .back-btn i { transition: transform 0.28s var(--spring); }
+        .back-btn:hover i { transform: translateX(-2px); }
+
+        .panel-label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+        }
+
+        /* ==========================================================
+           PANEL LOGO STRIP
+           ========================================================== */
+        .panel-logo-strip {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 26px 16px 12px;
+            text-align: center;
+        }
+
+        .panel-logo-strip .panel-logo-img {
+            width: 122px;
+            height: 122px;
+            object-fit: contain;
+            display: block;
+            margin-bottom: 6px;
+            filter: drop-shadow(0 12px 26px rgba(0, 0, 0, 0.18));
+            animation: panelLogoIn 0.7s var(--spring) 0.08s both;
+        }
+
+        @keyframes panelLogoIn {
+            from { opacity: 0; transform: scale(0.55) translateY(-22px); }
+            to   { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .panel-logo-strip .logo-fallback {
+            font-size: 1.9rem;
+            font-weight: 800;
+            letter-spacing: -1.2px;
+            color: #0a0a0a;
+            margin-bottom: 6px;
+        }
+
+        .panel-brand-name {
+            font-size: 1.35rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: var(--text-primary);
+        }
+
+        .panel-brand-sub {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--text-tertiary);
+            letter-spacing: 2.2px;
+            text-transform: uppercase;
+            margin-top: 3px;
+        }
+
+        /* ==========================================================
+           PANEL INNER
+           ========================================================== */
+        .slide-panel-inner {
+            max-width: 560px;
+            margin: 0 auto;
+            padding: 0 1.25rem 3rem;
+            min-height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide-panel.active .form-area        { animation: formEnter 0.55s var(--ease-out) 0.15s both; }
+        .slide-panel.active .segmented-control { animation: formEnter 0.55s var(--ease-out) 0.10s both; }
+
+        @keyframes formEnter {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ==========================================================
+           SEGMENTED CONTROL
+           ========================================================== */
+        .segmented-control {
+            position: relative;
+            display: flex;
+            width: 100%;
+            background: var(--fill-gray);
+            border-radius: 12px;
+            padding: 3px;
+            margin-bottom: 1.6rem;
+            box-shadow:
+                inset 0 1px 2px rgba(0, 0, 0, 0.05),
+                0 4px 14px -8px rgba(0, 0, 0, 0.14);
+        }
+
+        .segmented-control::before {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: calc(50% - 3px);
+            height: calc(100% - 6px);
+            background: #0a0a0a;
+            border-radius: 9px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.22);
+            transition: transform 0.5s var(--spring);
+            will-change: transform;
+        }
+
+        .segmented-control[data-active="signup"]::before { transform: translateX(100%); }
+
+        .segment {
+            position: relative;
+            z-index: 1;
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            border-radius: 9px;
+            font-family: inherit;
+            font-size: 0.86rem;
+            font-weight: 600;
+            letter-spacing: -0.1px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: color 0.3s var(--ease-smooth);
+        }
+
+        .segment.active { color: #ffffff; }
+        .segment:not(.active):hover { color: #3a3a3c; }
+
+        /* ==========================================================
+           FORM AREA
+           ========================================================== */
+        .form-area { width: 100%; }
+
+        .form-panel  { animation: panelIn 0.45s var(--ease-out); }
+        .hidden-panel{ display: none; }
+
+        @keyframes panelIn {
+            from { opacity: 0; transform: translateY(9px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-title {
+            font-size: 1.45rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 1.3rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-title i { color: var(--text-primary); font-size: 1.25rem; }
+
+        .form-note {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.2rem;
+            line-height: 1.5;
+        }
+
+        .input-icon-group {
+            position: relative;
+            width: 100%;
+            margin-bottom: 0.85rem;
+        }
+
+        .input-icon-group > i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-tertiary);
+            font-size: 0.95rem;
+            pointer-events: none;
+            transition: color 0.3s var(--ease-smooth);
+            z-index: 1;
+        }
+
+        .pill-input {
+            width: 100%;
+            padding: 13px 16px 13px 42px;
+            font-family: inherit;
+            font-size: 0.94rem;
+            font-weight: 400;
+            border: 1.5px solid transparent;
+            border-radius: var(--radius-input);
+            background: var(--fill-gray);
+            outline: none;
+            color: var(--text-primary);
+            transition:
+                background 0.3s var(--ease-smooth),
+                border-color 0.3s var(--ease-smooth),
+                box-shadow 0.3s var(--ease-smooth);
+            user-select: text;
+            -webkit-user-select: text;
+        }
+
+        .pill-input::placeholder { color: var(--text-tertiary); font-weight: 400; }
+        .pill-input:hover        { background: var(--fill-gray-hover); }
+
+        .pill-input:focus {
+            background: #ffffff;
+            border-color: #0a0a0a;
+            box-shadow:
+                0 0 0 4px var(--accent-tint),
+                0 4px 14px -4px var(--accent-glow);
+        }
+
+        .input-icon-group:focus-within > i { color: #0a0a0a; }
+
+        #custFirstName, #custLastName,
+        #provFirstName, #provLastName { text-transform: capitalize; }
+
+        #custFirstName::placeholder, #custLastName::placeholder,
+        #provFirstName::placeholder, #provLastName::placeholder { text-transform: none; }
+
+        .field-hint {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.73rem;
+            font-weight: 500;
+            color: #3a3a3c;
+            background: var(--accent-soft);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            padding: 8px 12px;
+            border-radius: 11px;
+            margin: -0.2rem 0 0.95rem;
+            line-height: 1.35;
+        }
+
+        .field-hint i { color: #0a0a0a; font-size: 0.75rem; flex-shrink: 0; }
+
+        .double-row {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .double-row .input-icon-group { flex: 1; min-width: 125px; }
+
+        .section-label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            margin: 1rem 0 0.55rem;
+        }
+
+        /* ==========================================================
+           UPLOAD BOXES
+           ========================================================== */
+        .upload-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.7rem;
+            margin-bottom: 0.95rem;
+        }
+
+        .upload-grid.single {
+            grid-template-columns: 1fr;
+            justify-items: center;
+        }
+
+        .upload-grid.single .upload-box { width: 170px; }
+
+        .upload-box {
+            position: relative;
+            aspect-ratio: 1 / 1;
+            width: 100%;
+            background: var(--fill-gray);
+            border: 2px dashed rgba(0, 0, 0, 0.14);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+            overflow: hidden;
+            transition: border-color 0.3s var(--ease-smooth),
+                        background 0.3s var(--ease-smooth),
+                        transform 0.35s var(--spring);
+        }
+
+        .upload-box:hover {
+            border-color: #0a0a0a;
+            background: #ffffff;
+            transform: translateY(-2px);
+        }
+
+        .upload-box.has-image {
+            border-style: solid;
+            border-color: #0a0a0a;
+        }
+
+        .upload-box img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .upload-box .upload-label {
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-align: center;
+            padding: 0 6px;
+        }
+
+        .upload-box i.upload-icon {
+            font-size: 1.5rem;
+            color: var(--text-tertiary);
+        }
+
+        .upload-box.has-image .upload-label,
+        .upload-box.has-image i.upload-icon { display: none; }
+
+        .upload-box .upload-badge {
+            position: absolute;
+            bottom: 6px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.72);
+            color: #fff;
+            font-size: 0.6rem;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 30px;
+            letter-spacing: 0.3px;
+            pointer-events: none;
+            display: none;
+            z-index: 2;
+        }
+
+        .upload-box.has-image .upload-badge { display: inline-block; }
+
+        .upload-box.is-loading::after {
+            content: '';
+            position: absolute;
+            width: 26px;
+            height: 26px;
+            border: 3px solid rgba(0, 0, 0, 0.15);
+            border-top-color: #0a0a0a;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            z-index: 4;
+        }
+
+        /* ==========================================================
+           BUTTONS
+           ========================================================== */
+        .btn {
+            font-family: inherit;
+            font-size: 0.94rem;
+            font-weight: 600;
+            letter-spacing: -0.1px;
+            border: none;
+            border-radius: var(--radius-btn);
+            padding: 13px 20px;
+            width: 100%;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            transition:
+                transform 0.35s var(--spring),
+                box-shadow 0.35s var(--ease-smooth),
+                background 0.3s var(--ease-smooth),
+                color 0.3s var(--ease-smooth),
+                opacity 0.3s var(--ease-smooth);
+        }
+
+        .btn-primary {
+            background: linear-gradient(180deg, #2b2b2e 0%, #0a0a0a 60%, #000000 100%);
+            color: #ffffff;
+            box-shadow:
+                0 1px 1px rgba(255, 255, 255, 0.14) inset,
+                0 1px 2px rgba(0, 0, 0, 0.14),
+                0 8px 20px -6px rgba(0, 0, 0, 0.40);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow:
+                0 1px 1px rgba(255, 255, 255, 0.18) inset,
+                0 2px 4px rgba(0, 0, 0, 0.16),
+                0 16px 30px -8px rgba(0, 0, 0, 0.45);
+        }
+
+        .btn-primary:active:not(:disabled) { transform: translateY(0) scale(0.975); }
+
+        .btn-secondary {
+            background: #ffffff;
+            color: var(--text-primary);
+            box-shadow:
+                0 0 0 1px rgba(0, 0, 0, 0.10),
+                0 1px 2px rgba(0, 0, 0, 0.05),
+                0 6px 16px -6px rgba(0, 0, 0, 0.16);
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            background: #f7f7f8;
+        }
+
+        .btn-secondary:active:not(:disabled) { transform: translateY(0) scale(0.975); }
+
+        .btn:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        /* ==========================================================
+           TEXT LINKS / TERMS
+           ========================================================== */
+        .text-link {
+            background: none;
+            border: none;
+            font-family: inherit;
+            color: #0a0a0a;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 0.84rem;
+            padding: 8px 12px;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            transition: all 0.28s var(--ease-smooth);
+        }
+
+        .text-link i { font-size: 0.75rem; }
+        .text-link:hover { background: var(--accent-soft); }
+
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 0.9rem;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .terms-check {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            margin: 0.9rem 0 1.3rem;
+            padding: 11px 14px;
+            background: var(--fill-gray);
+            border-radius: 14px;
+            flex-wrap: wrap;
+        }
+
+        .terms-check label {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+            line-height: 1.4;
+            cursor: pointer;
+        }
+
+        .terms-check label strong { color: var(--text-primary); font-weight: 600; }
+
+        .terms-open-link {
+            background: none;
+            border: none;
+            color: #0a0a0a;
+            font-weight: 700;
+            font-family: inherit;
+            font-size: 0.82rem;
+            cursor: pointer;
+            text-decoration: underline;
+            padding: 0;
+            margin-left: 2px;
+        }
+
+        .terms-open-link:hover { opacity: 0.65; }
+
+        .checkbox-custom {
+            width: 19px;
+            height: 19px;
+            accent-color: #0a0a0a;
+            cursor: pointer;
+            border-radius: 5px;
+            flex-shrink: 0;
+        }
+
+        /* ==========================================================
+           MESSAGES
+           ========================================================== */
+        .error-msg {
+            color: #d92d20;
+            font-size: 0.78rem;
+            font-weight: 500;
+            margin: 0 0 0.75rem 4px;
+            min-height: 0;
+            line-height: 1.45;
+            animation: panelIn 0.3s var(--ease-out);
+            white-space: pre-wrap;
+        }
+
+        .error-msg:empty { display: none; }
+
+        .success-msg {
+            color: #ffffff;
+            font-size: 0.82rem;
+            font-weight: 600;
+            background: #0a0a0a;
+            border: 1px solid #0a0a0a;
+            padding: 11px 15px;
+            border-radius: 12px;
+            display: block;
+            margin-bottom: 0.9rem;
+            animation: panelIn 0.35s var(--ease-out);
+            line-height: 1.45;
+        }
+
+        .info-msg {
+            color: #0a0a0a;
+            font-size: 0.82rem;
+            font-weight: 600;
+            background: #f4f4f5;
+            border: 1px solid rgba(0, 0, 0, 0.10);
+            padding: 11px 15px;
+            border-radius: 12px;
+            display: block;
+            margin-bottom: 0.9rem;
+            animation: panelIn 0.35s var(--ease-out);
+            line-height: 1.45;
+        }
+
+        /* ==========================================================
+           TERMS MODAL
+           ========================================================== */
+        .terms-modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 500;
+            background: rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.25s var(--ease-out);
+        }
+
+        .terms-modal-overlay.open { display: flex; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .terms-modal {
+            background: #ffffff;
+            border-radius: 22px;
+            width: 100%;
+            max-width: 520px;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35);
+            animation: modalIn 0.35s var(--spring);
+        }
+
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.94) translateY(16px); }
+            to   { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .terms-modal-header {
+            padding: 20px 22px 16px;
+            background: #ffffff;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        .terms-modal-header h2 {
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: -0.4px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            line-height: 1.3;
+        }
+
+        .terms-modal-header h2 i { color: #0a0a0a; font-size: 1.05rem; }
+
+        .terms-modal-close {
+            background: var(--fill-gray);
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            flex-shrink: 0;
+            transition: all 0.25s var(--ease-smooth);
+        }
+
+        .terms-modal-close:hover {
+            background: #0a0a0a;
+            color: #ffffff;
+            transform: rotate(90deg);
+        }
+
+        .terms-modal-body {
+            padding: 20px 24px 24px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            font-size: 0.89rem;
+            line-height: 1.65;
+            color: var(--text-primary);
+            word-break: break-word;
+        }
+
+        .terms-modal-body h4 {
+            font-size: 0.86rem;
+            font-weight: 800;
+            margin: 1rem 0 0.35rem;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .terms-modal-body p { margin-bottom: 0.8rem; }
+
+        .terms-modal-body ul { padding-left: 1.3rem; margin-bottom: 0.8rem; }
+        .terms-modal-body li { margin-bottom: 0.3rem; }
+
+        .terms-modal-footer {
+            padding: 14px 22px 18px;
+            background: #ffffff;
+            border-top: 1px solid rgba(0, 0, 0, 0.07);
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            flex-shrink: 0;
+        }
+
+        .terms-accept-btn {
+            background: #0a0a0a;
+            color: #ffffff;
+            border: none;
+            font-family: inherit;
+            font-weight: 700;
+            font-size: 0.88rem;
+            padding: 11px 26px;
+            border-radius: 999px;
+            cursor: pointer;
+            box-shadow: 0 6px 16px -6px rgba(0, 0, 0, 0.45);
+            transition: transform 0.35s var(--spring), box-shadow 0.3s var(--ease-smooth);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .terms-accept-btn:hover  { transform: translateY(-2px); box-shadow: 0 10px 24px -6px rgba(0, 0, 0, 0.5); }
+        .terms-accept-btn:active { transform: scale(0.96); }
+
+        .terms-decline-btn {
+            background: #ffffff;
+            color: var(--text-primary);
+            border: none;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 0.88rem;
+            padding: 11px 22px;
+            border-radius: 999px;
+            cursor: pointer;
+            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12);
+            transition: all 0.25s var(--ease-smooth);
+        }
+
+        .terms-decline-btn:hover { background: #f5f5f7; }
+
+        /* ==========================================================
+           SPINNER
+           ========================================================== */
+        .fa-spin, .fa-spinner { animation: spin 0.9s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ==========================================================
+           RESPONSIVE
+           ========================================================== */
+        @media (max-width: 560px) {
+            .form-title { font-size: 1.28rem; margin-bottom: 1.1rem; }
+            .pill-input { padding: 12px 14px 12px 39px; font-size: 0.9rem; }
+            .input-icon-group > i { left: 13px; font-size: 0.9rem; }
+            .btn { padding: 12px 16px; font-size: 0.9rem; }
+            .half-title { font-size: 1.28rem; }
+            .half-icon { font-size: 2.4rem; }
+            .center-logo { width: 76px; height: 76px; }
+            .center-logo img { width: 54px; height: 54px; }
+            .center-logo .logo-fallback { font-size: 0.62rem; }
+            .panel-logo-strip .panel-logo-img { width: 106px; height: 106px; }
+            .panel-logo-strip .logo-fallback { font-size: 1.6rem; }
+            .terms-modal { max-height: 90vh; }
+            .terms-modal-header { padding: 16px 18px 14px; }
+            .terms-modal-body { padding: 16px 20px 20px; font-size: 0.86rem; }
+            .terms-modal-footer { padding: 12px 18px 16px; }
+            .terms-accept-btn, .terms-decline-btn { padding: 10px 20px; font-size: 0.85rem; }
+        }
+
+        @media (max-width: 400px) {
+            .flex-between { flex-direction: column; align-items: stretch; }
+            .flex-between .text-link { justify-content: center; }
+            .double-row { flex-direction: column; gap: 0.8rem; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.001ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.001ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ==========================================================
+     SPLIT LANDING
+     ========================================================== -->
+<div class="split-landing" id="splitLanding">
+    <div class="split-half split-top" id="splitTop" role="button" aria-label="Customer — swipe down">
+        <div class="half-content">
+            <div class="half-chevron"><i class="fas fa-chevron-down"></i></div>
+            <div class="half-icon"><i class="fas fa-user"></i></div>
+            <div class="half-title">Customer</div>
+            <div class="half-hint">Swipe down to continue</div>
+        </div>
+    </div>
+
+    <div class="split-half split-bottom" id="splitBottom" role="button" aria-label="Service provider — swipe up">
+        <div class="half-content">
+            <div class="half-chevron"><i class="fas fa-chevron-up"></i></div>
+            <div class="half-icon"><i class="fas fa-briefcase"></i></div>
+            <div class="half-title">Service Provider</div>
+            <div class="half-hint">Swipe up to continue</div>
+        </div>
+    </div>
+
+    <div class="center-logo" id="centerLogo">
+        <img src="logo.png" alt="NTUMENI logo"
+             onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+        <span class="logo-fallback" style="display:none;">NTUMENI</span>
+    </div>
+</div>
+
+<!-- ==========================================================
+     CUSTOMER PANEL
+     ========================================================== -->
+<div class="slide-panel" id="customerPanel">
+    <div class="panel-topbar">
+        <button id="backFromCustomer" class="back-btn"><i class="fas fa-arrow-left"></i> Back</button>
+        <span class="panel-label">Customer</span>
+    </div>
+    <div class="slide-panel-inner">
+        <div class="panel-logo-strip">
+            <img src="logo.png" alt="NTUMENI logo" class="panel-logo-img"
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <span class="logo-fallback" style="display:none;">NTUMENI</span>
+            <div class="panel-brand-name">NTUMENI</div>
+            <div class="panel-brand-sub">Customer</div>
+        </div>
+
+        <div class="segmented-control" id="custSegments" data-active="login">
+            <button type="button" class="segment active" id="custSegLogin">Sign in</button>
+            <button type="button" class="segment" id="custSegSignup">Create account</button>
+        </div>
+
+        <div class="form-area">
+            <!-- CUSTOMER LOGIN -->
+            <div id="custLoginPanel" class="form-panel">
+                <div class="form-title">
+                    <i class="fas fa-arrow-right-to-bracket"></i>
+                    Welcome back
+                </div>
+                <form id="custLoginForm" novalidate>
+                    <div class="input-icon-group">
+                        <input type="tel" id="custLoginPhone" class="pill-input"
+                               placeholder="Phone number" autocomplete="tel" required>
+                        <i class="fas fa-phone-alt"></i>
+                    </div>
+                    <div class="input-icon-group">
+                        <input type="password" id="custLoginPassword" class="pill-input"
+                               placeholder="Password" autocomplete="current-password" required>
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <div id="custLoginError" class="error-msg"></div>
+                    <button type="submit" class="btn btn-primary" id="custLoginBtn">
+                        <i class="fas fa-arrow-right-to-bracket"></i> LOGIN
+                    </button>
+                </form>
+            </div>
+
+            <!-- CUSTOMER SIGNUP -->
+            <div id="custSignupPanel" class="form-panel hidden-panel">
+                <div class="form-title">
+                    <i class="fas fa-user-plus"></i>
+                    Create your account
+                </div>
+                <form id="custSignupForm" novalidate>
+                    <div class="double-row">
+                        <div class="input-icon-group">
+                            <input type="text" id="custFirstName" class="pill-input"
+                                   placeholder="First name" autocomplete="given-name" required>
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="input-icon-group">
+                            <input type="text" id="custLastName" class="pill-input"
+                                   placeholder="Last name" autocomplete="family-name" required>
+                            <i class="fas fa-user-tag"></i>
+                        </div>
+                    </div>
+
+                    <div class="field-hint">
+                        <i class="fas fa-wand-magic-sparkles"></i>
+                        <span>The first letter of each name is capitalised automatically.</span>
+                    </div>
+
+                    <div class="input-icon-group">
+                        <input type="tel" id="custPhone" class="pill-input"
+                               placeholder="Phone number" autocomplete="tel" required>
+                        <i class="fas fa-phone-alt"></i>
+                    </div>
+
+                    <div class="section-label">Profile picture</div>
+                    <div class="upload-grid single">
+                        <div class="upload-box" id="custProfileUpload">
+                            <i class="fas fa-camera upload-icon"></i>
+                            <span class="upload-label">Tap to upload</span>
+                            <span class="upload-badge">Profile</span>
+                        </div>
+                    </div>
+                    <input type="hidden" id="custProfileUrl">
+
+                    <div class="section-label">Account security</div>
+                    <div class="input-icon-group">
+                        <input type="password" id="custPassword" class="pill-input"
+                               placeholder="Create password" autocomplete="new-password" required>
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <div class="input-icon-group">
+                        <input type="password" id="custConfirmPassword" class="pill-input"
+                               placeholder="Confirm password" autocomplete="new-password" required>
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+
+                    <div id="custSignupError" class="error-msg"></div>
+                    <div id="custSignupSuccess" class="success-msg" style="display:none;"></div>
+
+                    <div class="terms-check">
+                        <input type="checkbox" id="custTermsCheckbox" class="checkbox-custom">
+                        <label for="custTermsCheckbox">
+                            I agree to the
+                            <button type="button" class="terms-open-link" id="openCustTermsBtn">Terms &amp; Conditions</button>.
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" id="custRegisterBtn">
+                        <i class="fas fa-user-check"></i> REGISTER
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==========================================================
+     SERVICE PROVIDER PANEL
+     ========================================================== -->
+<div class="slide-panel" id="providerPanel">
+    <div class="panel-topbar">
+        <button id="backFromProvider" class="back-btn"><i class="fas fa-arrow-left"></i> Back</button>
+        <span class="panel-label">Service Provider</span>
+    </div>
+    <div class="slide-panel-inner">
+        <div class="panel-logo-strip">
+            <img src="logo.png" alt="NTUMENI logo" class="panel-logo-img"
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <span class="logo-fallback" style="display:none;">NTUMENI</span>
+            <div class="panel-brand-name">NTUMENI</div>
+            <div class="panel-brand-sub">Service Provider</div>
+        </div>
+
+        <div class="segmented-control" id="provSegments" data-active="login">
+            <button type="button" class="segment active" id="provSegLogin">Sign in</button>
+            <button type="button" class="segment" id="provSegSignup">Apply</button>
+        </div>
+
+        <div class="form-area">
+            <!-- PROVIDER LOGIN -->
+            <div id="provLoginPanel" class="form-panel">
+                <div class="form-title">
+                    <i class="fas fa-briefcase"></i>
+                    Provider sign in
+                </div>
+                <form id="provLoginForm" novalidate>
+                    <div class="input-icon-group">
+                        <input type="email" id="provLoginEmail" class="pill-input"
+                               placeholder="Email address" autocomplete="email" required>
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="input-icon-group">
+                        <input type="password" id="provLoginPassword" class="pill-input"
+                               placeholder="Password" autocomplete="current-password" required>
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <div id="provLoginError" class="error-msg"></div>
+                    <div id="provLoginInfo" class="info-msg" style="display:none;"></div>
+                    <button type="submit" class="btn btn-primary" id="provLoginBtn">
+                        <i class="fas fa-arrow-right-to-bracket"></i> SIGN IN
+                    </button>
+                    <div class="flex-between">
+                        <span style="font-size:0.8rem;color:var(--text-secondary);font-weight:400;">
+                            Not yet approved?
+                        </span>
+                        <button type="button" id="provGoSignupBtn" class="text-link">
+                            <i class="fas fa-user-plus"></i> Apply now
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- PROVIDER SIGNUP -->
+            <div id="provSignupPanel" class="form-panel hidden-panel">
+                <div class="form-title">
+                    <i class="fas fa-user-plus"></i>
+                    Apply as a provider
+                </div>
+                <p class="form-note">
+                    Submit your details and document images. An admin will review your application
+                    before your account is activated.
+                </p>
+                <form id="provSignupForm" novalidate>
+                    <!-- Personal -->
+                    <div class="section-label">Personal details</div>
+
+                    <div class="double-row">
+                        <div class="input-icon-group">
+                            <input type="text" id="provFirstName" class="pill-input"
+                                   placeholder="First name" autocomplete="given-name" required>
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="input-icon-group">
+                            <input type="text" id="provLastName" class="pill-input"
+                                   placeholder="Last name" autocomplete="family-name" required>
+                            <i class="fas fa-user-tag"></i>
+                        </div>
+                    </div>
+
+                    <div class="input-icon-group">
+                        <input type="email" id="provEmail" class="pill-input"
+                               placeholder="Email address" autocomplete="email" required>
+                        <i class="fas fa-envelope"></i>
+                    </div>
+
+                    <div class="input-icon-group">
+                        <input type="tel" id="provPhone" class="pill-input"
+                               placeholder="Phone number" autocomplete="tel" required>
+                        <i class="fas fa-phone-alt"></i>
+                    </div>
+
+                    <!-- Profile picture -->
+                    <div class="section-label">Profile picture</div>
+                    <div class="upload-grid single">
+                        <div class="upload-box" id="provProfileUpload">
+                            <i class="fas fa-camera upload-icon"></i>
+                            <span class="upload-label">Tap to upload</span>
+                            <span class="upload-badge">Profile</span>
+                        </div>
+                    </div>
+                    <input type="hidden" id="provProfileUrl">
+
+                    <!-- NRC -->
+                    <div class="section-label">NRC images (front &amp; back)</div>
+                    <div class="upload-grid">
+                        <div class="upload-box" id="provNrcFrontUpload">
+                            <i class="fas fa-id-card upload-icon"></i>
+                            <span class="upload-label">NRC Front</span>
+                            <span class="upload-badge">Front</span>
+                        </div>
+                        <div class="upload-box" id="provNrcBackUpload">
+                            <i class="fas fa-id-card upload-icon"></i>
+                            <span class="upload-label">NRC Back</span>
+                            <span class="upload-badge">Back</span>
+                        </div>
+                    </div>
+                    <input type="hidden" id="provNrcFrontUrl">
+                    <input type="hidden" id="provNrcBackUrl">
+
+                    <!-- Password -->
+                    <div class="section-label">Account security</div>
+                    <div class="input-icon-group">
+                        <input type="password" id="provPassword" class="pill-input"
+                               placeholder="Create password" autocomplete="new-password" required>
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <div class="input-icon-group">
+                        <input type="password" id="provConfirmPassword" class="pill-input"
+                               placeholder="Confirm password" autocomplete="new-password" required>
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+
+                    <div id="provSignupError" class="error-msg"></div>
+                    <div id="provSignupSuccess" class="success-msg" style="display:none;"></div>
+
+                    <div class="terms-check">
+                        <input type="checkbox" id="provTermsCheckbox" class="checkbox-custom">
+                        <label for="provTermsCheckbox">
+                            I confirm the documents are authentic and I agree to the
+                            <button type="button" class="terms-open-link" id="openProvTermsBtn">Provider Terms &amp; Conditions</button>.
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" id="provRegisterBtn">
+                        <i class="fas fa-paper-plane"></i> SUBMIT APPLICATION
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==========================================================
+     TERMS & CONDITIONS MODAL
+     ========================================================== -->
+<div class="terms-modal-overlay" id="termsModalOverlay">
+    <div class="terms-modal" role="dialog" aria-modal="true">
+        <div class="terms-modal-header">
+            <h2 id="termsModalTitle"><i class="fas fa-file-contract"></i> Terms &amp; Conditions</h2>
+            <button class="terms-modal-close" id="termsModalCloseBtn" aria-label="Close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="terms-modal-body" id="termsModalBody"></div>
+        <div class="terms-modal-footer">
+            <button class="terms-decline-btn" id="termsDeclineBtn">Close</button>
+            <button class="terms-accept-btn" id="termsAcceptBtn">
+                <i class="fas fa-check"></i> I Agree
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden shared file input -->
+<input type="file" id="hiddenFileInput" accept="image/*" style="display:none;">
+
+<script type="module">
+    import { initializeApp } from "firebase/app";
+    import {
+        getAuth,
+        createUserWithEmailAndPassword,
+        signInWithEmailAndPassword,
+        signOut
+    } from "firebase/auth";
+    import { getDatabase, ref, set, get } from "firebase/database";
+
+    /* ============================================================
+       FIREBASE CONFIG
+       ============================================================ */
+    const firebaseConfig = {
+        apiKey: "AIzaSyAI2w79Geshn90Oplf1Bzk3xkAUC7XGQDs",
+        authDomain: "ntumeni-a7dd0.firebaseapp.com",
+        databaseURL: "https://ntumeni-a7dd0-default-rtdb.firebaseio.com",
+        projectId: "ntumeni-a7dd0",
+        storageBucket: "ntumeni-a7dd0.firebasestorage.app",
+        messagingSenderId: "751127478739",
+        appId: "1:751127478739:web:3a1003fcc0184b40f16f26"
+    };
+
+    const app      = initializeApp(firebaseConfig);
+    const auth     = getAuth(app);
+    const database = getDatabase(app);
+
+    /* ============================================================
+       SMALL HELPERS
+       ============================================================ */
+    function setButtonLoading(button, isLoading, originalHtml) {
+        if (isLoading) {
+            button.disabled = true;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Please wait...';
+        } else {
+            button.disabled = false;
+            button.innerHTML = originalHtml;
+        }
+    }
+
+    function normalisePhone(raw) {
+        return String(raw || '').replace(/\D/g, '');
+    }
+
+    /* Customers have no email — we derive a stable internal auth email from the phone. */
+    function customerAuthEmail(phone) {
+        return 'c' + normalisePhone(phone) + '@customer.ntumeni.app';
+    }
+
+    function isValidPhone(raw) {
+        const digits = normalisePhone(raw);
+        return /^[\+\d\s\-\(\)]{8,20}$/.test(String(raw).trim()) && digits.length >= 9 && digits.length <= 15;
+    }
+
+    const EMAIL_REGEX = /^[^\s@]+@([^\s@]+\.)+[^\s@]+$/;
+    const NAME_REGEX  = /^[A-Za-zÀ-ÖØ-öø-ÿ\s\-']+$/;
+
+    /* ============================================================
+       IMAGE HANDLING  (compressed data-URL, no Storage needed)
+       ============================================================ */
+    function fileToCompressedDataUrl(file, maxDim, quality) {
+        return new Promise((resolve, reject) => {
+            if (!file || !file.type || !file.type.startsWith('image/')) {
+                return reject(new Error('Please choose an image file.'));
+            }
+            if (file.size > 12 * 1024 * 1024) {
+                return reject(new Error('Image is too large (max 12 MB).'));
+            }
+
+            const reader = new FileReader();
+            reader.onerror = () => reject(new Error('Could not read the image.'));
+            reader.onload = () => {
+                const img = new Image();
+                img.onerror = () => reject(new Error('That image could not be loaded.'));
+                img.onload = () => {
+                    let w = img.naturalWidth  || img.width;
+                    let h = img.naturalHeight || img.height;
+                    const scale = Math.min(1, maxDim / Math.max(w, h));
+                    w = Math.max(1, Math.round(w * scale));
+                    h = Math.max(1, Math.round(h * scale));
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width  = w;
+                    canvas.height = h;
+                    const ctx = canvas.getContext('2d');
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(0, 0, w, h);
+                    ctx.drawImage(img, 0, 0, w, h);
+                    resolve(canvas.toDataURL('image/jpeg', quality));
+                };
+                img.src = reader.result;
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    /* ---- Shared upload-box wiring ---- */
+    const hiddenFileInput = document.getElementById('hiddenFileInput');
+    let pendingUpload = null;
+
+    function wireUploadBox(boxId, hiddenInputId, errEl, opts) {
+        const box = document.getElementById(boxId);
+        const hid = document.getElementById(hiddenInputId);
+        if (!box || !hid) return;
+
+        const settings = Object.assign({ maxDim: 900, quality: 0.75 }, opts || {});
+
+        box.addEventListener('click', () => {
+            pendingUpload = { box, hid, settings, errEl };
+            hiddenFileInput.value = '';
+            hiddenFileInput.click();
+        });
+    }
+
+    hiddenFileInput.addEventListener('change', async (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file || !pendingUpload) return;
+
+        const { box, hid, settings, errEl } = pendingUpload;
+        if (errEl) errEl.innerText = '';
+        box.classList.add('is-loading');
+
+        try {
+            const dataUrl = await fileToCompressedDataUrl(file, settings.maxDim, settings.quality);
+            hid.value = dataUrl;
+
+            box.querySelectorAll('img').forEach(i => i.remove());
+            const img = document.createElement('img');
+            img.src = dataUrl;
+            img.alt = 'Uploaded image';
+            box.appendChild(img);
+            box.classList.add('has-image');
+        } catch (err) {
+            if (errEl) errEl.innerText = err.message || String(err);
+        } finally {
+            box.classList.remove('is-loading');
+            pendingUpload = null;
+        }
+    });
+
+    function resetUploadBox(boxId, hiddenInputId) {
+        const box = document.getElementById(boxId);
+        const hid = document.getElementById(hiddenInputId);
+        if (hid) hid.value = '';
+        if (box) {
+            box.querySelectorAll('img').forEach(i => i.remove());
+            box.classList.remove('has-image');
+        }
+    }
+
+    /* ============================================================
+       TERMS MODAL
+       ============================================================ */
+    const CUSTOMER_TERMS_HTML = `
+        <h4>1. Using NTUMENI</h4>
+        <p>NTUMENI connects customers with independent service providers. By creating a customer
+        account you agree to provide accurate information and to use the platform lawfully.</p>
+        <h4>2. Your account</h4>
+        <p>You are responsible for keeping your password safe. Your phone number is your login
+        identifier — notify us immediately if it changes or is compromised.</p>
+        <h4>3. Bookings &amp; payments</h4>
+        <p>Any agreement, price or schedule is made directly between you and the service provider.
+        NTUMENI is not a party to that agreement.</p>
+        <h4>4. Privacy</h4>
+        <p>We store the details you submit (name, phone number and profile picture) to operate your
+        account. We never sell your personal information.</p>
+        <h4>5. Conduct</h4>
+        <p>Abuse, fraud or harassment will result in immediate suspension of your account.</p>
+    `;
+
+    const PROVIDER_TERMS_HTML = `
+        <h4>1. Application &amp; approval</h4>
+        <p>Submitting an application does not guarantee acceptance. An NTUMENI administrator
+        reviews every application and may approve, reject or request more information.</p>
+        <h4>2. Documents</h4>
+        <p>You confirm that your profile picture and NRC front/back images are genuine, belong to
+        you, and are not altered or borrowed. Fraudulent documents will be reported.</p>
+        <h4>3. Your account</h4>
+        <p>You are responsible for keeping your login details confidential. Provider accounts are
+        personal and may not be shared or transferred.</p>
+        <h4>4. Service standards</h4>
+        <p>You agree to honour accepted bookings, communicate honestly with customers and maintain
+        professional conduct at all times.</p>
+        <h4>5. Suspension</h4>
+        <p>NTUMENI may suspend or ban an account that breaches these terms, receives repeated
+        complaints, or misrepresents its services.</p>
+        <h4>6. Privacy</h4>
+        <p>Your submitted details are used for verification, administration and platform operation
+        only.</p>
+    `;
+
+    let termsCheckboxToTick = null;
+
+    function openTermsModal(kind, checkboxEl) {
+        const isProvider = kind === 'provider';
+        document.getElementById('termsModalTitle').innerHTML =
+            `<i class="fas fa-file-contract"></i> ${isProvider ? 'Provider' : 'Customer'} Terms &amp; Conditions`;
+        document.getElementById('termsModalBody').innerHTML =
+            isProvider ? PROVIDER_TERMS_HTML : CUSTOMER_TERMS_HTML;
+        termsCheckboxToTick = checkboxEl || null;
+        document.getElementById('termsModalOverlay').classList.add('open');
+    }
+
+    function closeTermsModal() {
+        document.getElementById('termsModalOverlay').classList.remove('open');
+    }
+
+    document.getElementById('termsModalCloseBtn').addEventListener('click', closeTermsModal);
+    document.getElementById('termsDeclineBtn').addEventListener('click', closeTermsModal);
+    document.getElementById('termsAcceptBtn').addEventListener('click', () => {
+        if (termsCheckboxToTick) termsCheckboxToTick.checked = true;
+        closeTermsModal();
+    });
+    document.getElementById('termsModalOverlay').addEventListener('click', (e) => {
+        if (e.target.id === 'termsModalOverlay') closeTermsModal();
+    });
+
+    /* ============================================================
+       SPLIT LANDING — gesture handling
+       ============================================================ */
+    const splitTop      = document.getElementById('splitTop');
+    const splitBottom   = document.getElementById('splitBottom');
+    const customerPanel = document.getElementById('customerPanel');
+    const providerPanel = document.getElementById('providerPanel');
+
+    function openCustomerPanel() {
+        customerPanel.classList.add('active');
+        providerPanel.classList.remove('active');
+        document.body.classList.add('panel-open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function openProviderPanel() {
+        providerPanel.classList.add('active');
+        customerPanel.classList.remove('active');
+        document.body.classList.add('panel-open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closePanels() {
+        customerPanel.classList.remove('active');
+        providerPanel.classList.remove('active');
+        document.body.classList.remove('panel-open');
+        document.body.style.overflow = '';
+    }
+
+    document.getElementById('backFromCustomer').addEventListener('click', closePanels);
+    document.getElementById('backFromProvider').addEventListener('click', closePanels);
+
+    let activeGesture = null;
+    const SWIPE_THRESHOLD = 45;
+    const DRAG_FEEDBACK   = 28;
+
+    function beginGesture(el, dir, clientY) {
+        activeGesture = { el, dir, startY: clientY, lastY: clientY };
+        el.classList.add('drag-active');
+        el.style.transition = 'none';
+    }
+
+    function updateGesture(clientY) {
+        if (!activeGesture) return;
+        const delta = clientY - activeGesture.startY;
+        let feedback = 0;
+        if (activeGesture.dir === 'down' && delta > 0) {
+            feedback = Math.min(DRAG_FEEDBACK, delta * 0.35);
+        } else if (activeGesture.dir === 'up' && delta < 0) {
+            feedback = Math.max(-DRAG_FEEDBACK, delta * 0.35);
+        }
+        activeGesture.el.style.setProperty('--drag-y', feedback + 'px');
+        activeGesture.lastY = clientY;
+    }
+
+    function endGesture() {
+        if (!activeGesture) return;
+        const { el, dir, startY, lastY } = activeGesture;
+        const delta = lastY - startY;
+
+        el.style.transition = '';
+        el.style.removeProperty('--drag-y');
+        el.classList.remove('drag-active');
+
+        if (dir === 'down' && delta > SWIPE_THRESHOLD) {
+            openCustomerPanel();
+        } else if (dir === 'up' && delta < -SWIPE_THRESHOLD) {
+            openProviderPanel();
+        }
+        activeGesture = null;
+    }
+
+    splitTop.addEventListener('touchstart', (e) => {
+        beginGesture(splitTop, 'down', e.touches[0].clientY);
+    }, { passive: true });
+
+    splitBottom.addEventListener('touchstart', (e) => {
+        beginGesture(splitBottom, 'up', e.touches[0].clientY);
+    }, { passive: true });
+
+    document.addEventListener('touchmove', (e) => {
+        if (!activeGesture) return;
+        updateGesture(e.touches[0].clientY);
+    }, { passive: true });
+
+    document.addEventListener('touchend', () => {
+        if (activeGesture) endGesture();
+    }, { passive: true });
+
+    /* Mouse (desktop) */
+    let mouseDown = false;
+
+    splitTop.addEventListener('mousedown', (e) => {
+        mouseDown = true;
+        beginGesture(splitTop, 'down', e.clientY);
+    });
+
+    splitBottom.addEventListener('mousedown', (e) => {
+        mouseDown = true;
+        beginGesture(splitBottom, 'up', e.clientY);
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (!mouseDown || !activeGesture) return;
+        updateGesture(e.clientY);
+    });
+
+    document.addEventListener('mouseup', () => {
+        if (mouseDown && activeGesture) endGesture();
+        mouseDown = false;
+    });
+
+    let suppressClick = false;
+
+    splitTop.addEventListener('click', () => {
+        if (suppressClick) return;
+        openCustomerPanel();
+    });
+
+    splitBottom.addEventListener('click', () => {
+        if (suppressClick) return;
+        openProviderPanel();
+    });
+
+    /* ============================================================
+       CUSTOMER PANEL
+       ============================================================ */
+    const custSegmentsBar = document.getElementById('custSegments');
+    const custSegLogin    = document.getElementById('custSegLogin');
+    const custSegSignup   = document.getElementById('custSegSignup');
+
+    const custLoginPanel  = document.getElementById('custLoginPanel');
+    const custSignupPanel = document.getElementById('custSignupPanel');
+
+    function setCustSegment(which) {
+        custSegmentsBar.setAttribute('data-active', which);
+        if (which === 'login') {
+            custSegLogin.classList.add('active');
+            custSegSignup.classList.remove('active');
+            custLoginPanel.classList.remove('hidden-panel');
+            custSignupPanel.classList.add('hidden-panel');
+        } else {
+            custSegSignup.classList.add('active');
+            custSegLogin.classList.remove('active');
+            custSignupPanel.classList.remove('hidden-panel');
+            custLoginPanel.classList.add('hidden-panel');
+        }
+    }
+
+    custSegLogin.addEventListener('click', () => setCustSegment('login'));
+    custSegSignup.addEventListener('click', () => setCustSegment('signup'));
+
+    /* --- Customer elements --- */
+    const custLoginForm     = document.getElementById('custLoginForm');
+    const custLoginPhone    = document.getElementById('custLoginPhone');
+    const custLoginPassword = document.getElementById('custLoginPassword');
+    const custLoginError    = document.getElementById('custLoginError');
+    const custLoginBtn      = document.getElementById('custLoginBtn');
+
+    const custSignupForm     = document.getElementById('custSignupForm');
+    const custFirstName      = document.getElementById('custFirstName');
+    const custLastName       = document.getElementById('custLastName');
+    const custPhone          = document.getElementById('custPhone');
+    const custPassword       = document.getElementById('custPassword');
+    const custConfirmPassword= document.getElementById('custConfirmPassword');
+    const custTermsCheckbox  = document.getElementById('custTermsCheckbox');
+    const custProfileUrl     = document.getElementById('custProfileUrl');
+    const custSignupError    = document.getElementById('custSignupError');
+    const custSignupSuccess  = document.getElementById('custSignupSuccess');
+    const custRegisterBtn    = document.getElementById('custRegisterBtn');
+
+    wireUploadBox('custProfileUpload', 'custProfileUrl', custSignupError, { maxDim: 500, quality: 0.82 });
+
+    document.getElementById('openCustTermsBtn')
+        .addEventListener('click', () => openTermsModal('customer', custTermsCheckbox));
+
+    /* --- Customer signup --- */
+    custSignupForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        custSignupError.innerText = '';
+        custSignupSuccess.style.display = 'none';
+
+        const fName   = custFirstName.value.trim();
+        const lName   = custLastName.value.trim();
+        const phone   = custPhone.value.trim();
+        const pwd     = custPassword.value;
+        const confirm = custConfirmPassword.value;
+        const photo   = custProfileUrl.value;
+        const termsOk = custTermsCheckbox.checked;
+
+        if (!fName || !lName || !phone || !pwd || !confirm) {
+            custSignupError.innerText = 'Please fill in all required fields.';
+            return;
+        }
+        if (!NAME_REGEX.test(fName)) { custSignupError.innerText = 'First name must contain only letters.'; return; }
+        if (!NAME_REGEX.test(lName)) { custSignupError.innerText = 'Last name must contain only letters.'; return; }
+        if (!isValidPhone(phone))    { custSignupError.innerText = 'Enter a valid phone number (9–15 digits).'; return; }
+        if (pwd.length < 6)          { custSignupError.innerText = 'Password must be at least 6 characters.'; return; }
+        if (pwd !== confirm)         { custSignupError.innerText = 'Passwords do not match.'; return; }
+        if (!photo)                  { custSignupError.innerText = 'Please upload a profile picture.'; return; }
+        if (!termsOk)                { custSignupError.innerText = 'You must agree to the Terms & Conditions.'; return; }
+
+        const originalHtml = custRegisterBtn.innerHTML;
+        setButtonLoading(custRegisterBtn, true, originalHtml);
+
+        try {
+            const email = customerAuthEmail(phone);
+            const cred  = await createUserWithEmailAndPassword(auth, email, pwd);
+            const user  = cred.user;
+
+            await set(ref(database, `customers/${user.uid}`), {
+                uid: user.uid,
+                firstName: fName,
+                lastName: lName,
+                fullName: `${fName} ${lName}`,
+                phone: phone,
+                phoneDigits: normalisePhone(phone),
+                profileUrl: photo,
+                role: 'customer',
+                createdAt: Date.now()
+            });
+
+            /* Sign out — user must explicitly log in afterwards */
+            await signOut(auth);
+
+            custSignupSuccess.style.display = 'block';
+            custSignupSuccess.innerText = 'Registration successful! You can now sign in with your phone number and password.';
+
+            custSignupForm.reset();
+            custTermsCheckbox.checked = false;
+            resetUploadBox('custProfileUpload', 'custProfileUrl');
+
+            setTimeout(() => {
+                setCustSegment('login');
+                custLoginPhone.value = phone;
+                custLoginPassword.value = '';
+                custSignupSuccess.style.display = 'none';
+            }, 2200);
+
+        } catch (error) {
+            let msg = error.message || 'Registration failed.';
+            if (error.code === 'auth/email-already-in-use') msg = 'This phone number is already registered.';
+            else if (error.code === 'auth/weak-password')   msg = 'Password is too weak.';
+            else if (error.code === 'auth/invalid-email')   msg = 'That phone number could not be used. Try again.';
+            else if (error.code === 'auth/network-request-failed') msg = 'Network error. Check your connection.';
+            custSignupError.innerText = msg;
+        } finally {
+            setButtonLoading(custRegisterBtn, false, originalHtml);
+        }
+    });
+
+    /* --- Customer login --- */
+    custLoginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        custLoginError.innerText = '';
+
+        const phone = custLoginPhone.value.trim();
+        const pwd   = custLoginPassword.value;
+
+        if (!phone || !pwd) {
+            custLoginError.innerText = 'Both phone number and password are required.';
+            return;
+        }
+        if (!isValidPhone(phone)) {
+            custLoginError.innerText = 'Enter a valid phone number.';
+            return;
+        }
+
+        const originalHtml = custLoginBtn.innerHTML;
+        setButtonLoading(custLoginBtn, true, originalHtml);
+
+        try {
+            const cred = await signInWithEmailAndPassword(auth, customerAuthEmail(phone), pwd);
+            const user = cred.user;
+
+            /* Make sure a customer record exists */
+            const snap = await get(ref(database, `customers/${user.uid}`));
+            if (!snap.exists()) {
+                await signOut(auth);
+                custLoginError.innerText = 'No customer account found for this phone number.';
+                return;
+            }
+
+            localStorage.setItem('customerUid', user.uid);
+            localStorage.setItem('customerPhone', phone);
+
+            window.location.href = 'dashboard.html';
+
+        } catch (error) {
+            let msg = 'Invalid phone number or password.';
+            if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+                msg = 'Invalid phone number or password.';
+            } else if (error.code === 'auth/too-many-requests') {
+                msg = 'Too many attempts. Please try again later.';
+            } else if (error.code === 'auth/network-request-failed') {
+                msg = 'Network error. Check your connection.';
+            }
+            custLoginError.innerText = msg;
+        } finally {
+            setButtonLoading(custLoginBtn, false, originalHtml);
+        }
+    });
+
+    /* ============================================================
+       SERVICE PROVIDER PANEL
+       ============================================================ */
+    const provSegmentsBar = document.getElementById('provSegments');
+    const provSegLogin    = document.getElementById('provSegLogin');
+    const provSegSignup   = document.getElementById('provSegSignup');
+
+    const provLoginPanel  = document.getElementById('provLoginPanel');
+    const provSignupPanel = document.getElementById('provSignupPanel');
+
+    function setProvSegment(which) {
+        provSegmentsBar.setAttribute('data-active', which);
+        if (which === 'login') {
+            provSegLogin.classList.add('active');
+            provSegSignup.classList.remove('active');
+            provLoginPanel.classList.remove('hidden-panel');
+            provSignupPanel.classList.add('hidden-panel');
+        } else {
+            provSegSignup.classList.add('active');
+            provSegLogin.classList.remove('active');
+            provSignupPanel.classList.remove('hidden-panel');
+            provLoginPanel.classList.add('hidden-panel');
+        }
+    }
+
+    provSegLogin.addEventListener('click', () => setProvSegment('login'));
+    provSegSignup.addEventListener('click', () => setProvSegment('signup'));
+    document.getElementById('provGoSignupBtn').addEventListener('click', () => setProvSegment('signup'));
+
+    /* --- Provider elements --- */
+    const provLoginForm     = document.getElementById('provLoginForm');
+    const provLoginEmail    = document.getElementById('provLoginEmail');
+    const provLoginPassword = document.getElementById('provLoginPassword');
+    const provLoginError    = document.getElementById('provLoginError');
+    const provLoginInfo     = document.getElementById('provLoginInfo');
+    const provLoginBtn      = document.getElementById('provLoginBtn');
+
+    const provSignupForm      = document.getElementById('provSignupForm');
+    const provFirstName       = document.getElementById('provFirstName');
+    const provLastName        = document.getElementById('provLastName');
+    const provEmail           = document.getElementById('provEmail');
+    const provPhone           = document.getElementById('provPhone');
+    const provPassword        = document.getElementById('provPassword');
+    const provConfirmPassword = document.getElementById('provConfirmPassword');
+    const provTermsCheckbox   = document.getElementById('provTermsCheckbox');
+    const provProfileUrl      = document.getElementById('provProfileUrl');
+    const provNrcFrontUrl     = document.getElementById('provNrcFrontUrl');
+    const provNrcBackUrl      = document.getElementById('provNrcBackUrl');
+    const provSignupError     = document.getElementById('provSignupError');
+    const provSignupSuccess   = document.getElementById('provSignupSuccess');
+    const provRegisterBtn     = document.getElementById('provRegisterBtn');
+
+    wireUploadBox('provProfileUpload',  'provProfileUrl',  provSignupError, { maxDim: 500,  quality: 0.82 });
+    wireUploadBox('provNrcFrontUpload', 'provNrcFrontUrl', provSignupError, { maxDim: 1100, quality: 0.72 });
+    wireUploadBox('provNrcBackUpload',  'provNrcBackUrl',  provSignupError, { maxDim: 1100, quality: 0.72 });
+
+    document.getElementById('openProvTermsBtn')
+        .addEventListener('click', () => openTermsModal('provider', provTermsCheckbox));
+
+    /* --- Provider application --- */
+    provSignupForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        provSignupError.innerText = '';
+        provSignupSuccess.style.display = 'none';
+
+        const fName   = provFirstName.value.trim();
+        const lName   = provLastName.value.trim();
+        const email   = provEmail.value.trim().toLowerCase();
+        const phone   = provPhone.value.trim();
+        const pwd     = provPassword.value;
+        const confirm = provConfirmPassword.value;
+
+        const photo     = provProfileUrl.value;
+        const nrcFront  = provNrcFrontUrl.value;
+        const nrcBack   = provNrcBackUrl.value;
+        const termsOk   = provTermsCheckbox.checked;
+
+        if (!fName || !lName || !email || !phone || !pwd || !confirm) {
+            provSignupError.innerText = 'Please fill in all required fields.';
+            return;
+        }
+        if (!NAME_REGEX.test(fName))  { provSignupError.innerText = 'First name must contain only letters.'; return; }
+        if (!NAME_REGEX.test(lName))  { provSignupError.innerText = 'Last name must contain only letters.'; return; }
+        if (!EMAIL_REGEX.test(email)) { provSignupError.innerText = 'Enter a valid email address.'; return; }
+        if (!isValidPhone(phone))     { provSignupError.innerText = 'Enter a valid phone number (9–15 digits).'; return; }
+        if (pwd.length < 6)           { provSignupError.innerText = 'Password must be at least 6 characters.'; return; }
+        if (pwd !== confirm)          { provSignupError.innerText = 'Passwords do not match.'; return; }
+        if (!photo)                   { provSignupError.innerText = 'Please upload your profile picture.'; return; }
+        if (!nrcFront || !nrcBack)    { provSignupError.innerText = 'Please upload both NRC images (front and back).'; return; }
+        if (!termsOk)                 { provSignupError.innerText = 'You must agree to the Provider Terms & Conditions.'; return; }
+
+        const originalHtml = provRegisterBtn.innerHTML;
+        setButtonLoading(provRegisterBtn, true, originalHtml);
+
+        try {
+            const cred = await createUserWithEmailAndPassword(auth, email, pwd);
+            const user = cred.user;
+
+            await set(ref(database, `providers/${user.uid}`), {
+                uid: user.uid,
+                firstName: fName,
+                lastName: lName,
+                fullName: `${fName} ${lName}`,
+                email: email,
+                phone: phone,
+                phoneDigits: normalisePhone(phone),
+                profileUrl: photo,
+                nrcFront: nrcFront,
+                nrcBack: nrcBack,
+                role: 'provider',
+                status: 'pending',          // pending | approved | rejected | suspended
+                banned: false,
+                createdAt: Date.now(),
+                appliedAt: Date.now()
+            });
+
+            /* Do NOT leave a pending provider signed in */
+            await signOut(auth);
+
+            provSignupSuccess.style.display = 'block';
+            provSignupSuccess.innerText =
+                '✅ Application submitted! Your application is being reviewed by an admin. ' +
+                'You will be able to sign in once it is approved.';
+
+            provSignupForm.reset();
+            provTermsCheckbox.checked = false;
+            resetUploadBox('provProfileUpload',  'provProfileUrl');
+            resetUploadBox('provNrcFrontUpload', 'provNrcFrontUrl');
+            resetUploadBox('provNrcBackUpload',  'provNrcBackUrl');
+
+            setTimeout(() => {
+                setProvSegment('login');
+                provLoginEmail.value = email;
+                provLoginPassword.value = '';
+                provSignupSuccess.style.display = 'none';
+            }, 3000);
+
+        } catch (error) {
+            let msg = error.message || 'Application failed.';
+            if (error.code === 'auth/email-already-in-use') {
+                msg = 'This email is already registered. Try signing in instead.';
+            } else if (error.code === 'auth/weak-password') {
+                msg = 'Password is too weak.';
+            } else if (error.code === 'auth/invalid-email') {
+                msg = 'Enter a valid email address.';
+            } else if (error.code === 'auth/network-request-failed') {
+                msg = 'Network error. Check your connection.';
+            }
+            provSignupError.innerText = msg;
+        } finally {
+            setButtonLoading(provRegisterBtn, false, originalHtml);
+        }
+    });
+
+    /* --- Provider login + approval gate --- */
+    provLoginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        provLoginError.innerText = '';
+        provLoginInfo.style.display = 'none';
+
+        const email = provLoginEmail.value.trim().toLowerCase();
+        const pwd   = provLoginPassword.value;
+
+        if (!email || !pwd) {
+            provLoginError.innerText = 'Both email and password are required.';
+            return;
+        }
+
+        const originalHtml = provLoginBtn.innerHTML;
+        setButtonLoading(provLoginBtn, true, originalHtml);
+
+        try {
+            const cred = await signInWithEmailAndPassword(auth, email, pwd);
+            const user = cred.user;
+
+            const snap = await get(ref(database, `providers/${user.uid}`));
+
+            if (!snap.exists()) {
+                await signOut(auth);
+                provLoginError.innerText = 'No provider application found for this account.';
+                return;
+            }
+
+            const provider = snap.val();
+
+            /* ---- BANNED ---- */
+            if (provider.banned === true) {
+                await signOut(auth);
+                provLoginError.innerText =
+                    '🚫 Your account has been banned. Reason: ' +
+                    (provider.banReason || 'Please contact the administrator.');
+                return;
+            }
+
+            /* ---- PENDING / UNDER REVIEW ---- */
+            if (provider.status === 'pending') {
+                await signOut(auth);
+                provLoginInfo.style.display = 'block';
+                provLoginInfo.innerText =
+                    '⏳ Your application is being reviewed by an admin. ' +
+                    'You will be able to sign in as soon as it is approved.';
+                return;
+            }
+
+            /* ---- REJECTED ---- */
+            if (provider.status === 'rejected') {
+                await signOut(auth);
+                provLoginError.innerText =
+                    '❌ Your application was rejected. Reason: ' +
+                    (provider.rejectionReason || 'Please contact the administrator for details.');
+                return;
+            }
+
+            /* ---- SUSPENDED ---- */
+            if (provider.status === 'suspended') {
+                await signOut(auth);
+                provLoginError.innerText =
+                    '⚠️ Your account is currently suspended. ' +
+                    (provider.suspendReason || 'Please contact the administrator.');
+                return;
+            }
+
+            /* ---- NOT APPROVED ---- */
+            if (provider.status !== 'approved') {
+                await signOut(auth);
+                provLoginError.innerText = 'Your account is not active yet. Please contact the administrator.';
+                return;
+            }
+
+            /* ---- APPROVED 🎉 ---- */
+            localStorage.setItem('providerUid', user.uid);
+            localStorage.setItem('providerEmail', email);
+            localStorage.setItem('providerName', provider.fullName || provider.firstName || '');
+
+            window.location.href = 'provider.html';
+
+        } catch (error) {
+            let msg = 'Invalid email or password.';
+            if (error.code === 'auth/too-many-requests') {
+                msg = 'Too many attempts. Please try again later.';
+            } else if (error.code === 'auth/network-request-failed') {
+                msg = 'Network error. Check your connection.';
+            }
+            provLoginError.innerText = msg;
+        } finally {
+            setButtonLoading(provLoginBtn, false, originalHtml);
+        }
+    });
+
+    /* ============================================================
+       MISC
+       ============================================================ */
+    /* Prevent iOS double-tap zoom on the landing halves */
+    document.addEventListener('dblclick', (e) => {
+        if (e.target.closest('.split-half')) e.preventDefault();
+    }, { passive: false });
+</script>
+</body>
+</html>
