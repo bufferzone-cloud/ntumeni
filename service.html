@@ -2208,6 +2208,7 @@ let historyCache = { offers: [], float: [], trips: [] };
 let isOnline = false;
 let searchRadiusKm = 15;
 let settingsUnsub = null;
+let providerLiveUnsub = null;
 
 let requestsRidesUnsub = null;
 let requestsDeliveriesUnsub = null;
@@ -2462,7 +2463,6 @@ async function drawMainRoute(from, to, profile = 'driving', padding = [60, 60]) 
     }
   } catch (err) {
     console.warn('Route fetch failed:', err);
-    /* Fallback: dashed straight line */
     if (from && to) {
       const straight = [[from.lat, from.lng], [to.lat, to.lng]];
       mainRouteLayer = L.layerGroup().addTo(map);
@@ -2583,14 +2583,30 @@ function setOnlineUI() {
   }
 }
 
+/* UPDATED: refresh from DB before validating */
 async function toggleOnline() {
+  /* --- Refresh local copy from DB first, in case admin changed things --- */
+  try {
+    const [pSnap, bSnap] = await Promise.all([
+      get(ref(database, `providers/${currentUser.uid}`)),
+      get(ref(database, `providers/${currentUser.uid}/floatBalance`))
+    ]);
+    if (pSnap.exists()) providerRecord = pSnap.val();
+    floatBalance = bSnap.exists() ? (parseInt(bSnap.val(), 10) || 0) : 0;
+    renderFloatBalance();
+    applyUserUI();
+  } catch (e) {
+    console.warn('Could not refresh provider info before toggle:', e);
+  }
+
+  /* --- Validate --- */
   if (!providerRecord) {
     showToast('Apply as a service provider first.');
     openAccountPage();
     return;
   }
   if (providerRecord.status !== 'approved') {
-    showToast('Your provider account is not yet approved.');
+    showToast(`Account not approved (status: ${providerRecord.status || 'none'}).`);
     openAccountPage();
     return;
   }
@@ -2645,8 +2661,10 @@ function detachRequestListeners() {
   if (requestsDeliveriesUnsub) { requestsDeliveriesUnsub(); requestsDeliveriesUnsub = null; }
 }
 
+/* UPDATED: idempotent — no double-subscribe */
 function attachRequestListeners() {
-  detachRequestListeners();
+  if (requestsRidesUnsub || requestsDeliveriesUnsub) return; // already attached
+
   if (!providerRecord || providerRecord.status !== 'approved') return;
 
   requestsRidesUnsub = onValue(ref(database, 'rides'), (snap) => {
@@ -2683,7 +2701,6 @@ function canAcceptKind(kind, request) {
   if (!role) return false;
 
   if (kind === 'ride') {
-    /* Drivers only take rides */
     return role === 'driver';
   }
   if (kind === 'delivery') {
@@ -2714,6 +2731,7 @@ function hasEnoughFloat(request) {
   return floatBalance >= fare;
 }
 
+/* UPDATED: full diagnostic logging */
 function evaluateQueue() {
   if (!isOnline) return;
   if (activeStage) return;
@@ -2722,26 +2740,33 @@ function evaluateQueue() {
   const anchor = userLocation || DEFAULT_LOCATION;
   const candidates = [];
 
+  const role = providerRecord && providerRecord.role;
+  console.log('[QUEUE] role=%s float=%s radius=%s anchor=%o rides=%d delivs=%d',
+    role, floatBalance, searchRadiusKm, anchor,
+    Object.keys(incomingRides).length,
+    Object.keys(incomingDeliveries).length);
+
   for (const id in incomingRides) {
     const r = incomingRides[id];
     const key = 'ride:' + id;
-    if (declinedKeys[key]) continue;
-    if (!canAcceptKind('ride', r)) continue;
-    if (!isWithinRadius(r, anchor)) continue;
-    if (!hasEnoughFloat(r)) continue;
+    if (declinedKeys[key]) { console.log('  skip ride %s — declined', id); continue; }
+    if (!canAcceptKind('ride', r)) { console.log('  skip ride %s — role %s ≠ driver', id, role); continue; }
+    if (!isWithinRadius(r, anchor)) { console.log('  skip ride %s — outside radius', id); continue; }
+    if (!hasEnoughFloat(r)) { console.log('  skip ride %s — float %s < fare %s', id, floatBalance, r.fare); continue; }
     candidates.push({ kind: 'ride', id, data: r, ts: r.createdAt || 0 });
   }
 
   for (const id in incomingDeliveries) {
     const d = incomingDeliveries[id];
     const key = 'delivery:' + id;
-    if (declinedKeys[key]) continue;
-    if (!canAcceptKind('delivery', d)) continue;
-    if (!isWithinRadius(d, anchor)) continue;
-    if (!hasEnoughFloat(d)) continue;
+    if (declinedKeys[key]) { console.log('  skip deliv %s — declined', id); continue; }
+    if (!canAcceptKind('delivery', d)) { console.log('  skip deliv %s — vehicle %s ≠ role %s', id, d.vehicleId, role); continue; }
+    if (!isWithinRadius(d, anchor)) { console.log('  skip deliv %s — outside radius', id); continue; }
+    if (!hasEnoughFloat(d)) { console.log('  skip deliv %s — insufficient float', id); continue; }
     candidates.push({ kind: 'delivery', id, data: d, ts: d.createdAt || 0 });
   }
 
+  console.log('[QUEUE] candidates:', candidates.length);
   if (!candidates.length) return;
 
   candidates.sort((a, b) => b.ts - a.ts);
@@ -2758,7 +2783,6 @@ function showRequestModal(kind, id, data) {
   activeTrip = { kind, id, data };
   activeStage = 'incoming';
 
-  /* Customer card */
   const customerName  = data.customerName  || (kind === 'delivery' ? data.senderName : '') || 'Customer';
   const customerPhone = data.customerPhone || (kind === 'delivery' ? data.senderPhone : '') || '—';
   const customerPhoto = data.customerPhoto || data.senderPhoto || '';
@@ -2771,24 +2795,20 @@ function showRequestModal(kind, id, data) {
   reqCustomerName.textContent  = customerName;
   reqCustomerPhone.textContent = customerPhone;
 
-  /* Route */
   reqPickup.textContent  = data.pickup?.label || 'Pickup';
   reqDropoff.textContent = data.dropoff?.label || 'Drop-off';
 
-  /* Stats */
   const dist = data.distance || 0;
   const dur  = data.duration || 0;
   reqDistance.textContent = dist ? formatDistance(dist) : '—';
   reqDuration.textContent = dur ? formatDuration(dur) : '—';
   reqPrice.textContent    = 'K ' + formatPrice(data.fare);
 
-  /* Tag */
   requestTag.classList.add('new');
   requestTagText.textContent = kind === 'ride'
     ? 'New ride request'
     : 'New delivery request';
 
-  /* Slide button — accept stage */
   slideBtn.className = 'slide-btn accept';
   slideLabel.innerHTML = '<i class="fas fa-arrow-right"></i> Slide to accept';
   slideHandle.innerHTML = '<i class="fas fa-chevron-right"></i>';
@@ -2807,7 +2827,6 @@ function declineCurrentRequest() {
   declinedKeys[key] = true;
   closeRequestModal();
   showToast('Request declined');
-  /* re-evaluate for next request */
   setTimeout(evaluateQueue, 400);
 }
 
@@ -2832,10 +2851,8 @@ function updateActiveTripPill() {
 
 activeTripPill.addEventListener('click', () => {
   if (!activeTrip) return;
-  /* Reopen modal for the active trip */
   if (!requestOverlay.classList.contains('open')) {
     requestOverlay.classList.add('open');
-    /* Keep stage — don't reset */
     if (activeStage === 'accepted')    setSlideStageAccepted();
     if (activeStage === 'arrived')     setSlideStageArrived();
     if (activeStage === 'in_progress') setSlideStageInProgress();
@@ -2941,7 +2958,6 @@ async function triggerSlideAction() {
     console.error(err);
     showToast('Action failed: ' + (err.message || err));
     resetSlideBusy();
-    /* Reset slide to correct stage */
     if (activeStage === 'incoming')      setSlideStageAccept();
     else if (activeStage === 'accepted') setSlideStageAccepted();
     else if (activeStage === 'arrived')  setSlideStageArrived();
@@ -2988,7 +3004,6 @@ async function handleAccept() {
   requestCancelBtn.onclick = () => cancelActiveTrip();
   updateActiveTripPill();
 
-  /* Draw route from provider (userLocation) → pickup */
   const from = userLocation || DEFAULT_LOCATION;
   const pickup = data.pickup;
   if (pickup && isFinite(pickup.lat) && isFinite(pickup.lng)) {
@@ -2996,9 +3011,7 @@ async function handleAccept() {
     await drawMainRoute(from, { lat: pickup.lat, lng: pickup.lng }, osrmProfileForRole(role));
   }
 
-  /* Watch this trip's status in case admin/customer cancels */
   attachTripWatcher(kind, id);
-
   showToast('Trip accepted — heading to pickup');
 }
 
@@ -3034,7 +3047,6 @@ async function handleStartTrip() {
   setSlideStageInProgress();
   updateActiveTripPill();
 
-  /* Redraw route: pickup → destination */
   const pickup = activeTrip.data?.pickup;
   const dropoff = activeTrip.data?.dropoff;
   if (pickup && dropoff && isFinite(pickup.lat) && isFinite(pickup.lng) && isFinite(dropoff.lat) && isFinite(dropoff.lng)) {
@@ -3058,14 +3070,12 @@ async function handleEndTrip() {
   const path = kind === 'ride' ? `rides/${id}` : `deliveries/${id}`;
   const fare = Math.round(data.fare || 0);
 
-  /* Mark trip completed */
   await update(ref(database, path), {
     status: 'completed',
     completedAt: Date.now(),
     completedBy: 'provider'
   });
 
-  /* Deduct fare from float balance */
   const newBalance = Math.max(0, (floatBalance || 0) - fare);
   try {
     await update(ref(database, `providers/${currentUser.uid}`), {
@@ -3073,7 +3083,6 @@ async function handleEndTrip() {
     });
   } catch (err) { console.warn('Could not deduct float:', err); }
 
-  /* Mark the matching transaction as completed */
   try {
     const txSnap = await get(ref(database, 'transactions'));
     const txs = txSnap.val() || {};
@@ -3088,23 +3097,18 @@ async function handleEndTrip() {
     }
   } catch (err) { console.warn('Could not update transaction:', err); }
 
-  /* Clear map */
   clearTripLayers();
-
   showToast(`Trip completed — K ${fare} earned`);
 
-  /* Reset modal & cleanup */
   closeRequestModal();
   detachTripWatcher();
   clearTripLayers();
 
-  /* Recenter on self */
   setTimeout(() => {
     if (userLocation && map) {
       map.setView([userLocation.lat, userLocation.lng], PROVIDER_ZOOM, { animate: true });
     }
     pingLocationOnce();
-    /* Re-evaluate for next request */
     evaluateQueue();
   }, 400);
 }
@@ -3160,7 +3164,6 @@ function attachTripWatcher(kind, id) {
       return;
     }
 
-    /* If someone else took it (shouldn't happen) or status changed remotely */
     if (trip.status === 'searching' && trip.providerId !== currentUser.uid) {
       detachTripWatcher();
       closeRequestModal();
@@ -3210,6 +3213,36 @@ onAuthStateChanged(auth, async (user) => {
     const provSnap = await get(ref(database, `providers/${user.uid}`));
     providerRecord = provSnap.exists() ? provSnap.val() : null;
 
+    /* ---- LIVE provider listener: keeps status/role/online fresh ---- */
+    if (providerLiveUnsub) { providerLiveUnsub(); providerLiveUnsub = null; }
+    providerLiveUnsub = onValue(ref(database, `providers/${user.uid}`), (snap) => {
+      if (!snap.exists()) return;
+      const prev = providerRecord || {};
+      const next = snap.val() || {};
+
+      const statusChanged = prev.status !== next.status;
+      const roleChanged   = prev.role   !== next.role;
+
+      providerRecord = next;
+      applyUserUI();
+
+      if (statusChanged && next.status === 'approved' && prev.status === 'pending') {
+        showToast('✅ Your provider account was approved!');
+      }
+      if (statusChanged && next.status === 'rejected') {
+        showToast('❌ Your provider account was rejected.');
+      }
+      if (roleChanged) {
+        console.log('[PROVIDER] role changed →', next.role);
+      }
+
+      /* If we're online but user just got approved, ensure listeners are attached */
+      if (isOnline && next.status === 'approved' && !requestsRidesUnsub) {
+        attachRequestListeners();
+      }
+    }, (err) => console.warn('Provider listener error:', err));
+    /* ---- END ---- */
+
     userRecord = {
       uid: user.uid,
       name: (providerRecord && (providerRecord.fullName || providerRecord.name)) ||
@@ -3225,6 +3258,7 @@ onAuthStateChanged(auth, async (user) => {
 
     /* Load search radius from admin settings */
     loadSettings();
+
     /* If provider was already online in DB, honor that */
     if (providerRecord && providerRecord.online === true &&
         providerRecord.status === 'approved' && providerRecord.role) {
@@ -3274,20 +3308,22 @@ function applyUserUI() {
   const role = providerRecord && providerRecord.role;
   const status = providerRecord && providerRecord.status;
 
-  if (userRecord.profileUrl) {
+  if (userRecord && userRecord.profileUrl) {
     sidebarAvatar.innerHTML = `<img src="${escapeHtml(userRecord.profileUrl)}" alt="">`;
     heroAvatar.innerHTML = `<img src="${escapeHtml(userRecord.profileUrl)}" alt="">`;
   } else {
     sidebarAvatar.innerHTML = `<i class="fas fa-user"></i>`;
     heroAvatar.innerHTML = `<i class="fas fa-user"></i>`;
   }
-  sidebarName.textContent  = userRecord.name;
-  sidebarPhone.textContent = userRecord.phone;
-  heroName.textContent     = userRecord.name;
-  heroPhone.textContent    = userRecord.phone;
-  detName.textContent      = userRecord.name;
-  detPhone.textContent     = userRecord.phone;
-  detEmail.textContent     = userRecord.email;
+  if (userRecord) {
+    sidebarName.textContent  = userRecord.name;
+    sidebarPhone.textContent = userRecord.phone;
+    heroName.textContent     = userRecord.name;
+    heroPhone.textContent    = userRecord.phone;
+    detName.textContent      = userRecord.name;
+    detPhone.textContent     = userRecord.phone;
+    detEmail.textContent     = userRecord.email;
+  }
 
   if (status === 'approved' && role) {
     sidebarRoleChip.className = 'sidebar-role-chip approved';
@@ -3722,9 +3758,11 @@ async function submitApplication(role) {
     await update(ref(database, `providers/${currentUser.uid}`), updates);
 
     providerRecord = { ...(providerRecord || {}), ...updates };
-    userRecord.name = name;
-    userRecord.phone = phone;
-    userRecord.profileUrl = profileUrl;
+    if (userRecord) {
+      userRecord.name = name;
+      userRecord.phone = phone;
+      userRecord.profileUrl = profileUrl;
+    }
 
     applyUserUI();
     showToast('✅ Application submitted. Awaiting approval.');
@@ -4175,6 +4213,8 @@ function loadHistory() {
   }
 
   const unsubs = [];
+  const tripsArr = [];
+  let ridesLoaded = false, delivsLoaded = false;
 
   unsubs.push(onValue(errandsRef, (snap) => {
     const data = snap.val() || {};
@@ -4210,48 +4250,48 @@ function loadHistory() {
     tryRender();
   }, (err) => { console.warn(err); state.float = []; tryRender(); }));
 
-  /* My trips (rides + deliveries where I'm the provider) */
-  const tripsArr = [];
-  let ridesLoaded = false, delivsLoaded = false;
   function tryTrips() {
     if (!ridesLoaded || !delivsLoaded) return;
     tripsArr.sort((a, b) => (b._ts || 0) - (a._ts || 0));
-    state.trips = tripsArr;
+    state.trips = tripsArr.slice();
     tryRender();
   }
+
   unsubs.push(onValue(ridesRef, (snap) => {
     const data = snap.val() || {};
+    // rebuild ride entries only
+    const rideOnly = [];
     for (const id in data) {
       const r = data[id];
       if (r && r.providerId === currentUser.uid) {
-        tripsArr.push({ ...r, _kind: 'trip', _type: 'ride', id, _ts: r.createdAt || 0 });
+        rideOnly.push({ ...r, _kind: 'trip', _type: 'ride', id, _ts: r.createdAt || 0 });
       }
     }
+    // remove old ride entries
+    for (let i = tripsArr.length - 1; i >= 0; i--) {
+      if (tripsArr[i]._type === 'ride') tripsArr.splice(i, 1);
+    }
+    rideOnly.forEach(r => tripsArr.push(r));
     ridesLoaded = true;
-    /* rebuild to avoid dupes */
-    rebuildTrips();
     tryTrips();
   }, (err) => { console.warn(err); ridesLoaded = true; tryTrips(); }));
+
   unsubs.push(onValue(delivsRef, (snap) => {
     const data = snap.val() || {};
+    const delivOnly = [];
     for (const id in data) {
       const d = data[id];
       if (d && d.providerId === currentUser.uid) {
-        tripsArr.push({ ...d, _kind: 'trip', _type: 'delivery', id, _ts: d.createdAt || 0 });
+        delivOnly.push({ ...d, _kind: 'trip', _type: 'delivery', id, _ts: d.createdAt || 0 });
       }
     }
+    for (let i = tripsArr.length - 1; i >= 0; i--) {
+      if (tripsArr[i]._type === 'delivery') tripsArr.splice(i, 1);
+    }
+    delivOnly.forEach(d => tripsArr.push(d));
     delivsLoaded = true;
-    rebuildTrips();
     tryTrips();
   }, (err) => { console.warn(err); delivsLoaded = true; tryTrips(); }));
-
-  let rideTrips = [], delivTrips = [];
-  function rebuildTrips() {
-    // simpler approach: rebuild full list each time
-    tripsArr.length = 0;
-    for (const r of rideTrips) tripsArr.push(r);
-    for (const d of delivTrips) tripsArr.push(d);
-  }
 
   myOffersUnsub = () => { unsubs.forEach(u => u()); };
 }
@@ -4535,7 +4575,6 @@ $('settingsLogout').addEventListener('click', doLogout);
 logoutBtn.addEventListener('click', doLogout);
 
 async function doLogout() {
-  /* Go offline before signing out */
   try {
     if (currentUser) {
       await update(ref(database, `providers/${currentUser.uid}`), { online: false });
@@ -4544,6 +4583,7 @@ async function doLogout() {
   stopLocationPing();
   detachRequestListeners();
   detachTripWatcher();
+  if (providerLiveUnsub) { providerLiveUnsub(); providerLiveUnsub = null; }
   try { await signOut(auth); } catch (err) { console.warn(err); }
   localStorage.removeItem('providerUid');
   localStorage.removeItem('providerEmail');
