@@ -339,6 +339,38 @@ a{color:inherit;text-decoration:none}
 }
 .field.full{grid-column:1/-1}
 .field textarea{resize:vertical;min-height:80px;line-height:1.5}
+.field-hint{font-size:.7rem;color:var(--ts);line-height:1.5;margin-top:2px}
+
+/* Info banner */
+.info-banner{
+  display:flex;gap:12px;align-items:flex-start;
+  background:var(--info-s);border:1px solid rgba(46,144,250,0.22);
+  border-radius:12px;padding:12px 14px;margin-bottom:14px;
+}
+.info-banner .ib-ico{
+  width:32px;height:32px;border-radius:50%;
+  background:rgba(46,144,250,0.18);color:#175cd3;
+  display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;
+}
+.info-banner .ib-body{flex:1;min-width:0}
+.info-banner .ib-body strong{display:block;font-size:.82rem;font-weight:800;color:#175cd3;margin-bottom:3px}
+.info-banner .ib-body p{font-size:.76rem;color:#1550a8;line-height:1.5}
+
+/* Rules summary strip */
+.rule-summary{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+  gap:10px;margin-bottom:14px;
+}
+.rule-mini{
+  background:var(--fg);border-radius:10px;padding:12px 14px;
+}
+.rule-mini small{
+  display:block;font-size:.6rem;font-weight:800;letter-spacing:.8px;
+  text-transform:uppercase;color:var(--tt);margin-bottom:4px;
+}
+.rule-mini strong{display:block;font-size:1.05rem;font-weight:800;letter-spacing:-.4px}
+.rule-mini.dark{background:#0a0a0a;color:#fff}
+.rule-mini.dark small{color:rgba(255,255,255,0.55)}
 
 /* Map */
 .map-wrap{
@@ -603,6 +635,9 @@ a{color:inherit;text-decoration:none}
       <button class="nav-btn" data-view="pricing">
         <i class="fas fa-tags"></i> Pricing &amp; Fares
       </button>
+      <button class="nav-btn" data-view="floatrules">
+        <i class="fas fa-percent"></i> Float Rules
+      </button>
       <button class="nav-btn" data-view="settings">
         <i class="fas fa-gear"></i> Settings
       </button>
@@ -866,6 +901,106 @@ a{color:inherit;text-decoration:none}
         </div>
       </section>
 
+      <!-- FLOAT RULES -->
+      <section class="view" id="view-floatrules">
+
+        <div class="info-banner">
+          <div class="ib-ico"><i class="fas fa-circle-info"></i></div>
+          <div class="ib-body">
+            <strong>How float rules work</strong>
+            <p>Every completed request deducts from the provider's float balance. Providers without enough float <b>will not see</b> the matching requests in their feed.</p>
+          </div>
+        </div>
+
+        <!-- Live preview of current rules -->
+        <div class="card">
+          <div class="card-head">
+            <div><h2>Current Rules</h2><p>Live preview of what providers will experience</p></div>
+          </div>
+          <div class="rule-summary" id="floatRulesPreview"></div>
+        </div>
+
+        <!-- Commission -->
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h2>Commission per Completed Request</h2>
+              <p>Percentage deducted from provider's float when a request completes</p>
+            </div>
+          </div>
+          <div class="form-grid">
+            <div class="field">
+              <label>Ride commission (%)</label>
+              <input type="number" id="ruleRidePercent" min="0" max="100" step="0.1" placeholder="5">
+              <span class="field-hint">e.g. 5 → K5 deducted from a K100 ride</span>
+            </div>
+            <div class="field">
+              <label>Delivery commission (%)</label>
+              <input type="number" id="ruleDeliveryPercent" min="0" max="100" step="0.1" placeholder="5">
+              <span class="field-hint">e.g. 5 → K5 deducted from a K100 delivery</span>
+            </div>
+            <div class="field">
+              <label>Errand fixed fee (K)</label>
+              <input type="number" id="ruleErrandFee" min="0" step="1" placeholder="2">
+              <span class="field-hint">Flat amount deducted per completed errand</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Minimum float to go online -->
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h2>Minimum Float to Go Online</h2>
+              <p>Provider cannot switch to Online below this balance</p>
+            </div>
+          </div>
+          <div class="form-grid">
+            <div class="field">
+              <label>Minimum balance to go online (K)</label>
+              <input type="number" id="ruleMinOnline" min="0" step="1" placeholder="20">
+              <span class="field-hint">Set to 0 to allow providers with any balance</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Min float per request type -->
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h2>Minimum Float to See Each Request Type</h2>
+              <p>Provider must have at least this much float to receive that kind of request</p>
+            </div>
+          </div>
+          <div class="form-grid">
+            <div class="field">
+              <label>Min float per ride (K)</label>
+              <input type="number" id="ruleMinRide" min="0" step="1" placeholder="10">
+            </div>
+            <div class="field">
+              <label>Min float per delivery (K)</label>
+              <input type="number" id="ruleMinDelivery" min="0" step="1" placeholder="10">
+            </div>
+            <div class="field">
+              <label>Min float per errand (K)</label>
+              <input type="number" id="ruleMinErrand" min="0" step="1" placeholder="5">
+            </div>
+          </div>
+          <p style="font-size:.75rem;color:var(--ts);line-height:1.55;">
+            A provider with K4 float and a "Min float per ride" of K10 will not see any ride requests, but they will still see errands if "Min float per errand" is K5 or less.
+          </p>
+        </div>
+
+        <div class="card">
+          <button class="btn btn-primary" id="saveFloatRulesBtn" style="width:100%;">
+            <i class="fas fa-floppy-disk"></i> Save Float Rules
+          </button>
+          <p style="font-size:.72rem;color:var(--ts);margin-top:10px;text-align:center;line-height:1.5;">
+            Saved to <code>system/floatRules</code>. Both the provider and customer apps read these values.
+          </p>
+        </div>
+      </section>
+
       <!-- SETTINGS -->
       <section class="view" id="view-settings">
         <div class="card">
@@ -924,7 +1059,7 @@ a{color:inherit;text-decoration:none}
             <div><h2>Platform Info</h2><p>System details</p></div>
           </div>
           <div class="detail-grid">
-            <div class="detail-box"><small>App version</small><strong>Admin v1.0</strong></div>
+            <div class="detail-box"><small>App version</small><strong>Admin v1.1</strong></div>
             <div class="detail-box"><small>Database</small><strong>Firebase RTDB</strong></div>
             <div class="detail-box"><small>Map provider</small><strong>OpenStreetMap</strong></div>
             <div class="detail-box"><small>Signed in as</small><strong id="settingsAdminEmail">—</strong></div>
@@ -1000,6 +1135,17 @@ const DEFAULT_SETTINGS = {
   ]
 };
 
+/* ---- NEW: Float Rules ---- */
+const DEFAULT_FLOAT_RULES = {
+  rideCommissionPercent: 5,
+  deliveryCommissionPercent: 5,
+  errandFixedFee: 2,
+  minFloatToGoOnline: 20,
+  minFloatPerRide: 10,
+  minFloatPerDelivery: 10,
+  minFloatPerErrand: 5
+};
+
 /* ============================================================
    STATE
    ============================================================ */
@@ -1013,7 +1159,8 @@ let state = {
   floatRequests: {},
   transactions: {},
   pricing: JSON.parse(JSON.stringify(DEFAULT_PRICING)),
-  settings: JSON.parse(JSON.stringify(DEFAULT_SETTINGS))
+  settings: JSON.parse(JSON.stringify(DEFAULT_SETTINGS)),
+  floatRules: JSON.parse(JSON.stringify(DEFAULT_FLOAT_RULES))
 };
 let activeFilters = {
   rides: 'all',
@@ -1100,7 +1247,7 @@ $('lightboxClose').addEventListener('click', ()=>$('lightbox').classList.remove(
 $('lightbox').addEventListener('click', e=>{ if (e.target.id === 'lightbox') $('lightbox').classList.remove('open'); });
 
 /* ============================================================
-   LOGIN  — EMAIL + PASSWORD ONLY
+   LOGIN — EMAIL + PASSWORD
    ============================================================ */
 $('loginForm').addEventListener('submit', async e=>{
   e.preventDefault();
@@ -1140,7 +1287,7 @@ $('logoutBtn').addEventListener('click', async ()=>{
 });
 
 /* ============================================================
-   AUTH STATE — accepts any signed-in user
+   AUTH STATE
    ============================================================ */
 onAuthStateChanged(auth, async user=>{
   if (!user){
@@ -1158,7 +1305,6 @@ onAuthStateChanged(auth, async user=>{
     name: fallbackName
   };
 
-  // Apply to UI
   $('adminName').textContent = currentAdmin.name;
   $('adminEmail').textContent = currentAdmin.email;
   $('settingsAdminEmail').textContent = currentAdmin.email;
@@ -1169,6 +1315,7 @@ onAuthStateChanged(auth, async user=>{
   bootDataListeners();
   initMaps();
   loadPricingAndSettings();
+  loadFloatRules();
 });
 
 /* ============================================================
@@ -1184,6 +1331,7 @@ const VIEW_META = {
   float:       { title:'Float Requests',       sub:'Approve provider top-ups' },
   transactions:{ title:'Transactions',         sub:'All payment records' },
   pricing:     { title:'Pricing & Fares',      sub:'Configure fare formulas' },
+  floatrules:  { title:'Float Rules',          sub:'Commission & minimum float per request' },
   settings:    { title:'Settings',             sub:'Radius, maintenance, deposit numbers' }
 };
 
@@ -1199,7 +1347,6 @@ function switchView(view){
   $('viewSub').textContent = meta.sub;
   closeSidebar();
 
-  // Re-render the specific view
   if (view === 'dashboard')  renderDashboard();
   if (view === 'rides')      renderRides();
   if (view === 'deliveries') renderDeliveries();
@@ -1209,9 +1356,9 @@ function switchView(view){
   if (view === 'float')      renderFloatRequests();
   if (view === 'transactions')renderTransactions();
   if (view === 'pricing')    fillPricingForm();
+  if (view === 'floatrules') fillFloatRulesForm();
   if (view === 'settings')   fillSettingsForm();
 
-  // Invalidate maps after view switches
   setTimeout(()=>{
     if (view === 'dashboard' && dashMap) dashMap.invalidateSize();
     if (view === 'rides' && ridesMap) ridesMap.invalidateSize();
@@ -1288,6 +1435,16 @@ function bootDataListeners(){
     if ($('view-transactions').classList.contains('active')) renderTransactions();
     renderDashboard();
   }));
+
+  // Keep floatRules live so preview updates when saved from another tab
+  unsubs.push(onValue(ref(database, 'system/floatRules'), snap=>{
+    if (snap.exists()){
+      const r = snap.val() || {};
+      state.floatRules = Object.assign({}, DEFAULT_FLOAT_RULES, r);
+      fillFloatRulesForm();
+      if ($('view-dashboard').classList.contains('active')) renderDashboard();
+    }
+  }));
 }
 
 function updateBadges(){
@@ -1358,13 +1515,6 @@ function dropoffIcon(){
     iconSize:[18,18], iconAnchor:[9,18]
   });
 }
-function liveIcon(color){
-  return L.divIcon({
-    className:'',
-    html:`<div style="width:22px;height:22px;background:${color};border:3px solid #fff;border-radius:50%;box-shadow:0 0 0 4px ${color}33, 0 3px 10px rgba(0,0,0,0.4);"></div>`,
-    iconSize:[22,22], iconAnchor:[11,11]
-  });
-}
 
 /* ============================================================
    DASHBOARD
@@ -1388,6 +1538,8 @@ function renderDashboard(){
   const todayTs = today.getTime();
   const revenueToday = txs.filter(t=>t.status === 'completed' && t.createdAt >= todayTs).reduce((s,t)=>s+(t.amount||0),0);
   const totalRevenue = txs.filter(t=>t.status === 'completed').reduce((s,t)=>s+(t.amount||0),0);
+
+  const rules = state.floatRules;
 
   $('dashboardMetrics').innerHTML = `
     <div class="metric dark">
@@ -1437,6 +1589,18 @@ function renderDashboard(){
       <div class="m-value">${pendingFloat}</div>
       <div class="m-sub">Awaiting approval</div>
       <div class="m-ico"><i class="fas fa-wallet"></i></div>
+    </div>
+    <div class="metric">
+      <div class="m-label">Commission</div>
+      <div class="m-value">${esc(String(rules.rideCommissionPercent))}<small>%</small></div>
+      <div class="m-sub">Ride · delivery ${esc(String(rules.deliveryCommissionPercent))}%</div>
+      <div class="m-ico"><i class="fas fa-percent"></i></div>
+    </div>
+    <div class="metric">
+      <div class="m-label">Errand fee</div>
+      <div class="m-value"><small>K</small>${esc(fmtPrice(rules.errandFixedFee))}</div>
+      <div class="m-sub">Flat per completed errand</div>
+      <div class="m-ico"><i class="fas fa-hand-holding-dollar"></i></div>
     </div>
   `;
 
@@ -1600,6 +1764,9 @@ function openRideDetail(id){
   $('drawerTitle').textContent = 'Ride details';
   $('drawerSub').textContent = r.customerName || 'Customer';
 
+  const rules = state.floatRules;
+  const commissionAmount = r.fare ? Math.round(r.fare * (rules.rideCommissionPercent||0) / 100) : 0;
+
   $('drawerBody').innerHTML = `
     <div class="detail-section">
       <h3><i class="fas fa-circle-info"></i> Status</h3>
@@ -1609,6 +1776,14 @@ function openRideDetail(id){
         <div class="detail-box"><small>Distance</small><strong>${r.distance?((r.distance/1000).toFixed(2)+' km'):'—'}</strong></div>
         <div class="detail-box"><small>Duration</small><strong>${r.duration?(Math.round(r.duration/60)+' min'):'—'}</strong></div>
         <div class="detail-box full"><small>Created</small><strong>${esc(fmtDateTime(r.createdAt))} (${esc(timeAgo(r.createdAt))})</strong></div>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <h3><i class="fas fa-percent"></i> Commission</h3>
+      <div class="detail-grid">
+        <div class="detail-box"><small>Rate applied</small><strong>${esc(String(rules.rideCommissionPercent))}%</strong></div>
+        <div class="detail-box"><small>Deducted from provider float</small><strong>K ${esc(fmtPrice(commissionAmount))}</strong></div>
       </div>
     </div>
 
@@ -1750,6 +1925,9 @@ function openDeliveryDetail(id){
   $('drawerTitle').textContent = 'Delivery details';
   $('drawerSub').textContent = d.parcelName || 'Parcel';
 
+  const rules = state.floatRules;
+  const commissionAmount = d.fare ? Math.round(d.fare * (rules.deliveryCommissionPercent||0) / 100) : 0;
+
   $('drawerBody').innerHTML = `
     <div class="detail-section">
       <h3><i class="fas fa-circle-info"></i> Status</h3>
@@ -1759,6 +1937,14 @@ function openDeliveryDetail(id){
         <div class="detail-box"><small>Vehicle</small><strong>${esc(d.vehicleLabel||'—')}</strong></div>
         <div class="detail-box"><small>Distance</small><strong>${d.distance?((d.distance/1000).toFixed(2)+' km'):'—'}</strong></div>
         <div class="detail-box full"><small>Created</small><strong>${esc(fmtDateTime(d.createdAt))} (${esc(timeAgo(d.createdAt))})</strong></div>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <h3><i class="fas fa-percent"></i> Commission</h3>
+      <div class="detail-grid">
+        <div class="detail-box"><small>Rate applied</small><strong>${esc(String(rules.deliveryCommissionPercent))}%</strong></div>
+        <div class="detail-box"><small>Deducted from provider float</small><strong>K ${esc(fmtPrice(commissionAmount))}</strong></div>
       </div>
     </div>
 
@@ -1889,6 +2075,7 @@ function openErrandDetail(id){
   $('drawerSub').textContent = e.customerName || 'Customer';
 
   const offers = e.offers ? Object.values(e.offers) : [];
+  const rules = state.floatRules;
 
   $('drawerBody').innerHTML = `
     <div class="detail-section">
@@ -1897,6 +2084,13 @@ function openErrandDetail(id){
         <div class="detail-box"><small>Status</small><strong>${statusChip(e.status)}</strong></div>
         <div class="detail-box"><small>Willing to pay</small><strong>K ${esc(fmtPrice(e.willingToPay))}</strong></div>
         <div class="detail-box full"><small>Created</small><strong>${esc(fmtDateTime(e.createdAt))}</strong></div>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <h3><i class="fas fa-hand-holding-dollar"></i> Float fee</h3>
+      <div class="detail-grid">
+        <div class="detail-box full"><small>Flat deduction on completion</small><strong>K ${esc(fmtPrice(rules.errandFixedFee))}</strong></div>
       </div>
     </div>
 
@@ -2047,6 +2241,17 @@ function openProviderDetail(id){
 
   const isBanned = p.banned === true;
   const st = isBanned ? 'banned' : (p.status || 'pending');
+  const rules = state.floatRules;
+  const floatBal = p.floatBalance || 0;
+
+  const canSeeRides     = floatBal >= (rules.minFloatPerRide || 0);
+  const canSeeDeliveries= floatBal >= (rules.minFloatPerDelivery || 0);
+  const canSeeErrands   = floatBal >= (rules.minFloatPerErrand || 0);
+  const canGoOnline     = floatBal >= (rules.minFloatToGoOnline || 0);
+
+  const bullet = ok => ok
+    ? `<span class="status-chip approved">Yes</span>`
+    : `<span class="status-chip rejected">No</span>`;
 
   $('drawerBody').innerHTML = `
     <div class="detail-section">
@@ -2054,8 +2259,18 @@ function openProviderDetail(id){
       <div class="detail-grid">
         <div class="detail-box"><small>Status</small><strong>${statusChip(st)}</strong></div>
         <div class="detail-box"><small>Role</small><strong>${p.role ? roleChip(p.role) : '—'}</strong></div>
-        <div class="detail-box"><small>Float balance</small><strong>K ${esc(fmtPrice(p.floatBalance||0))}</strong></div>
+        <div class="detail-box"><small>Float balance</small><strong>K ${esc(fmtPrice(floatBal))}</strong></div>
         <div class="detail-box"><small>Joined</small><strong>${esc(fmtDateTime(p.createdAt))}</strong></div>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <h3><i class="fas fa-percent"></i> Float rule eligibility</h3>
+      <div class="detail-grid">
+        <div class="detail-box"><small>Can go online</small><strong>${bullet(canGoOnline)} <small style="display:inline;font-weight:600;text-transform:none;letter-spacing:0;">(needs K ${esc(fmtPrice(rules.minFloatToGoOnline))})</small></strong></div>
+        <div class="detail-box"><small>Sees rides</small><strong>${bullet(canSeeRides)} <small style="display:inline;font-weight:600;text-transform:none;letter-spacing:0;">(needs K ${esc(fmtPrice(rules.minFloatPerRide))})</small></strong></div>
+        <div class="detail-box"><small>Sees deliveries</small><strong>${bullet(canSeeDeliveries)} <small style="display:inline;font-weight:600;text-transform:none;letter-spacing:0;">(needs K ${esc(fmtPrice(rules.minFloatPerDelivery))})</small></strong></div>
+        <div class="detail-box"><small>Sees errands</small><strong>${bullet(canSeeErrands)} <small style="display:inline;font-weight:600;text-transform:none;letter-spacing:0;">(needs K ${esc(fmtPrice(rules.minFloatPerErrand))})</small></strong></div>
       </div>
     </div>
 
@@ -2224,7 +2439,6 @@ function openCustomerDetail(id){
 
   const isBanned = c.banned === true;
 
-  // Stats
   const rides = Object.values(state.rides).filter(r=>r.customerId === id);
   const delivs = Object.values(state.deliveries).filter(d=>d.customerId === id);
   const errands = Object.values(state.errands).filter(e=>e.customerId === id);
@@ -2587,6 +2801,116 @@ $('savePricingBtn').addEventListener('click', async ()=>{
     await set(ref(database, 'system/pricing'), pricing);
     state.pricing = pricing;
     toast('Pricing saved');
+  } catch (err){
+    toast('Could not save: ' + err.message);
+  }
+});
+
+/* ============================================================
+   FLOAT RULES
+   ============================================================ */
+function loadFloatRules(){
+  get(ref(database, 'system/floatRules')).then(snap=>{
+    if (snap.exists()){
+      const r = snap.val() || {};
+      state.floatRules = Object.assign({}, DEFAULT_FLOAT_RULES, r);
+    }
+    fillFloatRulesForm();
+  }).catch(()=>{
+    fillFloatRulesForm();
+  });
+}
+
+function fillFloatRulesForm(){
+  const r = state.floatRules;
+  const set = (id, v) => { const el = $(id); if (el) el.value = v; };
+
+  set('ruleRidePercent',       r.rideCommissionPercent);
+  set('ruleDeliveryPercent',   r.deliveryCommissionPercent);
+  set('ruleErrandFee',         r.errandFixedFee);
+  set('ruleMinOnline',         r.minFloatToGoOnline);
+  set('ruleMinRide',           r.minFloatPerRide);
+  set('ruleMinDelivery',       r.minFloatPerDelivery);
+  set('ruleMinErrand',         r.minFloatPerErrand);
+
+  renderFloatRulesPreview(r);
+}
+
+function renderFloatRulesPreview(r){
+  const el = $('floatRulesPreview');
+  if (!el) return;
+  el.innerHTML = `
+    <div class="rule-mini dark">
+      <small>Ride commission</small>
+      <strong>${esc(String(r.rideCommissionPercent))}%</strong>
+    </div>
+    <div class="rule-mini dark">
+      <small>Delivery commission</small>
+      <strong>${esc(String(r.deliveryCommissionPercent))}%</strong>
+    </div>
+    <div class="rule-mini dark">
+      <small>Errand fee</small>
+      <strong>K ${esc(fmtPrice(r.errandFixedFee))}</strong>
+    </div>
+    <div class="rule-mini">
+      <small>Min to go online</small>
+      <strong>K ${esc(fmtPrice(r.minFloatToGoOnline))}</strong>
+    </div>
+    <div class="rule-mini">
+      <small>Min per ride</small>
+      <strong>K ${esc(fmtPrice(r.minFloatPerRide))}</strong>
+    </div>
+    <div class="rule-mini">
+      <small>Min per delivery</small>
+      <strong>K ${esc(fmtPrice(r.minFloatPerDelivery))}</strong>
+    </div>
+    <div class="rule-mini">
+      <small>Min per errand</small>
+      <strong>K ${esc(fmtPrice(r.minFloatPerErrand))}</strong>
+    </div>
+  `;
+}
+
+// Live preview as admin edits
+['ruleRidePercent','ruleDeliveryPercent','ruleErrandFee','ruleMinOnline','ruleMinRide','ruleMinDelivery','ruleMinErrand']
+  .forEach(id => {
+    const el = $(id);
+    if (!el) return;
+    el.addEventListener('input', () => {
+      const num = id => parseFloat($(id).value) || 0;
+      const preview = {
+        rideCommissionPercent:     num('ruleRidePercent'),
+        deliveryCommissionPercent: num('ruleDeliveryPercent'),
+        errandFixedFee:            num('ruleErrandFee'),
+        minFloatToGoOnline:        num('ruleMinOnline'),
+        minFloatPerRide:           num('ruleMinRide'),
+        minFloatPerDelivery:       num('ruleMinDelivery'),
+        minFloatPerErrand:         num('ruleMinErrand')
+      };
+      renderFloatRulesPreview(preview);
+    });
+  });
+
+$('saveFloatRulesBtn').addEventListener('click', async ()=>{
+  const num = id => {
+    const v = parseFloat($(id).value);
+    return isFinite(v) && v >= 0 ? v : 0;
+  };
+  const rules = {
+    rideCommissionPercent:     Math.min(100, num('ruleRidePercent')),
+    deliveryCommissionPercent: Math.min(100, num('ruleDeliveryPercent')),
+    errandFixedFee:            num('ruleErrandFee'),
+    minFloatToGoOnline:        num('ruleMinOnline'),
+    minFloatPerRide:           num('ruleMinRide'),
+    minFloatPerDelivery:       num('ruleMinDelivery'),
+    minFloatPerErrand:         num('ruleMinErrand')
+  };
+
+  try {
+    await set(ref(database, 'system/floatRules'), rules);
+    state.floatRules = rules;
+    renderFloatRulesPreview(rules);
+    toast('Float rules saved');
   } catch (err){
     toast('Could not save: ' + err.message);
   }
