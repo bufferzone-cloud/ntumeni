@@ -22,9 +22,6 @@
 }
 </script>
 <style>
-/* ==========================================================
-   TOKENS
-   ========================================================== */
 :root {
   --ink: #0a0a0a;
   --paper: #ffffff;
@@ -163,7 +160,7 @@ input, textarea, select { font-family: inherit; }
 #locateBtn { right: 14px; bottom: 96px; }
 
 /* ==========================================================
-   FLOAT BALANCE PILL (TOP RIGHT)
+   FLOAT BALANCE PILL
    ========================================================== */
 .float-balance-pill {
   position: fixed;
@@ -180,7 +177,7 @@ input, textarea, select { font-family: inherit; }
   box-shadow:
     0 8px 22px -8px rgba(0,0,0,0.55),
     0 0 0 1px rgba(255,255,255,0.06) inset;
-  transition: transform 0.35s var(--spring);
+  transition: transform 0.35s var(--spring), background 0.25s;
   cursor: pointer;
 }
 .float-balance-pill:active { transform: scale(0.96); }
@@ -222,11 +219,13 @@ input, textarea, select { font-family: inherit; }
   margin: 0 2px 0 0;
   display: inline;
 }
-.float-balance-pill.is-low { background: #7f1d1d; }
-.float-balance-pill.is-low .fb-ico { background: rgba(255,255,255,0.16); }
+.float-balance-pill.is-low   { background: #7f1d1d; }
+.float-balance-pill.is-warn  { background: #b54708; }
+.float-balance-pill.is-low .fb-ico,
+.float-balance-pill.is-warn .fb-ico { background: rgba(255,255,255,0.16); }
 
 /* ==========================================================
-   ONLINE / OFFLINE TOGGLE (TOP CENTER)
+   ONLINE TOGGLE
    ========================================================== */
 #onlineToggle {
   position: fixed;
@@ -306,6 +305,43 @@ input, textarea, select { font-family: inherit; }
 @keyframes dotPulse {
   0%, 100% { opacity: 1; }
   50%      { opacity: 0.4; }
+}
+
+/* Float gate banner (when online but not enough float for a type) */
+#floatGateBanner {
+  position: fixed;
+  top: 112px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 638;
+  display: none;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-radius: 14px;
+  background: #7f1d1d;
+  color: #fff;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  box-shadow: 0 10px 26px -10px rgba(0,0,0,0.55);
+  max-width: calc(100vw - 28px);
+  animation: fadeIn 0.3s var(--ease-out);
+  cursor: pointer;
+}
+#floatGateBanner.show { display: inline-flex; }
+#floatGateBanner i.bi { font-size: 0.95rem; flex-shrink: 0; }
+#floatGateBanner .bg-txt { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#floatGateBanner .bg-go {
+  background: rgba(255,255,255,0.18);
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  flex-shrink: 0;
+  margin-left: auto;
 }
 
 /* ==========================================================
@@ -1023,6 +1059,43 @@ input, textarea, select { font-family: inherit; }
   animation: spin 0.8s linear infinite;
 }
 
+/* Float gate card (used in errands + settings) */
+.float-gate-card {
+  background: var(--danger-soft);
+  border: 1px solid rgba(217,45,32,0.22);
+  border-radius: 16px;
+  padding: 22px 20px;
+  text-align: center;
+  margin-bottom: 14px;
+}
+.float-gate-card .fg-ico {
+  width: 60px; height: 60px;
+  border-radius: 50%;
+  background: rgba(217,45,32,0.15);
+  color: var(--danger);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem;
+  margin: 0 auto 14px;
+}
+.float-gate-card h3 {
+  font-size: 1.05rem; font-weight: 800;
+  letter-spacing: -0.3px;
+  color: #b42318;
+  margin-bottom: 6px;
+}
+.float-gate-card p {
+  font-size: 0.84rem;
+  color: #912018;
+  line-height: 1.55;
+  margin-bottom: 4px;
+}
+.float-gate-card .fg-amount {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #7a1c11;
+  margin: 10px 0 16px;
+}
+
 /* ==========================================================
    ERRAND DETAILS / OFFER
    ========================================================== */
@@ -1573,6 +1646,20 @@ input, textarea, select { font-family: inherit; }
 .request-stat.price small { color: rgba(255,255,255,0.55); }
 .request-stat.price strong { color: #ffffff; font-size: 1.1rem; }
 
+/* Commission preview inside request card */
+.request-commission {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: var(--warn-soft);
+  border: 1px solid rgba(247,144,9,0.22);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #b54708;
+  margin-bottom: 14px;
+}
+.request-commission i { font-size: 0.8rem; }
+
 /* Slide-to-action button */
 .slide-btn {
   position: relative;
@@ -1656,6 +1743,7 @@ input, textarea, select { font-family: inherit; }
 @media (max-width: 400px) {
   #onlineToggle { font-size: 0.68rem; padding: 10px 12px; }
   .float-balance-pill .fb-txt small { display: none; }
+  #floatGateBanner { font-size: 0.68rem; padding: 9px 12px; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -1682,7 +1770,7 @@ input, textarea, select { font-family: inherit; }
 <!-- FULLSCREEN MAP -->
 <div id="map"></div>
 
-<!-- ONLINE TOGGLE (top center) -->
+<!-- ONLINE TOGGLE -->
 <button id="onlineToggle">
   <span class="ot-dot"></span>
   <span id="onlineToggleLabel">Offline</span>
@@ -1692,6 +1780,13 @@ input, textarea, select { font-family: inherit; }
 <button id="activeTripPill">
   <span class="at-dot"></span>
   <span id="activeTripLabel">Active trip</span>
+</button>
+
+<!-- FLOAT GATE BANNER -->
+<button id="floatGateBanner">
+  <i class="fas fa-triangle-exclamation bi"></i>
+  <span class="bg-txt" id="floatGateText">Not enough float to see requests</span>
+  <span class="bg-go">Top up</span>
 </button>
 
 <!-- FLOATING FLOAT BALANCE -->
@@ -1761,6 +1856,10 @@ input, textarea, select { font-family: inherit; }
         <small>Earn</small>
         <strong id="reqPrice">K 0</strong>
       </div>
+    </div>
+    <div class="request-commission" id="requestCommission" style="display:none;">
+      <i class="fas fa-percent"></i>
+      <span id="requestCommissionText"></span>
     </div>
     <div class="slide-btn accept" id="slideBtn">
       <div class="slide-fill" id="slideFill"></div>
@@ -1983,6 +2082,11 @@ input, textarea, select { font-family: inherit; }
   </div>
   <div class="page-body">
     <div class="page-scroll">
+      <div class="section-label">Float rules (set by admin)</div>
+      <div id="floatRulesView">
+        <div class="loader-row" style="padding:20px;"><span class="mini-spin"></span> Loading float rules…</div>
+      </div>
+
       <div class="section-label">General</div>
       <div class="settings-list">
         <button class="settings-row" id="settingsRefreshLocation">
@@ -2090,6 +2194,19 @@ const OSM_TILE_URL  = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 const OSM_ATTR      = '&copy; OpenStreetMap contributors';
 
 /* ============================================================
+   FLOAT RULES DEFAULTS
+   ============================================================ */
+const DEFAULT_FLOAT_RULES = {
+  rideCommissionPercent: 5,
+  deliveryCommissionPercent: 5,
+  errandFixedFee: 2,
+  minFloatToGoOnline: 20,
+  minFloatPerRide: 10,
+  minFloatPerDelivery: 10,
+  minFloatPerErrand: 5
+};
+
+/* ============================================================
    DOM
    ============================================================ */
 const $ = (id) => document.getElementById(id);
@@ -2114,6 +2231,9 @@ const onlineToggle       = $('onlineToggle');
 const onlineToggleLabel  = $('onlineToggleLabel');
 const activeTripPill     = $('activeTripPill');
 const activeTripLabel    = $('activeTripLabel');
+
+const floatGateBanner    = $('floatGateBanner');
+const floatGateText      = $('floatGateText');
 
 const accountPage     = $('accountPage');
 const heroAvatar      = $('heroAvatar');
@@ -2149,6 +2269,7 @@ const floatError      = $('floatError');
 const submitFloatBtn  = $('submitFloatBtn');
 
 const settingsPage    = $('settingsPage');
+const floatRulesView  = $('floatRulesView');
 
 const mapModal        = $('mapModal');
 const mapModalClose   = $('mapModalClose');
@@ -2168,6 +2289,8 @@ const reqDropoff         = $('reqDropoff');
 const reqDistance        = $('reqDistance');
 const reqDuration        = $('reqDuration');
 const reqPrice           = $('reqPrice');
+const requestCommission  = $('requestCommission');
+const requestCommissionText = $('requestCommissionText');
 const slideBtn           = $('slideBtn');
 const slideFill          = $('slideFill');
 const slideLabel         = $('slideLabel');
@@ -2203,6 +2326,10 @@ let errandsUnsub = null;
 let myOffersUnsub = null;
 let currentFilter = 'all';
 let historyCache = { offers: [], float: [], trips: [] };
+
+/* Float rules */
+let FLOAT_RULES = Object.assign({}, DEFAULT_FLOAT_RULES);
+let floatRulesUnsub = null;
 
 /* Online / request listening */
 let isOnline = false;
@@ -2340,14 +2467,67 @@ function vehicleLabelFor(role) {
 }
 
 /* ============================================================
+   FLOAT RULES — reading + derived helpers
+   ============================================================ */
+function listenFloatRules() {
+  if (floatRulesUnsub) { floatRulesUnsub(); floatRulesUnsub = null; }
+  floatRulesUnsub = onValue(ref(database, 'system/floatRules'), (snap) => {
+    if (snap.exists()) {
+      FLOAT_RULES = Object.assign({}, DEFAULT_FLOAT_RULES, snap.val() || {});
+    } else {
+      FLOAT_RULES = Object.assign({}, DEFAULT_FLOAT_RULES);
+    }
+    renderFloatRulesView();
+    renderFloatBalance();
+    updateFloatGateBanner();
+    evaluateQueue();
+  }, (err) => { console.warn('Float rules listener error:', err); });
+}
+
+function minFloatFor(kind) {
+  if (kind === 'ride')     return Number(FLOAT_RULES.minFloatPerRide     || 0);
+  if (kind === 'delivery') return Number(FLOAT_RULES.minFloatPerDelivery || 0);
+  if (kind === 'errand')   return Number(FLOAT_RULES.minFloatPerErrand   || 0);
+  return 0;
+}
+
+function hasEnoughFloatFor(kind, req) {
+  // per-type minimum (config-driven)
+  const min = minFloatFor(kind);
+  return floatBalance >= min;
+}
+
+function commissionFor(kind, fare) {
+  const f = Number(fare || 0);
+  if (kind === 'ride')     return Math.round(f * (Number(FLOAT_RULES.rideCommissionPercent || 0) / 100));
+  if (kind === 'delivery') return Math.round(f * (Number(FLOAT_RULES.deliveryCommissionPercent || 0) / 100));
+  return 0;
+}
+
+function errandFee() {
+  return Number(FLOAT_RULES.errandFixedFee || 0);
+}
+
+/* ============================================================
    FLOAT BALANCE
    ============================================================ */
 function renderFloatBalance() {
   floatBalanceValue.textContent = formatPrice(floatBalance);
-  if (floatBalance < 50) {
+
+  floatBalancePill.classList.remove('is-low', 'is-warn');
+
+  const minOnline = Number(FLOAT_RULES.minFloatToGoOnline || 0);
+  const maxOfMins = Math.max(
+    minOnline,
+    Number(FLOAT_RULES.minFloatPerRide || 0),
+    Number(FLOAT_RULES.minFloatPerDelivery || 0),
+    Number(FLOAT_RULES.minFloatPerErrand || 0)
+  );
+
+  if (floatBalance <= 0) {
     floatBalancePill.classList.add('is-low');
-  } else {
-    floatBalancePill.classList.remove('is-low');
+  } else if (floatBalance < maxOfMins) {
+    floatBalancePill.classList.add('is-warn');
   }
 }
 
@@ -2362,9 +2542,112 @@ function listenFloatBalance(uid) {
       floatBalance = 0;
     }
     renderFloatBalance();
+    updateFloatGateBanner();
+    // Re-evaluate which requests to offer given the new balance
+    evaluateQueue();
   }, (err) => {
     console.warn('Float balance listener error:', err);
   });
+}
+
+/* ============================================================
+   FLOAT GATE BANNER
+   Shows when online, but the provider's balance can't see one or
+   more request types. Tapping opens Buy Float.
+   ============================================================ */
+function updateFloatGateBanner() {
+  if (!floatGateBanner) return;
+
+  if (!isOnline) {
+    floatGateBanner.classList.remove('show');
+    return;
+  }
+
+  const missing = [];
+  if (floatBalance < Number(FLOAT_RULES.minFloatPerRide || 0))     missing.push('rides');
+  if (floatBalance < Number(FLOAT_RULES.minFloatPerDelivery || 0)) missing.push('deliveries');
+  if (floatBalance < Number(FLOAT_RULES.minFloatPerErrand || 0))   missing.push('errands');
+
+  if (!missing.length) {
+    floatGateBanner.classList.remove('show');
+    return;
+  }
+
+  // Show the minimum amount needed to unlock the cheapest gated category
+  const needed = Math.max(
+    Number(FLOAT_RULES.minFloatPerRide || 0),
+    Number(FLOAT_RULES.minFloatPerDelivery || 0),
+    Number(FLOAT_RULES.minFloatPerErrand || 0)
+  );
+
+  const listTxt = missing.length === 3 ? 'all requests'
+                : missing.length === 2 ? missing.join(' & ')
+                : missing[0];
+
+  floatGateText.textContent = `Need K${needed} float to see ${listTxt}`;
+  floatGateBanner.classList.add('show');
+}
+
+floatGateBanner.addEventListener('click', () => openBuyFloatPage());
+
+/* ============================================================
+   FLOAT RULES VIEW (Settings page)
+   ============================================================ */
+function renderFloatRulesView() {
+  if (!floatRulesView) return;
+  floatRulesView.innerHTML = `
+    <div class="detail-list" style="margin-bottom:0;">
+      <div class="detail-row">
+        <i class="fas fa-percent"></i>
+        <div class="dr-txt">
+          <small>Ride commission</small>
+          <strong>${escapeHtml(String(FLOAT_RULES.rideCommissionPercent))}% of fare</strong>
+        </div>
+      </div>
+      <div class="detail-row">
+        <i class="fas fa-percent"></i>
+        <div class="dr-txt">
+          <small>Delivery commission</small>
+          <strong>${escapeHtml(String(FLOAT_RULES.deliveryCommissionPercent))}% of fare</strong>
+        </div>
+      </div>
+      <div class="detail-row">
+        <i class="fas fa-hand-holding-dollar"></i>
+        <div class="dr-txt">
+          <small>Errand fee</small>
+          <strong>K ${escapeHtml(formatPrice(FLOAT_RULES.errandFixedFee))} per completion</strong>
+        </div>
+      </div>
+      <div class="detail-row">
+        <i class="fas fa-door-open"></i>
+        <div class="dr-txt">
+          <small>Minimum to go online</small>
+          <strong>K ${escapeHtml(formatPrice(FLOAT_RULES.minFloatToGoOnline))}</strong>
+        </div>
+      </div>
+      <div class="detail-row">
+        <i class="fas fa-car"></i>
+        <div class="dr-txt">
+          <small>Min float per ride</small>
+          <strong>K ${escapeHtml(formatPrice(FLOAT_RULES.minFloatPerRide))}</strong>
+        </div>
+      </div>
+      <div class="detail-row">
+        <i class="fas fa-box"></i>
+        <div class="dr-txt">
+          <small>Min float per delivery</small>
+          <strong>K ${escapeHtml(formatPrice(FLOAT_RULES.minFloatPerDelivery))}</strong>
+        </div>
+      </div>
+      <div class="detail-row">
+        <i class="fas fa-clipboard-list"></i>
+        <div class="dr-txt">
+          <small>Min float per errand</small>
+          <strong>K ${escapeHtml(formatPrice(FLOAT_RULES.minFloatPerErrand))}</strong>
+        </div>
+      </div>
+    </div>
+  `;
 }
 
 /* ============================================================
@@ -2502,7 +2785,7 @@ function locateUser({ center = true, silent = false } = {}) {
 }
 
 /* ============================================================
-   LOCATION PING (writes to providers/{uid}/location while online)
+   LOCATION PING
    ============================================================ */
 function pingLocationOnce() {
   if (!currentUser || !navigator.geolocation) return;
@@ -2581,11 +2864,11 @@ function setOnlineUI() {
     onlineToggle.classList.remove('online');
     onlineToggleLabel.textContent = 'Offline';
   }
+  updateFloatGateBanner();
 }
 
-/* UPDATED: refresh from DB before validating */
 async function toggleOnline() {
-  /* --- Refresh local copy from DB first, in case admin changed things --- */
+  /* Refresh local state from DB so admin changes take effect */
   try {
     const [pSnap, bSnap] = await Promise.all([
       get(ref(database, `providers/${currentUser.uid}`)),
@@ -2599,7 +2882,7 @@ async function toggleOnline() {
     console.warn('Could not refresh provider info before toggle:', e);
   }
 
-  /* --- Validate --- */
+  /* Validation */
   if (!providerRecord) {
     showToast('Apply as a service provider first.');
     openAccountPage();
@@ -2615,8 +2898,10 @@ async function toggleOnline() {
     openAccountPage();
     return;
   }
-  if (floatBalance <= 0) {
-    showToast('You need float balance to go online.');
+
+  const minOnline = Number(FLOAT_RULES.minFloatToGoOnline || 0);
+  if (floatBalance < minOnline) {
+    showToast(`Need at least K${minOnline} float to go online.`);
     openBuyFloatPage();
     return;
   }
@@ -2661,9 +2946,8 @@ function detachRequestListeners() {
   if (requestsDeliveriesUnsub) { requestsDeliveriesUnsub(); requestsDeliveriesUnsub = null; }
 }
 
-/* UPDATED: idempotent — no double-subscribe */
 function attachRequestListeners() {
-  if (requestsRidesUnsub || requestsDeliveriesUnsub) return; // already attached
+  if (requestsRidesUnsub || requestsDeliveriesUnsub) return;
 
   if (!providerRecord || providerRecord.status !== 'approved') return;
 
@@ -2726,12 +3010,6 @@ function isWithinRadius(request, anchor) {
   return d <= searchRadiusKm * 1000;
 }
 
-function hasEnoughFloat(request) {
-  const fare = request.fare || 0;
-  return floatBalance >= fare;
-}
-
-/* UPDATED: full diagnostic logging */
 function evaluateQueue() {
   if (!isOnline) return;
   if (activeStage) return;
@@ -2741,32 +3019,27 @@ function evaluateQueue() {
   const candidates = [];
 
   const role = providerRecord && providerRecord.role;
-  console.log('[QUEUE] role=%s float=%s radius=%s anchor=%o rides=%d delivs=%d',
-    role, floatBalance, searchRadiusKm, anchor,
-    Object.keys(incomingRides).length,
-    Object.keys(incomingDeliveries).length);
 
   for (const id in incomingRides) {
     const r = incomingRides[id];
     const key = 'ride:' + id;
-    if (declinedKeys[key]) { console.log('  skip ride %s — declined', id); continue; }
-    if (!canAcceptKind('ride', r)) { console.log('  skip ride %s — role %s ≠ driver', id, role); continue; }
-    if (!isWithinRadius(r, anchor)) { console.log('  skip ride %s — outside radius', id); continue; }
-    if (!hasEnoughFloat(r)) { console.log('  skip ride %s — float %s < fare %s', id, floatBalance, r.fare); continue; }
+    if (declinedKeys[key]) continue;
+    if (!canAcceptKind('ride', r)) continue;
+    if (!isWithinRadius(r, anchor)) continue;
+    if (!hasEnoughFloatFor('ride', r)) continue;
     candidates.push({ kind: 'ride', id, data: r, ts: r.createdAt || 0 });
   }
 
   for (const id in incomingDeliveries) {
     const d = incomingDeliveries[id];
     const key = 'delivery:' + id;
-    if (declinedKeys[key]) { console.log('  skip deliv %s — declined', id); continue; }
-    if (!canAcceptKind('delivery', d)) { console.log('  skip deliv %s — vehicle %s ≠ role %s', id, d.vehicleId, role); continue; }
-    if (!isWithinRadius(d, anchor)) { console.log('  skip deliv %s — outside radius', id); continue; }
-    if (!hasEnoughFloat(d)) { console.log('  skip deliv %s — insufficient float', id); continue; }
+    if (declinedKeys[key]) continue;
+    if (!canAcceptKind('delivery', d)) continue;
+    if (!isWithinRadius(d, anchor)) continue;
+    if (!hasEnoughFloatFor('delivery', d)) continue;
     candidates.push({ kind: 'delivery', id, data: d, ts: d.createdAt || 0 });
   }
 
-  console.log('[QUEUE] candidates:', candidates.length);
   if (!candidates.length) return;
 
   candidates.sort((a, b) => b.ts - a.ts);
@@ -2803,6 +3076,20 @@ function showRequestModal(kind, id, data) {
   reqDistance.textContent = dist ? formatDistance(dist) : '—';
   reqDuration.textContent = dur ? formatDuration(dur) : '—';
   reqPrice.textContent    = 'K ' + formatPrice(data.fare);
+
+  // Show commission preview
+  const fare = Number(data.fare || 0);
+  let commissionK = 0;
+  if (kind === 'ride')          commissionK = commissionFor('ride', fare);
+  else if (kind === 'delivery') commissionK = commissionFor('delivery', fare);
+
+  if (commissionK > 0) {
+    requestCommission.style.display = 'flex';
+    requestCommissionText.textContent =
+      `K ${commissionK} commission will be deducted from your float on completion`;
+  } else {
+    requestCommission.style.display = 'none';
+  }
 
   requestTag.classList.add('new');
   requestTagText.textContent = kind === 'ride'
@@ -3076,13 +3363,28 @@ async function handleEndTrip() {
     completedBy: 'provider'
   });
 
-  const newBalance = Math.max(0, (floatBalance || 0) - fare);
+  /* ---- NEW: deduct only the configured commission from float ---- */
+  let deduction = 0;
+  if (kind === 'ride')          deduction = commissionFor('ride', fare);
+  else if (kind === 'delivery') deduction = commissionFor('delivery', fare);
+
+  const newBalance = Math.max(0, (floatBalance || 0) - deduction);
   try {
     await update(ref(database, `providers/${currentUser.uid}`), {
       floatBalance: newBalance
     });
-  } catch (err) { console.warn('Could not deduct float:', err); }
+    await push(ref(database, `providers/${currentUser.uid}/floatLedger`), {
+      kind: 'commission',
+      referenceId: id,
+      requestType: kind,
+      fare,
+      deduction,
+      balanceAfter: newBalance,
+      createdAt: Date.now()
+    });
+  } catch (err) { console.warn('Could not deduct commission:', err); }
 
+  /* Mark the customer's transaction completed */
   try {
     const txSnap = await get(ref(database, 'transactions'));
     const txs = txSnap.val() || {};
@@ -3098,7 +3400,9 @@ async function handleEndTrip() {
   } catch (err) { console.warn('Could not update transaction:', err); }
 
   clearTripLayers();
-  showToast(`Trip completed — K ${fare} earned`);
+  showToast(deduction > 0
+    ? `Trip completed — K ${deduction} commission deducted`
+    : 'Trip completed');
 
   closeRequestModal();
   detachTripWatcher();
@@ -3145,7 +3449,7 @@ async function cancelActiveTrip() {
 }
 
 /* ============================================================
-   TRIP WATCHER (in case customer/admin cancels)
+   TRIP WATCHER
    ============================================================ */
 function attachTripWatcher(kind, id) {
   detachTripWatcher();
@@ -3213,7 +3517,7 @@ onAuthStateChanged(auth, async (user) => {
     const provSnap = await get(ref(database, `providers/${user.uid}`));
     providerRecord = provSnap.exists() ? provSnap.val() : null;
 
-    /* ---- LIVE provider listener: keeps status/role/online fresh ---- */
+    /* Live provider listener */
     if (providerLiveUnsub) { providerLiveUnsub(); providerLiveUnsub = null; }
     providerLiveUnsub = onValue(ref(database, `providers/${user.uid}`), (snap) => {
       if (!snap.exists()) return;
@@ -3236,12 +3540,10 @@ onAuthStateChanged(auth, async (user) => {
         console.log('[PROVIDER] role changed →', next.role);
       }
 
-      /* If we're online but user just got approved, ensure listeners are attached */
       if (isOnline && next.status === 'approved' && !requestsRidesUnsub) {
         attachRequestListeners();
       }
     }, (err) => console.warn('Provider listener error:', err));
-    /* ---- END ---- */
 
     userRecord = {
       uid: user.uid,
@@ -3256,8 +3558,9 @@ onAuthStateChanged(auth, async (user) => {
     applyUserUI();
     initMap();
 
-    /* Load search radius from admin settings */
     loadSettings();
+    listenFloatRules();
+    listenFloatBalance(user.uid);
 
     /* If provider was already online in DB, honor that */
     if (providerRecord && providerRecord.online === true &&
@@ -3269,14 +3572,11 @@ onAuthStateChanged(auth, async (user) => {
       setOnlineUI();
     }
 
-    listenFloatBalance(user.uid);
-
     requestAnimationFrame(() => {
       if (map) map.invalidateSize();
       locateUser({ center: true, silent: true });
     });
 
-    /* If already online from DB and has float, attach listeners */
     if (isOnline) {
       attachRequestListeners();
       startLocationPing();
@@ -3789,8 +4089,20 @@ function loadErrands() {
   if (errandsUnsub) { errandsUnsub(); errandsUnsub = null; }
   errandsList.innerHTML = '<div class="loader-row"><span class="mini-spin"></span> Loading errands…</div>';
 
+  // Float gate — check BEFORE subscribing so we don't even read the list
+  if (floatBalance < minFloatFor('errand')) {
+    renderErrandFloatGate();
+    return;
+  }
+
   const errandsRef = ref(database, 'errands');
   errandsUnsub = onValue(errandsRef, (snap) => {
+    // Re-check float in case it dropped while viewing
+    if (floatBalance < minFloatFor('errand')) {
+      renderErrandFloatGate();
+      return;
+    }
+
     const data = snap.val() || {};
     const arr = [];
     for (const id in data) {
@@ -3811,6 +4123,23 @@ function loadErrands() {
         <p>Check your connection and try again.</p>
       </div>`;
   });
+}
+
+function renderErrandFloatGate() {
+  const needed = minFloatFor('errand');
+  errandsList.innerHTML = `
+    <div class="float-gate-card">
+      <div class="fg-ico"><i class="fas fa-wallet"></i></div>
+      <h3>Not enough float</h3>
+      <p>You need at least <b>K ${escapeHtml(formatPrice(needed))}</b> float balance to view and bid on errands.</p>
+      <div class="fg-amount">Your balance: K ${escapeHtml(formatPrice(floatBalance))}</div>
+      <button class="btn btn-primary" id="errandGateTopUpBtn" style="width:100%;">
+        <i class="fas fa-plus"></i> BUY FLOAT
+      </button>
+    </div>
+  `;
+  const btn = $('errandGateTopUpBtn');
+  if (btn) btn.addEventListener('click', openBuyFloatPage);
 }
 
 function renderErrands(errands) {
@@ -3881,6 +4210,12 @@ function renderErrands(errands) {
    ERRAND DETAIL / MAKE OFFER
    ============================================================ */
 function openErrandDetail(errandId) {
+  if (floatBalance < minFloatFor('errand')) {
+    showToast(`Need K${minFloatFor('errand')} float to bid on errands.`);
+    openBuyFloatPage();
+    return;
+  }
+
   const e = errandsCache[errandId];
   if (!e) { showToast('Errand not found.'); return; }
 
@@ -3934,6 +4269,9 @@ function openErrandDetail(errandId) {
         <textarea id="offerMessage" class="pill-input pill-textarea" maxlength="240"
                   placeholder="Add a short message (e.g. I can do this in 30 minutes)…"></textarea>
         <i class="fas fa-comment-dots"></i>
+      </div>
+      <div class="error-msg" style="color:#b54708;background:#fffaeb;border:1px solid rgba(247,144,9,0.22);border-radius:10px;padding:10px 12px;font-weight:600;margin-bottom:10px;">
+        <i class="fas fa-percent"></i> On completion, <b>K ${escapeHtml(formatPrice(errandFee()))}</b> will be deducted from your float.
       </div>
       <div id="offerError" class="error-msg"></div>
       <button type="button" class="btn btn-primary" id="submitOfferBtn">
@@ -4259,7 +4597,6 @@ function loadHistory() {
 
   unsubs.push(onValue(ridesRef, (snap) => {
     const data = snap.val() || {};
-    // rebuild ride entries only
     const rideOnly = [];
     for (const id in data) {
       const r = data[id];
@@ -4267,7 +4604,6 @@ function loadHistory() {
         rideOnly.push({ ...r, _kind: 'trip', _type: 'ride', id, _ts: r.createdAt || 0 });
       }
     }
-    // remove old ride entries
     for (let i = tripsArr.length - 1; i >= 0; i--) {
       if (tripsArr[i]._type === 'ride') tripsArr.splice(i, 1);
     }
@@ -4550,6 +4886,7 @@ async function submitFloatRequest() {
    ============================================================ */
 function openSettingsPage() {
   openPage('settingsPage');
+  renderFloatRulesView();
 }
 
 $('settingsRefreshLocation').addEventListener('click', () => {
@@ -4568,7 +4905,7 @@ $('settingsSupport').addEventListener('click', () => {
 });
 
 $('settingsAbout').addEventListener('click', () => {
-  showToast('NTUMENI Service Provider · v1.0');
+  showToast('NTUMENI Service Provider · v1.1');
 });
 
 $('settingsLogout').addEventListener('click', doLogout);
@@ -4584,6 +4921,8 @@ async function doLogout() {
   detachRequestListeners();
   detachTripWatcher();
   if (providerLiveUnsub) { providerLiveUnsub(); providerLiveUnsub = null; }
+  if (floatRulesUnsub) { floatRulesUnsub(); floatRulesUnsub = null; }
+  if (settingsUnsub) { settingsUnsub(); settingsUnsub = null; }
   try { await signOut(auth); } catch (err) { console.warn(err); }
   localStorage.removeItem('providerUid');
   localStorage.removeItem('providerEmail');
