@@ -101,7 +101,8 @@ input, textarea, select { font-family: inherit; }
   position: fixed; inset: 0; z-index: 1;
   background: #e8eaed;
 }
-.leaflet-tile-pane { filter: saturate(0.85) contrast(1.05) brightness(1.02); }
+/* Slight tint to keep the CARTO Voyager basemap warm and clean */
+.leaflet-tile-pane { filter: saturate(0.96) contrast(1.02) brightness(1.01); }
 .leaflet-container { font-family: inherit; background: #e8eaed; }
 .leaflet-control-attribution {
   font-size: 9px !important;
@@ -111,7 +112,6 @@ input, textarea, select { font-family: inherit; }
 }
 .leaflet-control-attribution a { color: #6e6e73 !important; }
 
-/* Floating markers */
 .mk-user {
   width: 18px; height: 18px; border-radius: 50%;
   background: #ffffff; border: 4px solid #0a0a0a;
@@ -156,6 +156,73 @@ input, textarea, select { font-family: inherit; }
 
 #locateBtn { right: 14px; bottom: 96px; }
 
+/* ==========================================================
+   FLOAT BALANCE PILL (TOP)
+   ========================================================== */
+.float-balance-pill {
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  z-index: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 12px 18px 12px 14px;
+  border-radius: 999px;
+  background: #0a0a0a;
+  color: #ffffff;
+  box-shadow:
+    0 8px 22px -8px rgba(0,0,0,0.55),
+    0 0 0 1px rgba(255,255,255,0.06) inset;
+  transition: transform 0.35s var(--spring);
+  cursor: pointer;
+}
+.float-balance-pill:active { transform: scale(0.96); }
+
+.float-balance-pill .fb-ico {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.14);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.82rem;
+  flex-shrink: 0;
+}
+.float-balance-pill .fb-txt {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1;
+  min-width: 0;
+}
+.float-balance-pill .fb-txt small {
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.55);
+  margin-bottom: 4px;
+}
+.float-balance-pill .fb-txt strong {
+  font-size: 0.98rem;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  font-variant-numeric: tabular-nums;
+}
+.float-balance-pill .fb-txt strong small {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.75);
+  letter-spacing: 0;
+  margin: 0 2px 0 0;
+  display: inline;
+}
+.float-balance-pill.is-low {
+  background: #7f1d1d;
+}
+.float-balance-pill.is-low .fb-ico {
+  background: rgba(255,255,255,0.16);
+}
+
 /* Account pill button */
 .account-pill {
   position: fixed; z-index: 600;
@@ -193,7 +260,6 @@ input, textarea, select { font-family: inherit; }
   transition: opacity 0.32s var(--ease-out), transform 0.42s var(--spring), visibility 0.32s;
   max-width: 88vw; text-align: center; line-height: 1.4;
   pointer-events: none;
-  z-index: 6000;
 }
 #toast.show { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
 
@@ -705,6 +771,25 @@ input, textarea, select { font-family: inherit; }
   display: none;
 }
 .upload-box.has-image .remove-img { display: flex; }
+
+.upload-box .nrc-hint {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(10,10,10,0.85);
+  color: #fff;
+  z-index: 3;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+.upload-box.has-image .nrc-hint { opacity: 0.9; }
 
 /* ==========================================================
    ERRANDS LIST
@@ -1229,6 +1314,7 @@ input, textarea, select { font-family: inherit; }
 }
 .modal-foot .legend .l-dot.me { background: #0a0a0a; }
 .modal-foot .legend .l-dot.target { background: #175cd3; }
+.modal-foot .legend .l-dot.route { background: #0a0a0a; border-radius: 2px; }
 
 /* ==========================================================
    RESPONSIVE
@@ -1257,6 +1343,15 @@ input, textarea, select { font-family: inherit; }
 
 <!-- FULLSCREEN MAP -->
 <div id="map"></div>
+
+<!-- FLOATING FLOAT BALANCE -->
+<button class="float-balance-pill" id="floatBalancePill" title="Float balance — tap to top up">
+  <span class="fb-ico"><i class="fas fa-wallet"></i></span>
+  <span class="fb-txt">
+    <small>Float balance</small>
+    <strong><small>K</small><span id="floatBalanceValue">0</span></strong>
+  </span>
+</button>
 
 <!-- FLOATING BUTTONS -->
 <button class="float-btn" id="sidebarBtn" aria-label="Open menu">
@@ -1535,14 +1630,15 @@ input, textarea, select { font-family: inherit; }
 <div class="modal-overlay" id="mapModal">
   <div class="modal">
     <div class="modal-head">
-      <h3>Pickup &amp; your location</h3>
+      <h3 id="mapModalTitle">Pickup &amp; your location</h3>
       <button class="modal-close" id="mapModalClose"><i class="fas fa-xmark"></i></button>
     </div>
     <div id="modalMap"></div>
     <div class="modal-foot">
-      <div class="legend">
+      <div class="legend" id="mapModalLegend">
         <div class="l-row"><span class="l-dot me"></span> You (current location)</div>
         <div class="l-row"><span class="l-dot target"></span> Errand pickup</div>
+        <div class="l-row" id="routeLegendRow" style="display:none;"><span class="l-dot route"></span> <span id="routeLegendText">Route</span></div>
       </div>
       <button class="btn btn-primary" id="mapModalRecenter" style="width:auto; margin-top:0; padding:12px 20px;">
         <i class="fas fa-crosshairs"></i> Fit
@@ -1555,7 +1651,7 @@ input, textarea, select { font-family: inherit; }
 import { initializeApp } from "firebase/app";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import {
-  getDatabase, ref, set, get, update, push, onValue, query, orderByChild, equalTo
+  getDatabase, ref, set, get, update, push, onValue
 } from "firebase/database";
 
 /* ============================================================
@@ -1582,6 +1678,16 @@ const CLOUD_NAME = 'dd3lcymrk';
 const UPLOAD_PRESET = 'h3eyhc2o';
 
 /* ============================================================
+   MAP TUNING
+   ------------------------------------------------------------
+   Zoom 19 on a typical phone shows roughly 20–40 metres across,
+   which matches the "about 20 m" request. Change PROVIDER_ZOOM
+   if you want tighter or looser framing.
+   ============================================================ */
+const PROVIDER_ZOOM = 19;
+const MODAL_ZOOM    = 16;
+
+/* ============================================================
    DOM
    ============================================================ */
 const $ = (id) => document.getElementById(id);
@@ -1598,6 +1704,9 @@ const sidebarName     = $('sidebarName');
 const sidebarPhone    = $('sidebarPhone');
 const sidebarRoleChip = $('sidebarRoleChip');
 const logoutBtn       = $('logoutBtn');
+
+const floatBalancePill  = $('floatBalancePill');
+const floatBalanceValue = $('floatBalanceValue');
 
 const accountPage     = $('accountPage');
 const heroAvatar      = $('heroAvatar');
@@ -1637,6 +1746,10 @@ const settingsPage    = $('settingsPage');
 const mapModal        = $('mapModal');
 const mapModalClose   = $('mapModalClose');
 const mapModalRecenter= $('mapModalRecenter');
+const mapModalTitle   = $('mapModalTitle');
+const mapModalLegend  = $('mapModalLegend');
+const routeLegendRow  = $('routeLegendRow');
+const routeLegendText = $('routeLegendText');
 
 const toastEl = $('toast');
 
@@ -1644,15 +1757,19 @@ const toastEl = $('toast');
    STATE
    ============================================================ */
 let currentUser = null;
-let userRecord  = null;        // providers/{uid}
-let providerRecord = null;     // providers/{uid} (the application)
+let userRecord  = null;
+let providerRecord = null;
+let floatBalance = 0;
 let userLocation = null;
 let map = null;
 let userMarker = null;
 let modalMap = null;
 let modalUserMarker = null;
 let modalTargetMarker = null;
+let modalRouteLayer = null;
+let modalRouteLine = null;
 let currentModalTarget = null;
+let modalRouteAbort = null;
 
 let errandsCache = {};
 let errandsUnsub = null;
@@ -1744,24 +1861,72 @@ function roleIcon(role) {
   return 'fa-user';
 }
 
+/* OSRM profile per role for the map-check route. */
+function osrmProfileForRole(role) {
+  if (role === 'walker') return 'foot';
+  if (role === 'rider')  return 'bike';
+  return 'driving';
+}
+
+function routeLegendLabelForRole(role) {
+  if (role === 'walker') return 'Walking route';
+  if (role === 'rider')  return 'Cycling route';
+  return 'Driving route';
+}
+
+/* ============================================================
+   FLOAT BALANCE
+   ============================================================ */
+function renderFloatBalance() {
+  floatBalanceValue.textContent = formatPrice(floatBalance);
+  if (floatBalance < 50) {
+    floatBalancePill.classList.add('is-low');
+  } else {
+    floatBalancePill.classList.remove('is-low');
+  }
+}
+
+function listenFloatBalance(uid) {
+  if (!uid) return;
+  const balanceRef = ref(database, `providers/${uid}/floatBalance`);
+  onValue(balanceRef, (snap) => {
+    if (snap.exists()) {
+      const v = snap.val();
+      floatBalance = typeof v === 'number' ? v : parseInt(v, 10) || 0;
+    } else {
+      floatBalance = 0;
+    }
+    renderFloatBalance();
+  }, (err) => {
+    console.warn('Float balance listener error:', err);
+  });
+}
+
 /* ============================================================
    MAP
+   ------------------------------------------------------------
+   Uses CARTO Voyager — a clean, Google-Maps-like default basemap
+   with better typography, warmer colours and clearer roads than
+   plain OpenStreetMap.
    ============================================================ */
 function initMap() {
   if (map) return;
+
   map = L.map('map', {
     zoomControl: false,
     attributionControl: true,
     preferCanvas: true,
-    maxZoom: 19,
+    maxZoom: 20,
     minZoom: 3
-  }).setView([DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lng], 16);
+  }).setView([DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lng], PROVIDER_ZOOM);
 
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap contributors',
-    subdomains: 'abc',
-    maxZoom: 19,
-    crossOrigin: true
+  /* CARTO Voyager — Google-like default layer */
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; OpenStreetMap &copy; CARTO',
+    subdomains: 'abcd',
+    maxZoom: 20,
+    crossOrigin: true,
+    detectRetina: true
   }).addTo(map);
 }
 
@@ -1782,7 +1947,7 @@ function locateUser({ center = true, silent = false } = {}) {
     if (!silent) showToast('Geolocation not supported.');
     userLocation = { ...DEFAULT_LOCATION };
     setUserMarker(DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lng);
-    if (center && map) map.setView([DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lng], 17);
+    if (center && map) map.setView([DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lng], PROVIDER_ZOOM);
     return;
   }
   navigator.geolocation.getCurrentPosition(
@@ -1790,14 +1955,15 @@ function locateUser({ center = true, silent = false } = {}) {
       const { latitude, longitude } = pos.coords;
       userLocation = { lat: latitude, lng: longitude };
       setUserMarker(latitude, longitude);
-      if (center && map) map.setView([latitude, longitude], 17, { animate: true });
+      /* Zoom tightly around the user — PROVIDER_ZOOM gives ~20 m across */
+      if (center && map) map.setView([latitude, longitude], PROVIDER_ZOOM, { animate: true });
     },
     (err) => {
       console.warn('Geolocation error:', err);
       userLocation = { ...DEFAULT_LOCATION };
       setUserMarker(DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lng);
       if (!silent) showToast('Location denied — using approximate.');
-      if (center && map) map.setView([DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lng], 17);
+      if (center && map) map.setView([DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lng], PROVIDER_ZOOM);
     },
     { enableHighAccuracy: true, timeout: 12000, maximumAge: 30000 }
   );
@@ -1838,7 +2004,11 @@ document.querySelectorAll('.nav-item').forEach(btn => {
 });
 
 accountPill.addEventListener('click', openAccountPage);
-locateBtn.addEventListener('click', () => locateUser({ center: true }));
+locateBtn.addEventListener('click', () => {
+  locateUser({ center: true });
+  showToast('Recentered on your location');
+});
+floatBalancePill.addEventListener('click', openBuyFloatPage);
 
 /* ============================================================
    AUTH BOOT
@@ -1873,7 +2043,7 @@ onAuthStateChanged(auth, async (user) => {
     /* Merge auth user info */
     userRecord = {
       uid: user.uid,
-      name: (providerRecord && providerRecord.name) ||
+      name: (providerRecord && (providerRecord.fullName || providerRecord.name)) ||
             (user.displayName) ||
             (user.email ? user.email.split('@')[0] : 'Provider'),
       phone: (providerRecord && providerRecord.phone) || user.phoneNumber || '—',
@@ -1884,6 +2054,9 @@ onAuthStateChanged(auth, async (user) => {
 
     applyUserUI();
     initMap();
+
+    /* Listen to float balance */
+    listenFloatBalance(user.uid);
 
     requestAnimationFrame(() => {
       if (map) map.invalidateSize();
@@ -1905,7 +2078,6 @@ function applyUserUI() {
   const role = providerRecord && providerRecord.role;
   const status = providerRecord && providerRecord.status;
 
-  /* Sidebar */
   if (userRecord.profileUrl) {
     sidebarAvatar.innerHTML = `<img src="${escapeHtml(userRecord.profileUrl)}" alt="">`;
     heroAvatar.innerHTML = `<img src="${escapeHtml(userRecord.profileUrl)}" alt="">`;
@@ -1922,10 +2094,19 @@ function applyUserUI() {
   detEmail.textContent     = userRecord.email;
 
   /* Role chip */
-  sidebarRoleChip.className = 'sidebar-role-chip ' + (status || 'none');
-  sidebarRoleChip.textContent = status
-    ? `${roleLabel(role)} · ${status.charAt(0).toUpperCase() + status.slice(1)}`
-    : 'Not Applied';
+  if (status === 'approved' && role) {
+    sidebarRoleChip.className = 'sidebar-role-chip approved';
+    sidebarRoleChip.textContent = `${roleLabel(role)} · Approved`;
+  } else if (status === 'pending' && role) {
+    sidebarRoleChip.className = 'sidebar-role-chip pending';
+    sidebarRoleChip.textContent = `${roleLabel(role)} · Pending`;
+  } else if (status === 'rejected' && role) {
+    sidebarRoleChip.className = 'sidebar-role-chip rejected';
+    sidebarRoleChip.textContent = `${roleLabel(role)} · Rejected`;
+  } else {
+    sidebarRoleChip.className = 'sidebar-role-chip none';
+    sidebarRoleChip.textContent = 'Not Applied';
+  }
 
   /* Hero status */
   heroStatus.className = 'hero-status ' + (status || 'none');
@@ -1954,7 +2135,7 @@ function renderAccountApplySection() {
   const status = providerRecord && providerRecord.status;
   const role = providerRecord && providerRecord.role;
 
-  if (status === 'pending') {
+  if (status === 'pending' && role) {
     container.innerHTML = `
       <div class="section-label">Application status</div>
       <div class="status-card pending">
@@ -1967,7 +2148,7 @@ function renderAccountApplySection() {
     return;
   }
 
-  if (status === 'approved') {
+  if (status === 'approved' && role) {
     container.innerHTML = `
       <div class="section-label">Application status</div>
       <div class="status-card approved">
@@ -1980,7 +2161,7 @@ function renderAccountApplySection() {
     return;
   }
 
-  if (status === 'rejected') {
+  if (status === 'rejected' && role) {
     container.innerHTML = `
       <div class="section-label">Application status</div>
       <div class="status-card rejected">
@@ -1997,7 +2178,6 @@ function renderAccountApplySection() {
       ${renderRolePickerHTML()}`;
   }
 
-  /* Wire role cards */
   container.querySelectorAll('[data-role]').forEach(card => {
     card.addEventListener('click', () => openApplyPage(card.dataset.role));
   });
@@ -2042,10 +2222,14 @@ function openApplyPage(role) {
   applyTitle.textContent = `Apply as ${roleLabel(role)}`;
 
   const roleDescriptions = {
-    walker: 'Complete a quick application. You need your name, phone number, NRC photo, and a profile photo.',
-    rider:  'Provide your details plus photos of your motorbike or bicycle and your NRC.',
-    driver: 'Provide your details, NRC, driver\'s licence, and photos of your vehicle.'
+    walker: 'Provide your name, phone, profile photo, and both sides of your NRC (front and back).',
+    rider:  'Provide your details plus photos of your motorbike or bicycle and both sides of your NRC.',
+    driver: 'Provide your details, both sides of your NRC, driver\'s licence, and photos of your vehicle.'
   };
+
+  const existingProfile  = providerRecord?.profileUrl || userRecord?.profileUrl || '';
+  const existingNrcFront = providerRecord?.nrcFront || '';
+  const existingNrcBack  = providerRecord?.nrcBack  || '';
 
   applyBody.innerHTML = `
     <div class="apply-role-head">
@@ -2066,25 +2250,35 @@ function openApplyPage(role) {
 
     <div class="section-label">Profile photo</div>
     <div class="upload-grid" style="grid-template-columns: 1fr 1fr;">
-      <div class="upload-box" id="applyProfileBox">
+      <div class="upload-box ${existingProfile ? 'has-image' : ''}" id="applyProfileBox">
+        ${existingProfile ? `<img src="${escapeHtml(existingProfile)}" alt="">` : ''}
         <i class="fas fa-user-circle upload-icon"></i>
         <span class="upload-label">Profile photo</span>
         <button type="button" class="remove-img" data-clear-upload="applyProfileBox"><i class="fas fa-xmark"></i></button>
       </div>
       <div></div>
     </div>
-    <input type="hidden" id="applyProfileUrl" value="${escapeHtml(userRecord?.profileUrl || '')}">
+    <input type="hidden" id="applyProfileUrl" value="${escapeHtml(existingProfile)}">
 
-    <div class="section-label">NRC photo</div>
-    <div class="upload-grid" style="grid-template-columns: 1fr 1fr;">
-      <div class="upload-box" id="applyNrcBox">
+    <div class="section-label">NRC — front &amp; back (required)</div>
+    <div class="upload-grid">
+      <div class="upload-box ${existingNrcFront ? 'has-image' : ''}" id="applyNrcFrontBox">
+        ${existingNrcFront ? `<img src="${escapeHtml(existingNrcFront)}" alt="">` : ''}
         <i class="fas fa-id-card upload-icon"></i>
-        <span class="upload-label">NRC photo</span>
-        <button type="button" class="remove-img" data-clear-upload="applyNrcBox"><i class="fas fa-xmark"></i></button>
+        <span class="upload-label">NRC front</span>
+        <span class="nrc-hint">Front</span>
+        <button type="button" class="remove-img" data-clear-upload="applyNrcFrontBox"><i class="fas fa-xmark"></i></button>
       </div>
-      <div></div>
+      <div class="upload-box ${existingNrcBack ? 'has-image' : ''}" id="applyNrcBackBox">
+        ${existingNrcBack ? `<img src="${escapeHtml(existingNrcBack)}" alt="">` : ''}
+        <i class="fas fa-id-card upload-icon"></i>
+        <span class="upload-label">NRC back</span>
+        <span class="nrc-hint">Back</span>
+        <button type="button" class="remove-img" data-clear-upload="applyNrcBackBox"><i class="fas fa-xmark"></i></button>
+      </div>
     </div>
-    <input type="hidden" id="applyNrcUrl">
+    <input type="hidden" id="applyNrcFrontUrl" value="${escapeHtml(existingNrcFront)}">
+    <input type="hidden" id="applyNrcBackUrl" value="${escapeHtml(existingNrcBack)}">
 
     ${role === 'rider' ? `
       <div class="section-label">Bike photos (up to 2)</div>
@@ -2140,14 +2334,9 @@ function openApplyPage(role) {
     </button>
   `;
 
-  /* Set existing profile image if any */
-  if (userRecord?.profileUrl) {
-    setUploadBoxImage('applyProfileBox', userRecord.profileUrl);
-  }
-
-  /* Wire uploads */
-  wireUpload('applyProfileBox', 'applyProfileUrl', 'applyError');
-  wireUpload('applyNrcBox',     'applyNrcUrl',     'applyError');
+  wireUpload('applyProfileBox',   'applyProfileUrl',   'applyError');
+  wireUpload('applyNrcFrontBox',  'applyNrcFrontUrl',  'applyError');
+  wireUpload('applyNrcBackBox',   'applyNrcBackUrl',   'applyError');
   if (role === 'rider') {
     wireUpload('applyBikeBox1', 'applyBikeUrl1', 'applyError');
     wireUpload('applyBikeBox2', 'applyBikeUrl2', 'applyError');
@@ -2159,6 +2348,8 @@ function openApplyPage(role) {
   }
 
   document.querySelectorAll('[data-clear-upload]').forEach(btn => {
+    if (btn.dataset.bound === '1') return;
+    btn.dataset.bound = '1';
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
       clearUpload(btn.dataset.clearUpload);
@@ -2186,16 +2377,16 @@ function clearUpload(boxId) {
   if (!box) return;
   box.querySelectorAll('img').forEach(i => i.remove());
   box.classList.remove('has-image');
-  /* clear corresponding hidden input based on box id */
   const map = {
-    applyProfileBox: 'applyProfileUrl',
-    applyNrcBox: 'applyNrcUrl',
-    applyBikeBox1: 'applyBikeUrl1',
-    applyBikeBox2: 'applyBikeUrl2',
-    applyLicenseBox: 'applyLicenseUrl',
-    applyCarBox1: 'applyCarUrl1',
-    applyCarBox2: 'applyCarUrl2',
-    floatScreenshotBox: 'floatScreenshotUrl'
+    applyProfileBox:   'applyProfileUrl',
+    applyNrcFrontBox:  'applyNrcFrontUrl',
+    applyNrcBackBox:   'applyNrcBackUrl',
+    applyBikeBox1:     'applyBikeUrl1',
+    applyBikeBox2:     'applyBikeUrl2',
+    applyLicenseBox:   'applyLicenseUrl',
+    applyCarBox1:      'applyCarUrl1',
+    applyCarBox2:      'applyCarUrl2',
+    floatScreenshotBox:'floatScreenshotUrl'
   };
   const target = map[boxId];
   if (target) {
@@ -2275,15 +2466,17 @@ async function submitApplication(role) {
 
   const name  = ($('applyName')?.value  || '').trim();
   const phone = ($('applyPhone')?.value || '').trim();
-  const profileUrl = $('applyProfileUrl')?.value || '';
-  const nrcUrl = $('applyNrcUrl')?.value || '';
+  const profileUrl    = $('applyProfileUrl')?.value || '';
+  const nrcFrontUrl   = $('applyNrcFrontUrl')?.value || '';
+  const nrcBackUrl    = $('applyNrcBackUrl')?.value || '';
 
   if (!name) { errEl.innerText = 'Please enter your full name.'; return; }
   if (!phone || phone.replace(/\D/g,'').length < 9) {
     errEl.innerText = 'Please enter a valid phone number.'; return;
   }
-  if (!profileUrl) { errEl.innerText = 'Please upload a profile photo.'; return; }
-  if (!nrcUrl)     { errEl.innerText = 'Please upload your NRC photo.'; return; }
+  if (!profileUrl)  { errEl.innerText = 'Please upload a profile photo.'; return; }
+  if (!nrcFrontUrl) { errEl.innerText = 'Please upload the front of your NRC.'; return; }
+  if (!nrcBackUrl)  { errEl.innerText = 'Please upload the back of your NRC.'; return; }
 
   let bikeUrls = [];
   let licenseUrl = '';
@@ -2313,29 +2506,30 @@ async function submitApplication(role) {
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting…';
 
   try {
-    const data = {
+    const updates = {
       uid: currentUser.uid,
       email: currentUser.email || '',
       name,
+      fullName: name,
       phone,
       profileUrl,
       role,
-      nrcUrl,
+      nrcFront: nrcFrontUrl,
+      nrcBack: nrcBackUrl,
       status: 'pending',
-      createdAt: Date.now(),
       updatedAt: Date.now()
     };
     if (role === 'rider') {
-      data.bikeUrls = bikeUrls;
+      updates.bikeUrls = bikeUrls;
     }
     if (role === 'driver') {
-      data.licenseUrl = licenseUrl;
-      data.carUrls = carUrls;
+      updates.licenseUrl = licenseUrl;
+      updates.carUrls = carUrls;
     }
 
-    await set(ref(database, `providers/${currentUser.uid}`), data);
+    await update(ref(database, `providers/${currentUser.uid}`), updates);
 
-    providerRecord = data;
+    providerRecord = { ...(providerRecord || {}), ...updates };
     userRecord.name = name;
     userRecord.phone = phone;
     userRecord.profileUrl = profileUrl;
@@ -2381,12 +2575,10 @@ function loadErrands() {
     for (const id in data) {
       const e = data[id];
       if (!e) continue;
-      /* Only show errands that are still pending (not yet assigned) */
       if (e.status === 'pending') {
         arr.push({ ...e, errandId: id });
       }
     }
-    /* Sort by newest first */
     arr.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
 
     errandsCache = {};
@@ -2417,7 +2609,6 @@ function renderErrands(errands) {
 
   let html = '';
   errands.forEach(e => {
-    /* Distance from provider to pickup */
     let distText = '';
     if (userLocation && e.pickup && isFinite(e.pickup.lat) && isFinite(e.pickup.lng)) {
       const m = haversineMeters(userLocation.lat, userLocation.lng, e.pickup.lat, e.pickup.lng);
@@ -2544,11 +2735,11 @@ function openErrandDetail(errandId) {
 }
 
 async function submitOffer(errand) {
-  if (!providerRecord || providerRecord.status !== 'approved') {
-    showToast('You must be an approved provider to make offers.');
+  /* ANY signed-in provider can make an offer — no approval required */
+  if (!currentUser) {
+    showToast('Session expired. Please sign in again.');
     return;
   }
-  if (!currentUser) return;
 
   const priceEl = $('offerPrice');
   const msgEl = $('offerMessage');
@@ -2568,12 +2759,14 @@ async function submitOffer(errand) {
   btn.disabled = true;
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending…';
 
+  const role = (providerRecord && providerRecord.role) || '';
+
   try {
     await set(ref(database, `errands/${errand.errandId}/offers/${currentUser.uid}`), {
       providerId: currentUser.uid,
-      providerName: providerRecord.name || userRecord.name,
-      providerPhoto: providerRecord.profileUrl || userRecord.profileUrl || '',
-      providerRole: providerRecord.role,
+      providerName: (providerRecord && (providerRecord.fullName || providerRecord.name)) || userRecord.name,
+      providerPhoto: (providerRecord && providerRecord.profileUrl) || userRecord.profileUrl || '',
+      providerRole: role || 'provider',
       price,
       message: message || 'I can handle this errand.',
       status: 'pending',
@@ -2592,9 +2785,9 @@ async function submitOffer(errand) {
 }
 
 /* ============================================================
-   MAP CHECK MODAL
+   MAP CHECK MODAL — with route drawing
    ============================================================ */
-function openMapCheck(errandId) {
+async function openMapCheck(errandId) {
   const e = errandsCache[errandId];
   if (!e || !e.pickup || !isFinite(e.pickup.lat) || !isFinite(e.pickup.lng)) {
     showToast('Pickup location not available.');
@@ -2602,39 +2795,50 @@ function openMapCheck(errandId) {
   }
   currentModalTarget = { lat: e.pickup.lat, lng: e.pickup.lng, label: e.pickup.label || 'Pickup' };
 
+  const role = (providerRecord && providerRecord.role) || '';
+  if (role) {
+    mapModalTitle.textContent = `${roleLabel(role)} route to pickup`;
+    routeLegendRow.style.display = 'flex';
+    routeLegendText.textContent = routeLegendLabelForRole(role);
+  } else {
+    mapModalTitle.textContent = 'Pickup & your location';
+    routeLegendRow.style.display = 'none';
+  }
+
   mapModal.classList.add('open');
 
-  /* Delay init so modal has rendered dimensions */
-  setTimeout(() => {
+  setTimeout(async () => {
     if (!modalMap) {
       modalMap = L.map('modalMap', {
         zoomControl: true,
         attributionControl: false,
         preferCanvas: true,
-        maxZoom: 19,
+        maxZoom: 20,
         minZoom: 3
-      }).setView([currentModalTarget.lat, currentModalTarget.lng], 15);
+      }).setView([currentModalTarget.lat, currentModalTarget.lng], MODAL_ZOOM);
 
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        subdomains: 'abc',
-        maxZoom: 19,
-        crossOrigin: true
+      /* Same Google-like basemap as the main map */
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+        subdomains: 'abcd',
+        maxZoom: 20,
+        crossOrigin: true,
+        detectRetina: true
       }).addTo(modalMap);
     }
     modalMap.invalidateSize();
     drawModalMarkers();
     fitModalBounds();
+
+    await drawModalRoute();
   }, 320);
 }
 
 function drawModalMarkers() {
   if (!modalMap || !currentModalTarget) return;
 
-  /* Clear existing */
   if (modalUserMarker) { modalMap.removeLayer(modalUserMarker); modalUserMarker = null; }
   if (modalTargetMarker) { modalMap.removeLayer(modalTargetMarker); modalTargetMarker = null; }
 
-  /* Target (pickup) */
   const targetIcon = L.divIcon({
     className: '',
     html: '<div class="mk-pickup"></div>',
@@ -2645,7 +2849,6 @@ function drawModalMarkers() {
     .addTo(modalMap)
     .bindPopup(escapeHtml(currentModalTarget.label));
 
-  /* Me */
   if (userLocation) {
     const meIcon = L.divIcon({
       className: '',
@@ -2659,6 +2862,82 @@ function drawModalMarkers() {
   }
 }
 
+function clearModalRoute() {
+  if (modalRouteLayer && modalMap) {
+    modalMap.removeLayer(modalRouteLayer);
+  }
+  modalRouteLayer = null;
+  modalRouteLine = null;
+}
+
+async function drawModalRoute() {
+  if (!modalMap || !currentModalTarget || !userLocation) return;
+
+  if (modalRouteAbort) {
+    try { modalRouteAbort.abort(); } catch (e) {}
+    modalRouteAbort = null;
+  }
+
+  clearModalRoute();
+
+  const role = (providerRecord && providerRecord.role) || '';
+  const profile = osrmProfileForRole(role);
+
+  const url =
+    `https://router.project-osrm.org/route/v1/${profile}/` +
+    `${userLocation.lng},${userLocation.lat};${currentModalTarget.lng},${currentModalTarget.lat}` +
+    `?overview=full&geometries=geojson&steps=false`;
+
+  const controller = new AbortController();
+  modalRouteAbort = controller;
+
+  try {
+    const res = await fetch(url, { signal: controller.signal });
+    if (!res.ok) throw new Error('Routing failed');
+    const data = await res.json();
+
+    if (!data.routes || data.routes.length === 0) {
+      throw new Error('No route');
+    }
+
+    const route = data.routes[0];
+    const coords = route.geometry.coordinates.map(([lng, lat]) => [lat, lng]);
+
+    modalRouteLayer = L.layerGroup().addTo(modalMap);
+    L.polyline(coords, {
+      color: '#ffffff', weight: 8, opacity: 0.95,
+      lineJoin: 'round', lineCap: 'round'
+    }).addTo(modalRouteLayer);
+    modalRouteLine = L.polyline(coords, {
+      color: '#0a0a0a', weight: 4.5, opacity: 1,
+      lineJoin: 'round', lineCap: 'round'
+    }).addTo(modalRouteLayer);
+
+    if (coords.length > 1) {
+      modalMap.fitBounds(L.latLngBounds(coords), { padding: [40, 40], maxZoom: 17 });
+    }
+
+  } catch (err) {
+    if (err.name === 'AbortError') return;
+    console.warn('Route fetch failed:', err);
+    /* Fallback: straight dashed line */
+    if (userLocation && currentModalTarget && modalMap) {
+      const straight = [
+        [userLocation.lat, userLocation.lng],
+        [currentModalTarget.lat, currentModalTarget.lng]
+      ];
+      modalRouteLayer = L.layerGroup().addTo(modalMap);
+      L.polyline(straight, {
+        color: '#0a0a0a',
+        weight: 3,
+        opacity: 0.85,
+        dashArray: '6 8',
+        lineCap: 'round'
+      }).addTo(modalRouteLayer);
+    }
+  }
+}
+
 function fitModalBounds() {
   if (!modalMap) return;
   const points = [];
@@ -2666,18 +2945,36 @@ function fitModalBounds() {
   if (userLocation) points.push([userLocation.lat, userLocation.lng]);
   if (points.length === 0) return;
   if (points.length === 1) {
-    modalMap.setView(points[0], 15);
+    modalMap.setView(points[0], MODAL_ZOOM);
     return;
   }
   const bounds = L.latLngBounds(points);
   modalMap.fitBounds(bounds, { padding: [40, 40], maxZoom: 16 });
 }
 
-mapModalClose.addEventListener('click', () => mapModal.classList.remove('open'));
-mapModal.addEventListener('click', (e) => {
-  if (e.target === mapModal) mapModal.classList.remove('open');
+mapModalClose.addEventListener('click', () => {
+  mapModal.classList.remove('open');
+  if (modalRouteAbort) { try { modalRouteAbort.abort(); } catch (e) {} modalRouteAbort = null; }
+  clearModalRoute();
 });
-mapModalRecenter.addEventListener('click', fitModalBounds);
+mapModal.addEventListener('click', (e) => {
+  if (e.target === mapModal) {
+    mapModal.classList.remove('open');
+    if (modalRouteAbort) { try { modalRouteAbort.abort(); } catch (e) {} modalRouteAbort = null; }
+    clearModalRoute();
+  }
+});
+mapModalRecenter.addEventListener('click', async () => {
+  if (modalRouteLine) {
+    const bounds = modalRouteLine.getBounds();
+    if (bounds.isValid()) {
+      modalMap.fitBounds(bounds, { padding: [40, 40], maxZoom: 17 });
+      return;
+    }
+  }
+  fitModalBounds();
+  await drawModalRoute();
+});
 
 /* ============================================================
    HISTORY PAGE
@@ -2914,10 +3211,10 @@ function renderDepositNumbers(numbers) {
   });
 }
 
-/* Wire float screenshot upload */
 wireUpload('floatScreenshotBox', 'floatScreenshotUrl', 'floatError');
 document.querySelectorAll('[data-clear-upload]').forEach(btn => {
-  if (btn.dataset.clearUpload === 'floatScreenshotBox') {
+  if (btn.dataset.clearUpload === 'floatScreenshotBox' && btn.dataset.bound !== '1') {
+    btn.dataset.bound = '1';
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
       clearUpload('floatScreenshotBox');
@@ -2967,7 +3264,6 @@ async function submitFloatRequest() {
       createdAt: Date.now()
     });
 
-    /* Reset form */
     floatAmount.value = '';
     floatScreenshotUrl.value = '';
     clearUpload('floatScreenshotBox');
@@ -3013,8 +3309,9 @@ logoutBtn.addEventListener('click', doLogout);
 
 async function doLogout() {
   try { await signOut(auth); } catch (err) { console.warn(err); }
-  localStorage.removeItem('customerUid');
-  localStorage.removeItem('customerPhone');
+  localStorage.removeItem('providerUid');
+  localStorage.removeItem('providerEmail');
+  localStorage.removeItem('providerName');
   window.location.href = 'index.html';
 }
 
@@ -3023,7 +3320,11 @@ async function doLogout() {
    ============================================================ */
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
-    if (mapModal.classList.contains('open')) mapModal.classList.remove('open');
+    if (mapModal.classList.contains('open')) {
+      mapModal.classList.remove('open');
+      if (modalRouteAbort) { try { modalRouteAbort.abort(); } catch (e) {} modalRouteAbort = null; }
+      clearModalRoute();
+    }
     else if (applyPage.classList.contains('open')) closePage('applyPage');
     else if (errandDetailPage.classList.contains('open')) closePage('errandDetailPage');
     else if (errandsPage.classList.contains('open')) closePage('errandsPage');
