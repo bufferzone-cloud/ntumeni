@@ -45,7 +45,7 @@
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
   --panel-ease: cubic-bezier(0.32, 0.72, 0, 1);
-  --map-h: 50vh;
+  --panel-h: 50vh;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -54,7 +54,7 @@ html, body { height: 100%; width: 100%; overflow: hidden; -webkit-text-size-adju
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   color: var(--text-primary);
-  background: #ffffff;
+  background: #e8eaed;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   user-select: none;
@@ -97,10 +97,11 @@ input, textarea, select { font-family: inherit; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* ==========================================================
-   SPLIT LAYOUT
+   MAP — full by default, shrinks when panel slides up
    ========================================================== */
 #map {
-  flex: 0 0 var(--map-h);
+  flex: 1 1 auto;
+  min-height: 0;
   position: relative;
   background: #e8eaed;
   z-index: 1;
@@ -115,16 +116,25 @@ input, textarea, select { font-family: inherit; }
 }
 .leaflet-control-attribution a { color: #6e6e73 !important; }
 
+/* ==========================================================
+   DETAIL PANEL — hidden by default, only when there's a request
+   ========================================================== */
 #detailPanel {
-  flex: 1 1 auto;
-  min-height: 0;
+  flex: 0 0 0;
+  max-height: 0;
+  overflow: hidden;
   background: #ffffff;
-  border-top: 1px solid var(--line);
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+  transition: flex-basis 0.4s var(--panel-ease), max-height 0.4s var(--panel-ease), box-shadow 0.3s;
   position: relative;
   z-index: 5;
+}
+body.has-panel #detailPanel {
+  flex-basis: var(--panel-h);
+  max-height: var(--panel-h);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   box-shadow: 0 -8px 24px rgba(0,0,0,0.06);
+  border-top: 1px solid var(--line);
 }
 #detailPanel .dp-inner {
   max-width: 620px;
@@ -170,52 +180,36 @@ input, textarea, select { font-family: inherit; }
 }
 
 /* ==========================================================
-   FLOATING CONTROLS ON MAP
+   FLOATING CONTROLS (over the map)
    ========================================================== */
 .float-btn {
-  position: fixed; z-index: 600;
+  position: fixed;
   width: 46px; height: 46px; border-radius: 14px;
   background: #ffffff;
   display: flex; align-items: center; justify-content: center;
   font-size: 1.05rem; color: var(--ink);
   box-shadow: 0 4px 18px rgba(0,0,0,0.16), 0 0 0 1px rgba(0,0,0,0.05);
-  transition: transform 0.3s var(--spring);
+  transition: transform 0.3s var(--spring), background 0.25s, color 0.25s, box-shadow 0.25s;
+  z-index: 600;
 }
 .float-btn:active { transform: scale(0.92); }
 
 #sidebarBtn { top: 14px; left: 14px; }
 
-/* Map-only controls positioned near bottom of map */
-#mapControls {
-  position: fixed;
-  top: calc(var(--map-h) - 62px);
-  right: 14px;
-  z-index: 600;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-#mapControls .float-btn {
-  position: static;
-}
-#navigateFloatBtn {
-  background: #0a0a0a; color: #fff;
-}
-
 /* ==========================================================
-   TOP HUD (Online toggle + float pill)
+   ONLINE / OFFLINE FLOATING TOGGLE (below sidebar button)
    ========================================================== */
 #onlineToggle {
   position: fixed;
-  top: 14px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 650;
+  top: 68px;
+  left: 14px;
+  z-index: 600;
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 15px;
-  border-radius: 999px;
+  padding: 0 14px;
+  height: 46px;
+  border-radius: 14px;
   background: #ffffff;
   color: var(--text-primary);
   font-size: 0.72rem;
@@ -224,8 +218,9 @@ input, textarea, select { font-family: inherit; }
   text-transform: uppercase;
   box-shadow: 0 4px 18px rgba(0,0,0,0.16), 0 0 0 1px rgba(0,0,0,0.05);
   transition: transform 0.3s var(--spring), background 0.25s, color 0.25s, box-shadow 0.25s;
+  white-space: nowrap;
 }
-#onlineToggle:active { transform: translateX(-50%) scale(0.95); }
+#onlineToggle:active { transform: scale(0.95); }
 #onlineToggle .ot-dot {
   width: 10px; height: 10px; border-radius: 50%;
   background: var(--text-tertiary);
@@ -250,6 +245,9 @@ input, textarea, select { font-family: inherit; }
 }
 #onlineToggle.busy { opacity: 0.6; pointer-events: none; }
 
+/* ==========================================================
+   FLOAT BALANCE PILL (top-right)
+   ========================================================== */
 .float-balance-pill {
   position: fixed;
   top: 14px;
@@ -269,12 +267,10 @@ input, textarea, select { font-family: inherit; }
 }
 .float-balance-pill:active { transform: scale(0.96); }
 .float-balance-pill .fb-ico {
-  width: 26px; height: 26px;
-  border-radius: 50%;
+  width: 26px; height: 26px; border-radius: 50%;
   background: rgba(255,255,255,0.14);
   display: flex; align-items: center; justify-content: center;
-  font-size: 0.78rem;
-  flex-shrink: 0;
+  font-size: 0.78rem; flex-shrink: 0;
 }
 .float-balance-pill .fb-txt {
   display: flex; flex-direction: column; align-items: flex-start; line-height: 1;
@@ -282,8 +278,7 @@ input, textarea, select { font-family: inherit; }
 .float-balance-pill .fb-txt small {
   font-size: 0.55rem; font-weight: 700;
   letter-spacing: 1.2px; text-transform: uppercase;
-  color: rgba(255,255,255,0.55);
-  margin-bottom: 4px;
+  color: rgba(255,255,255,0.55); margin-bottom: 4px;
 }
 .float-balance-pill .fb-txt strong {
   font-size: 0.92rem; font-weight: 800;
@@ -293,18 +288,51 @@ input, textarea, select { font-family: inherit; }
 .float-balance-pill .fb-txt strong small {
   font-size: 0.68rem; font-weight: 700;
   color: rgba(255,255,255,0.75);
-  letter-spacing: 0;
-  margin: 0 2px 0 0;
-  display: inline;
+  letter-spacing: 0; margin: 0 2px 0 0; display: inline;
 }
-.float-balance-pill.is-low   { background: #7f1d1d; }
-.float-balance-pill.is-warn  { background: #b54708; }
+.float-balance-pill.is-low  { background: #7f1d1d; }
+.float-balance-pill.is-warn { background: #b54708; }
+
+/* ==========================================================
+   MAP CONTROLS (bottom-right of map area)
+   ========================================================== */
+#mapControls {
+  position: fixed;
+  right: 14px;
+  top: calc(100vh - 62px);
+  z-index: 600;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: top 0.4s var(--panel-ease);
+}
+body.has-panel #mapControls {
+  top: calc(var(--panel-h) + 100vh - var(--panel-h) - 62px);
+}
+#mapControls .float-btn { position: static; }
+#navigateFloatBtn { background: #0a0a0a; color: #fff; }
 
 /* ==========================================================
    DETAIL PANEL CONTENT
    ========================================================== */
+.dp-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 0.64rem; font-weight: 800;
+  letter-spacing: 0.8px; text-transform: uppercase;
+  padding: 5px 11px; border-radius: 999px;
+  background: #0a0a0a; color: #fff;
+  margin-bottom: 12px;
+  animation: tagPulse 1.4s var(--ease-smooth) infinite;
+}
+.dp-tag.info {
+  background: var(--info-soft); color: #175cd3;
+  animation: none;
+}
+@keyframes tagPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(10,10,10,0.4); }
+  50%      { box-shadow: 0 0 0 8px rgba(10,10,10,0); }
+}
 
-/* Panel heads */
 .dp-title {
   font-size: 1.1rem; font-weight: 800;
   letter-spacing: -0.35px;
@@ -316,65 +344,42 @@ input, textarea, select { font-family: inherit; }
   line-height: 1.5; margin-bottom: 16px;
 }
 
-/* Status banner (idle, online etc) */
-.dp-status {
-  display: flex; align-items: center; gap: 12px;
+.dp-customer {
+  display: flex; align-items: center; gap: 13px;
   padding: 14px;
+  background: var(--fill-gray);
   border-radius: 14px;
   margin-bottom: 14px;
 }
-.dp-status .ds-ico {
-  width: 44px; height: 44px; border-radius: 12px;
+.dp-customer .dc-avatar {
+  width: 48px; height: 48px; border-radius: 50%;
+  background: #ffffff; overflow: hidden;
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.1rem;
   flex-shrink: 0;
+  box-shadow: 0 0 0 1px var(--line);
 }
-.dp-status.online   { background: var(--success-soft); }
-.dp-status.online .ds-ico   { background: rgba(18,183,106,0.15);  color: #027a48; }
-.dp-status.offline  { background: var(--fill-gray); }
-.dp-status.offline .ds-ico  { background: #ffffff;  color: var(--text-secondary); }
-.dp-status.warn     { background: var(--warn-soft); }
-.dp-status.warn .ds-ico     { background: rgba(247,144,9,0.18);  color: #b54708; }
-.dp-status.danger   { background: var(--danger-soft); }
-.dp-status.danger .ds-ico   { background: rgba(217,45,32,0.15);  color: #b42318; }
-.dp-status .ds-body { flex: 1; min-width: 0; }
-.dp-status .ds-body strong {
+.dp-customer .dc-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.dp-customer .dc-avatar i { color: var(--text-tertiary); font-size: 1.2rem; }
+.dp-customer .dc-body { flex: 1; min-width: 0; }
+.dp-customer .dc-body strong {
   display: block; font-size: 0.94rem; font-weight: 800;
-  letter-spacing: -0.25px; margin-bottom: 2px;
+  letter-spacing: -0.25px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.dp-status .ds-body span {
-  display: block; font-size: 0.78rem;
-  color: var(--text-secondary); line-height: 1.45;
+.dp-customer .dc-body span {
+  display: block; font-size: 0.76rem;
+  color: var(--text-secondary); margin-top: 2px;
 }
+.dp-customer .dc-call {
+  width: 42px; height: 42px; border-radius: 50%;
+  background: var(--success); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; flex-shrink: 0;
+  text-decoration: none;
+  box-shadow: 0 6px 14px -4px rgba(18,183,106,0.5);
+}
+.dp-customer .dc-call:active { transform: scale(0.92); }
 
-/* Primary action button */
-.dp-btn {
-  width: 100%;
-  padding: 15px 20px;
-  border-radius: 14px;
-  background: #0a0a0a; color: #fff;
-  font-size: 0.92rem; font-weight: 800;
-  letter-spacing: -0.2px;
-  display: inline-flex; align-items: center; justify-content: center;
-  gap: 9px;
-  box-shadow: 0 8px 20px -8px rgba(0,0,0,0.55);
-  transition: transform 0.3s var(--spring);
-  margin-top: 4px;
-}
-.dp-btn:active { transform: scale(0.98); }
-.dp-btn:disabled { opacity: 0.55; pointer-events: none; }
-.dp-btn.ghost {
-  background: var(--fill-gray);
-  color: var(--text-primary);
-  box-shadow: none;
-}
-.dp-btn.navigate {
-  background: linear-gradient(135deg, #175cd3 0%, #0a0a0a 100%);
-}
-.dp-btn-row { display: flex; gap: 10px; margin-top: 6px; }
-.dp-btn-row .dp-btn { margin-top: 0; }
-
-/* Route block */
 .dp-route {
   background: var(--fill-gray);
   border-radius: 14px;
@@ -412,47 +417,6 @@ input, textarea, select { font-family: inherit; }
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 
-/* Customer card */
-.dp-customer {
-  display: flex; align-items: center; gap: 13px;
-  padding: 14px;
-  background: var(--fill-gray);
-  border-radius: 14px;
-  margin-bottom: 14px;
-}
-.dp-customer .dc-avatar {
-  width: 48px; height: 48px; border-radius: 50%;
-  background: #ffffff;
-  overflow: hidden;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-  box-shadow: 0 0 0 1px var(--line);
-}
-.dp-customer .dc-avatar img { width: 100%; height: 100%; object-fit: cover; }
-.dp-customer .dc-avatar i { color: var(--text-tertiary); font-size: 1.2rem; }
-.dp-customer .dc-body { flex: 1; min-width: 0; }
-.dp-customer .dc-body strong {
-  display: block; font-size: 0.94rem; font-weight: 800;
-  letter-spacing: -0.25px;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.dp-customer .dc-body span {
-  display: block; font-size: 0.76rem;
-  color: var(--text-secondary); margin-top: 2px;
-}
-.dp-customer .dc-call {
-  width: 42px; height: 42px;
-  border-radius: 50%;
-  background: var(--success); color: #fff;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1rem;
-  flex-shrink: 0;
-  text-decoration: none;
-  box-shadow: 0 6px 14px -4px rgba(18,183,106,0.5);
-}
-.dp-customer .dc-call:active { transform: scale(0.92); }
-
-/* Stats */
 .dp-stats {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -479,7 +443,6 @@ input, textarea, select { font-family: inherit; }
 .dp-stat.price small { color: rgba(255,255,255,0.55); }
 .dp-stat.price strong { color: #fff; font-size: 1.05rem; }
 
-/* Commission strip */
 .dp-commission {
   display: flex; align-items: center; gap: 10px;
   padding: 10px 14px;
@@ -492,7 +455,32 @@ input, textarea, select { font-family: inherit; }
   margin-bottom: 14px;
 }
 
-/* Slide-to-action (unchanged design, moved into panel) */
+.dp-btn {
+  width: 100%;
+  padding: 15px 20px;
+  border-radius: 14px;
+  background: #0a0a0a; color: #fff;
+  font-size: 0.92rem; font-weight: 800;
+  letter-spacing: -0.2px;
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 9px;
+  box-shadow: 0 8px 20px -8px rgba(0,0,0,0.55);
+  transition: transform 0.3s var(--spring);
+  margin-top: 4px;
+}
+.dp-btn:active { transform: scale(0.98); }
+.dp-btn:disabled { opacity: 0.55; pointer-events: none; }
+.dp-btn.ghost {
+  background: var(--fill-gray); color: var(--text-primary);
+  box-shadow: none;
+}
+.dp-btn.navigate {
+  background: linear-gradient(135deg, #175cd3 0%, #0a0a0a 100%);
+}
+.dp-btn-row { display: flex; gap: 10px; margin-top: 6px; }
+.dp-btn-row .dp-btn { margin-top: 0; }
+
+/* Slide-to-action */
 .slide-btn {
   position: relative;
   width: 100%;
@@ -541,25 +529,6 @@ input, textarea, select { font-family: inherit; }
 }
 .slide-btn .slide-handle.dragging { transition: none; }
 .slide-btn.is-busy { opacity: 0.7; pointer-events: none; }
-
-/* Request tag */
-.dp-tag {
-  display: inline-flex; align-items: center; gap: 6px;
-  font-size: 0.64rem; font-weight: 800;
-  letter-spacing: 0.8px; text-transform: uppercase;
-  padding: 5px 11px; border-radius: 999px;
-  background: #0a0a0a; color: #fff;
-  margin-bottom: 12px;
-  animation: tagPulse 1.4s var(--ease-smooth) infinite;
-}
-.dp-tag.info {
-  background: var(--info-soft); color: #175cd3;
-  animation: none;
-}
-@keyframes tagPulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(10,10,10,0.4); }
-  50%      { box-shadow: 0 0 0 8px rgba(10,10,10,0); }
-}
 
 /* ==========================================================
    SIDEBAR
@@ -655,7 +624,7 @@ input, textarea, select { font-family: inherit; }
 .logout-btn i { width: 22px; text-align: center; font-size: 1rem; }
 
 /* ==========================================================
-   FULLSCREEN PAGES (Account, Errands, History, etc.)
+   FULLSCREEN PAGES
    ========================================================== */
 .page {
   position: fixed; inset: 0; z-index: 3000;
@@ -691,7 +660,6 @@ input, textarea, select { font-family: inherit; }
   margin: 0 auto;
   padding: 16px 16px 40px;
 }
-
 .icon-btn {
   width: 42px; height: 42px; border-radius: 12px;
   display: flex; align-items: center; justify-content: center;
@@ -733,7 +701,6 @@ input, textarea, select { font-family: inherit; }
   width: 100%;
   padding: 13px 16px 13px 42px;
   font-size: 0.94rem;
-  font-weight: 400;
   border: 1.5px solid transparent;
   border-radius: var(--radius-sm);
   background: var(--fill-gray);
@@ -781,8 +748,7 @@ input, textarea, select { font-family: inherit; }
    ========================================================== */
 .account-hero {
   background: #0a0a0a; color: #fff;
-  border-radius: 20px;
-  padding: 22px;
+  border-radius: 20px; padding: 22px;
   margin-bottom: 16px;
   display: flex; align-items: center; gap: 16px;
 }
@@ -873,8 +839,7 @@ input, textarea, select { font-family: inherit; }
 
 .detail-list {
   background: var(--fill-gray);
-  border-radius: 16px;
-  padding: 4px;
+  border-radius: 16px; padding: 4px;
   margin-bottom: 16px;
 }
 .detail-row {
@@ -1079,7 +1044,6 @@ input, textarea, select { font-family: inherit; }
   animation: spin 0.8s linear infinite;
 }
 
-/* Float gate card */
 .float-gate-card {
   background: var(--danger-soft);
   border: 1px solid rgba(217,45,32,0.22);
@@ -1126,7 +1090,6 @@ input, textarea, select { font-family: inherit; }
   font-size: 0.74rem; font-weight: 700;
   display: inline-flex; align-items: center; gap: 6px;
 }
-
 .offer-form-card {
   background: #ffffff;
   border-radius: 16px; padding: 18px; margin-bottom: 14px;
@@ -1176,7 +1139,6 @@ input, textarea, select { font-family: inherit; }
 }
 .summary-tile.dark strong { color: #fff; }
 
-/* Expandable history card */
 .hist-card {
   background: #ffffff;
   border-radius: 14px;
@@ -1238,15 +1200,13 @@ input, textarea, select { font-family: inherit; }
   border-top: 1px solid transparent;
 }
 .hist-card.expanded .hist-details {
-  max-height: 620px;
+  max-height: 720px;
   border-top-color: var(--line);
 }
 .hist-details-inner {
   padding: 14px 16px 16px;
 }
-.hist-details .hd-section {
-  margin-bottom: 14px;
-}
+.hist-details .hd-section { margin-bottom: 14px; }
 .hist-details .hd-section:last-child { margin-bottom: 0; }
 .hist-details .hd-label {
   font-size: 0.62rem; font-weight: 800;
@@ -1268,8 +1228,7 @@ input, textarea, select { font-family: inherit; }
 }
 .hist-details .hd-row .hd-val {
   color: var(--text-primary); font-weight: 700;
-  text-align: right;
-  word-break: break-word;
+  text-align: right; word-break: break-word;
 }
 .hist-details .hd-route-block {
   background: #ffffff;
@@ -1303,8 +1262,7 @@ input, textarea, select { font-family: inherit; }
 .hist-details .hd-actions {
   display: flex; gap: 8px; margin-top: 10px;
 }
-.hist-details .hd-actions button,
-.hist-details .hd-actions a {
+.hist-details .hd-actions button {
   flex: 1;
   padding: 10px 14px;
   border-radius: 10px;
@@ -1312,17 +1270,13 @@ input, textarea, select { font-family: inherit; }
   font-size: 0.8rem; font-weight: 700;
   display: inline-flex; align-items: center; justify-content: center;
   gap: 7px;
-  text-decoration: none;
   transition: transform 0.28s var(--spring);
 }
-.hist-details .hd-actions button:active,
-.hist-details .hd-actions a:active { transform: scale(0.97); }
-.hist-details .hd-actions button.ghost,
-.hist-details .hd-actions a.ghost {
+.hist-details .hd-actions button:active { transform: scale(0.97); }
+.hist-details .hd-actions button.ghost {
   background: var(--fill-gray); color: var(--text-primary);
 }
 
-/* Chip */
 .chip {
   display: inline-flex; align-items: center; gap: 5px;
   font-size: 0.66rem; font-weight: 800;
@@ -1448,7 +1402,6 @@ input, textarea, select { font-family: inherit; }
   padding: 18px;
 }
 .modal-overlay.open { display: flex; }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 .modal {
   background: #ffffff; border-radius: 22px;
   width: 100%; max-width: 520px;
@@ -1495,7 +1448,7 @@ input, textarea, select { font-family: inherit; }
    ========================================================== */
 #toast {
   position: fixed; left: 50%;
-  bottom: calc(50vh + 22px);
+  bottom: 90px;
   z-index: 6000;
   transform: translate(-50%, 24px);
   background: #0a0a0a; color: #fff;
@@ -1503,9 +1456,12 @@ input, textarea, select { font-family: inherit; }
   padding: 13px 22px; border-radius: 999px;
   box-shadow: 0 14px 34px -10px rgba(0,0,0,0.6);
   opacity: 0; visibility: hidden;
-  transition: opacity 0.32s var(--ease-out), transform 0.42s var(--spring), visibility 0.32s;
+  transition: opacity 0.32s var(--ease-out), transform 0.42s var(--spring), visibility 0.32s, bottom 0.4s var(--panel-ease);
   max-width: 88vw; text-align: center; line-height: 1.4;
   pointer-events: none;
+}
+body.has-panel #toast {
+  bottom: calc(var(--panel-h) + 22px);
 }
 #toast.show { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
 
@@ -1513,7 +1469,7 @@ input, textarea, select { font-family: inherit; }
    RESPONSIVE
    ========================================================== */
 @media (max-width: 380px) {
-  #onlineToggle { font-size: 0.66rem; padding: 9px 12px; }
+  #onlineToggle { font-size: 0.66rem; padding: 0 11px; height: 44px; }
   .float-balance-pill .fb-txt small { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -1538,31 +1494,32 @@ input, textarea, select { font-family: inherit; }
   <div class="l-spinner"></div>
 </div>
 
-<!-- SPLIT LAYOUT: Map (top) + Detail Panel (bottom) -->
+<!-- FULL MAP -->
 <div id="map"></div>
 
+<!-- DETAIL PANEL (hidden unless there is a request/trip) -->
 <section id="detailPanel">
-  <div class="dp-inner" id="dpInner">
-    <div class="loader-row"><span class="mini-spin"></span> Loading…</div>
-  </div>
+  <div class="dp-inner" id="dpInner"></div>
 </section>
 
-<!-- TOP HUD -->
-<button id="onlineToggle">
+<!-- SIDEBAR TOGGLE -->
+<button class="float-btn" id="sidebarBtn" aria-label="Open menu">
+  <i class="fas fa-bars"></i>
+</button>
+
+<!-- ONLINE / OFFLINE FLOATING TOGGLE (below sidebar button) -->
+<button id="onlineToggle" aria-label="Toggle online status">
   <span class="ot-dot"></span>
   <span id="onlineToggleLabel">Offline</span>
 </button>
 
+<!-- FLOAT BALANCE PILL -->
 <button class="float-balance-pill" id="floatBalancePill" title="Float balance — tap to top up">
   <span class="fb-ico"><i class="fas fa-wallet"></i></span>
   <span class="fb-txt">
     <small>Float</small>
     <strong><small>K</small><span id="floatBalanceValue">0</span></strong>
   </span>
-</button>
-
-<button class="float-btn" id="sidebarBtn" aria-label="Open menu">
-  <i class="fas fa-bars"></i>
 </button>
 
 <!-- MAP CONTROLS (bottom-right of map area) -->
@@ -1589,6 +1546,9 @@ input, textarea, select { font-family: inherit; }
     </div>
   </div>
   <nav class="sidebar-nav">
+    <button class="nav-item" data-nav="account">
+      <i class="fas fa-user-gear"></i> Account
+    </button>
     <button class="nav-item" data-nav="errands">
       <i class="fas fa-clipboard-list"></i> Errands
     </button>
@@ -1597,9 +1557,6 @@ input, textarea, select { font-family: inherit; }
     </button>
     <button class="nav-item" data-nav="buyfloat">
       <i class="fas fa-wallet"></i> Buy Float
-    </button>
-    <button class="nav-item" data-nav="account">
-      <i class="fas fa-user-gear"></i> Account
     </button>
     <button class="nav-item" data-nav="settings">
       <i class="fas fa-gear"></i> Settings
@@ -1638,24 +1595,15 @@ input, textarea, select { font-family: inherit; }
       <div class="detail-list">
         <div class="detail-row">
           <i class="fas fa-user"></i>
-          <div class="dr-txt">
-            <small>Full name</small>
-            <strong id="detName">—</strong>
-          </div>
+          <div class="dr-txt"><small>Full name</small><strong id="detName">—</strong></div>
         </div>
         <div class="detail-row">
           <i class="fas fa-phone"></i>
-          <div class="dr-txt">
-            <small>Phone</small>
-            <strong id="detPhone">—</strong>
-          </div>
+          <div class="dr-txt"><small>Phone</small><strong id="detPhone">—</strong></div>
         </div>
         <div class="detail-row">
           <i class="fas fa-envelope"></i>
-          <div class="dr-txt">
-            <small>Email</small>
-            <strong id="detEmail">—</strong>
-          </div>
+          <div class="dr-txt"><small>Email</small><strong id="detEmail">—</strong></div>
         </div>
       </div>
 
@@ -1846,7 +1794,7 @@ input, textarea, select { font-family: inherit; }
 <div class="modal-overlay" id="mapModal">
   <div class="modal">
     <div class="modal-head">
-      <h3 id="mapModalTitle">Pickup &amp; your location</h3>
+      <h3 id="mapModalTitle">Route to pickup</h3>
       <button class="modal-close" id="mapModalClose"><i class="fas fa-xmark"></i></button>
     </div>
     <div id="modalMap"></div>
@@ -2008,11 +1956,9 @@ let myOffersUnsub = null;
 let currentFilter = 'all';
 let historyCache = { offers: [], float: [], trips: [] };
 
-/* Float rules */
 let FLOAT_RULES = Object.assign({}, DEFAULT_FLOAT_RULES);
 let floatRulesUnsub = null;
 
-/* Online / request listening */
 let isOnline = false;
 let searchRadiusKm = 15;
 let settingsUnsub = null;
@@ -2024,9 +1970,8 @@ let incomingRides = {};
 let incomingDeliveries = {};
 let declinedKeys = {};
 
-/* Trip state */
-let activeStage = null;   // null | 'incoming' | 'accepted' | 'arrived' | 'in_progress'
-let activeTrip = null;    // { kind, id, data }
+let activeStage = null;
+let activeTrip = null;
 let tripUnsub = null;
 let tripLocationUnsub = null;
 
@@ -2146,9 +2091,6 @@ function statusLabel(status) {
 
 /* ============================================================
    EXTERNAL NAVIGATION
-   Opens the platform default maps app.
-   iOS: Apple Maps (or Google Maps if installed)
-   Android/Other: Google Maps
    ============================================================ */
 function isIOS() {
   return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
@@ -2160,10 +2102,8 @@ function getExternalNavUrl(lat, lng, label) {
   const dest = `${lat},${lng}`;
   const lbl = encodeURIComponent(label || 'Destination');
   if (isIOS()) {
-    // Apple Maps handles universal links and falls back to web
     return `https://maps.apple.com/?daddr=${dest}&q=${lbl}&dirflg=d`;
   }
-  // Google Maps universal link works on Android + web + iOS-with-app
   return `https://www.google.com/maps/dir/?api=1&destination=${dest}&travelmode=driving`;
 }
 
@@ -2245,7 +2185,6 @@ function listenFloatBalance(uid) {
       floatBalance = 0;
     }
     renderFloatBalance();
-    renderDetailPanel();
     evaluateQueue();
   }, (err) => { console.warn('Float balance listener error:', err); });
 }
@@ -2472,10 +2411,10 @@ document.querySelectorAll('.nav-item').forEach(btn => {
     const nav = btn.dataset.nav;
     closeSidebar();
     setTimeout(() => {
-      if (nav === 'errands')       openErrandsPage();
+      if (nav === 'account')       openAccountPage();
+      else if (nav === 'errands')  openErrandsPage();
       else if (nav === 'history')  openHistoryPage();
       else if (nav === 'buyfloat') openBuyFloatPage();
-      else if (nav === 'account')  openAccountPage();
       else if (nav === 'settings') openSettingsPage();
     }, 220);
   });
@@ -2487,7 +2426,6 @@ locateBtn.addEventListener('click', () => {
 });
 floatBalancePill.addEventListener('click', openBuyFloatPage);
 
-// Floating map navigate button — opens external maps for the currently active target
 navigateFloatBtn.addEventListener('click', () => {
   const target = getActiveNavTarget();
   if (!target) { showToast('No active destination'); return; }
@@ -2497,14 +2435,9 @@ navigateFloatBtn.addEventListener('click', () => {
 function getActiveNavTarget() {
   if (!activeTrip || !activeStage || activeStage === 'incoming') return null;
   const data = activeTrip.data || {};
-
-  // Accepted → navigate to pickup
   if (activeStage === 'accepted' && data.pickup) {
     return { lat: data.pickup.lat, lng: data.pickup.lng, label: data.pickup.label || 'Pickup' };
   }
-  // Arrived → no nav needed (already there)
-  if (activeStage === 'arrived') return null;
-  // In progress → navigate to dropoff
   if (activeStage === 'in_progress' && data.dropoff) {
     return { lat: data.dropoff.lat, lng: data.dropoff.lng, label: data.dropoff.label || 'Drop-off' };
   }
@@ -2571,7 +2504,6 @@ async function toggleOnline() {
 
   onlineToggle.classList.remove('busy');
   setOnlineUI();
-  renderDetailPanel();
 
   if (isOnline) {
     showToast('You are online — listening for requests');
@@ -2679,148 +2611,40 @@ function evaluateQueue() {
 }
 
 /* ============================================================
-   DETAIL PANEL — RENDER STATE
+   DETAIL PANEL — LAYOUT + RENDER
+   The panel is only visible when there is a request or active trip.
    ============================================================ */
+function setPanelVisible(visible) {
+  const currentlyVisible = document.body.classList.contains('has-panel');
+  if (currentlyVisible === visible) return;
+  document.body.classList.toggle('has-panel', visible);
+  // Leaflet needs a size invalidation after layout change
+  setTimeout(() => { if (map) map.invalidateSize(); }, 120);
+  setTimeout(() => { if (map) map.invalidateSize(); }, 460);
+}
+
 function renderDetailPanel() {
-  if (!dpInner) return;
+  const isIncoming = activeStage === 'incoming' && activeTrip;
+  const isTripActive = activeTrip && activeStage && activeStage !== 'incoming';
 
-  // 1. No provider record
-  if (!providerRecord) {
-    dpInner.innerHTML = `
-      <div class="dp-tag info"><i class="fas fa-circle-info"></i> Setup needed</div>
-      <div class="dp-title">Apply as a service provider</div>
-      <div class="dp-sub">Choose a role to start receiving rides, deliveries and errands on NTUMENI.</div>
-      <div class="dp-status offline">
-        <div class="ds-ico"><i class="fas fa-user-plus"></i></div>
-        <div class="ds-body">
-          <strong>You haven't applied yet</strong>
-          <span>Complete a short application and wait for approval.</span>
-        </div>
-      </div>
-      <button class="dp-btn" id="dpApplyBtn">
-        <i class="fas fa-arrow-right"></i> START APPLICATION
-      </button>
-    `;
-    const btn = $('dpApplyBtn');
-    if (btn) btn.addEventListener('click', openAccountPage);
-    return;
-  }
-
-  // 2. Pending or rejected
-  if (providerRecord.status === 'pending') {
-    dpInner.innerHTML = `
-      <div class="dp-tag info"><i class="fas fa-clock"></i> Pending approval</div>
-      <div class="dp-title">Application under review</div>
-      <div class="dp-sub">Your application as a <b>${escapeHtml(roleLabel(providerRecord.role))}</b> is being reviewed. You'll be notified once approved.</div>
-      <div class="dp-status warn">
-        <div class="ds-ico"><i class="fas fa-hourglass-half"></i></div>
-        <div class="ds-body">
-          <strong>Awaiting admin review</strong>
-          <span>This usually takes a few minutes.</span>
-        </div>
-      </div>
-      <button class="dp-btn ghost" id="dpViewAccountBtn">
-        <i class="fas fa-user"></i> VIEW ACCOUNT
-      </button>
-    `;
-    const btn = $('dpViewAccountBtn');
-    if (btn) btn.addEventListener('click', openAccountPage);
-    return;
-  }
-
-  if (providerRecord.status === 'rejected') {
-    dpInner.innerHTML = `
-      <div class="dp-tag info" style="background:var(--danger-soft);color:#b42318;"><i class="fas fa-circle-xmark"></i> Rejected</div>
-      <div class="dp-title">Application rejected</div>
-      <div class="dp-sub">${escapeHtml(providerRecord.rejectReason || 'Your previous application was not approved. You can apply again.')}</div>
-      <button class="dp-btn" id="dpReapplyBtn">
-        <i class="fas fa-rotate-right"></i> RE-APPLY
-      </button>
-    `;
-    const btn = $('dpReapplyBtn');
-    if (btn) btn.addEventListener('click', openAccountPage);
-    return;
-  }
-
-  // 3. Not online → prompt to go online
-  if (!isOnline) {
-    const minOnline = Number(FLOAT_RULES.minFloatToGoOnline || 0);
-    const canGoOnline = floatBalance >= minOnline;
-    dpInner.innerHTML = `
-      <div class="dp-title">You're offline</div>
-      <div class="dp-sub">Go online to start receiving ride, delivery and errand requests near you.</div>
-
-      <div class="dp-status ${canGoOnline ? 'offline' : 'warn'}">
-        <div class="ds-ico">${canGoOnline ? '<i class="fas fa-power-off"></i>' : '<i class="fas fa-wallet"></i>'}</div>
-        <div class="ds-body">
-          <strong>${canGoOnline ? 'Ready to go online' : 'Top up your float first'}</strong>
-          <span>${canGoOnline
-            ? `You'll be visible to nearby customers. Toggle online above.`
-            : `You need at least K${minOnline} to go online. Your balance is K${formatPrice(floatBalance)}.`}</span>
-        </div>
-      </div>
-
-      ${canGoOnline
-        ? `<button class="dp-btn" id="dpGoOnlineBtn"><i class="fas fa-power-off"></i> GO ONLINE</button>`
-        : `<button class="dp-btn" id="dpBuyFloatBtn"><i class="fas fa-wallet"></i> BUY FLOAT</button>`}
-    `;
-    const goBtn = $('dpGoOnlineBtn');
-    if (goBtn) goBtn.addEventListener('click', toggleOnline);
-    const buyBtn = $('dpBuyFloatBtn');
-    if (buyBtn) buyBtn.addEventListener('click', openBuyFloatPage);
-    return;
-  }
-
-  // 4. Active incoming request
-  if (activeStage === 'incoming' && activeTrip) {
+  if (isIncoming) {
+    setPanelVisible(true);
     renderIncomingRequest();
     return;
   }
-
-  // 5. Active accepted/arrived/in-progress trip
-  if (activeTrip && activeStage && activeStage !== 'incoming') {
+  if (isTripActive) {
+    setPanelVisible(true);
     renderActiveTrip();
     return;
   }
-
-  // 6. Online & waiting
-  renderWaitingState();
+  // No request → hide panel, show full map
+  setPanelVisible(false);
+  dpInner.innerHTML = '';
+  updateFloatingNavButton();
 }
 
 function renderWaitingState() {
-  const missing = [];
-  if (floatBalance < Number(FLOAT_RULES.minFloatPerRide || 0))     missing.push('rides');
-  if (floatBalance < Number(FLOAT_RULES.minFloatPerDelivery || 0)) missing.push('deliveries');
-  if (floatBalance < Number(FLOAT_RULES.minFloatPerErrand || 0))   missing.push('errands');
-
-  const gateBlock = missing.length ? `
-    <div class="dp-status warn">
-      <div class="ds-ico"><i class="fas fa-triangle-exclamation"></i></div>
-      <div class="ds-body">
-        <strong>Some requests are hidden</strong>
-        <span>Your float is below the minimum for ${escapeHtml(missing.join(', '))}. Top up to see them.</span>
-      </div>
-    </div>
-    <button class="dp-btn ghost" id="dpTopUpBtn"><i class="fas fa-wallet"></i> TOP UP FLOAT</button>
-  ` : '';
-
-  dpInner.innerHTML = `
-    <div class="dp-tag info"><i class="fas fa-circle-check"></i> Online</div>
-    <div class="dp-title">Waiting for requests…</div>
-    <div class="dp-sub">You'll see new rides, deliveries and errands appear here as soon as they come in.</div>
-
-    <div class="dp-status online">
-      <div class="ds-ico"><i class="fas fa-satellite-dish"></i></div>
-      <div class="ds-body">
-        <strong>Listening nearby</strong>
-        <span>Searching within ${escapeHtml(String(searchRadiusKm))} km of your location.</span>
-      </div>
-    </div>
-
-    ${gateBlock}
-  `;
-  const topBtn = $('dpTopUpBtn');
-  if (topBtn) topBtn.addEventListener('click', openBuyFloatPage);
+  // Not used anymore — the panel is hidden when idle. Kept for compatibility.
 }
 
 /* ============================================================
@@ -2939,8 +2763,7 @@ function renderActiveTrip() {
     ? `<img src="${escapeHtml(customerPhoto)}" alt="">`
     : `<i class="fas fa-user"></i>`;
 
-  // Stage-specific text and slide button
-  let tagText, tagIcon, titleText, subText, navTarget, slideStageClass, slideStageLabel, slideStageIcon;
+  let tagText, tagIcon, titleText, subText, navTarget, slideStageClass, slideStageLabel;
 
   if (activeStage === 'accepted') {
     tagText = 'Heading to pickup';
@@ -3052,7 +2875,6 @@ function renderActiveTrip() {
   const cancelBtn = $('dpCancelTripBtn');
   if (cancelBtn) cancelBtn.addEventListener('click', cancelActiveTrip);
 
-  // Update the floating nav button
   updateFloatingNavButton();
 }
 
@@ -3420,7 +3242,6 @@ onAuthStateChanged(auth, async (user) => {
       const statusChanged = prev.status !== next.status;
       providerRecord = next;
       applyUserUI();
-      renderDetailPanel();
       if (statusChanged && next.status === 'approved' && prev.status === 'pending') {
         showToast('✅ Your provider account was approved!');
       }
@@ -3485,7 +3306,6 @@ function loadSettings() {
     const s = snap.val() || {};
     if (s.searchRadiusKm && isFinite(s.searchRadiusKm)) {
       searchRadiusKm = s.searchRadiusKm;
-      renderDetailPanel();
     }
   });
 }
@@ -3941,7 +3761,6 @@ async function submitApplication(role) {
     }
 
     applyUserUI();
-    renderDetailPanel();
     showToast('✅ Application submitted. Awaiting approval.');
     closePage('applyPage');
     openPage('accountPage');
@@ -4035,15 +3854,12 @@ function renderErrands(errands) {
       const m = haversineMeters(userLocation.lat, userLocation.lng, e.pickup.lat, e.pickup.lng);
       distText = formatDistance(m);
     }
-
     const photo = e.customerPhoto
       ? `<img src="${escapeHtml(e.customerPhoto)}" alt="">`
       : `<i class="fas fa-user"></i>`;
-
     const imageBlock = e.imageUrl
       ? `<div class="errand-card-image"><img src="${escapeHtml(e.imageUrl)}" alt="Errand"></div>`
       : '';
-
     html += `
       <div class="errand-card" data-errand="${escapeHtml(e.errandId)}">
         <div class="errand-card-head">
@@ -4070,9 +3886,7 @@ function renderErrands(errands) {
       </div>
     `;
   });
-
   errandsList.innerHTML = html;
-
   errandsList.querySelectorAll('[data-check-map]').forEach(btn => {
     btn.addEventListener('click', () => openMapCheck(btn.dataset.checkMap));
   });
@@ -4090,10 +3904,8 @@ function openErrandDetail(errandId) {
     openBuyFloatPage();
     return;
   }
-
   const e = errandsCache[errandId];
   if (!e) { showToast('Errand not found.'); return; }
-
   errandDetailTitle.textContent = e.title || 'Errand';
 
   let distText = '';
@@ -4101,11 +3913,9 @@ function openErrandDetail(errandId) {
     const m = haversineMeters(userLocation.lat, userLocation.lng, e.pickup.lat, e.pickup.lng);
     distText = formatDistance(m);
   }
-
   const photo = e.customerPhoto
     ? `<img src="${escapeHtml(e.customerPhoto)}" alt="">`
     : `<i class="fas fa-user"></i>`;
-
   const imageBlock = e.imageUrl
     ? `<div class="errand-card-image" style="margin-bottom:14px;"><img src="${escapeHtml(e.imageUrl)}" alt=""></div>`
     : '';
@@ -4166,27 +3976,21 @@ function openErrandDetail(errandId) {
 
 async function submitOffer(errand) {
   if (!currentUser) { showToast('Session expired.'); return; }
-
   const priceEl = $('offerPrice');
   const msgEl = $('offerMessage');
   const errEl = $('offerError');
   errEl.innerText = '';
-
   const price = parseInt(priceEl.value, 10);
   const message = msgEl.value.trim();
-
   if (!price || !isFinite(price) || price <= 0) {
     errEl.innerText = 'Please enter a valid price.';
     return;
   }
-
   const btn = $('submitOfferBtn');
   const original = btn.innerHTML;
   btn.disabled = true;
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending…';
-
   const role = (providerRecord && providerRecord.role) || '';
-
   try {
     await set(ref(database, `errands/${errand.errandId}/offers/${currentUser.uid}`), {
       providerId: currentUser.uid,
@@ -4198,7 +4002,6 @@ async function submitOffer(errand) {
       status: 'pending',
       createdAt: Date.now()
     });
-
     showToast('✅ Offer sent!');
     closePage('errandDetailPage');
   } catch (err) {
@@ -4220,7 +4023,6 @@ async function openMapCheck(errandId) {
     return;
   }
   currentModalTarget = { lat: e.pickup.lat, lng: e.pickup.lng, label: e.pickup.label || 'Pickup' };
-
   mapModalTitle.textContent = 'Route to pickup';
   mapModal.classList.add('open');
 
@@ -4254,7 +4056,6 @@ async function openMapCheck(errandId) {
         .addTo(modalMap).bindPopup('You');
     }
 
-    // Route
     const role = (providerRecord && providerRecord.role) || '';
     const profile = osrmProfileForRole(role);
     if (userLocation) {
@@ -4275,7 +4076,6 @@ async function openMapCheck(errandId) {
         }
       } catch (err) { console.warn('Route fetch failed:', err); }
     }
-
     if (!modalRouteLayer) {
       const pts = [[userLocation?.lat || currentModalTarget.lat, userLocation?.lng || currentModalTarget.lng],
                    [currentModalTarget.lat, currentModalTarget.lng]];
@@ -4284,9 +4084,7 @@ async function openMapCheck(errandId) {
   }, 320);
 }
 
-mapModalClose.addEventListener('click', () => {
-  mapModal.classList.remove('open');
-});
+mapModalClose.addEventListener('click', () => mapModal.classList.remove('open'));
 mapModal.addEventListener('click', (e) => {
   if (e.target === mapModal) mapModal.classList.remove('open');
 });
@@ -4473,7 +4271,6 @@ function renderHistory() {
 
   historyList.innerHTML = html;
 
-  // Wire expansion
   historyList.querySelectorAll('.hist-card').forEach(card => {
     const summary = card.querySelector('.hist-summary');
     if (summary) {
@@ -4483,7 +4280,6 @@ function renderHistory() {
     }
   });
 
-  // Wire nav buttons in expanded cards
   historyList.querySelectorAll('[data-nav-lat]').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -4495,7 +4291,6 @@ function renderHistory() {
   });
 }
 
-/* Card renderers with expandable detail */
 function statusChip(status) {
   if (!status) return '<span class="chip pending">Pending</span>';
   const s = String(status).toLowerCase();
@@ -4508,11 +4303,8 @@ function renderTripCard(t) {
   const pickup = t.pickup?.label || 'Pickup';
   const dropoff = t.dropoff?.label || 'Drop-off';
   const fare = t.fare || 0;
-  const role = providerRecord?.role || 'driver';
-
   const deductions = isRide ? commissionFor('ride', fare) : commissionFor('delivery', fare);
 
-  // Build nav buttons
   const pickupNav = (t.pickup && isFinite(t.pickup.lat) && isFinite(t.pickup.lng))
     ? `<button data-nav-lat="${t.pickup.lat}" data-nav-lng="${t.pickup.lng}" data-nav-label="${escapeHtml(pickup)}" class="ghost">
          <i class="fas fa-diamond-turn-right"></i> Pickup
@@ -4543,17 +4335,10 @@ function renderTripCard(t) {
           <div class="hd-section">
             <div class="hd-label"><i class="fas fa-route"></i> Route</div>
             <div class="hd-route-block">
-              <div class="rr-row">
-                <span class="rr-dot"></span>
-                <span class="rr-txt">${escapeHtml(pickup)}</span>
-              </div>
-              <div class="rr-row">
-                <span class="rr-dot square"></span>
-                <span class="rr-txt">${escapeHtml(dropoff)}</span>
-              </div>
+              <div class="rr-row"><span class="rr-dot"></span><span class="rr-txt">${escapeHtml(pickup)}</span></div>
+              <div class="rr-row"><span class="rr-dot square"></span><span class="rr-txt">${escapeHtml(dropoff)}</span></div>
             </div>
           </div>
-
           <div class="hd-section">
             <div class="hd-label"><i class="fas fa-circle-info"></i> Trip info</div>
             <div class="hd-row"><span class="hd-key">Customer</span><span class="hd-val">${escapeHtml(t.customerName || '—')}</span></div>
@@ -4562,7 +4347,6 @@ function renderTripCard(t) {
             <div class="hd-row"><span class="hd-key">Fare</span><span class="hd-val">K ${escapeHtml(formatPrice(fare))}</span></div>
             <div class="hd-row"><span class="hd-key">Commission</span><span class="hd-val">K ${escapeHtml(formatPrice(deductions))}</span></div>
           </div>
-
           <div class="hd-section">
             <div class="hd-label"><i class="fas fa-clock"></i> Timeline</div>
             <div class="hd-row"><span class="hd-key">Created</span><span class="hd-val">${escapeHtml(formatDateTime(t.createdAt))}</span></div>
@@ -4572,18 +4356,11 @@ function renderTripCard(t) {
             ${t.completedAt ? `<div class="hd-row"><span class="hd-key">Completed</span><span class="hd-val">${escapeHtml(formatDateTime(t.completedAt))}</span></div>` : ''}
             ${t.cancelledAt ? `<div class="hd-row"><span class="hd-key">Cancelled</span><span class="hd-val">${escapeHtml(formatDateTime(t.cancelledAt))}</span></div>` : ''}
           </div>
-
           <div class="hd-section">
             <div class="hd-label"><i class="fas fa-id-badge"></i> Reference</div>
             <div class="hd-row"><span class="hd-key">ID</span><span class="hd-val" style="font-family:monospace;font-size:0.72rem;">${escapeHtml(t.id || '—')}</span></div>
           </div>
-
-          ${(pickupNav || dropoffNav) ? `
-            <div class="hd-actions">
-              ${pickupNav}
-              ${dropoffNav}
-            </div>
-          ` : ''}
+          ${(pickupNav || dropoffNav) ? `<div class="hd-actions">${pickupNav}${dropoffNav}</div>` : ''}
         </div>
       </div>
     </div>
@@ -4820,7 +4597,7 @@ $('settingsEditProfile').addEventListener('click', () => {
   setTimeout(openAccountPage, 200);
 });
 $('settingsSupport').addEventListener('click', () => showToast('Support: support@ntumeni.com'));
-$('settingsAbout').addEventListener('click', () => showToast('NTUMENI Service Provider · v1.2'));
+$('settingsAbout').addEventListener('click', () => showToast('NTUMENI Service Provider · v1.3'));
 $('settingsLogout').addEventListener('click', doLogout);
 logoutBtn.addEventListener('click', doLogout);
 
