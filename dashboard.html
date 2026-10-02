@@ -45,7 +45,7 @@
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
   --panel-ease: cubic-bezier(0.32, 0.72, 0, 1);
-  --panel-h: 55vh;
+  --topbar-h: 58px;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -54,24 +54,20 @@ html, body { height: 100%; width: 100%; overflow: hidden; -webkit-text-size-adju
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   color: var(--text-primary);
-  background: #e8eaed;
+  background: #ffffff;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  user-select: none;
-  -webkit-user-select: none;
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  height: 100dvh;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
 input, textarea { font-family: inherit; }
 .hidden { display: none !important; }
 
-/* ==========================================================
-   LOADING
-   ========================================================== */
+/* LOADING */
 #loadingScreen {
   position: fixed; inset: 0; z-index: 9000;
   background: #0a0a0a; color: #fff;
@@ -95,9 +91,7 @@ input, textarea { font-family: inherit; }
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ==========================================================
-   BLOCKING OVERLAYS
-   ========================================================== */
+/* BLOCKING */
 .block-overlay {
   position: fixed; inset: 0; z-index: 8000;
   background: #ffffff;
@@ -135,191 +129,157 @@ input, textarea { font-family: inherit; }
 .block-btn:active { transform: scale(0.95); }
 .block-overlay.danger .block-btn { background: var(--danger); }
 
-/* ==========================================================
-   FULL MAP
-   ========================================================== */
-#map {
-  flex: 1 1 auto;
-  min-height: 0;
-  position: relative;
-  background: #e8eaed;
-  z-index: 1;
+/* TOPBAR */
+.topbar {
+  flex: 0 0 auto;
+  height: var(--topbar-h);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 14px;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--line);
+  position: relative; z-index: 500;
 }
-.leaflet-tile-pane {
-  filter: saturate(0.92) contrast(1.04) brightness(1.02);
+.icon-btn {
+  width: 42px; height: 42px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; color: var(--ink);
+  background: var(--fill-gray);
+  transition: background 0.25s var(--ease-smooth), transform 0.3s var(--spring);
 }
-.leaflet-container { font-family: inherit; background: #e8eaed; }
-.leaflet-control-attribution {
-  font-size: 9px !important;
-  background: rgba(255,255,255,0.78) !important;
-  color: #8e8e93 !important;
-  padding: 1px 5px !important;
+.icon-btn:hover  { background: var(--fill-gray-hover); }
+.icon-btn:active { transform: scale(0.92); }
+.topbar-user {
+  flex: 1; text-align: center;
+  font-size: 0.95rem; font-weight: 700;
+  letter-spacing: -0.2px; color: var(--text-primary);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  padding: 0 10px;
 }
-.leaflet-control-attribution a { color: #6e6e73 !important; }
+.topbar-user small {
+  display: block; font-size: 0.63rem; font-weight: 700;
+  letter-spacing: 1.4px; text-transform: uppercase;
+  color: var(--text-tertiary); margin-top: 1px;
+}
+.topbar-logo {
+  width: 42px; height: 42px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--fill-gray);
+  overflow: hidden; flex-shrink: 0;
+}
+.topbar-logo img { width: 30px; height: 30px; object-fit: contain; }
+.topbar-logo span { font-size: 0.5rem; font-weight: 800; color: var(--ink); }
 
-/* ==========================================================
-   TRIP PANEL — slides up only when there's an active request
-   ========================================================== */
-#tripPanel {
-  flex: 0 0 0;
-  max-height: 0;
-  overflow: hidden;
-  background: #ffffff;
-  transition: flex-basis 0.4s var(--panel-ease), max-height 0.4s var(--panel-ease), box-shadow 0.3s;
-  position: relative;
-  z-index: 5;
+/* MAIN */
+.app-main {
+  flex: 1 1 auto; min-height: 0;
+  display: flex; flex-direction: column;
 }
-body.has-panel #tripPanel {
-  flex-basis: var(--panel-h);
-  max-height: var(--panel-h);
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  box-shadow: 0 -8px 24px rgba(0,0,0,0.08);
-  border-top: 1px solid var(--line);
+.map-half {
+  flex: 1 1 50%; min-height: 0;
+  position: relative; background: #e8eaed; overflow: hidden;
 }
-#tripPanel .tp-inner {
-  max-width: 620px;
-  margin: 0 auto;
-  padding: 18px 18px 24px;
-}
-
-/* ==========================================================
-   MAP MARKERS
-   ========================================================== */
-.mk-dot {
-  width: 18px; height: 18px; border-radius: 50%;
-  background: #0a0a0a; border: 3.5px solid #ffffff;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.42);
-  box-sizing: border-box;
-}
-.mk-pin {
-  width: 20px; height: 20px;
-  background: #0a0a0a; border: 3.5px solid #ffffff;
-  border-radius: 50% 50% 50% 0;
-  transform: rotate(-45deg);
-  box-shadow: 0 3px 10px rgba(0,0,0,0.42);
-  box-sizing: border-box;
-}
-.mk-user {
-  width: 16px; height: 16px; border-radius: 50%;
-  background: #ffffff; border: 4px solid #0a0a0a;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.35);
-  box-sizing: border-box;
-  position: relative;
-}
-.mk-user::after {
-  content: ''; position: absolute; inset: -13px;
-  border-radius: 50%; border: 2px solid rgba(10,10,10,0.30);
-  animation: pulseRing 2s var(--ease-smooth) infinite;
-}
-@keyframes pulseRing {
-  0%   { transform: scale(0.55); opacity: 0.9; }
-  70%  { transform: scale(1.25); opacity: 0; }
-  100% { transform: scale(1.25); opacity: 0; }
-}
-
-/* ==========================================================
-   FLOATING MAP CONTROLS
-   ========================================================== */
-.map-float-btn {
-  position: fixed;
-  width: 46px; height: 46px; border-radius: 14px;
+#map { position: absolute; inset: 0; z-index: 1; }
+.map-overlay-btn {
+  position: absolute; z-index: 400;
+  width: 42px; height: 42px; border-radius: 12px;
   background: #ffffff;
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.05rem; color: var(--ink);
-  box-shadow: 0 4px 18px rgba(0,0,0,0.16), 0 0 0 1px rgba(0,0,0,0.05);
-  transition: transform 0.3s var(--spring), top 0.4s var(--panel-ease);
-  z-index: 600;
+  font-size: 1rem; color: var(--ink);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.14), 0 0 0 1px rgba(0,0,0,0.05);
+  transition: transform 0.3s var(--spring);
 }
-.map-float-btn:active { transform: scale(0.92); }
-
-#sidebarBtn { top: 14px; left: 14px; }
-
-#locateBtn {
-  right: 14px;
-  top: calc(100vh - 62px);
-  transition: top 0.4s var(--panel-ease);
-}
-body.has-panel #locateBtn {
-  top: calc(var(--panel-h) + 100vh - var(--panel-h) - 62px);
-  top: calc(100vh - var(--panel-h) - 62px);
-}
-
+.map-overlay-btn:active { transform: scale(0.92); }
+#locateBtn { right: 12px; bottom: 12px; }
 .map-badge {
-  position: fixed;
-  top: 14px; left: 50%;
-  transform: translateX(-50%);
-  z-index: 500;
+  position: absolute; top: 12px; left: 12px; z-index: 400;
   background: rgba(10,10,10,0.86);
   color: #fff; font-size: 0.68rem; font-weight: 700;
   letter-spacing: 0.7px; text-transform: uppercase;
-  padding: 9px 14px; border-radius: 999px;
+  padding: 7px 13px; border-radius: 999px;
   display: inline-flex; align-items: center; gap: 7px;
   backdrop-filter: blur(6px);
 }
 
-/* ==========================================================
-   HOME FLOATING ACTIONS — visible only when no panel
-   ========================================================== */
-#homeActions {
-  position: fixed;
-  left: 50%;
-  bottom: 20px;
-  transform: translateX(-50%);
-  z-index: 550;
-  display: flex;
-  gap: 8px;
-  padding: 8px;
-  background: rgba(255,255,255,0.96);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  border-radius: 999px;
-  box-shadow: 0 12px 34px -8px rgba(0,0,0,0.35), 0 0 0 1px rgba(0,0,0,0.06);
-  transition: transform 0.42s var(--spring), opacity 0.3s;
-  max-width: calc(100vw - 24px);
+/* ACTION HALF */
+.action-half {
+  flex: 1 1 50%; min-height: 0;
+  background: #ffffff;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 18px 18px 24px;
+  display: flex; flex-direction: column;
+  border-top: 1px solid var(--line);
 }
-body.has-panel #homeActions {
-  transform: translateX(-50%) translateY(140%);
-  opacity: 0;
-  pointer-events: none;
+.action-pane { display: none; flex-direction: column; flex: 1; min-height: 0; }
+.action-pane.active { display: flex; animation: paneIn 0.4s var(--ease-out); }
+@keyframes paneIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.home-greeting { font-size: 1.15rem; font-weight: 800; letter-spacing: -0.4px; margin-bottom: 3px; }
+.home-sub { font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 16px; }
+
+.btn-ride {
+  width: 100%;
+  padding: 26px 22px;
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, #26262a 0%, #0a0a0a 60%, #000 100%);
+  color: #ffffff;
+  display: flex; align-items: center; gap: 16px;
+  text-align: left;
+  box-shadow: 0 10px 28px -10px rgba(0,0,0,0.55);
+  transition: transform 0.35s var(--spring), box-shadow 0.3s var(--ease-smooth);
+  margin-bottom: 12px; flex-shrink: 0;
+}
+.btn-ride:hover  { transform: translateY(-2px); }
+.btn-ride:active { transform: translateY(0) scale(0.982); }
+.btn-ride .ride-ico {
+  width: 48px; height: 48px; border-radius: 14px;
+  background: rgba(255,255,255,0.14);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.25rem; flex-shrink: 0;
+}
+.btn-ride .ride-txt { flex: 1; min-width: 0; }
+.btn-ride .ride-txt strong {
+  display: block; font-size: 1.05rem; font-weight: 800;
+  letter-spacing: -0.3px; margin-bottom: 2px;
+}
+.btn-ride .ride-txt span {
+  display: block; font-size: 0.76rem; font-weight: 500;
+  color: rgba(255,255,255,0.62);
+}
+.btn-ride .ride-arrow { font-size: 0.95rem; color: rgba(255,255,255,0.5); }
+
+.square-row {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 12px; flex-shrink: 0;
+}
+.btn-square {
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius);
+  background: #ffffff;
+  box-shadow: 0 0 0 1px var(--line), 0 4px 16px -8px rgba(0,0,0,0.18);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 10px;
+  transition: transform 0.35s var(--spring), box-shadow 0.3s var(--ease-smooth), background 0.25s;
+  padding: 14px;
+}
+.btn-square:hover  { transform: translateY(-3px); background: #fafafa; }
+.btn-square:active { transform: translateY(0) scale(0.97); }
+.btn-square .sq-ico {
+  width: 46px; height: 46px; border-radius: 14px;
+  background: var(--fill-gray);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.15rem; color: var(--ink);
+}
+.btn-square .sq-label {
+  font-size: 0.85rem; font-weight: 700; letter-spacing: -0.2px;
+  color: var(--text-primary); text-align: center; line-height: 1.25;
 }
 
-.home-btn {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  padding: 10px 18px;
-  border-radius: 999px;
-  font-size: 0.64rem;
-  font-weight: 800;
-  letter-spacing: 0.4px;
-  text-transform: uppercase;
-  color: var(--text-primary);
-  transition: background 0.22s, transform 0.32s var(--spring);
-  white-space: nowrap;
-}
-.home-btn i {
-  font-size: 1rem;
-  margin-bottom: 2px;
-}
-.home-btn:active { transform: scale(0.96); }
-.home-btn.primary {
-  background: #0a0a0a;
-  color: #fff;
-  padding: 12px 24px;
-  box-shadow: 0 8px 20px -6px rgba(0,0,0,0.45);
-}
-.home-btn.primary i {
-  font-size: 1.1rem;
-  color: #fff;
-}
-.home-btn:not(.primary):hover { background: var(--fill-gray); }
-
-/* ==========================================================
-   TRIP PANEL CONTENT
-   ========================================================== */
+/* TRIP PANE (planning) */
 .trip-head {
   display: flex; align-items: center; justify-content: space-between;
   margin-bottom: 12px; flex-shrink: 0;
@@ -407,9 +367,161 @@ body.has-panel #homeActions {
 .confirm-btn:active { transform: scale(0.978); }
 .confirm-btn:disabled { opacity: 0.5; pointer-events: none; }
 
-/* ==========================================================
-   SIDEBAR
-   ========================================================== */
+/* ACTIVE PANE (searching / provider found / in progress) */
+.active-pane-head {
+  margin-bottom: 14px; flex-shrink: 0;
+  text-align: center;
+}
+.active-pane-head h2 {
+  font-size: 1.1rem; font-weight: 800;
+  letter-spacing: -0.35px; margin-bottom: 4px;
+}
+.active-pane-head p {
+  font-size: 0.82rem; color: var(--text-secondary);
+  line-height: 1.5; margin: 0 auto; max-width: 320px;
+}
+
+/* Searching radar — smaller version for the pane */
+.pane-radar {
+  position: relative;
+  width: 92px; height: 92px;
+  margin: 4px auto 14px;
+  flex-shrink: 0;
+}
+.pane-radar .radar-ring {
+  position: absolute; inset: 0;
+  border-radius: 50%;
+  border: 2.5px solid #0a0a0a;
+  opacity: 0;
+  animation: radarPulse 2.4s var(--ease-smooth) infinite;
+}
+.pane-radar .radar-ring:nth-child(2) { animation-delay: 0.8s; }
+.pane-radar .radar-ring:nth-child(3) { animation-delay: 1.6s; }
+@keyframes radarPulse {
+  0%   { transform: scale(0.4); opacity: 0.85; }
+  100% { transform: scale(1.65); opacity: 0; }
+}
+.pane-radar .radar-center {
+  position: absolute; inset: 26px;
+  border-radius: 50%;
+  background: #0a0a0a; color: #ffffff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.15rem; z-index: 2;
+  box-shadow: 0 0 0 5px rgba(255,255,255,0.9);
+}
+.searching-dots {
+  display: flex; justify-content: center;
+  gap: 6px; margin: 12px 0 18px;
+  flex-shrink: 0;
+}
+.searching-dots span {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #0a0a0a; opacity: 0.3;
+  animation: dotBounce 1.2s var(--ease-smooth) infinite;
+}
+.searching-dots span:nth-child(2) { animation-delay: 0.15s; }
+.searching-dots span:nth-child(3) { animation-delay: 0.30s; }
+@keyframes dotBounce {
+  0%, 100% { opacity: 0.3; transform: translateY(0); }
+  50%      { opacity: 1;   transform: translateY(-5px); }
+}
+
+.pane-cancel-btn {
+  width: 100%; padding: 13px;
+  border-radius: var(--radius-sm);
+  background: var(--fill-gray);
+  color: var(--text-primary);
+  font-size: 0.9rem; font-weight: 700;
+  transition: background 0.22s, transform 0.28s;
+  flex-shrink: 0;
+  margin-top: auto;
+}
+.pane-cancel-btn:active { transform: scale(0.97); }
+
+/* Provider found card */
+.provider-found-card {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px;
+  background: var(--fill-gray);
+  border-radius: var(--radius);
+  margin-bottom: 12px; text-align: left;
+  flex-shrink: 0;
+}
+.provider-found-avatar {
+  width: 56px; height: 56px; border-radius: 50%;
+  background: #fff; overflow: hidden; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px rgba(0,0,0,0.08);
+}
+.provider-found-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.provider-found-avatar i { font-size: 1.4rem; color: var(--text-tertiary); }
+.provider-found-body { flex: 1; min-width: 0; }
+.provider-found-body strong {
+  display: block; font-size: 1rem; font-weight: 800;
+  letter-spacing: -0.3px; margin-bottom: 4px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.provider-found-meta { display: flex; flex-wrap: wrap; gap: 6px; }
+.provider-found-meta span {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 0.7rem; font-weight: 700;
+  color: var(--text-secondary);
+  background: #fff;
+  padding: 4px 9px; border-radius: 999px;
+}
+.provider-found-meta span i { font-size: 0.62rem; }
+.provider-call-btn {
+  width: 46px; height: 46px; border-radius: 50%;
+  background: var(--success); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.05rem; flex-shrink: 0;
+  text-decoration: none;
+  box-shadow: 0 6px 16px -4px rgba(18,183,106,0.5);
+  transition: transform 0.28s var(--spring);
+}
+.provider-call-btn:active { transform: scale(0.92); }
+
+.provider-vehicle-preview {
+  border-radius: var(--radius);
+  overflow: hidden; margin-bottom: 12px;
+  background: var(--fill-gray);
+  max-height: 130px;
+  flex-shrink: 0;
+}
+.provider-vehicle-preview img {
+  width: 100%; max-height: 130px;
+  object-fit: cover; display: block;
+}
+
+.trip-status-card {
+  text-align: center;
+  padding: 6px 6px 12px;
+  flex-shrink: 0;
+}
+.trip-status-icon {
+  width: 60px; height: 60px; border-radius: 50%;
+  background: #0a0a0a; color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem;
+  margin: 0 auto 12px;
+  animation: tripPulse 2s var(--ease-smooth) infinite;
+}
+.trip-status-card h2 {
+  font-size: 1.05rem; font-weight: 800;
+  letter-spacing: -0.35px; margin-bottom: 6px;
+}
+.trip-status-card p {
+  font-size: 0.84rem;
+  color: var(--text-secondary);
+  line-height: 1.5; margin-bottom: 0;
+}
+@keyframes tripPulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(10,10,10,0.5); }
+  50%      { transform: scale(1.05); box-shadow: 0 0 0 14px rgba(10,10,10,0); }
+}
+
+/* SIDEBAR */
 #sidebarOverlay {
   position: fixed; inset: 0; z-index: 1900;
   background: rgba(0,0,0,0.42);
@@ -496,9 +608,7 @@ body.has-panel #homeActions {
 .logout-btn:hover { background: var(--danger-soft); }
 .logout-btn i { width: 22px; text-align: center; font-size: 1rem; }
 
-/* ==========================================================
-   FULLSCREEN PAGES
-   ========================================================== */
+/* PAGES */
 #ridePage, #deliveryPage, #postErrandPage, #postedErrandsPage,
 #errandDetailsPage, #chatPage, #historyPage, #transactionsPage {
   position: fixed; inset: 0; z-index: 3000;
@@ -539,20 +649,7 @@ body.has-panel #homeActions {
   padding: 16px 16px 40px;
 }
 
-.icon-btn {
-  width: 42px; height: 42px; border-radius: 12px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.1rem; color: var(--ink);
-  background: var(--fill-gray);
-  transition: background 0.25s var(--ease-smooth), transform 0.3s var(--spring);
-  flex-shrink: 0;
-}
-.icon-btn:hover  { background: var(--fill-gray-hover); }
-.icon-btn:active { transform: scale(0.92); }
-
-/* ==========================================================
-   SEARCH (ride + delivery + errand)
-   ========================================================== */
+/* SEARCH */
 .ride-body { flex: 1; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
 .ride-inputs { flex: 0 0 auto; padding: 16px 16px 12px; border-bottom: 1px solid var(--line); }
 .input-card {
@@ -658,9 +755,7 @@ body.has-panel #homeActions {
   animation: spin 0.8s linear infinite;
 }
 
-/* ==========================================================
-   FORMS
-   ========================================================== */
+/* FORMS */
 .pill-input {
   width: 100%;
   padding: 13px 16px 13px 42px;
@@ -781,9 +876,7 @@ body.has-panel #homeActions {
   z-index: 4;
 }
 
-/* ==========================================================
-   ERRAND CARDS
-   ========================================================== */
+/* ERRAND CARDS */
 .fb-card {
   background: #ffffff;
   border-radius: 14px;
@@ -908,9 +1001,7 @@ body.has-panel #homeActions {
   max-width: 320px; margin: 0 auto;
 }
 
-/* ==========================================================
-   OFFERS
-   ========================================================== */
+/* OFFERS */
 .offer-card {
   background: #ffffff;
   border-radius: 14px;
@@ -1001,9 +1092,7 @@ body.has-panel #homeActions {
 }
 .detail-head-stat i { font-size: 0.7rem; opacity: 0.8; }
 
-/* ==========================================================
-   CHAT
-   ========================================================== */
+/* CHAT */
 .chat-body {
   flex: 1; min-height: 0; overflow-y: auto;
   -webkit-overflow-scrolling: touch;
@@ -1076,9 +1165,7 @@ body.has-panel #homeActions {
 .chat-send-btn:active { transform: scale(0.92); }
 .chat-send-btn:disabled { opacity: 0.5; }
 
-/* ==========================================================
-   VEHICLE SHEET
-   ========================================================== */
+/* VEHICLE SHEET */
 .sheet-overlay {
   position: fixed; inset: 0; z-index: 3500;
   background: rgba(0,0,0,0.55);
@@ -1164,174 +1251,51 @@ body.has-panel #homeActions {
 }
 .sheet-cancel:hover { background: var(--fill-gray-hover); }
 
-/* ==========================================================
-   SEARCHING OVERLAY
-   ========================================================== */
-.searching-overlay {
-  position: fixed; inset: 0; z-index: 4000;
-  background: rgba(10,10,10,0.72);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  display: none; align-items: center; justify-content: center;
-  padding: 24px; overflow-y: auto;
+/* MARKERS */
+.mk-dot {
+  width: 18px; height: 18px; border-radius: 50%;
+  background: #0a0a0a; border: 3.5px solid #ffffff;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.42);
+  box-sizing: border-box;
 }
-.searching-overlay.open { display: flex; animation: fadeIn 0.32s var(--ease-out); }
-.searching-card {
-  background: #ffffff;
-  border-radius: 26px;
-  padding: 30px 26px 26px;
-  max-width: 380px; width: 100%;
-  text-align: center;
-  box-shadow: 0 24px 64px rgba(0,0,0,0.4);
-  animation: modalIn 0.42s var(--spring);
-  max-height: 92vh; overflow-y: auto;
+.mk-pin {
+  width: 20px; height: 20px;
+  background: #0a0a0a; border: 3.5px solid #ffffff;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.42);
+  box-sizing: border-box;
 }
-@keyframes modalIn {
-  from { opacity: 0; transform: scale(0.94) translateY(16px); }
-  to   { opacity: 1; transform: scale(1) translateY(0); }
-}
-.searching-radar {
+.mk-user {
+  width: 16px; height: 16px; border-radius: 50%;
+  background: #ffffff; border: 4px solid #0a0a0a;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+  box-sizing: border-box;
   position: relative;
-  width: 110px; height: 110px;
-  margin: 0 auto 22px;
 }
-.searching-radar .radar-ring {
-  position: absolute; inset: 0;
-  border-radius: 50%;
-  border: 2.5px solid #0a0a0a;
-  opacity: 0;
-  animation: radarPulse 2.4s var(--ease-smooth) infinite;
+.mk-user::after {
+  content: ''; position: absolute; inset: -13px;
+  border-radius: 50%; border: 2px solid rgba(10,10,10,0.30);
+  animation: pulseRing 2s var(--ease-smooth) infinite;
 }
-.searching-radar .radar-ring:nth-child(2) { animation-delay: 0.8s; }
-.searching-radar .radar-ring:nth-child(3) { animation-delay: 1.6s; }
-@keyframes radarPulse {
-  0%   { transform: scale(0.4); opacity: 0.85; }
-  100% { transform: scale(1.65); opacity: 0; }
+@keyframes pulseRing {
+  0%   { transform: scale(0.55); opacity: 0.9; }
+  70%  { transform: scale(1.25); opacity: 0; }
+  100% { transform: scale(1.25); opacity: 0; }
 }
-.searching-radar .radar-center {
-  position: absolute; inset: 32px;
-  border-radius: 50%;
-  background: #0a0a0a; color: #ffffff;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.35rem; z-index: 2;
-  box-shadow: 0 0 0 6px rgba(255,255,255,0.9);
+.leaflet-tile-pane {
+  filter: saturate(0.85) contrast(1.05) brightness(1.02);
 }
-.searching-card h2 {
-  font-size: 1.15rem; font-weight: 800;
-  letter-spacing: -0.4px; margin-bottom: 6px;
+.leaflet-container { font-family: inherit; background: #e8eaed; }
+.leaflet-control-attribution {
+  font-size: 9px !important;
+  background: rgba(255,255,255,0.78) !important;
+  color: #8e8e93 !important;
+  padding: 1px 5px !important;
 }
-.searching-card p {
-  font-size: 0.84rem;
-  color: var(--text-secondary);
-  line-height: 1.5; margin-bottom: 16px;
-}
-.searching-dots {
-  display: flex; justify-content: center;
-  gap: 6px; margin-bottom: 22px;
-}
-.searching-dots span {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: #0a0a0a; opacity: 0.3;
-  animation: dotBounce 1.2s var(--ease-smooth) infinite;
-}
-.searching-dots span:nth-child(2) { animation-delay: 0.15s; }
-.searching-dots span:nth-child(3) { animation-delay: 0.30s; }
-@keyframes dotBounce {
-  0%, 100% { opacity: 0.3; transform: translateY(0); }
-  50%      { opacity: 1;   transform: translateY(-5px); }
-}
-.searching-cancel {
-  width: 100%; padding: 13px;
-  border-radius: var(--radius-sm);
-  background: var(--fill-gray);
-  color: var(--text-primary);
-  font-size: 0.9rem; font-weight: 700;
-  transition: background 0.22s, transform 0.28s;
-}
-.searching-cancel:active { transform: scale(0.97); }
+.leaflet-control-attribution a { color: #6e6e73 !important; }
 
-/* ==========================================================
-   PROVIDER FOUND
-   ========================================================== */
-.provider-found-card {
-  display: flex; align-items: center; gap: 14px;
-  padding: 14px;
-  background: var(--fill-gray);
-  border-radius: var(--radius);
-  margin-bottom: 14px; text-align: left;
-}
-.provider-found-avatar {
-  width: 56px; height: 56px; border-radius: 50%;
-  background: #fff; overflow: hidden; flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 0 0 2px #fff, 0 0 0 4px rgba(0,0,0,0.08);
-}
-.provider-found-avatar img { width: 100%; height: 100%; object-fit: cover; }
-.provider-found-avatar i { font-size: 1.4rem; color: var(--text-tertiary); }
-.provider-found-body { flex: 1; min-width: 0; }
-.provider-found-body strong {
-  display: block; font-size: 1rem; font-weight: 800;
-  letter-spacing: -0.3px; margin-bottom: 4px;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.provider-found-meta { display: flex; flex-wrap: wrap; gap: 6px; }
-.provider-found-meta span {
-  display: inline-flex; align-items: center; gap: 5px;
-  font-size: 0.7rem; font-weight: 700;
-  color: var(--text-secondary);
-  background: #fff;
-  padding: 4px 9px; border-radius: 999px;
-}
-.provider-found-meta span i { font-size: 0.62rem; }
-.provider-call-btn {
-  width: 46px; height: 46px; border-radius: 50%;
-  background: var(--success); color: #fff;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.05rem; flex-shrink: 0;
-  text-decoration: none;
-  box-shadow: 0 6px 16px -4px rgba(18,183,106,0.5);
-  transition: transform 0.28s var(--spring);
-}
-.provider-call-btn:active { transform: scale(0.92); }
-.provider-vehicle-preview {
-  border-radius: var(--radius);
-  overflow: hidden; margin-bottom: 16px;
-  background: var(--fill-gray);
-  max-height: 210px;
-}
-.provider-vehicle-preview img {
-  width: 100%; max-height: 210px;
-  object-fit: cover; display: block;
-}
-.trip-status-card {
-  padding: 8px 6px 20px; text-align: center;
-}
-.trip-status-icon {
-  width: 68px; height: 68px; border-radius: 50%;
-  background: #0a0a0a; color: #fff;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.55rem;
-  margin: 0 auto 16px;
-  animation: tripPulse 2s var(--ease-smooth) infinite;
-}
-.trip-status-card h2 {
-  font-size: 1.1rem; font-weight: 800;
-  letter-spacing: -0.35px; margin-bottom: 6px;
-}
-.trip-status-card p {
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-  line-height: 1.5; margin-bottom: 0;
-}
-@keyframes tripPulse {
-  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(10,10,10,0.5); }
-  50%      { transform: scale(1.05); box-shadow: 0 0 0 14px rgba(10,10,10,0); }
-}
-
-/* ==========================================================
-   TOAST
-   ========================================================== */
+/* TOAST */
 #toast {
   position: fixed; left: 50%; bottom: 26px; z-index: 6000;
   transform: translate(-50%, 24px);
@@ -1340,18 +1304,13 @@ body.has-panel #homeActions {
   padding: 13px 22px; border-radius: 999px;
   box-shadow: 0 14px 34px -10px rgba(0,0,0,0.6);
   opacity: 0; visibility: hidden;
-  transition: opacity 0.32s var(--ease-out), transform 0.42s var(--spring), visibility 0.32s, bottom 0.4s var(--panel-ease);
+  transition: opacity 0.32s var(--ease-out), transform 0.42s var(--spring), visibility 0.32s;
   max-width: 88vw; text-align: center; line-height: 1.4;
   pointer-events: none;
 }
-body.has-panel #toast {
-  bottom: calc(var(--panel-h) + 22px);
-}
 #toast.show { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
 
-/* ==========================================================
-   HISTORY (expandable cards)
-   ========================================================== */
+/* HISTORY */
 .filter-tabs {
   display: flex; gap: 8px;
   padding: 12px 16px 8px;
@@ -1397,6 +1356,7 @@ body.has-panel #toast {
 }
 .summary-tile.dark strong { color: #fff; }
 
+/* History expandable cards */
 .hist-card {
   background: #ffffff;
   border-radius: 14px;
@@ -1556,9 +1516,7 @@ body.has-panel #toast {
 .chip.in_progress { background: var(--success-soft); color: #027a48; }
 .chip.arrived   { background: var(--info-soft);    color: #175cd3; }
 
-/* ==========================================================
-   TRANSACTIONS
-   ========================================================== */
+/* TRANSACTIONS */
 .tx-item {
   display: flex; align-items: center; gap: 14px;
   padding: 14px 16px;
@@ -1606,13 +1564,11 @@ body.has-panel #toast {
 .tx-status.failed    { background: var(--danger-soft);  color: #b42318; }
 .tx-status.cancelled { background: #f4f4f5;             color: #52525b; }
 
-/* ==========================================================
-   RESPONSIVE
-   ========================================================== */
 @media (max-width: 380px) {
+  .btn-ride { padding: 22px 18px; }
+  .btn-ride .ride-ico { width: 42px; height: 42px; font-size: 1.1rem; }
+  .btn-ride .ride-txt strong { font-size: 0.98rem; }
   .fare-top .fare-amount { font-size: 1.75rem; }
-  .home-btn { padding: 9px 14px; font-size: 0.6rem; }
-  .home-btn.primary { padding: 11px 20px; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -1652,93 +1608,171 @@ body.has-panel #toast {
   <button class="block-btn" id="bannedLogoutBtn">Sign Out</button>
 </div>
 
-<!-- FULL MAP -->
-<div id="map"></div>
+<!-- APP -->
+<div id="app" class="hidden" style="display:flex; flex-direction:column; height:100%; width:100%;">
 
-<!-- MAP BADGE -->
-<div class="map-badge" id="mapBadge" style="display:none;">
-  <i class="fas fa-location-dot"></i>
-  <span id="mapBadgeText">Locating…</span>
-</div>
-
-<!-- SIDEBAR TOGGLE -->
-<button class="map-float-btn" id="sidebarBtn" aria-label="Open menu">
-  <i class="fas fa-bars"></i>
-</button>
-
-<!-- LOCATE BUTTON -->
-<button class="map-float-btn" id="locateBtn" aria-label="Recenter">
-  <i class="fas fa-crosshairs"></i>
-</button>
-
-<!-- HOME ACTIONS (floating over map) -->
-<div id="homeActions">
-  <button class="home-btn primary" id="requestRideBtn">
-    <i class="fas fa-car-side"></i>
-    <span>Ride</span>
-  </button>
-  <button class="home-btn" id="deliveryBtn">
-    <i class="fas fa-box"></i>
-    <span>Delivery</span>
-  </button>
-  <button class="home-btn" id="errandBtn">
-    <i class="fas fa-clipboard-list"></i>
-    <span>Errand</span>
-  </button>
-</div>
-
-<!-- TRIP PANEL (hidden by default; slides up during planning / active trip) -->
-<section id="tripPanel">
-  <div class="tp-inner">
-    <div class="trip-head">
-      <h2 id="tripTitle">Your Trip</h2>
-      <button id="cancelTripBtn"><i class="fas fa-xmark"></i> Cancel</button>
+  <header class="topbar">
+    <button class="icon-btn" id="sidebarBtn" aria-label="Open menu">
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="topbar-user">
+      <span id="topbarName">Customer</span>
+      <small>Customer</small>
     </div>
-
-    <div class="points-card">
-      <button class="point-row" id="pickupRowBtn">
-        <span class="point-dot"></span>
-        <span class="point-txt">
-          <small>Pickup</small>
-          <strong id="summaryPickup">Current location</strong>
-        </span>
-        <i class="fas fa-pen-to-square point-edit"></i>
-      </button>
-      <div class="points-divider"></div>
-      <button class="point-row" id="dropoffRowBtn">
-        <span class="point-dot square"></span>
-        <span class="point-txt">
-          <small>Drop-off</small>
-          <strong id="summaryDropoff">—</strong>
-        </span>
-        <i class="fas fa-pen-to-square point-edit"></i>
-      </button>
+    <div class="topbar-logo">
+      <img src="logo.png" alt="NTUMENI" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+      <span style="display:none;">NTM</span>
     </div>
+  </header>
 
-    <div class="fare-card">
-      <div class="fare-top">
-        <div>
-          <div class="fare-label">Estimated price</div>
-          <div class="fare-amount"><small>K</small><span id="fareTotal">0</span></div>
-        </div>
-        <div class="fare-stats">
-          <div class="fare-stat">
-            <small>Distance</small>
-            <strong id="fareDistance">0 km</strong>
-          </div>
-          <div class="fare-stat">
-            <small>Time</small>
-            <strong id="fareDuration">0 min</strong>
-          </div>
+  <main class="app-main">
+
+    <section class="map-half">
+      <div id="map"></div>
+      <div class="map-badge">
+        <i class="fas fa-location-dot"></i>
+        <span id="mapBadgeText">Locating…</span>
+      </div>
+      <button class="map-overlay-btn" id="locateBtn" aria-label="Recenter">
+        <i class="fas fa-crosshairs"></i>
+      </button>
+    </section>
+
+    <section class="action-half">
+
+      <!-- HOME PANE — original interface -->
+      <div class="action-pane active" id="paneHome">
+        <div class="home-greeting" id="homeGreeting">Hello 👋</div>
+        <div class="home-sub">Where are you headed today?</div>
+
+        <button class="btn-ride" id="requestRideBtn">
+          <span class="ride-ico"><i class="fas fa-car-side"></i></span>
+          <span class="ride-txt">
+            <strong>Request Ride</strong>
+            <span>Get a driver to your pickup point</span>
+          </span>
+          <i class="fas fa-chevron-right ride-arrow"></i>
+        </button>
+
+        <div class="square-row">
+          <button class="btn-square" id="deliveryBtn">
+            <span class="sq-ico"><i class="fas fa-box"></i></span>
+            <span class="sq-label">Delivery</span>
+          </button>
+          <button class="btn-square" id="errandBtn">
+            <span class="sq-ico"><i class="fas fa-clipboard-list"></i></span>
+            <span class="sq-label">Post Errand</span>
+          </button>
         </div>
       </div>
-    </div>
 
-    <button class="confirm-btn" id="confirmRideBtn">
-      <i class="fas fa-circle-check"></i> Confirm Request
-    </button>
-  </div>
-</section>
+      <!-- TRIP PANE — planning -->
+      <div class="action-pane" id="paneTrip">
+        <div class="trip-head">
+          <h2 id="tripTitle">Your Trip</h2>
+          <button id="cancelTripBtn"><i class="fas fa-xmark"></i> Cancel</button>
+        </div>
+
+        <div class="points-card">
+          <button class="point-row" id="pickupRowBtn">
+            <span class="point-dot"></span>
+            <span class="point-txt">
+              <small>Pickup</small>
+              <strong id="summaryPickup">Current location</strong>
+            </span>
+            <i class="fas fa-pen-to-square point-edit"></i>
+          </button>
+          <div class="points-divider"></div>
+          <button class="point-row" id="dropoffRowBtn">
+            <span class="point-dot square"></span>
+            <span class="point-txt">
+              <small>Drop-off</small>
+              <strong id="summaryDropoff">—</strong>
+            </span>
+            <i class="fas fa-pen-to-square point-edit"></i>
+          </button>
+        </div>
+
+        <div class="fare-card">
+          <div class="fare-top">
+            <div>
+              <div class="fare-label">Estimated price</div>
+              <div class="fare-amount"><small>K</small><span id="fareTotal">0</span></div>
+            </div>
+            <div class="fare-stats">
+              <div class="fare-stat">
+                <small>Distance</small>
+                <strong id="fareDistance">0 km</strong>
+              </div>
+              <div class="fare-stat">
+                <small>Time</small>
+                <strong id="fareDuration">0 min</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button class="confirm-btn" id="confirmRideBtn">
+          <i class="fas fa-circle-check"></i> Confirm Request
+        </button>
+      </div>
+
+      <!-- ACTIVE PANE — searching + provider found + in progress -->
+      <div class="action-pane" id="paneActive">
+
+        <!-- Searching state -->
+        <div id="activeSearchingState" style="display:flex; flex-direction:column; flex:1; min-height:0;">
+          <div class="pane-radar">
+            <div class="radar-ring"></div>
+            <div class="radar-ring"></div>
+            <div class="radar-ring"></div>
+            <div class="radar-center">
+              <i class="fas fa-car" id="searchingIcon"></i>
+            </div>
+          </div>
+          <div class="active-pane-head">
+            <h2 id="searchingTitle">Searching for a driver</h2>
+            <p id="searchingSubtitle">Looking for someone nearby to accept your ride…</p>
+          </div>
+          <div class="searching-dots"><span></span><span></span><span></span></div>
+          <button class="pane-cancel-btn" id="cancelSearchBtn">Cancel</button>
+        </div>
+
+        <!-- Provider found / trip active state -->
+        <div id="activeProviderState" style="display:none; flex-direction:column; flex:1; min-height:0;">
+          <div class="provider-found-card">
+            <div class="provider-found-avatar" id="providerFoundAvatar">
+              <i class="fas fa-user"></i>
+            </div>
+            <div class="provider-found-body">
+              <strong id="providerFoundName">Provider</strong>
+              <div class="provider-found-meta">
+                <span id="providerFoundRole"><i class="fas fa-id-badge"></i> Driver</span>
+                <span id="providerFoundVehicle"><i class="fas fa-car"></i> Vehicle</span>
+              </div>
+            </div>
+            <a class="provider-call-btn" id="providerCallBtn" href="#" style="display:none;">
+              <i class="fas fa-phone"></i>
+            </a>
+          </div>
+
+          <div class="provider-vehicle-preview" id="providerVehiclePreview" style="display:none;"></div>
+
+          <div class="trip-status-card">
+            <div class="trip-status-icon" id="tripStatusIcon">
+              <i class="fas fa-clock"></i>
+            </div>
+            <h2 id="tripStatusTitle">Driver is on the way</h2>
+            <p id="tripStatusSubtitle">They'll arrive at your pickup point soon.</p>
+          </div>
+
+          <button class="pane-cancel-btn" id="cancelTripActiveBtn">Cancel</button>
+        </div>
+      </div>
+
+    </section>
+  </main>
+</div>
 
 <!-- SIDEBAR -->
 <div id="sidebarOverlay"></div>
@@ -2047,7 +2081,7 @@ body.has-panel #toast {
   </div>
 </div>
 
-<!-- VEHICLE SHEET -->
+<!-- VEHICLE SHEET (bottom sheet for delivery vehicle selection — this is expected UX) -->
 <div class="sheet-overlay" id="vehicleSheet">
   <div class="sheet">
     <div class="sheet-handle"></div>
@@ -2057,58 +2091,6 @@ body.has-panel #toast {
     </div>
     <div class="vehicle-list" id="vehicleList"></div>
     <button class="sheet-cancel" id="vehicleSheetCancel">Cancel</button>
-  </div>
-</div>
-
-<!-- SEARCHING / TRIP OVERLAY -->
-<div class="searching-overlay" id="searchingOverlay">
-  <div class="searching-card">
-
-    <div id="searchingState">
-      <div class="searching-radar">
-        <div class="radar-ring"></div>
-        <div class="radar-ring"></div>
-        <div class="radar-ring"></div>
-        <div class="radar-center">
-          <i class="fas fa-car" id="searchingIcon"></i>
-        </div>
-      </div>
-      <h2 id="searchingTitle">Searching for a driver</h2>
-      <p id="searchingSubtitle">Looking for someone nearby…</p>
-      <div class="searching-dots"><span></span><span></span><span></span></div>
-      <button class="searching-cancel" id="cancelSearchBtn">Cancel</button>
-    </div>
-
-    <div id="providerState" style="display:none;">
-      <div class="provider-found-card">
-        <div class="provider-found-avatar" id="providerFoundAvatar">
-          <i class="fas fa-user"></i>
-        </div>
-        <div class="provider-found-body">
-          <strong id="providerFoundName">Provider</strong>
-          <div class="provider-found-meta">
-            <span id="providerFoundRole"><i class="fas fa-id-badge"></i> Driver</span>
-            <span id="providerFoundVehicle"><i class="fas fa-car"></i> Vehicle</span>
-          </div>
-        </div>
-        <a class="provider-call-btn" id="providerCallBtn" href="#" style="display:none;">
-          <i class="fas fa-phone"></i>
-        </a>
-      </div>
-
-      <div class="provider-vehicle-preview" id="providerVehiclePreview" style="display:none;"></div>
-
-      <div class="trip-status-card">
-        <div class="trip-status-icon" id="tripStatusIcon">
-          <i class="fas fa-clock"></i>
-        </div>
-        <h2 id="tripStatusTitle">Driver is on the way</h2>
-        <p id="tripStatusSubtitle">They'll arrive at your pickup point soon.</p>
-      </div>
-
-      <button class="searching-cancel" id="cancelTripActiveBtn">Cancel</button>
-    </div>
-
   </div>
 </div>
 
@@ -2190,9 +2172,9 @@ const bannedOverlay      = $('bannedOverlay');
 const banReasonBox       = $('banReasonBox');
 const bannedLogoutBtn    = $('bannedLogoutBtn');
 
-const mapBadge       = $('mapBadge');
-const mapBadgeText   = $('mapBadgeText');
-const locateBtn      = $('locateBtn');
+const appRoot      = $('app');
+const topbarName   = $('topbarName');
+const homeGreeting = $('homeGreeting');
 
 const sidebarBtn     = $('sidebarBtn');
 const sidebar        = $('sidebar');
@@ -2203,11 +2185,17 @@ const sidebarAvatar  = $('sidebarAvatar');
 const logoutBtn      = $('logoutBtn');
 const errandsBadge   = $('errandsBadge');
 
+const mapBadgeText = $('mapBadgeText');
+const locateBtn    = $('locateBtn');
+
 const requestRideBtn = $('requestRideBtn');
 const deliveryBtn    = $('deliveryBtn');
 const errandBtn      = $('errandBtn');
 
-const tripPanel     = $('tripPanel');
+const paneHome      = $('paneHome');
+const paneTrip      = $('paneTrip');
+const paneActive    = $('paneActive');
+
 const tripTitle     = $('tripTitle');
 const summaryPickup = $('summaryPickup');
 const summaryDropoff= $('summaryDropoff');
@@ -2295,14 +2283,13 @@ const vehicleSheet       = $('vehicleSheet');
 const vehicleList        = $('vehicleList');
 const vehicleSheetCancel = $('vehicleSheetCancel');
 
-const searchingOverlay  = $('searchingOverlay');
-const searchingState    = $('searchingState');
-const searchingIcon     = $('searchingIcon');
-const searchingTitle    = $('searchingTitle');
-const searchingSubtitle = $('searchingSubtitle');
-const cancelSearchBtn   = $('cancelSearchBtn');
+const activeSearchingState  = $('activeSearchingState');
+const activeProviderState   = $('activeProviderState');
+const searchingIcon         = $('searchingIcon');
+const searchingTitle        = $('searchingTitle');
+const searchingSubtitle     = $('searchingSubtitle');
+const cancelSearchBtn       = $('cancelSearchBtn');
 
-const providerState         = $('providerState');
 const providerFoundAvatar   = $('providerFoundAvatar');
 const providerFoundName     = $('providerFoundName');
 const providerFoundRole     = $('providerFoundRole');
@@ -2376,6 +2363,31 @@ let historyListenerUnsub = null;
 let txListenerUnsub = null;
 
 const DEFAULT_LOCATION = { lat: -15.4167, lng: 28.2833 };
+
+/* ============================================================
+   PANES
+   ============================================================ */
+function showPane(which) {
+  paneHome.classList.remove('active');
+  paneTrip.classList.remove('active');
+  paneActive.classList.remove('active');
+
+  if (which === 'home')        paneHome.classList.add('active');
+  else if (which === 'trip')   paneTrip.classList.add('active');
+  else if (which === 'active') paneActive.classList.add('active');
+}
+
+function showActiveSearching() {
+  activeSearchingState.style.display = 'flex';
+  activeProviderState.style.display = 'none';
+  showPane('active');
+}
+
+function showActiveProvider() {
+  activeSearchingState.style.display = 'none';
+  activeProviderState.style.display = 'flex';
+  showPane('active');
+}
 
 /* ============================================================
    HELPERS
@@ -2524,7 +2536,7 @@ function startConfigListeners() {
       cyclist:   Object.assign({}, CONFIG.pricing.cyclist,   p.cyclist   || {}),
       walker:    Object.assign({}, CONFIG.pricing.walker,    p.walker    || {})
     };
-    if (currentRoute && document.body.classList.contains('has-panel')) {
+    if (currentRoute && paneTrip.classList.contains('active')) {
       const fare = computeRideFare(currentRoute.distance, currentRoute.duration);
       fareTotal.textContent = formatPrice(fare.finalFare);
     }
@@ -2607,23 +2619,14 @@ function hideLoading() {
   setTimeout(() => { loadingScreen.style.display = 'none'; }, 500);
 }
 function showMaintenance(message) {
+  appRoot.classList.add('hidden');
   maintenanceMsg.textContent = message || 'NTUMENI is currently undergoing scheduled maintenance. Please check back shortly.';
   maintenanceOverlay.classList.add('open');
 }
 function showBanned(reason) {
+  appRoot.classList.add('hidden');
   banReasonBox.textContent = 'Reason: ' + (reason || 'Please contact support for more information.');
   bannedOverlay.classList.add('open');
-}
-
-/* ============================================================
-   PANEL VISIBILITY
-   ============================================================ */
-function setPanelVisible(visible) {
-  const currentlyVisible = document.body.classList.contains('has-panel');
-  if (currentlyVisible === visible) return;
-  document.body.classList.toggle('has-panel', visible);
-  setTimeout(() => { if (map) map.invalidateSize(); }, 100);
-  setTimeout(() => { if (map) map.invalidateSize(); }, 440);
 }
 
 /* ============================================================
@@ -2646,8 +2649,6 @@ function initMap() {
     maxZoom: 19,
     crossOrigin: true
   }).addTo(map);
-
-  setTimeout(() => { if (map) map.invalidateSize(); }, 200);
 }
 
 function setUserMarker(lat, lng) {
@@ -2710,7 +2711,6 @@ function locateUser({ center = true, silent = false } = {}) {
     if (!silent) showToast('Geolocation is not supported.');
     userLocation = { ...DEFAULT_LOCATION };
     mapBadgeText.textContent = 'Default location';
-    mapBadge.style.display = 'inline-flex';
     setUserMarker(DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lng);
     if (center && map) map.setView([DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lng], 18);
     if (!pickupLocation) pickupLocation = { lat: DEFAULT_LOCATION.lat, lng: DEFAULT_LOCATION.lng, label: 'Approximate location' };
@@ -2718,7 +2718,6 @@ function locateUser({ center = true, silent = false } = {}) {
     return;
   }
   mapBadgeText.textContent = 'Locating…';
-  mapBadge.style.display = 'inline-flex';
   navigator.geolocation.getCurrentPosition(
     (pos) => {
       const { latitude, longitude } = pos.coords;
@@ -3732,7 +3731,7 @@ function drawRoute(geometry) {
    RIDE TRIP
    ============================================================ */
 async function buildRideTrip() {
-  if (!pickupLocation || !dropoffLocation) { return; }
+  if (!pickupLocation || !dropoffLocation) { showPane('home'); return; }
   if (!map) initMap();
 
   setPickupMarker(pickupLocation.lat, pickupLocation.lng);
@@ -3744,8 +3743,7 @@ async function buildRideTrip() {
   summaryPickup.textContent  = pickupLocation.label || 'Pickup';
   summaryDropoff.textContent = dropoffLocation.label || 'Drop-off';
 
-  // Show the trip panel
-  setPanelVisible(true);
+  showPane('trip');
 
   fareTotal.textContent = '…';
   fareDistance.textContent = '…';
@@ -3796,7 +3794,7 @@ cancelTripBtn.addEventListener('click', () => {
   dropoffLocation = null;
   deliveryDropoffLocation = null;
   deliveryVehicle = null;
-  setPanelVisible(false);
+  showPane('home');
   if (userLocation && map) map.setView([userLocation.lat, userLocation.lng], 18, { animate: true });
 });
 
@@ -3850,7 +3848,7 @@ confirmRideBtn.addEventListener('click', async () => {
       vehicleLabel: 'Car',
       providerType: 'driver'
     };
-    openSearchingOverlay('driver', currentTripMeta);
+    showSearchingInPane('driver', currentTripMeta);
     startTripTracking('ride', rideId);
   } catch (err) {
     console.error(err);
@@ -4077,19 +4075,19 @@ async function chooseDeliveryVehicle(price) {
     currentTripKind = 'delivery';
     currentTripId = activeDeliveryId;
     currentTripMeta = meta;
-    openSearchingOverlay('delivery', meta);
+    showSearchingInPane('delivery', meta);
     startTripTracking('delivery', activeDeliveryId);
   }, 420);
 }
 
 /* ============================================================
-   SEARCHING OVERLAY
+   PANE — SEARCHING / PROVIDER FOUND
    ============================================================ */
-function openSearchingOverlay(kind, meta) {
-  searchingState.style.display = 'block';
-  providerState.style.display = 'none';
-  cancelTripActiveBtn.style.display = 'block';
+function showSearchingInPane(kind, meta) {
+  activeSearchingState.style.display = 'flex';
+  activeProviderState.style.display = 'none';
   cancelSearchBtn.style.display = 'block';
+  cancelTripActiveBtn.style.display = 'block';
 
   if (kind === 'driver') {
     searchingIcon.className = 'fas fa-car';
@@ -4100,14 +4098,13 @@ function openSearchingOverlay(kind, meta) {
     searchingTitle.textContent = meta?.title || 'Searching for a rider';
     searchingSubtitle.textContent = 'Looking for someone nearby to accept your delivery…';
   }
-  searchingOverlay.classList.add('open');
+  showPane('active');
 }
 
-function closeSearchingOverlay() { searchingOverlay.classList.remove('open'); }
-
-function showProviderState() {
-  searchingState.style.display = 'none';
-  providerState.style.display = 'block';
+function showProviderInPane() {
+  activeSearchingState.style.display = 'none';
+  activeProviderState.style.display = 'flex';
+  showPane('active');
 }
 
 /* ============================================================
@@ -4132,17 +4129,17 @@ async function handleTripUpdate(trip) {
 
   if ((status === 'accepted' || status === 'arrived' || status === 'in_progress') && !currentProviderId && trip.providerId) {
     currentProviderId = trip.providerId;
-    showProviderState();
+    showProviderInPane();
     await loadAndShowProvider(trip.providerId, trip);
   }
 
   if (status === 'accepted') {
     updateTripStatusUI('accepted');
   } else if (status === 'arrived') {
-    showProviderState();
+    showProviderInPane();
     updateTripStatusUI('arrived');
   } else if (status === 'in_progress') {
-    showProviderState();
+    showProviderInPane();
     updateTripStatusUI('in_progress');
     showRouteToDestination(trip);
   } else if (status === 'completed') {
@@ -4260,12 +4257,11 @@ async function handleTripCompletion(trip) {
   try { await completeTransactionByReference(currentTripId); } catch (e) { console.warn(e); }
 
   cleanupTripTracking();
-  closeSearchingOverlay();
   showToast('✅ Trip completed. Payment successful!');
 
   setTimeout(() => {
     clearTripLayers();
-    setPanelVisible(false);
+    showPane('home');
     if (userLocation && map) map.setView([userLocation.lat, userLocation.lng], 17, { animate: true });
 
     pickupLocation = userLocation ? { lat: userLocation.lat, lng: userLocation.lng, label: 'Current location' } : null;
@@ -4285,11 +4281,10 @@ async function handleTripCompletion(trip) {
 
 function handleTripCancellation() {
   cleanupTripTracking();
-  closeSearchingOverlay();
   showToast('Trip was cancelled.');
   setTimeout(() => {
     clearTripLayers();
-    setPanelVisible(false);
+    showPane('home');
     if (userLocation && map) map.setView([userLocation.lat, userLocation.lng], 17, { animate: true });
 
     pickupLocation = userLocation ? { lat: userLocation.lat, lng: userLocation.lng, label: 'Current location' } : null;
@@ -4326,8 +4321,6 @@ cancelTripActiveBtn.addEventListener('click', async () => {
 });
 
 async function cancelActiveTrip() {
-  closeSearchingOverlay();
-
   try {
     if (currentTripKind === 'ride' && currentTripId) {
       await update(ref(database, `rides/${currentTripId}`), {
@@ -4351,7 +4344,7 @@ async function cancelActiveTrip() {
   showToast('Trip cancelled');
   setTimeout(() => {
     clearTripLayers();
-    setPanelVisible(false);
+    showPane('home');
     if (userLocation && map) map.setView([userLocation.lat, userLocation.lng], 17, { animate: true });
     pickupLocation = userLocation ? { lat: userLocation.lat, lng: userLocation.lng, label: 'Current location' } : null;
     dropoffLocation = null;
@@ -4586,7 +4579,6 @@ function renderHistory() {
   });
   historyList.innerHTML = html;
 
-  // Wire expansion
   historyList.querySelectorAll('.hist-card').forEach(card => {
     const summary = card.querySelector('.hist-summary');
     if (summary) {
@@ -4850,7 +4842,6 @@ function renderHistoryErrand(e) {
   `;
 }
 
-// Delegate clicks on "View offers" buttons inside expanded errand history cards
 historyList.addEventListener('click', (e) => {
   const btn = e.target.closest('[data-open-errand]');
   if (!btn) return;
@@ -5007,8 +4998,17 @@ function applyCustomerProfile(customer) {
   const last  = (customer.lastName || '').trim();
   const full  = (customer.fullName || `${first} ${last}`).trim() || 'Customer';
 
+  topbarName.textContent   = full;
   sidebarName.textContent  = full;
   sidebarPhone.textContent = customer.phone || '—';
+
+  const hour = new Date().getHours();
+  let greeting = 'Hello';
+  if (hour < 12) greeting = 'Good morning';
+  else if (hour < 17) greeting = 'Good afternoon';
+  else greeting = 'Good evening';
+
+  homeGreeting.textContent = `${greeting}, ${first || full} 👋`;
 
   if (customer.profileUrl) {
     sidebarAvatar.innerHTML = `<img src="${escapeHtml(customer.profileUrl)}" alt="Profile">`;
@@ -5018,7 +5018,7 @@ function applyCustomerProfile(customer) {
 }
 
 /* ============================================================
-   SESSION RESTORE
+   SESSION RESTORE — reattach to active trip after refresh
    ============================================================ */
 async function checkForActiveTrip() {
   if (!currentUser) return;
@@ -5046,10 +5046,10 @@ async function checkForActiveTrip() {
 
         if (r.status === 'searching') {
           currentTripMeta = { icon: 'fa-car', title: 'Searching for a driver', vehicleLabel: 'Car', providerType: 'driver' };
-          openSearchingOverlay('driver', currentTripMeta);
+          showSearchingInPane('driver', currentTripMeta);
         } else {
-          openSearchingOverlay('driver', currentTripMeta);
-          showProviderState();
+          showSearchingInPane('driver', currentTripMeta);
+          showProviderInPane();
           if (r.providerId) {
             currentProviderId = r.providerId;
             await loadAndShowProvider(r.providerId, r);
@@ -5082,10 +5082,10 @@ async function checkForActiveTrip() {
         currentTripMeta = meta;
 
         if (d.status === 'searching') {
-          openSearchingOverlay('delivery', meta);
+          showSearchingInPane('delivery', meta);
         } else {
-          openSearchingOverlay('delivery', meta);
-          showProviderState();
+          showSearchingInPane('delivery', meta);
+          showProviderInPane();
           if (d.providerId) {
             currentProviderId = d.providerId;
             await loadAndShowProvider(d.providerId, d);
@@ -5123,6 +5123,7 @@ onAuthStateChanged(auth, async (user) => {
 
     customerData = customer;
     applyCustomerProfile(customer);
+    appRoot.classList.remove('hidden');
 
     startConfigListeners();
 
@@ -5163,7 +5164,6 @@ function loadErrandsForBadge() {
    ============================================================ */
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
-    if (searchingOverlay.classList.contains('open')) return;
     if (vehicleSheet.classList.contains('open')) vehicleSheet.classList.remove('open');
     else if (chatPage.classList.contains('open')) closeChatPage();
     else if (errandDetailsPage.classList.contains('open')) closeErrandDetailsPage();
