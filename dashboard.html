@@ -3626,6 +3626,9 @@ async function fetchRoute(from, to) {
 
 function drawRoute(geometry) {
   if (!map) return;
+  // Guard: skip drawing if geometry is missing or malformed
+  if (!geometry || !geometry.coordinates || !geometry.coordinates.length) return;
+
   if (routeLayer) { map.removeLayer(routeLayer); routeLayer = null; }
   const coords = geometry.coordinates.map(([lng, lat]) => [lat, lng]);
   routeLayer = L.layerGroup().addTo(map);
@@ -3671,19 +3674,37 @@ async function buildRideTrip() {
     fareDistance.textContent = formatDistance(route.distance);
     fareDuration.textContent = formatDuration(route.duration);
   } catch (err) {
-    console.warn(err);
-    fareTotal.textContent = '—';
-    fareDistance.textContent = '—';
-    fareDuration.textContent = '—';
-    const straight = haversineMeters(pickupLocation.lat, pickupLocation.lng, dropoffLocation.lat, dropoffLocation.lng);
+    console.warn('Route fetch failed — using estimate:', err);
+
+    // FIX: fall back to a straight-line estimate and STILL set currentRoute
+    // so that confirmRideBtn can submit the request.
+    const straight = haversineMeters(
+      pickupLocation.lat, pickupLocation.lng,
+      dropoffLocation.lat, dropoffLocation.lng
+    );
+
     if (straight > 0) {
-      const estDuration = (straight / 1000) / 30 * 3600;
+      const estDuration = (straight / 1000) / 30 * 3600; // assume ~30 km/h
       const fare = computeRideFare(straight, estDuration);
+      currentRoute = { distance: straight, duration: estDuration, geometry: null }; // ← THE FIX
       fareTotal.textContent    = formatPrice(fare.finalFare);
       fareDistance.textContent = formatDistance(straight);
       fareDuration.textContent = formatDuration(estDuration);
+
+      // Draw a dashed straight line so the customer still sees the trip
+      drawRoute({
+        coordinates: [
+          [pickupLocation.lng, pickupLocation.lat],
+          [dropoffLocation.lng, dropoffLocation.lat]
+        ]
+      });
+      showToast('Could not load exact route — showing an estimate.');
+    } else {
+      fareTotal.textContent = '—';
+      fareDistance.textContent = '—';
+      fareDuration.textContent = '—';
+      showToast('Could not calculate route. Try again.');
     }
-    showToast('Could not load the exact route — showing an estimate.');
   }
 }
 
@@ -3706,7 +3727,8 @@ dropoffRowBtn.addEventListener('click', () => {
 });
 
 confirmRideBtn.addEventListener('click', async () => {
-  if (!currentRoute) { showToast('Please wait for the route to load.'); return; }
+  // FIX: clearer error message when the route truly failed
+  if (!currentRoute) { showToast('Could not calculate route. Try again.'); return; }
   if (!pickupLocation || !dropoffLocation) { showToast('Missing pickup or drop-off.'); return; }
   if (!currentUser) { showToast('Session expired.'); return; }
 
@@ -3720,7 +3742,6 @@ confirmRideBtn.addEventListener('click', async () => {
     const rideId = rideRef.key;
     activeRideId = rideId;
 
-    // NOTE: no vehicleId — only DRIVERS can pick up rides
     await set(rideRef, {
       rideId,
       customerId: currentUser.uid,
@@ -3894,7 +3915,6 @@ vehicleSheet.addEventListener('click', (e) => {
   if (e.target === vehicleSheet) vehicleSheet.classList.remove('open');
 });
 
-/* What provider type does each vehicleId map to? */
 function providerTypeForVehicle(vehicleId) {
   const v = String(vehicleId || '').toLowerCase();
   if (v === 'motorbike') return 'rider';
@@ -3907,14 +3927,12 @@ async function chooseDeliveryVehicle(price) {
   if (!deliveryVehicle || !deliveryRoute) return;
   vehicleSheet.classList.remove('open');
 
-  // Save delivery to DB
   try {
     const fare = Math.round(price || computeDeliveryFare(deliveryVehicle, deliveryRoute.distance, deliveryRoute.duration).finalFare);
     const deliveryRef = push(ref(database, 'deliveries'));
     const deliveryId = deliveryRef.key;
     activeDeliveryId = deliveryId;
 
-    // NOTE: `vehicleId` is what the provider app uses to match its own role
     await set(deliveryRef, {
       deliveryId,
       customerId: currentUser.uid,
@@ -3929,8 +3947,8 @@ async function chooseDeliveryVehicle(price) {
       receiverPhone: delReceiverPhone.value.trim(),
       parcelName: delParcelName.value.trim(),
       parcelDesc: delParcelDesc.value.trim(),
-      vehicleId: deliveryVehicle.id,         // 'motorbike' | 'cyclist' | 'walker'
-      vehicleLabel: deliveryVehicle.label,   // 'Motorbike' | 'Cyclist' | 'Walker'
+      vehicleId: deliveryVehicle.id,
+      vehicleLabel: deliveryVehicle.label,
       distance: deliveryRoute.distance,
       duration: deliveryRoute.duration,
       fare,
@@ -3973,7 +3991,6 @@ async function chooseDeliveryVehicle(price) {
       ]), { padding: [40, 40], maxZoom: 17 });
     }
 
-    // Which provider type does this request invite?
     const providerType = providerTypeForVehicle(deliveryVehicle.id);
     const labels = {
       motorbike: { icon: 'fa-motorcycle', title: 'Searching for a motorbike rider', vehicleLabel: 'Motorbike', providerType: 'rider' },
@@ -3994,7 +4011,6 @@ async function chooseDeliveryVehicle(price) {
    SEARCHING OVERLAY
    ============================================================ */
 function openSearchingOverlay(kind, meta) {
-  // Reset to searching view
   searchingState.style.display = 'block';
   providerState.style.display = 'none';
   cancelTripActiveBtn.style.display = 'block';
@@ -4039,7 +4055,6 @@ function startTripTracking(kind, id) {
 async function handleTripUpdate(trip) {
   const status = trip.status;
 
-  // Provider just accepted
   if ((status === 'accepted' || status === 'arrived' || status === 'in_progress') && !currentProviderId && trip.providerId) {
     currentProviderId = trip.providerId;
     showProviderState();
@@ -4092,7 +4107,6 @@ async function loadAndShowProvider(providerId, trip) {
     providerCallBtn.style.display = 'none';
   }
 
-  // Vehicle image — pick from bikeUrls or carUrls based on role
   const roleLower = String(role).toLowerCase();
   let vehicleImgs = [];
   if (roleLower === 'cyclist' || roleLower === 'bicycle') {
@@ -4117,7 +4131,6 @@ async function loadAndShowProvider(providerId, trip) {
     providerVehiclePreview.style.display = 'none';
   }
 
-  // Live location
   if (activeProviderLocUnsub) { activeProviderLocUnsub(); activeProviderLocUnsub = null; }
   activeProviderLocUnsub = onValue(ref(database, `providers/${providerId}/location`), (s) => {
     if (!s.exists()) return;
