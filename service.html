@@ -101,8 +101,8 @@ input, textarea, select { font-family: inherit; }
   position: fixed; inset: 0; z-index: 1;
   background: #e8eaed;
 }
-/* Slight tint to keep the CARTO Voyager basemap warm and clean */
-.leaflet-tile-pane { filter: saturate(0.96) contrast(1.02) brightness(1.01); }
+/* Light tint to keep OSM tiles warm and clean */
+.leaflet-tile-pane { filter: saturate(0.92) contrast(1.04) brightness(1.02); }
 .leaflet-container { font-family: inherit; background: #e8eaed; }
 .leaflet-control-attribution {
   font-size: 9px !important;
@@ -1680,12 +1680,14 @@ const UPLOAD_PRESET = 'h3eyhc2o';
 /* ============================================================
    MAP TUNING
    ------------------------------------------------------------
-   Zoom 19 on a typical phone shows roughly 20–40 metres across,
-   which matches the "about 20 m" request. Change PROVIDER_ZOOM
-   if you want tighter or looser framing.
+   OpenStreetMap max zoom is 19. At zoom 19 on a typical phone
+   screen the visible width is roughly 20–40 metres, matching
+   the "about 20 m" request.
    ============================================================ */
 const PROVIDER_ZOOM = 19;
 const MODAL_ZOOM    = 16;
+const OSM_TILE_URL  = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+const OSM_ATTR      = '&copy; OpenStreetMap contributors';
 
 /* ============================================================
    DOM
@@ -1905,9 +1907,7 @@ function listenFloatBalance(uid) {
 /* ============================================================
    MAP
    ------------------------------------------------------------
-   Uses CARTO Voyager — a clean, Google-Maps-like default basemap
-   with better typography, warmer colours and clearer roads than
-   plain OpenStreetMap.
+   Standard OpenStreetMap raster tiles.
    ============================================================ */
 function initMap() {
   if (map) return;
@@ -1916,17 +1916,15 @@ function initMap() {
     zoomControl: false,
     attributionControl: true,
     preferCanvas: true,
-    maxZoom: 20,
+    maxZoom: 19,
     minZoom: 3
   }).setView([DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lng], PROVIDER_ZOOM);
 
-  /* CARTO Voyager — Google-like default layer */
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-    attribution: '&copy; OpenStreetMap &copy; CARTO',
-    subdomains: 'abcd',
-    maxZoom: 20,
-    crossOrigin: true,
-    detectRetina: true
+  L.tileLayer(OSM_TILE_URL, {
+    attribution: OSM_ATTR,
+    subdomains: 'abc',
+    maxZoom: 19,
+    crossOrigin: true
   }).addTo(map);
 }
 
@@ -2813,16 +2811,14 @@ async function openMapCheck(errandId) {
         zoomControl: true,
         attributionControl: false,
         preferCanvas: true,
-        maxZoom: 20,
+        maxZoom: 19,
         minZoom: 3
       }).setView([currentModalTarget.lat, currentModalTarget.lng], MODAL_ZOOM);
 
-      /* Same Google-like basemap as the main map */
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-        subdomains: 'abcd',
-        maxZoom: 20,
-        crossOrigin: true,
-        detectRetina: true
+      L.tileLayer(OSM_TILE_URL, {
+        subdomains: 'abc',
+        maxZoom: 19,
+        crossOrigin: true
       }).addTo(modalMap);
     }
     modalMap.invalidateSize();
