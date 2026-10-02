@@ -22,9 +22,6 @@
 }
 </script>
 <style>
-/* ==========================================================
-   TOKENS
-   ========================================================== */
 :root {
   --ink: #0a0a0a;
   --paper: #ffffff;
@@ -70,9 +67,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 input, textarea { font-family: inherit; }
 .hidden { display: none !important; }
 
-/* ==========================================================
-   LOADING
-   ========================================================== */
+/* LOADING */
 #loadingScreen {
   position: fixed; inset: 0; z-index: 9000;
   background: #0a0a0a; color: #fff;
@@ -96,9 +91,7 @@ input, textarea { font-family: inherit; }
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ==========================================================
-   BLOCKING OVERLAYS
-   ========================================================== */
+/* BLOCKING */
 .block-overlay {
   position: fixed; inset: 0; z-index: 8000;
   background: #ffffff;
@@ -136,9 +129,7 @@ input, textarea { font-family: inherit; }
 .block-btn:active { transform: scale(0.95); }
 .block-overlay.danger .block-btn { background: var(--danger); }
 
-/* ==========================================================
-   TOPBAR
-   ========================================================== */
+/* TOPBAR */
 .topbar {
   flex: 0 0 auto;
   height: var(--topbar-h);
@@ -160,12 +151,9 @@ input, textarea { font-family: inherit; }
 .icon-btn:hover  { background: var(--fill-gray-hover); }
 .icon-btn:active { transform: scale(0.92); }
 .topbar-user {
-  flex: 1;
-  text-align: center;
-  font-size: 0.95rem;
-  font-weight: 700;
-  letter-spacing: -0.2px;
-  color: var(--text-primary);
+  flex: 1; text-align: center;
+  font-size: 0.95rem; font-weight: 700;
+  letter-spacing: -0.2px; color: var(--text-primary);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   padding: 0 10px;
 }
@@ -183,21 +171,14 @@ input, textarea { font-family: inherit; }
 .topbar-logo img { width: 30px; height: 30px; object-fit: contain; }
 .topbar-logo span { font-size: 0.5rem; font-weight: 800; color: var(--ink); }
 
-/* ==========================================================
-   MAIN LAYOUT
-   ========================================================== */
+/* MAIN */
 .app-main {
-  flex: 1 1 auto;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
+  flex: 1 1 auto; min-height: 0;
+  display: flex; flex-direction: column;
 }
 .map-half {
-  flex: 1 1 50%;
-  min-height: 0;
-  position: relative;
-  background: #e8eaed;
-  overflow: hidden;
+  flex: 1 1 50%; min-height: 0;
+  position: relative; background: #e8eaed; overflow: hidden;
 }
 #map { position: absolute; inset: 0; z-index: 1; }
 .map-overlay-btn {
@@ -221,18 +202,14 @@ input, textarea { font-family: inherit; }
   backdrop-filter: blur(6px);
 }
 
-/* ==========================================================
-   ACTION HALF
-   ========================================================== */
+/* ACTION HALF */
 .action-half {
-  flex: 1 1 50%;
-  min-height: 0;
+  flex: 1 1 50%; min-height: 0;
   background: #ffffff;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   padding: 18px 18px 24px;
-  display: flex;
-  flex-direction: column;
+  display: flex; flex-direction: column;
   border-top: 1px solid var(--line);
 }
 .action-pane { display: none; flex-direction: column; flex: 1; min-height: 0; }
@@ -254,8 +231,7 @@ input, textarea { font-family: inherit; }
   text-align: left;
   box-shadow: 0 10px 28px -10px rgba(0,0,0,0.55);
   transition: transform 0.35s var(--spring), box-shadow 0.3s var(--ease-smooth);
-  margin-bottom: 12px;
-  flex-shrink: 0;
+  margin-bottom: 12px; flex-shrink: 0;
 }
 .btn-ride:hover  { transform: translateY(-2px); }
 .btn-ride:active { transform: translateY(0) scale(0.982); }
@@ -277,10 +253,8 @@ input, textarea { font-family: inherit; }
 .btn-ride .ride-arrow { font-size: 0.95rem; color: rgba(255,255,255,0.5); }
 
 .square-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  flex-shrink: 0;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 12px; flex-shrink: 0;
 }
 .btn-square {
   aspect-ratio: 1 / 1;
@@ -305,7 +279,6 @@ input, textarea { font-family: inherit; }
   color: var(--text-primary); text-align: center; line-height: 1.25;
 }
 
-/* Trip summary */
 .trip-head {
   display: flex; align-items: center; justify-content: space-between;
   margin-bottom: 12px; flex-shrink: 0;
@@ -320,8 +293,7 @@ input, textarea { font-family: inherit; }
   background: var(--fill-gray);
   border-radius: var(--radius);
   padding: 4px;
-  margin-bottom: 14px;
-  flex-shrink: 0;
+  margin-bottom: 14px; flex-shrink: 0;
 }
 .point-row {
   display: flex; align-items: center; gap: 13px;
@@ -354,8 +326,7 @@ input, textarea { font-family: inherit; }
   background: #0a0a0a; color: #ffffff;
   border-radius: var(--radius);
   padding: 22px;
-  margin-bottom: 14px;
-  flex-shrink: 0;
+  margin-bottom: 14px; flex-shrink: 0;
   box-shadow: 0 12px 30px -14px rgba(0,0,0,0.55);
 }
 .fare-top { display: flex; align-items: flex-end; justify-content: space-between; gap: 14px; }
@@ -395,9 +366,7 @@ input, textarea { font-family: inherit; }
 .confirm-btn:active { transform: scale(0.978); }
 .confirm-btn:disabled { opacity: 0.5; pointer-events: none; }
 
-/* ==========================================================
-   SIDEBAR
-   ========================================================== */
+/* SIDEBAR */
 #sidebarOverlay {
   position: fixed; inset: 0; z-index: 1900;
   background: rgba(0,0,0,0.42);
@@ -420,8 +389,7 @@ input, textarea { font-family: inherit; }
 .sidebar-head {
   padding: 26px 22px 20px;
   border-bottom: 1px solid var(--line);
-  display: flex; align-items: center; gap: 14px;
-  flex-shrink: 0;
+  display: flex; align-items: center; gap: 14px; flex-shrink: 0;
 }
 .sidebar-avatar {
   width: 54px; height: 54px; border-radius: 50%;
@@ -485,9 +453,7 @@ input, textarea { font-family: inherit; }
 .logout-btn:hover { background: var(--danger-soft); }
 .logout-btn i { width: 22px; text-align: center; font-size: 1rem; }
 
-/* ==========================================================
-   SHARED PAGES
-   ========================================================== */
+/* PAGES */
 #ridePage, #deliveryPage, #postErrandPage, #postedErrandsPage,
 #errandDetailsPage, #chatPage, #historyPage, #transactionsPage {
   position: fixed; inset: 0; z-index: 3000;
@@ -524,14 +490,11 @@ input, textarea { font-family: inherit; }
   -webkit-overflow-scrolling: touch;
 }
 .page-scroll {
-  max-width: 620px;
-  margin: 0 auto;
+  max-width: 620px; margin: 0 auto;
   padding: 16px 16px 40px;
 }
 
-/* ==========================================================
-   SEARCH INPUTS
-   ========================================================== */
+/* SEARCH */
 .ride-body { flex: 1; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
 .ride-inputs { flex: 0 0 auto; padding: 16px 16px 12px; border-bottom: 1px solid var(--line); }
 .input-card {
@@ -576,38 +539,26 @@ input, textarea { font-family: inherit; }
   padding: 6px 0 24px;
 }
 .results-hint {
-  padding: 30px 24px;
-  text-align: center;
+  padding: 30px 24px; text-align: center;
   color: var(--text-tertiary);
-  font-size: 0.84rem;
-  line-height: 1.6;
+  font-size: 0.84rem; line-height: 1.6;
 }
 .results-hint i { display: block; font-size: 1.9rem; margin-bottom: 12px; color: #d8d8dc; }
-
 .results-heading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  display: flex; align-items: center; justify-content: space-between;
   padding: 14px 18px 8px;
-  font-size: 0.66rem;
-  font-weight: 800;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
+  font-size: 0.66rem; font-weight: 800;
+  letter-spacing: 1.2px; text-transform: uppercase;
   color: var(--text-tertiary);
 }
 .results-heading .rh-count {
-  font-weight: 700;
-  color: var(--text-secondary);
-  letter-spacing: 0.4px;
-  text-transform: none;
-  font-size: 0.7rem;
+  font-weight: 700; color: var(--text-secondary);
+  letter-spacing: 0.4px; text-transform: none; font-size: 0.7rem;
 }
-
 .result-item {
   width: 100%;
   display: flex; align-items: center; gap: 14px;
-  padding: 14px 18px;
-  text-align: left;
+  padding: 14px 18px; text-align: left;
   border-bottom: 1px solid rgba(0,0,0,0.045);
   transition: background 0.18s var(--ease-smooth);
 }
@@ -649,20 +600,15 @@ input, textarea { font-family: inherit; }
   animation: spin 0.8s linear infinite;
 }
 
-/* ==========================================================
-   FORM ELEMENTS
-   ========================================================== */
+/* FORMS */
 .pill-input {
   width: 100%;
   padding: 13px 16px 13px 42px;
-  font-family: inherit;
   font-size: 0.94rem;
-  font-weight: 400;
   border: 1.5px solid transparent;
   border-radius: var(--radius-sm);
   background: var(--fill-gray);
-  outline: none;
-  color: var(--text-primary);
+  outline: none; color: var(--text-primary);
   transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
 }
 .pill-input::placeholder { color: var(--text-tertiary); font-weight: 400; }
@@ -673,28 +619,21 @@ input, textarea { font-family: inherit; }
   box-shadow: 0 0 0 4px rgba(0,0,0,0.10);
 }
 .pill-textarea { resize: vertical; min-height: 96px; line-height: 1.5; }
-
 .input-icon-group {
-  position: relative;
-  width: 100%;
-  margin-bottom: 0.85rem;
+  position: relative; width: 100%; margin-bottom: 0.85rem;
 }
 .input-icon-group > i {
-  position: absolute;
-  left: 15px;
-  top: 50%;
+  position: absolute; left: 15px; top: 50%;
   transform: translateY(-50%);
   color: var(--text-tertiary);
   font-size: 0.95rem;
-  pointer-events: none;
-  z-index: 1;
+  pointer-events: none; z-index: 1;
 }
 .input-icon-group.textarea-group > i { top: 22px; transform: none; }
 .input-icon-group:focus-within > i { color: #0a0a0a; }
 
 .section-label {
-  font-size: 0.72rem;
-  font-weight: 700;
+  font-size: 0.72rem; font-weight: 700;
   color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.6px;
@@ -702,27 +641,18 @@ input, textarea { font-family: inherit; }
 }
 
 .error-msg {
-  color: #d92d20;
-  font-size: 0.78rem;
-  font-weight: 500;
+  color: #d92d20; font-size: 0.78rem; font-weight: 500;
   margin: 0.4rem 0 0.75rem 4px;
-  line-height: 1.45;
-  white-space: pre-wrap;
+  line-height: 1.45; white-space: pre-wrap;
 }
 .error-msg:empty { display: none; }
 
 .btn {
-  font-family: inherit;
-  font-size: 0.94rem;
-  font-weight: 600;
-  border: none;
-  border-radius: var(--radius-sm);
-  padding: 14px 20px;
-  width: 100%;
+  font-size: 0.94rem; font-weight: 600;
+  border: none; border-radius: var(--radius-sm);
+  padding: 14px 20px; width: 100%;
   cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  display: inline-flex; align-items: center; justify-content: center;
   gap: 9px;
   transition: transform 0.35s var(--spring), box-shadow 0.35s;
 }
@@ -736,66 +666,47 @@ input, textarea { font-family: inherit; }
 .btn-primary:active:not(:disabled) { transform: translateY(0) scale(0.975); }
 .btn:disabled { opacity: 0.55; cursor: not-allowed; }
 
-/* Pickup helper */
-.pickup-actions {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 12px;
-}
+.pickup-actions { display: flex; gap: 10px; margin-bottom: 12px; }
 .pickup-action-btn {
-  flex: 1;
-  padding: 11px 12px;
+  flex: 1; padding: 11px 12px;
   border-radius: var(--radius-sm);
   background: var(--fill-gray);
-  font-size: 0.8rem;
-  font-weight: 700;
+  font-size: 0.8rem; font-weight: 700;
   color: var(--text-primary);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  display: inline-flex; align-items: center; justify-content: center;
   gap: 8px;
   transition: background 0.22s;
 }
 .pickup-action-btn:hover { background: var(--fill-gray-hover); }
 .pickup-action-btn i { font-size: 0.86rem; }
 
-/* Upload box */
 .upload-box {
-  position: relative;
-  width: 100%;
+  position: relative; width: 100%;
   aspect-ratio: 16 / 10;
   background: var(--fill-gray);
   border: 2px dashed rgba(0,0,0,0.14);
   border-radius: var(--radius);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  cursor: pointer;
-  overflow: hidden;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 8px;
+  cursor: pointer; overflow: hidden;
   transition: border-color 0.3s, background 0.3s;
 }
 .upload-box:hover {
-  border-color: #0a0a0a;
-  background: #ffffff;
+  border-color: #0a0a0a; background: #ffffff;
 }
 .upload-box.has-image { border-style: solid; border-color: #0a0a0a; }
 .upload-box img {
-  position: absolute;
-  inset: 0;
+  position: absolute; inset: 0;
   width: 100%; height: 100%;
   object-fit: cover;
 }
 .upload-box .upload-label {
   font-size: 0.76rem; font-weight: 700;
   color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
+  text-transform: uppercase; letter-spacing: 0.4px;
 }
 .upload-box i.upload-icon {
-  font-size: 1.8rem;
-  color: var(--text-tertiary);
+  font-size: 1.8rem; color: var(--text-tertiary);
 }
 .upload-box.has-image .upload-label,
 .upload-box.has-image i.upload-icon { display: none; }
@@ -810,15 +721,12 @@ input, textarea { font-family: inherit; }
   z-index: 4;
 }
 
-/* ==========================================================
-   FACEBOOK-STYLE ERRAND CARDS
-   ========================================================== */
+/* ERRAND CARDS */
 .fb-card {
   background: #ffffff;
   border-radius: 14px;
   box-shadow: 0 0 0 1px var(--line), 0 2px 8px rgba(0,0,0,0.04);
-  margin-bottom: 14px;
-  overflow: hidden;
+  margin-bottom: 14px; overflow: hidden;
   animation: fbCardIn 0.4s var(--ease-out);
 }
 @keyframes fbCardIn {
@@ -826,44 +734,31 @@ input, textarea { font-family: inherit; }
   to   { opacity: 1; transform: translateY(0); }
 }
 .fb-card-head {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+  display: flex; align-items: center; gap: 12px;
   padding: 14px 16px 10px;
 }
 .fb-avatar {
-  width: 44px; height: 44px;
-  border-radius: 50%;
+  width: 44px; height: 44px; border-radius: 50%;
   background: var(--fill-gray);
-  overflow: hidden;
-  flex-shrink: 0;
+  overflow: hidden; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
 }
 .fb-avatar img { width: 100%; height: 100%; object-fit: cover; }
 .fb-avatar i { color: var(--text-tertiary); font-size: 1.1rem; }
-
 .fb-meta { flex: 1; min-width: 0; }
 .fb-meta strong {
-  display: block;
-  font-size: 0.9rem;
-  font-weight: 700;
+  display: block; font-size: 0.9rem; font-weight: 700;
   color: var(--text-primary);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .fb-meta span {
-  display: block;
-  font-size: 0.72rem;
-  color: var(--text-secondary);
-  margin-top: 1px;
+  display: block; font-size: 0.72rem;
+  color: var(--text-secondary); margin-top: 1px;
 }
-
 .fb-status {
-  font-size: 0.62rem;
-  font-weight: 800;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  padding: 5px 10px;
-  border-radius: 999px;
+  font-size: 0.62rem; font-weight: 800;
+  letter-spacing: 0.5px; text-transform: uppercase;
+  padding: 5px 10px; border-radius: 999px;
   flex-shrink: 0;
 }
 .fb-status.pending   { background: var(--warn-soft);    color: #b54708; }
@@ -876,88 +771,54 @@ input, textarea { font-family: inherit; }
 
 .fb-card-body { padding: 4px 16px 12px; }
 .fb-card-body h4 {
-  font-size: 0.98rem;
-  font-weight: 800;
-  letter-spacing: -0.25px;
-  margin-bottom: 6px;
+  font-size: 0.98rem; font-weight: 800;
+  letter-spacing: -0.25px; margin-bottom: 6px;
   color: var(--text-primary);
 }
 .fb-card-body p {
-  font-size: 0.86rem;
-  color: var(--text-secondary);
-  line-height: 1.5;
-  margin-bottom: 10px;
-  white-space: pre-wrap;
-  word-break: break-word;
+  font-size: 0.86rem; color: var(--text-secondary);
+  line-height: 1.5; margin-bottom: 10px;
+  white-space: pre-wrap; word-break: break-word;
 }
-
 .fb-image {
-  border-radius: 12px;
-  overflow: hidden;
-  margin-bottom: 10px;
-  background: var(--fill-gray);
+  border-radius: 12px; overflow: hidden;
+  margin-bottom: 10px; background: var(--fill-gray);
   max-height: 320px;
 }
 .fb-image img {
-  width: 100%;
-  max-height: 320px;
-  object-fit: cover;
-  display: block;
+  width: 100%; max-height: 320px;
+  object-fit: cover; display: block;
 }
-
 .fb-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
+  display: flex; flex-wrap: wrap; gap: 6px;
   margin-bottom: 4px;
 }
 .fb-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.72rem;
-  font-weight: 600;
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 0.72rem; font-weight: 600;
   color: var(--text-secondary);
   background: var(--fill-gray);
-  padding: 5px 10px;
-  border-radius: 999px;
+  padding: 5px 10px; border-radius: 999px;
 }
 .fb-tag i { font-size: 0.7rem; }
-.fb-tag.price {
-  background: #0a0a0a;
-  color: #fff;
-  font-weight: 800;
-}
-
+.fb-tag.price { background: #0a0a0a; color: #fff; font-weight: 800; }
 .fb-card-stats {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  display: flex; align-items: center; justify-content: space-between;
   padding: 8px 16px;
   border-top: 1px solid var(--line);
-  font-size: 0.72rem;
-  color: var(--text-secondary);
-  font-weight: 600;
+  font-size: 0.72rem; color: var(--text-secondary); font-weight: 600;
 }
 .fb-card-stats .stat-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
+  display: inline-flex; align-items: center; gap: 6px;
 }
-
 .fb-card-footer {
-  display: flex;
-  border-top: 1px solid var(--line);
+  display: flex; border-top: 1px solid var(--line);
 }
 .fb-card-footer button {
-  flex: 1;
-  padding: 12px 8px;
-  font-size: 0.82rem;
-  font-weight: 700;
+  flex: 1; padding: 12px 8px;
+  font-size: 0.82rem; font-weight: 700;
   color: var(--text-primary);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  display: inline-flex; align-items: center; justify-content: center;
   gap: 7px;
   transition: background 0.2s;
 }
@@ -967,189 +828,131 @@ input, textarea { font-family: inherit; }
 .fb-card-footer button.primary:hover { background: #1c1c1e; }
 .fb-card-footer button i { font-size: 0.78rem; }
 
-/* Empty state */
 .empty-state {
-  text-align: center;
-  padding: 50px 24px;
+  text-align: center; padding: 50px 24px;
   color: var(--text-secondary);
 }
 .empty-state i {
-  font-size: 3rem;
-  color: #d8d8dc;
-  margin-bottom: 16px;
-  display: block;
+  font-size: 3rem; color: #d8d8dc;
+  margin-bottom: 16px; display: block;
 }
 .empty-state h3 {
-  font-size: 1.05rem;
-  font-weight: 800;
+  font-size: 1.05rem; font-weight: 800;
   color: var(--text-primary);
-  margin-bottom: 6px;
-  letter-spacing: -0.3px;
+  margin-bottom: 6px; letter-spacing: -0.3px;
 }
 .empty-state p {
-  font-size: 0.86rem;
-  line-height: 1.55;
-  max-width: 320px;
-  margin: 0 auto;
+  font-size: 0.86rem; line-height: 1.55;
+  max-width: 320px; margin: 0 auto;
 }
 
-/* ==========================================================
-   OFFERS (in errand details)
-   ========================================================== */
+/* OFFERS */
 .offer-card {
   background: #ffffff;
   border-radius: 14px;
   box-shadow: 0 0 0 1px var(--line), 0 2px 8px rgba(0,0,0,0.04);
-  padding: 16px;
-  margin-bottom: 10px;
-  display: flex;
-  gap: 14px;
-  align-items: flex-start;
+  padding: 16px; margin-bottom: 10px;
+  display: flex; gap: 14px; align-items: flex-start;
   animation: fbCardIn 0.4s var(--ease-out);
 }
 .offer-avatar {
-  width: 48px; height: 48px;
-  border-radius: 50%;
+  width: 48px; height: 48px; border-radius: 50%;
   background: var(--fill-gray);
-  overflow: hidden;
-  flex-shrink: 0;
+  overflow: hidden; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
 }
 .offer-avatar img { width: 100%; height: 100%; object-fit: cover; }
 .offer-avatar i { color: var(--text-tertiary); font-size: 1.2rem; }
 .offer-body { flex: 1; min-width: 0; }
 .offer-body strong {
-  display: block;
-  font-size: 0.94rem;
-  font-weight: 800;
-  letter-spacing: -0.2px;
-  margin-bottom: 3px;
+  display: block; font-size: 0.94rem; font-weight: 800;
+  letter-spacing: -0.2px; margin-bottom: 3px;
 }
 .offer-body .offer-message {
-  font-size: 0.82rem;
-  color: var(--text-secondary);
-  line-height: 1.5;
-  margin-bottom: 10px;
+  font-size: 0.82rem; color: var(--text-secondary);
+  line-height: 1.5; margin-bottom: 10px;
   word-break: break-word;
 }
 .offer-price-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap;
 }
 .offer-price {
-  font-size: 1.2rem;
-  font-weight: 800;
+  font-size: 1.2rem; font-weight: 800;
   letter-spacing: -0.5px;
 }
 .offer-price small { font-size: 0.78rem; font-weight: 700; opacity: 0.6; margin-right: 2px; }
 .offer-accept-btn {
   padding: 10px 18px;
   border-radius: 999px;
-  background: #0a0a0a;
-  color: #fff;
-  font-size: 0.82rem;
-  font-weight: 700;
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
+  background: #0a0a0a; color: #fff;
+  font-size: 0.82rem; font-weight: 700;
+  display: inline-flex; align-items: center; gap: 7px;
   transition: transform 0.28s var(--spring);
 }
 .offer-accept-btn:active { transform: scale(0.95); }
 .offer-accept-btn:disabled { opacity: 0.5; }
-
 .offers-empty {
-  text-align: center;
-  padding: 34px 20px;
+  text-align: center; padding: 34px 20px;
   color: var(--text-secondary);
   background: var(--fill-gray);
   border-radius: 14px;
 }
 .offers-empty .mini-spin {
   width: 22px; height: 22px;
-  margin: 0 auto 14px;
-  display: block;
+  margin: 0 auto 14px; display: block;
   border-width: 2.5px;
 }
 .offers-empty strong {
-  display: block;
-  font-size: 0.92rem;
-  font-weight: 800;
-  color: var(--text-primary);
-  margin-bottom: 4px;
+  display: block; font-size: 0.92rem; font-weight: 800;
+  color: var(--text-primary); margin-bottom: 4px;
 }
 .offers-empty p {
-  font-size: 0.82rem;
-  line-height: 1.5;
-  max-width: 300px;
-  margin: 0 auto;
+  font-size: 0.82rem; line-height: 1.5;
+  max-width: 300px; margin: 0 auto;
 }
 
-/* Detail header card */
 .detail-head-card {
-  background: #0a0a0a;
-  color: #fff;
-  border-radius: 14px;
-  padding: 18px;
-  margin-bottom: 16px;
+  background: #0a0a0a; color: #fff;
+  border-radius: 14px; padding: 18px; margin-bottom: 16px;
 }
 .detail-head-card h3 {
-  font-size: 1.05rem;
-  font-weight: 800;
-  letter-spacing: -0.3px;
-  margin-bottom: 6px;
+  font-size: 1.05rem; font-weight: 800;
+  letter-spacing: -0.3px; margin-bottom: 6px;
 }
 .detail-head-card p {
   font-size: 0.82rem;
   color: rgba(255,255,255,0.7);
-  line-height: 1.5;
-  margin-bottom: 12px;
+  line-height: 1.5; margin-bottom: 12px;
   word-break: break-word;
 }
 .detail-head-stats {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
+  display: flex; gap: 10px; flex-wrap: wrap;
 }
 .detail-head-stat {
   background: rgba(255,255,255,0.1);
-  padding: 8px 12px;
-  border-radius: 10px;
-  font-size: 0.74rem;
-  font-weight: 700;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
+  padding: 8px 12px; border-radius: 10px;
+  font-size: 0.74rem; font-weight: 700;
+  display: inline-flex; align-items: center; gap: 6px;
 }
 .detail-head-stat i { font-size: 0.7rem; opacity: 0.8; }
 
-/* ==========================================================
-   CHAT PAGE
-   ========================================================== */
+/* CHAT */
 .chat-body {
-  flex: 1; min-height: 0;
-  overflow-y: auto;
+  flex: 1; min-height: 0; overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  padding: 16px 16px 12px;
-  background: #f7f8fa;
+  padding: 16px 16px 12px; background: #f7f8fa;
 }
 .chat-messages {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  max-width: 620px;
-  margin: 0 auto;
+  display: flex; flex-direction: column;
+  gap: 8px; max-width: 620px; margin: 0 auto;
 }
 .chat-msg {
   max-width: 78%;
   padding: 10px 14px;
   border-radius: 18px;
-  font-size: 0.88rem;
-  line-height: 1.45;
-  word-break: break-word;
-  white-space: pre-wrap;
+  font-size: 0.88rem; line-height: 1.45;
+  word-break: break-word; white-space: pre-wrap;
   animation: chatIn 0.24s var(--ease-out);
 }
 @keyframes chatIn {
@@ -1157,98 +960,70 @@ input, textarea { font-family: inherit; }
   to   { opacity: 1; transform: translateY(0); }
 }
 .chat-msg.them {
-  background: #ffffff;
-  color: var(--text-primary);
-  align-self: flex-start;
-  border-bottom-left-radius: 6px;
+  background: #ffffff; color: var(--text-primary);
+  align-self: flex-start; border-bottom-left-radius: 6px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.06);
 }
 .chat-msg.me {
-  background: #0a0a0a;
-  color: #fff;
-  align-self: flex-end;
-  border-bottom-right-radius: 6px;
+  background: #0a0a0a; color: #fff;
+  align-self: flex-end; border-bottom-right-radius: 6px;
 }
 .chat-msg-meta {
-  font-size: 0.64rem;
-  font-weight: 700;
-  opacity: 0.55;
-  margin-top: 4px;
-  display: block;
+  font-size: 0.64rem; font-weight: 700;
+  opacity: 0.55; margin-top: 4px; display: block;
 }
 .chat-empty {
-  text-align: center;
-  padding: 40px 20px;
-  color: var(--text-secondary);
-  font-size: 0.86rem;
+  text-align: center; padding: 40px 20px;
+  color: var(--text-secondary); font-size: 0.86rem;
 }
 .chat-empty i {
-  display: block;
-  font-size: 2.4rem;
-  color: #d8d8dc;
-  margin-bottom: 14px;
+  display: block; font-size: 2.4rem;
+  color: #d8d8dc; margin-bottom: 14px;
 }
-
 .chat-input-row {
   flex: 0 0 auto;
-  display: flex;
-  align-items: flex-end;
-  gap: 10px;
+  display: flex; align-items: flex-end; gap: 10px;
   padding: 12px 16px 16px;
   background: #ffffff;
   border-top: 1px solid var(--line);
 }
 .chat-input-row textarea {
-  flex: 1;
-  min-height: 44px;
-  max-height: 120px;
+  flex: 1; min-height: 44px; max-height: 120px;
   padding: 11px 14px;
   border-radius: 22px;
   border: 1.5px solid transparent;
   background: var(--fill-gray);
-  outline: none;
-  font-size: 0.9rem;
-  resize: none;
-  font-family: inherit;
-  line-height: 1.4;
+  outline: none; font-size: 0.9rem;
+  resize: none; line-height: 1.4;
   transition: background 0.22s, border-color 0.22s;
 }
 .chat-input-row textarea:focus {
-  background: #ffffff;
-  border-color: #0a0a0a;
+  background: #ffffff; border-color: #0a0a0a;
 }
 .chat-send-btn {
-  width: 44px; height: 44px;
-  border-radius: 50%;
-  background: #0a0a0a;
-  color: #fff;
+  width: 44px; height: 44px; border-radius: 50%;
+  background: #0a0a0a; color: #fff;
   display: flex; align-items: center; justify-content: center;
-  font-size: 1rem;
-  flex-shrink: 0;
+  font-size: 1rem; flex-shrink: 0;
   transition: transform 0.28s var(--spring);
 }
 .chat-send-btn:active { transform: scale(0.92); }
 .chat-send-btn:disabled { opacity: 0.5; }
 
-/* ==========================================================
-   VEHICLE SHEET
-   ========================================================== */
+/* VEHICLE SHEET */
 .sheet-overlay {
   position: fixed; inset: 0; z-index: 3500;
   background: rgba(0,0,0,0.55);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
-  display: none;
-  align-items: flex-end;
-  justify-content: center;
+  display: none; align-items: flex-end; justify-content: center;
 }
 .sheet-overlay.open { display: flex; animation: fadeIn 0.24s var(--ease-out); }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 .sheet {
   background: #ffffff;
   border-radius: 26px 26px 0 0;
-  width: 100%;
-  max-width: 560px;
+  width: 100%; max-width: 560px;
   padding: 12px 20px 28px;
   animation: sheetUp 0.42s var(--panel-ease);
   box-shadow: 0 -12px 40px rgba(0,0,0,0.28);
@@ -1258,8 +1033,7 @@ input, textarea { font-family: inherit; }
   to   { transform: translateY(0); }
 }
 .sheet-handle {
-  width: 42px; height: 4px;
-  border-radius: 999px;
+  width: 42px; height: 4px; border-radius: 999px;
   background: rgba(0,0,0,0.14);
   margin: 4px auto 18px;
 }
@@ -1314,42 +1088,33 @@ input, textarea { font-family: inherit; }
   letter-spacing: 0.4px; margin-top: 2px;
 }
 .sheet-cancel {
-  width: 100%;
-  padding: 14px;
+  width: 100%; padding: 14px;
   border-radius: var(--radius-sm);
   background: var(--fill-gray);
   color: var(--text-primary);
-  font-size: 0.9rem;
-  font-weight: 700;
+  font-size: 0.9rem; font-weight: 700;
 }
 .sheet-cancel:hover { background: var(--fill-gray-hover); }
 
-/* ==========================================================
-   SEARCHING OVERLAY
-   ========================================================== */
+/* SEARCHING OVERLAY */
 .searching-overlay {
   position: fixed; inset: 0; z-index: 4000;
   background: rgba(10,10,10,0.72);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  overflow-y: auto;
+  display: none; align-items: center; justify-content: center;
+  padding: 24px; overflow-y: auto;
 }
 .searching-overlay.open { display: flex; animation: fadeIn 0.32s var(--ease-out); }
 .searching-card {
   background: #ffffff;
   border-radius: 26px;
   padding: 30px 26px 26px;
-  max-width: 380px;
-  width: 100%;
+  max-width: 380px; width: 100%;
   text-align: center;
   box-shadow: 0 24px 64px rgba(0,0,0,0.4);
   animation: modalIn 0.42s var(--spring);
-  max-height: 92vh;
-  overflow-y: auto;
+  max-height: 92vh; overflow-y: auto;
 }
 @keyframes modalIn {
   from { opacity: 0; transform: scale(0.94) translateY(16px); }
@@ -1374,26 +1139,21 @@ input, textarea { font-family: inherit; }
   100% { transform: scale(1.65); opacity: 0; }
 }
 .searching-radar .radar-center {
-  position: absolute;
-  inset: 32px;
+  position: absolute; inset: 32px;
   border-radius: 50%;
   background: #0a0a0a; color: #ffffff;
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.35rem;
-  z-index: 2;
+  font-size: 1.35rem; z-index: 2;
   box-shadow: 0 0 0 6px rgba(255,255,255,0.9);
 }
 .searching-card h2 {
-  font-size: 1.15rem;
-  font-weight: 800;
-  letter-spacing: -0.4px;
-  margin-bottom: 6px;
+  font-size: 1.15rem; font-weight: 800;
+  letter-spacing: -0.4px; margin-bottom: 6px;
 }
 .searching-card p {
   font-size: 0.84rem;
   color: var(--text-secondary);
-  line-height: 1.5;
-  margin-bottom: 16px;
+  line-height: 1.5; margin-bottom: 16px;
 }
 .searching-dots {
   display: flex; justify-content: center;
@@ -1402,8 +1162,7 @@ input, textarea { font-family: inherit; }
 .searching-dots span {
   width: 8px; height: 8px;
   border-radius: 50%;
-  background: #0a0a0a;
-  opacity: 0.3;
+  background: #0a0a0a; opacity: 0.3;
   animation: dotBounce 1.2s var(--ease-smooth) infinite;
 }
 .searching-dots span:nth-child(2) { animation-delay: 0.15s; }
@@ -1413,34 +1172,26 @@ input, textarea { font-family: inherit; }
   50%      { opacity: 1;   transform: translateY(-5px); }
 }
 .searching-cancel {
-  width: 100%;
-  padding: 13px;
+  width: 100%; padding: 13px;
   border-radius: var(--radius-sm);
   background: var(--fill-gray);
   color: var(--text-primary);
-  font-size: 0.9rem;
-  font-weight: 700;
+  font-size: 0.9rem; font-weight: 700;
   transition: background 0.22s, transform 0.28s;
 }
 .searching-cancel:active { transform: scale(0.97); }
 
-/* ==========================================================
-   PROVIDER FOUND CARD (inside searching overlay)
-   ========================================================== */
+/* PROVIDER FOUND */
 .provider-found-card {
-  display: flex;
-  align-items: center;
-  gap: 14px;
+  display: flex; align-items: center; gap: 14px;
   padding: 14px;
   background: var(--fill-gray);
   border-radius: var(--radius);
-  margin-bottom: 14px;
-  text-align: left;
+  margin-bottom: 14px; text-align: left;
 }
 .provider-found-avatar {
   width: 56px; height: 56px; border-radius: 50%;
-  background: #fff; overflow: hidden;
-  flex-shrink: 0;
+  background: #fff; overflow: hidden; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
   box-shadow: 0 0 0 2px #fff, 0 0 0 4px rgba(0,0,0,0.08);
 }
@@ -1448,11 +1199,8 @@ input, textarea { font-family: inherit; }
 .provider-found-avatar i { font-size: 1.4rem; color: var(--text-tertiary); }
 .provider-found-body { flex: 1; min-width: 0; }
 .provider-found-body strong {
-  display: block;
-  font-size: 1rem;
-  font-weight: 800;
-  letter-spacing: -0.3px;
-  margin-bottom: 4px;
+  display: block; font-size: 1rem; font-weight: 800;
+  letter-spacing: -0.3px; margin-bottom: 4px;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .provider-found-meta { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -1461,16 +1209,14 @@ input, textarea { font-family: inherit; }
   font-size: 0.7rem; font-weight: 700;
   color: var(--text-secondary);
   background: #fff;
-  padding: 4px 9px;
-  border-radius: 999px;
+  padding: 4px 9px; border-radius: 999px;
 }
 .provider-found-meta span i { font-size: 0.62rem; }
 .provider-call-btn {
   width: 46px; height: 46px; border-radius: 50%;
   background: var(--success); color: #fff;
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.05rem;
-  flex-shrink: 0;
+  font-size: 1.05rem; flex-shrink: 0;
   text-decoration: none;
   box-shadow: 0 6px 16px -4px rgba(18,183,106,0.5);
   transition: transform 0.28s var(--spring);
@@ -1478,20 +1224,16 @@ input, textarea { font-family: inherit; }
 .provider-call-btn:active { transform: scale(0.92); }
 .provider-vehicle-preview {
   border-radius: var(--radius);
-  overflow: hidden;
-  margin-bottom: 16px;
+  overflow: hidden; margin-bottom: 16px;
   background: var(--fill-gray);
   max-height: 210px;
 }
 .provider-vehicle-preview img {
-  width: 100%;
-  max-height: 210px;
-  object-fit: cover;
-  display: block;
+  width: 100%; max-height: 210px;
+  object-fit: cover; display: block;
 }
 .trip-status-card {
-  padding: 8px 6px 20px;
-  text-align: center;
+  padding: 8px 6px 20px; text-align: center;
 }
 .trip-status-icon {
   width: 68px; height: 68px; border-radius: 50%;
@@ -1502,25 +1244,20 @@ input, textarea { font-family: inherit; }
   animation: tripPulse 2s var(--ease-smooth) infinite;
 }
 .trip-status-card h2 {
-  font-size: 1.1rem;
-  font-weight: 800;
-  letter-spacing: -0.35px;
-  margin-bottom: 6px;
+  font-size: 1.1rem; font-weight: 800;
+  letter-spacing: -0.35px; margin-bottom: 6px;
 }
 .trip-status-card p {
   font-size: 0.85rem;
   color: var(--text-secondary);
-  line-height: 1.5;
-  margin-bottom: 0;
+  line-height: 1.5; margin-bottom: 0;
 }
 @keyframes tripPulse {
   0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(10,10,10,0.5); }
   50%      { transform: scale(1.05); box-shadow: 0 0 0 14px rgba(10,10,10,0); }
 }
 
-/* ==========================================================
-   MARKERS
-   ========================================================== */
+/* MARKERS */
 .mk-dot {
   width: 18px; height: 18px; border-radius: 50%;
   background: #0a0a0a; border: 3.5px solid #ffffff;
@@ -1552,7 +1289,6 @@ input, textarea { font-family: inherit; }
   70%  { transform: scale(1.25); opacity: 0; }
   100% { transform: scale(1.25); opacity: 0; }
 }
-
 .leaflet-tile-pane {
   filter: saturate(0.85) contrast(1.05) brightness(1.02);
 }
@@ -1565,9 +1301,7 @@ input, textarea { font-family: inherit; }
 }
 .leaflet-control-attribution a { color: #6e6e73 !important; }
 
-/* ==========================================================
-   TOAST
-   ========================================================== */
+/* TOAST */
 #toast {
   position: fixed; left: 50%; bottom: 26px; z-index: 6000;
   transform: translate(-50%, 24px);
@@ -1582,28 +1316,22 @@ input, textarea { font-family: inherit; }
 }
 #toast.show { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
 
-/* ==========================================================
-   HISTORY / TRANSACTIONS
-   ========================================================== */
+/* HISTORY */
 .filter-tabs {
-  display: flex;
-  gap: 8px;
+  display: flex; gap: 8px;
   padding: 12px 16px 8px;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   border-bottom: 1px solid var(--line);
   background: #ffffff;
-  position: sticky;
-  top: 0;
-  z-index: 10;
+  position: sticky; top: 0; z-index: 10;
 }
 .filter-tabs::-webkit-scrollbar { display: none; }
 .filter-tab {
   flex-shrink: 0;
   padding: 9px 16px;
   border-radius: 999px;
-  font-size: 0.8rem;
-  font-weight: 700;
+  font-size: 0.8rem; font-weight: 700;
   color: var(--text-secondary);
   background: var(--fill-gray);
   transition: background 0.22s, color 0.22s;
@@ -1613,42 +1341,29 @@ input, textarea { font-family: inherit; }
 .filter-tab:hover:not(.active) { background: var(--fill-gray-hover); }
 
 .summary-strip {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin: 4px 0 16px;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 10px; margin: 4px 0 16px;
 }
 .summary-tile {
   background: var(--fill-gray);
   border-radius: 14px;
   padding: 14px 16px;
 }
-.summary-tile.dark {
-  background: #0a0a0a;
-  color: #fff;
-}
+.summary-tile.dark { background: #0a0a0a; color: #fff; }
 .summary-tile small {
-  display: block;
-  font-size: 0.64rem;
-  font-weight: 700;
-  letter-spacing: 1.1px;
-  text-transform: uppercase;
-  color: var(--text-tertiary);
-  margin-bottom: 6px;
+  display: block; font-size: 0.64rem; font-weight: 700;
+  letter-spacing: 1.1px; text-transform: uppercase;
+  color: var(--text-tertiary); margin-bottom: 6px;
 }
 .summary-tile.dark small { color: rgba(255,255,255,0.55); }
 .summary-tile strong {
-  display: block;
-  font-size: 1.35rem;
-  font-weight: 800;
+  display: block; font-size: 1.35rem; font-weight: 800;
   letter-spacing: -0.6px;
 }
 .summary-tile.dark strong { color: #fff; }
 
 .history-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
+  display: flex; align-items: flex-start; gap: 14px;
   padding: 14px 16px;
   background: #ffffff;
   border-radius: 14px;
@@ -1659,63 +1374,40 @@ input, textarea { font-family: inherit; }
 .history-item .h-ico {
   width: 44px; height: 44px;
   border-radius: 12px;
-  background: #0a0a0a;
-  color: #ffffff;
+  background: #0a0a0a; color: #ffffff;
   display: flex; align-items: center; justify-content: center;
-  font-size: 1rem;
-  flex-shrink: 0;
+  font-size: 1rem; flex-shrink: 0;
 }
 .history-item .h-ico.ride      { background: #0a0a0a; }
 .history-item .h-ico.delivery  { background: #175cd3; }
 .history-item .h-ico.errand    { background: #027a48; }
 .history-item .h-body { flex: 1; min-width: 0; }
 .history-item .h-title {
-  font-size: 0.92rem;
-  font-weight: 800;
+  font-size: 0.92rem; font-weight: 800;
   letter-spacing: -0.25px;
   color: var(--text-primary);
   margin-bottom: 3px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .history-item .h-route {
-  font-size: 0.76rem;
-  color: var(--text-secondary);
-  line-height: 1.4;
-  margin-bottom: 6px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  font-size: 0.76rem; color: var(--text-secondary);
+  line-height: 1.4; margin-bottom: 6px;
+  display: flex; align-items: center; gap: 6px;
   min-width: 0;
 }
 .history-item .h-route span {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  min-width: 0;
+  white-space: nowrap; overflow: hidden;
+  text-overflow: ellipsis; min-width: 0;
 }
-.history-item .h-route i {
-  color: var(--text-tertiary);
-  font-size: 0.62rem;
-  flex-shrink: 0;
-}
+.history-item .h-route i { color: var(--text-tertiary); font-size: 0.62rem; flex-shrink: 0; }
 .history-item .h-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  align-items: center;
+  display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
 }
 .history-item .h-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 0.68rem;
-  font-weight: 700;
-  padding: 4px 9px;
-  border-radius: 999px;
-  background: var(--fill-gray);
-  color: var(--text-secondary);
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 0.68rem; font-weight: 700;
+  padding: 4px 9px; border-radius: 999px;
+  background: var(--fill-gray); color: var(--text-secondary);
 }
 .history-item .h-chip.status-pending     { background: var(--warn-soft);    color: #b54708; }
 .history-item .h-chip.status-accepted    { background: var(--success-soft); color: #027a48; }
@@ -1724,31 +1416,20 @@ input, textarea { font-family: inherit; }
 .history-item .h-chip.status-rejected    { background: var(--danger-soft);  color: #b42318; }
 .history-item .h-chip.status-searching   { background: var(--info-soft);    color: #175cd3; }
 .history-item .h-chip.status-in_progress { background: var(--success-soft); color: #027a48; }
-
 .history-item .h-price {
-  text-align: right;
-  flex-shrink: 0;
-  align-self: flex-start;
+  text-align: right; flex-shrink: 0; align-self: flex-start;
 }
 .history-item .h-price strong {
-  display: block;
-  font-size: 1rem;
-  font-weight: 800;
+  display: block; font-size: 1rem; font-weight: 800;
   letter-spacing: -0.35px;
 }
 .history-item .h-price small {
-  display: block;
-  font-size: 0.62rem;
-  color: var(--text-tertiary);
-  font-weight: 700;
-  letter-spacing: 0.3px;
-  margin-top: 2px;
+  display: block; font-size: 0.62rem;
+  color: var(--text-tertiary); font-weight: 700;
+  letter-spacing: 0.3px; margin-top: 2px;
 }
-
 .tx-item {
-  display: flex;
-  align-items: center;
-  gap: 14px;
+  display: flex; align-items: center; gap: 14px;
   padding: 14px 16px;
   background: #ffffff;
   border-radius: 14px;
@@ -1759,60 +1440,41 @@ input, textarea { font-family: inherit; }
 .tx-item .tx-ico {
   width: 42px; height: 42px;
   border-radius: 12px;
-  background: var(--fill-gray);
-  color: var(--text-primary);
+  background: var(--fill-gray); color: var(--text-primary);
   display: flex; align-items: center; justify-content: center;
-  font-size: 1rem;
-  flex-shrink: 0;
+  font-size: 1rem; flex-shrink: 0;
 }
 .tx-item .tx-ico.out { background: #fef3f2; color: #b42318; }
 .tx-item .tx-ico.in  { background: #ecfdf3; color: #027a48; }
 .tx-item .tx-body { flex: 1; min-width: 0; }
 .tx-item .tx-title {
-  font-size: 0.9rem;
-  font-weight: 700;
+  font-size: 0.9rem; font-weight: 700;
   color: var(--text-primary);
-  letter-spacing: -0.2px;
-  margin-bottom: 3px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  letter-spacing: -0.2px; margin-bottom: 3px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .tx-item .tx-sub {
-  font-size: 0.72rem;
-  color: var(--text-secondary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-size: 0.72rem; color: var(--text-secondary);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .tx-item .tx-amount {
-  text-align: right;
-  flex-shrink: 0;
+  text-align: right; flex-shrink: 0;
 }
 .tx-item .tx-amount strong {
-  display: block;
-  font-size: 0.98rem;
-  font-weight: 800;
+  display: block; font-size: 0.98rem; font-weight: 800;
   letter-spacing: -0.35px;
 }
 .tx-item .tx-amount .tx-status {
-  display: inline-block;
-  margin-top: 3px;
-  font-size: 0.6rem;
-  font-weight: 800;
-  letter-spacing: 0.6px;
-  text-transform: uppercase;
-  padding: 3px 8px;
-  border-radius: 999px;
+  display: inline-block; margin-top: 3px;
+  font-size: 0.6rem; font-weight: 800;
+  letter-spacing: 0.6px; text-transform: uppercase;
+  padding: 3px 8px; border-radius: 999px;
 }
 .tx-status.completed { background: var(--success-soft); color: #027a48; }
 .tx-status.pending   { background: var(--warn-soft);    color: #b54708; }
 .tx-status.failed    { background: var(--danger-soft);  color: #b42318; }
 .tx-status.cancelled { background: #f4f4f5;             color: #52525b; }
 
-/* ==========================================================
-   RESPONSIVE
-   ========================================================== */
 @media (max-width: 380px) {
   .btn-ride { padding: 22px 18px; }
   .btn-ride .ride-ico { width: 42px; height: 42px; font-size: 1.1rem; }
@@ -2351,7 +2013,7 @@ input, textarea { font-family: inherit; }
 import { initializeApp } from "firebase/app";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import {
-  getDatabase, ref, set, get, update, push, onValue, off, serverTimestamp, remove
+  getDatabase, ref, set, get, update, push, onValue
 } from "firebase/database";
 
 /* ============================================================
@@ -2378,7 +2040,7 @@ const CLOUD_NAME = 'dd3lcymrk';
 const UPLOAD_PRESET = 'h3eyhc2o';
 
 /* ============================================================
-   DYNAMIC CONFIG — controlled by admin
+   DYNAMIC CONFIG (admin-controlled)
    ============================================================ */
 const CONFIG = {
   pricing: {
@@ -2599,16 +2261,16 @@ let activeSearchKind = null;
 let activeTripListenerUnsub = null;
 let activeProviderLocUnsub = null;
 let currentProviderId = null;
-let currentTripKind = null;
+let currentTripKind = null;   // 'ride' | 'delivery'
 let currentTripId = null;
 let currentTripData = null;
-let currentTripMeta = null; // { icon, title, vehicleLabel }
+let currentTripMeta = null;   // { icon, title, vehicleLabel, providerType }
 
 /* Config listeners */
 let configPricingUnsub = null;
 let configSettingsUnsub = null;
 
-/* History/transactions */
+/* History / transactions */
 let historyCache = { rides: [], deliveries: [], errands: [] };
 let historyFilter = 'all';
 let txCache = [];
@@ -2710,6 +2372,7 @@ function statusLabel(status) {
   return status.charAt(0).toUpperCase() + status.slice(1).replace(/_/g, ' ');
 }
 
+/* Which FA icon goes with a provider role */
 function vehicleIcon(role) {
   const r = String(role || '').toLowerCase();
   if (r === 'cyclist' || r === 'bicycle') return 'fa-bicycle';
@@ -2718,8 +2381,16 @@ function vehicleIcon(role) {
   return 'fa-car';
 }
 
+function vehicleLabelForRole(role) {
+  const r = String(role || '').toLowerCase();
+  if (r === 'cyclist' || r === 'bicycle') return 'Bicycle';
+  if (r === 'walker' || r === 'walking') return 'Walking';
+  if (r === 'motorbike' || r === 'rider' || r === 'motorcycle') return 'Motorbike';
+  return 'Car';
+}
+
 /* ============================================================
-   FARE CALCULATIONS — powered by CONFIG.pricing
+   FARE CALCULATIONS
    ============================================================ */
 function computeRideFare(distanceMeters, durationSeconds) {
   const cfg = CONFIG.pricing.ride;
@@ -2757,7 +2428,6 @@ function startConfigListeners() {
       cyclist:   Object.assign({}, CONFIG.pricing.cyclist,   p.cyclist   || {}),
       walker:    Object.assign({}, CONFIG.pricing.walker,    p.walker    || {})
     };
-    // Re-render displayed fare if trip pane is currently shown
     if (currentRoute && paneTrip.classList.contains('active')) {
       const fare = computeRideFare(currentRoute.distance, currentRoute.duration);
       fareTotal.textContent = formatPrice(fare.finalFare);
@@ -2891,7 +2561,6 @@ function setDropoffMarker(lat, lng) {
   if (dropoffMarker) dropoffMarker.setLatLng([lat, lng]);
   else dropoffMarker = L.marker([lat, lng], { icon, zIndexOffset: 1000 }).addTo(map);
 }
-
 function providerMarkerIcon(role) {
   const icon = vehicleIcon(role);
   return L.divIcon({
@@ -2901,7 +2570,6 @@ function providerMarkerIcon(role) {
     iconAnchor: [22, 22]
   });
 }
-
 function setProviderMarker(lat, lng, role) {
   if (!map) return;
   const icon = providerMarkerIcon(role);
@@ -2912,14 +2580,12 @@ function setProviderMarker(lat, lng, role) {
     providerMarker = L.marker([lat, lng], { icon, zIndexOffset: 1500 }).addTo(map);
   }
 }
-
 function removeProviderMarker() {
   if (providerMarker && map) {
     try { map.removeLayer(providerMarker); } catch(e) {}
   }
   providerMarker = null;
 }
-
 function clearTripLayers() {
   if (!map) return;
   if (routeLayer) { map.removeLayer(routeLayer); routeLayer = null; }
@@ -4054,6 +3720,7 @@ confirmRideBtn.addEventListener('click', async () => {
     const rideId = rideRef.key;
     activeRideId = rideId;
 
+    // NOTE: no vehicleId — only DRIVERS can pick up rides
     await set(rideRef, {
       rideId,
       customerId: currentUser.uid,
@@ -4080,8 +3747,13 @@ confirmRideBtn.addEventListener('click', async () => {
     activeSearchKind = 'ride';
     currentTripKind = 'ride';
     currentTripId = rideId;
-    currentTripMeta = { icon: 'fa-car', title: 'Searching for a driver', vehicleLabel: 'Car' };
-    openSearchingOverlay('driver');
+    currentTripMeta = {
+      icon: 'fa-car',
+      title: 'Searching for a driver',
+      vehicleLabel: 'Car',
+      providerType: 'driver'
+    };
+    openSearchingOverlay('driver', currentTripMeta);
     startTripTracking('ride', rideId);
   } catch (err) {
     console.error(err);
@@ -4222,21 +3894,33 @@ vehicleSheet.addEventListener('click', (e) => {
   if (e.target === vehicleSheet) vehicleSheet.classList.remove('open');
 });
 
+/* What provider type does each vehicleId map to? */
+function providerTypeForVehicle(vehicleId) {
+  const v = String(vehicleId || '').toLowerCase();
+  if (v === 'motorbike') return 'rider';
+  if (v === 'cyclist')   return 'cyclist';
+  if (v === 'walker')    return 'walker';
+  return 'rider';
+}
+
 async function chooseDeliveryVehicle(price) {
   if (!deliveryVehicle || !deliveryRoute) return;
   vehicleSheet.classList.remove('open');
 
+  // Save delivery to DB
   try {
     const fare = Math.round(price || computeDeliveryFare(deliveryVehicle, deliveryRoute.distance, deliveryRoute.duration).finalFare);
     const deliveryRef = push(ref(database, 'deliveries'));
     const deliveryId = deliveryRef.key;
     activeDeliveryId = deliveryId;
 
+    // NOTE: `vehicleId` is what the provider app uses to match its own role
     await set(deliveryRef, {
       deliveryId,
       customerId: currentUser.uid,
       customerName: customerData?.fullName || 'Customer',
       customerPhone: customerData?.phone || '',
+      customerPhoto: customerData?.profileUrl || '',
       pickup: deliveryPickupLocation,
       dropoff: deliveryDropoffLocation,
       senderName: delSenderName.value.trim(),
@@ -4245,8 +3929,8 @@ async function chooseDeliveryVehicle(price) {
       receiverPhone: delReceiverPhone.value.trim(),
       parcelName: delParcelName.value.trim(),
       parcelDesc: delParcelDesc.value.trim(),
-      vehicleId: deliveryVehicle.id,
-      vehicleLabel: deliveryVehicle.label,
+      vehicleId: deliveryVehicle.id,         // 'motorbike' | 'cyclist' | 'walker'
+      vehicleLabel: deliveryVehicle.label,   // 'Motorbike' | 'Cyclist' | 'Walker'
       distance: deliveryRoute.distance,
       duration: deliveryRoute.duration,
       fare,
@@ -4289,10 +3973,12 @@ async function chooseDeliveryVehicle(price) {
       ]), { padding: [40, 40], maxZoom: 17 });
     }
 
+    // Which provider type does this request invite?
+    const providerType = providerTypeForVehicle(deliveryVehicle.id);
     const labels = {
-      motorbike: { icon: 'fa-motorcycle', title: 'Searching for a motorbike rider', vehicleLabel: 'Motorbike' },
-      cyclist:   { icon: 'fa-bicycle',    title: 'Searching for a cyclist',         vehicleLabel: 'Bicycle' },
-      walker:    { icon: 'fa-person-walking', title: 'Searching for a walker',      vehicleLabel: 'Walking' }
+      motorbike: { icon: 'fa-motorcycle', title: 'Searching for a motorbike rider', vehicleLabel: 'Motorbike', providerType: 'rider' },
+      cyclist:   { icon: 'fa-bicycle',    title: 'Searching for a cyclist',         vehicleLabel: 'Bicycle',   providerType: 'cyclist' },
+      walker:    { icon: 'fa-person-walking', title: 'Searching for a walker',      vehicleLabel: 'Walking',   providerType: 'walker' }
     };
     const meta = labels[deliveryVehicle.id] || labels.motorbike;
     activeSearchKind = 'delivery';
@@ -4387,7 +4073,7 @@ async function loadAndShowProvider(providerId, trip) {
   const role  = p.role || trip.providerRole || (currentTripKind === 'ride' ? 'driver' : (trip.vehicleId || 'rider'));
   const phone = p.phone || trip.providerPhone || '';
   const photo = p.profileUrl || trip.providerPhoto || '';
-  const vehicleLabel = trip.vehicleLabel || p.vehicleLabel || (role.charAt(0).toUpperCase() + role.slice(1));
+  const vehicleLabel = trip.vehicleLabel || p.vehicleLabel || vehicleLabelForRole(role);
 
   providerFoundName.textContent = name;
   providerFoundRole.innerHTML = `<i class="fas fa-id-badge"></i> ${escapeHtml(role.charAt(0).toUpperCase() + role.slice(1))}`;
@@ -4418,7 +4104,6 @@ async function loadAndShowProvider(providerId, trip) {
   } else {
     vehicleImgs = Array.isArray(p.carUrls) ? p.carUrls : [];
   }
-  // Fall back to any vehicle image we have
   if (!vehicleImgs.length) {
     if (Array.isArray(p.carUrls) && p.carUrls.length) vehicleImgs = p.carUrls;
     else if (Array.isArray(p.bikeUrls) && p.bikeUrls.length) vehicleImgs = p.bikeUrls;
@@ -4439,10 +4124,6 @@ async function loadAndShowProvider(providerId, trip) {
     const loc = s.val();
     if (loc && isFinite(loc.lat) && isFinite(loc.lng)) {
       setProviderMarker(loc.lat, loc.lng, role);
-      // Only pan to provider if we are not in_progress
-      if (currentTripData && currentTripData.status !== 'in_progress' && map) {
-        // Optionally fit both user and provider — keep simple, just show marker
-      }
     }
   });
 }
@@ -4450,12 +4131,12 @@ async function loadAndShowProvider(providerId, trip) {
 function updateTripStatusUI(state) {
   if (state === 'accepted') {
     tripStatusIcon.innerHTML = '<i class="fas fa-car"></i>';
-    tripStatusTitle.textContent = 'Your driver is on the way';
+    tripStatusTitle.textContent = 'Your provider is on the way';
     tripStatusSubtitle.textContent = 'They are heading to your pickup location.';
     cancelTripActiveBtn.style.display = 'block';
   } else if (state === 'arrived') {
     tripStatusIcon.innerHTML = '<i class="fas fa-map-pin"></i>';
-    tripStatusTitle.textContent = 'Your driver has arrived';
+    tripStatusTitle.textContent = 'Your provider has arrived';
     tripStatusSubtitle.textContent = 'Meet them at the pickup point.';
     cancelTripActiveBtn.style.display = 'block';
   } else if (state === 'in_progress') {
@@ -4474,7 +4155,6 @@ async function showRouteToDestination(trip) {
   const to = trip.dropoff;
   if (!from || !to) return;
 
-  // Clear existing trip lines but keep pickup marker
   if (routeLayer) { map.removeLayer(routeLayer); routeLayer = null; }
   setPickupMarker(from.lat, from.lng);
   setDropoffMarker(to.lat, to.lng);
@@ -4489,7 +4169,6 @@ async function showRouteToDestination(trip) {
 }
 
 async function handleTripCompletion(trip) {
-  // Mark the transaction as paid
   try { await completeTransactionByReference(currentTripId); } catch (e) { console.warn(e); }
 
   cleanupTripTracking();
@@ -4497,7 +4176,6 @@ async function handleTripCompletion(trip) {
   closeSearchingOverlay();
   showToast('✅ Trip completed. Payment successful!');
 
-  // Refresh history in background
   setTimeout(() => {
     clearTripLayers();
     if (userLocation && map) map.setView([userLocation.lat, userLocation.lng], 17, { animate: true });
@@ -5113,10 +4791,10 @@ async function checkForActiveTrip() {
         if (r.dropoff && r.status !== 'searching') setDropoffMarker(r.dropoff.lat, r.dropoff.lng);
 
         if (r.status === 'searching') {
-          currentTripMeta = { icon: 'fa-car', title: 'Searching for a driver', vehicleLabel: 'Car' };
-          openSearchingOverlay('driver');
+          currentTripMeta = { icon: 'fa-car', title: 'Searching for a driver', vehicleLabel: 'Car', providerType: 'driver' };
+          openSearchingOverlay('driver', currentTripMeta);
         } else {
-          openSearchingOverlay('driver');
+          openSearchingOverlay('driver', currentTripMeta);
           showProviderState();
           if (r.providerId) {
             currentProviderId = r.providerId;
@@ -5142,9 +4820,9 @@ async function checkForActiveTrip() {
         if (d.dropoff && d.status !== 'searching') setDropoffMarker(d.dropoff.lat, d.dropoff.lng);
 
         const labels = {
-          motorbike: { icon: 'fa-motorcycle', title: 'Searching for a motorbike rider', vehicleLabel: 'Motorbike' },
-          cyclist:   { icon: 'fa-bicycle',    title: 'Searching for a cyclist',         vehicleLabel: 'Bicycle' },
-          walker:    { icon: 'fa-person-walking', title: 'Searching for a walker',      vehicleLabel: 'Walking' }
+          motorbike: { icon: 'fa-motorcycle', title: 'Searching for a motorbike rider', vehicleLabel: 'Motorbike', providerType: 'rider' },
+          cyclist:   { icon: 'fa-bicycle',    title: 'Searching for a cyclist',         vehicleLabel: 'Bicycle',   providerType: 'cyclist' },
+          walker:    { icon: 'fa-person-walking', title: 'Searching for a walker',      vehicleLabel: 'Walking',   providerType: 'walker' }
         };
         const meta = labels[d.vehicleId] || labels.motorbike;
         currentTripMeta = meta;
@@ -5196,15 +4874,12 @@ onAuthStateChanged(auth, async (user) => {
     applyCustomerProfile(customer);
     appRoot.classList.remove('hidden');
 
-    // Start admin-config listeners so pricing + radius update live
     startConfigListeners();
 
     requestAnimationFrame(async () => {
       initMap();
       if (map) map.invalidateSize();
       locateUser({ center: true, silent: false });
-
-      // Reattach to any active trip
       setTimeout(() => { checkForActiveTrip(); }, 600);
     });
 
@@ -5238,7 +4913,7 @@ function loadErrandsForBadge() {
    ============================================================ */
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
-    if (searchingOverlay.classList.contains('open')) return; // require explicit cancel
+    if (searchingOverlay.classList.contains('open')) return;
     if (vehicleSheet.classList.contains('open')) vehicleSheet.classList.remove('open');
     else if (chatPage.classList.contains('open')) closeChatPage();
     else if (errandDetailsPage.classList.contains('open')) closeErrandDetailsPage();
