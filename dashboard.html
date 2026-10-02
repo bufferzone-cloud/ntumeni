@@ -488,7 +488,8 @@ input, textarea { font-family: inherit; }
 /* ==========================================================
    SHARED PAGES
    ========================================================== */
-#ridePage, #deliveryPage, #postErrandPage, #postedErrandsPage, #errandDetailsPage, #chatPage {
+#ridePage, #deliveryPage, #postErrandPage, #postedErrandsPage,
+#errandDetailsPage, #chatPage, #historyPage, #transactionsPage {
   position: fixed; inset: 0; z-index: 3000;
   background: #ffffff;
   display: flex; flex-direction: column;
@@ -497,7 +498,8 @@ input, textarea { font-family: inherit; }
   visibility: hidden;
 }
 #ridePage.open, #deliveryPage.open, #postErrandPage.open,
-#postedErrandsPage.open, #errandDetailsPage.open, #chatPage.open {
+#postedErrandsPage.open, #errandDetailsPage.open, #chatPage.open,
+#historyPage.open, #transactionsPage.open {
   transform: translateY(0); visibility: visible;
 }
 #chatPage { z-index: 3100; }
@@ -868,6 +870,9 @@ input, textarea { font-family: inherit; }
 .fb-status.accepted  { background: var(--success-soft); color: #027a48; }
 .fb-status.rejected  { background: var(--danger-soft);  color: #b42318; }
 .fb-status.completed { background: var(--info-soft);    color: #175cd3; }
+.fb-status.cancelled { background: #f4f4f5;             color: #52525b; }
+.fb-status.searching { background: var(--info-soft);    color: #175cd3; }
+.fb-status.in_progress { background: var(--success-soft); color: #027a48; }
 
 .fb-card-body { padding: 4px 16px 12px; }
 .fb-card-body h4 {
@@ -1482,6 +1487,234 @@ input, textarea { font-family: inherit; }
 #toast.show { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
 
 /* ==========================================================
+   HISTORY / TRANSACTIONS
+   ========================================================== */
+.filter-tabs {
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px 8px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-bottom: 1px solid var(--line);
+  background: #ffffff;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.filter-tabs::-webkit-scrollbar { display: none; }
+.filter-tab {
+  flex-shrink: 0;
+  padding: 9px 16px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  background: var(--fill-gray);
+  transition: background 0.22s, color 0.22s;
+  white-space: nowrap;
+}
+.filter-tab.active { background: #0a0a0a; color: #fff; }
+.filter-tab:hover:not(.active) { background: var(--fill-gray-hover); }
+
+.summary-strip {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 4px 0 16px;
+}
+.summary-tile {
+  background: var(--fill-gray);
+  border-radius: 14px;
+  padding: 14px 16px;
+}
+.summary-tile.dark {
+  background: #0a0a0a;
+  color: #fff;
+}
+.summary-tile small {
+  display: block;
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 1.1px;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 6px;
+}
+.summary-tile.dark small { color: rgba(255,255,255,0.55); }
+.summary-tile strong {
+  display: block;
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.6px;
+}
+.summary-tile.dark strong { color: #fff; }
+
+.history-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 16px;
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 0 0 1px var(--line), 0 1px 4px rgba(0,0,0,0.03);
+  margin-bottom: 10px;
+  animation: fbCardIn 0.35s var(--ease-out);
+}
+.history-item .h-ico {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  background: #0a0a0a;
+  color: #ffffff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+.history-item .h-ico.ride      { background: #0a0a0a; }
+.history-item .h-ico.delivery  { background: #175cd3; }
+.history-item .h-ico.errand    { background: #027a48; }
+.history-item .h-body { flex: 1; min-width: 0; }
+.history-item .h-title {
+  font-size: 0.92rem;
+  font-weight: 800;
+  letter-spacing: -0.25px;
+  color: var(--text-primary);
+  margin-bottom: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.history-item .h-route {
+  font-size: 0.76rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.history-item .h-route span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+.history-item .h-route i {
+  color: var(--text-tertiary);
+  font-size: 0.62rem;
+  flex-shrink: 0;
+}
+.history-item .h-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+.history-item .h-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: var(--fill-gray);
+  color: var(--text-secondary);
+}
+.history-item .h-chip.status-pending     { background: var(--warn-soft);    color: #b54708; }
+.history-item .h-chip.status-accepted    { background: var(--success-soft); color: #027a48; }
+.history-item .h-chip.status-completed   { background: var(--info-soft);    color: #175cd3; }
+.history-item .h-chip.status-cancelled   { background: #f4f4f5;             color: #52525b; }
+.history-item .h-chip.status-rejected    { background: var(--danger-soft);  color: #b42318; }
+.history-item .h-chip.status-searching   { background: var(--info-soft);    color: #175cd3; }
+.history-item .h-chip.status-in_progress { background: var(--success-soft); color: #027a48; }
+
+.history-item .h-price {
+  text-align: right;
+  flex-shrink: 0;
+  align-self: flex-start;
+}
+.history-item .h-price strong {
+  display: block;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: -0.35px;
+}
+.history-item .h-price small {
+  display: block;
+  font-size: 0.62rem;
+  color: var(--text-tertiary);
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  margin-top: 2px;
+}
+
+.tx-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 0 0 1px var(--line), 0 1px 4px rgba(0,0,0,0.03);
+  margin-bottom: 10px;
+  animation: fbCardIn 0.35s var(--ease-out);
+}
+.tx-item .tx-ico {
+  width: 42px; height: 42px;
+  border-radius: 12px;
+  background: var(--fill-gray);
+  color: var(--text-primary);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+.tx-item .tx-ico.out { background: #fef3f2; color: #b42318; }
+.tx-item .tx-ico.in  { background: #ecfdf3; color: #027a48; }
+.tx-item .tx-body { flex: 1; min-width: 0; }
+.tx-item .tx-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.2px;
+  margin-bottom: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tx-item .tx-sub {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tx-item .tx-amount {
+  text-align: right;
+  flex-shrink: 0;
+}
+.tx-item .tx-amount strong {
+  display: block;
+  font-size: 0.98rem;
+  font-weight: 800;
+  letter-spacing: -0.35px;
+}
+.tx-item .tx-amount .tx-status {
+  display: inline-block;
+  margin-top: 3px;
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+.tx-status.completed { background: var(--success-soft); color: #027a48; }
+.tx-status.pending   { background: var(--warn-soft);    color: #b54708; }
+.tx-status.failed    { background: var(--danger-soft);  color: #b42318; }
+.tx-status.cancelled { background: #f4f4f5;             color: #52525b; }
+
+/* ==========================================================
    RESPONSIVE
    ========================================================== */
 @media (max-width: 380px) {
@@ -1881,6 +2114,54 @@ input, textarea { font-family: inherit; }
   </div>
 </div>
 
+<!-- HISTORY PAGE -->
+<div id="historyPage">
+  <div class="page-head">
+    <button class="icon-btn" id="historyBackBtn" aria-label="Back"><i class="fas fa-arrow-left"></i></button>
+    <div style="flex:1;">
+      <h2>History</h2>
+      <div class="page-head-sub">Rides, deliveries &amp; errands</div>
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="filter-tabs" id="historyTabs">
+      <button class="filter-tab active" data-filter="all">All</button>
+      <button class="filter-tab" data-filter="ride">Rides</button>
+      <button class="filter-tab" data-filter="delivery">Deliveries</button>
+      <button class="filter-tab" data-filter="errand">Errands</button>
+    </div>
+    <div class="page-scroll" id="historyList">
+      <div class="loader-row" style="padding:60px 20px;">
+        <span class="mini-spin"></span> Loading your history…
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TRANSACTIONS PAGE -->
+<div id="transactionsPage">
+  <div class="page-head">
+    <button class="icon-btn" id="transactionsBackBtn" aria-label="Back"><i class="fas fa-arrow-left"></i></button>
+    <div style="flex:1;">
+      <h2>Transactions</h2>
+      <div class="page-head-sub">Payments &amp; receipts</div>
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="filter-tabs" id="txTabs">
+      <button class="filter-tab active" data-filter="all">All</button>
+      <button class="filter-tab" data-filter="ride">Rides</button>
+      <button class="filter-tab" data-filter="delivery">Deliveries</button>
+      <button class="filter-tab" data-filter="errand">Errands</button>
+    </div>
+    <div class="page-scroll" id="transactionsList">
+      <div class="loader-row" style="padding:60px 20px;">
+        <span class="mini-spin"></span> Loading transactions…
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- CHAT PAGE -->
 <div id="chatPage">
   <div class="page-head">
@@ -1938,7 +2219,7 @@ input, textarea { font-family: inherit; }
 import { initializeApp } from "firebase/app";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import {
-  getDatabase, ref, set, get, update, push, onValue, off, serverTimestamp
+  getDatabase, ref, set, get, update, push, onValue, off, serverTimestamp, remove
 } from "firebase/database";
 
 /* ============================================================
@@ -2098,6 +2379,16 @@ const errandDetailsBackBtn  = $('errandDetailsBackBtn');
 const errandDetailsTitle    = $('errandDetailsTitle');
 const errandDetailsBody     = $('errandDetailsBody');
 
+const historyPage    = $('historyPage');
+const historyBackBtn = $('historyBackBtn');
+const historyTabs    = $('historyTabs');
+const historyList    = $('historyList');
+
+const transactionsPage    = $('transactionsPage');
+const transactionsBackBtn = $('transactionsBackBtn');
+const txTabs              = $('txTabs');
+const transactionsList    = $('transactionsList');
+
 const chatPage     = $('chatPage');
 const chatBackBtn  = $('chatBackBtn');
 const chatTitle    = $('chatTitle');
@@ -2154,6 +2445,19 @@ let errandOffersUnsub = null;
 let activeChatErrandId = null;
 let activeChatProviderId = null;
 let chatUnsub = null;
+
+/* NEW: track current active request IDs so we can update / cancel them */
+let activeRideId = null;
+let activeDeliveryId = null;
+let activeSearchKind = null;    // 'ride' | 'delivery'
+
+/* NEW: cached lists */
+let historyCache = { rides: [], deliveries: [], errands: [] };
+let historyFilter = 'all';
+let txCache = [];
+let txFilter = 'all';
+let historyListenerUnsub = null;
+let txListenerUnsub = null;
 
 const DEFAULT_LOCATION = { lat: -15.4167, lng: 28.2833 };
 
@@ -2233,6 +2537,21 @@ function timeAgo(ts) {
   const d = Math.floor(h / 24);
   if (d < 7) return d + 'd ago';
   return new Date(ts).toLocaleDateString();
+}
+
+function formatDateTime(ts) {
+  if (!ts) return '';
+  const d = new Date(ts);
+  return d.toLocaleString(undefined, {
+    day: '2-digit', month: 'short', year: 'numeric',
+    hour: '2-digit', minute: '2-digit'
+  });
+}
+
+function statusLabel(status) {
+  if (!status) return 'Pending';
+  if (status === 'in_progress') return 'In Progress';
+  return status.charAt(0).toUpperCase() + status.slice(1).replace(/_/g, ' ');
 }
 
 /* ============================================================
@@ -2331,7 +2650,7 @@ function showBanned(reason) {
 }
 
 /* ============================================================
-   MAP — OpenStreetMap tiles with Google-like tint
+   MAP
    ============================================================ */
 function initMap() {
   if (map) return;
@@ -2431,10 +2750,10 @@ document.querySelectorAll('.nav-item').forEach((btn) => {
     const nav = btn.dataset.nav;
     closeSidebar();
     setTimeout(() => {
-      if (nav === 'history')       showToast('History — coming soon');
-      else if (nav === 'transactions') showToast('Transactions — coming soon');
+      if (nav === 'history')            openHistoryPage();
+      else if (nav === 'transactions')  openTransactionsPage();
       else if (nav === 'postedErrands') openPostedErrandsPage();
-      else if (nav === 'account')      showToast('Account settings — coming soon');
+      else if (nav === 'account')       showToast('Account settings — coming soon');
     }, 220);
   });
 });
@@ -2643,7 +2962,6 @@ function showLoadingResults(page) {
   targetEl.innerHTML = `<div class="loader-row"><span class="mini-spin"></span> Searching…</div>`;
 }
 
-/* Real-time debounce — 220 ms for a snappy feel */
 const debouncedSearch = debounce((q, mode) => runSearch(q, mode), 220);
 
 async function runSearch(query, mode) {
@@ -2679,7 +2997,6 @@ async function runSearch(query, mode) {
   try {
     const raw = await fetchRawPlaces(trimmed, anchor, searchAbort.signal);
 
-    /* Make sure the input hasn't changed */
     let currentVal = '';
     if (page === 'errand') currentVal = errandPickupInput.value.trim();
     else if (page === 'delivery') currentVal = (mode === 'pickup' ? deliveryPickupInput.value : deliveryDestInput.value).trim();
@@ -2738,7 +3055,6 @@ function closeRidePage() {
 }
 rideBackBtn.addEventListener('click', closeRidePage);
 
-/* Active input state */
 function setActiveRow(which, page) {
   if (page === 'delivery') {
     deliveryPickupRow.classList.toggle('focused', which === 'pickup');
@@ -2911,7 +3227,6 @@ errandUseCurrentBtn.addEventListener('click', () => {
   showToast('Using current location');
 });
 
-/* Cloudinary upload for errand photo */
 wireUploadBox(errandUpload, errandImageUrl, errandError);
 
 submitErrandBtn.addEventListener('click', submitErrand);
@@ -2956,11 +3271,20 @@ async function submitErrand() {
       pickup: errandPickupLocation,
       imageUrl: imageUrl || '',
       willingToPay,
-      status: 'pending',    // pending | accepted | rejected | completed
+      status: 'pending',
       createdAt: Date.now()
     });
 
-    /* Reset form */
+    /* Log a pending transaction for the willing-to-pay amount (actual charge on completion) */
+    await saveTransaction({
+      type: 'errand',
+      referenceId: errandId,
+      amount: willingToPay,
+      description: `Errand: ${title}`,
+      status: 'pending'
+    });
+
+    /* Reset */
     errandTitle.value = '';
     errandDescription.value = '';
     errandWillingToPay.value = '';
@@ -3078,7 +3402,7 @@ function renderPostedErrands(errands) {
 function renderErrandCard(e, withActions) {
   const statusClass = ['pending', 'accepted', 'rejected', 'completed'].includes(e.status)
     ? e.status : 'pending';
-  const statusLabel = statusClass.charAt(0).toUpperCase() + statusClass.slice(1);
+  const statusText = statusLabel(statusClass);
 
   const pickupLabel = e.pickup && e.pickup.label ? e.pickup.label : 'Pickup';
   const photo = e.customerPhoto
@@ -3105,7 +3429,7 @@ function renderErrandCard(e, withActions) {
           <strong>${escapeHtml(e.customerName || 'You')}</strong>
           <span>${escapeHtml(timeAgo(e.createdAt))} · Errand</span>
         </div>
-        <span class="fb-status ${statusClass}">${escapeHtml(statusLabel)}</span>
+        <span class="fb-status ${statusClass}">${escapeHtml(statusText)}</span>
       </div>
       <div class="fb-card-body">
         <h4>${escapeHtml(e.title || 'Untitled errand')}</h4>
@@ -3159,7 +3483,7 @@ errandDetailsBackBtn.addEventListener('click', closeErrandDetailsPage);
 function renderErrandDetails(errand, offers) {
   const statusClass = ['pending', 'accepted', 'rejected', 'completed'].includes(errand.status)
     ? errand.status : 'pending';
-  const statusLabel = statusClass.charAt(0).toUpperCase() + statusClass.slice(1);
+  const statusText = statusLabel(statusClass);
   const pickupLabel = errand.pickup && errand.pickup.label ? errand.pickup.label : 'Pickup';
 
   const headCard = `
@@ -3169,7 +3493,7 @@ function renderErrandDetails(errand, offers) {
       <div class="detail-head-stats">
         <span class="detail-head-stat"><i class="fas fa-location-dot"></i> ${escapeHtml(pickupLabel)}</span>
         <span class="detail-head-stat"><i class="fas fa-money-bill-wave"></i> K ${escapeHtml(formatPrice(errand.willingToPay))}</span>
-        <span class="detail-head-stat"><i class="fas fa-circle-info"></i> ${escapeHtml(statusLabel)}</span>
+        <span class="detail-head-stat"><i class="fas fa-circle-info"></i> ${escapeHtml(statusText)}</span>
       </div>
     </div>
   `;
@@ -3226,12 +3550,10 @@ function renderErrandDetails(errand, offers) {
 
   errandDetailsBody.innerHTML = headCard + offersHtml;
 
-  /* Wire Accept buttons */
   errandDetailsBody.querySelectorAll('[data-accept-offer]').forEach(btn => {
     btn.addEventListener('click', () => acceptOffer(errand, btn.dataset.acceptOffer));
   });
 
-  /* Wire Open Chat buttons */
   errandDetailsBody.querySelectorAll('[data-open-chat]').forEach(btn => {
     btn.addEventListener('click', () => openChat(errand, btn.dataset.openChat));
   });
@@ -3244,6 +3566,8 @@ async function acceptOffer(errand, providerId) {
   if (!errand || !providerId) return;
   if (!confirm('Accept this offer? Other offers will be closed.')) return;
 
+  const offer = (errand.offers && errand.offers[providerId]) || {};
+
   try {
     const updates = {};
     updates[`errands/${errand.errandId}/status`] = 'accepted';
@@ -3251,7 +3575,6 @@ async function acceptOffer(errand, providerId) {
     updates[`errands/${errand.errandId}/acceptedAt`] = Date.now();
     updates[`errands/${errand.errandId}/offers/${providerId}/status`] = 'accepted';
 
-    /* Reject other offers */
     const offers = errand.offers || {};
     for (const oid in offers) {
       if (oid !== providerId) {
@@ -3261,13 +3584,19 @@ async function acceptOffer(errand, providerId) {
 
     await update(ref(database), updates);
 
+    /* Update the pending transaction to the accepted amount and mark it pending payment */
+    const agreedPrice = Math.round(offer.price || errand.willingToPay || 0);
+    await updateErrandTransaction(errand.errandId, {
+      amount: agreedPrice,
+      description: `Errand: ${errand.title || 'Task'}`,
+      status: 'pending'
+    });
+
     showToast('✅ Offer accepted! Chat is opening…');
 
-    /* Cache update */
     errand.status = 'accepted';
     postedErrandsCache[errand.errandId] = errand;
 
-    /* Open chat */
     setTimeout(() => openChat(errand, providerId), 500);
 
   } catch (err) {
@@ -3300,7 +3629,6 @@ function openChat(errand, providerId) {
     scrollChatToBottom();
   }, 480);
 
-  /* Listen to messages */
   if (chatUnsub) { chatUnsub(); chatUnsub = null; }
   const messagesRef = ref(database, `errands/${errand.errandId}/chat`);
 
@@ -3488,9 +3816,53 @@ dropoffRowBtn.addEventListener('click', () => {
   else openRidePage('destination');
 });
 
-confirmRideBtn.addEventListener('click', () => {
+confirmRideBtn.addEventListener('click', async () => {
   if (!currentRoute) { showToast('Please wait for the route to load.'); return; }
-  openSearchingOverlay('driver');
+  if (!pickupLocation || !dropoffLocation) { showToast('Missing pickup or drop-off.'); return; }
+  if (!currentUser) { showToast('Session expired.'); return; }
+
+  confirmRideBtn.disabled = true;
+  const originalHtml = confirmRideBtn.innerHTML;
+  confirmRideBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving…';
+
+  try {
+    const fare = Math.round(computeRideFare(currentRoute.distance, currentRoute.duration).finalFare);
+    const rideRef = push(ref(database, 'rides'));
+    const rideId = rideRef.key;
+    activeRideId = rideId;
+
+    await set(rideRef, {
+      rideId,
+      customerId: currentUser.uid,
+      customerName: customerData?.fullName || 'Customer',
+      customerPhone: customerData?.phone || '',
+      customerPhoto: customerData?.profileUrl || '',
+      pickup: pickupLocation,
+      dropoff: dropoffLocation,
+      distance: currentRoute.distance,
+      duration: currentRoute.duration,
+      fare,
+      status: 'searching',
+      createdAt: Date.now()
+    });
+
+    await saveTransaction({
+      type: 'ride',
+      referenceId: rideId,
+      amount: fare,
+      description: `${pickupLocation.label || 'Pickup'} → ${dropoffLocation.label || 'Drop-off'}`,
+      status: 'pending'
+    });
+
+    activeSearchKind = 'ride';
+    openSearchingOverlay('driver');
+  } catch (err) {
+    console.error(err);
+    showToast('Could not submit ride: ' + (err.message || err));
+  } finally {
+    confirmRideBtn.disabled = false;
+    confirmRideBtn.innerHTML = originalHtml;
+  }
 });
 
 /* ============================================================
@@ -3612,7 +3984,7 @@ function renderVehicleSheet(prices) {
     `;
     btn.addEventListener('click', () => {
       deliveryVehicle = v;
-      chooseDeliveryVehicle();
+      chooseDeliveryVehicle(price);
     });
     vehicleList.appendChild(btn);
   });
@@ -3623,9 +3995,52 @@ vehicleSheet.addEventListener('click', (e) => {
   if (e.target === vehicleSheet) vehicleSheet.classList.remove('open');
 });
 
-function chooseDeliveryVehicle() {
+async function chooseDeliveryVehicle(price) {
   if (!deliveryVehicle || !deliveryRoute) return;
   vehicleSheet.classList.remove('open');
+
+  /* Save delivery to DB */
+  try {
+    const fare = Math.round(price || computeDeliveryFare(deliveryVehicle, deliveryRoute.distance, deliveryRoute.duration).finalFare);
+    const deliveryRef = push(ref(database, 'deliveries'));
+    const deliveryId = deliveryRef.key;
+    activeDeliveryId = deliveryId;
+
+    await set(deliveryRef, {
+      deliveryId,
+      customerId: currentUser.uid,
+      customerName: customerData?.fullName || 'Customer',
+      customerPhone: customerData?.phone || '',
+      pickup: deliveryPickupLocation,
+      dropoff: deliveryDropoffLocation,
+      senderName: delSenderName.value.trim(),
+      senderPhone: delSenderPhone.value.trim(),
+      receiverName: delReceiverName.value.trim(),
+      receiverPhone: delReceiverPhone.value.trim(),
+      parcelName: delParcelName.value.trim(),
+      parcelDesc: delParcelDesc.value.trim(),
+      vehicleId: deliveryVehicle.id,
+      vehicleLabel: deliveryVehicle.label,
+      distance: deliveryRoute.distance,
+      duration: deliveryRoute.duration,
+      fare,
+      status: 'searching',
+      createdAt: Date.now()
+    });
+
+    await saveTransaction({
+      type: 'delivery',
+      referenceId: deliveryId,
+      amount: fare,
+      description: `${deliveryVehicle.label}: ${delParcelName.value.trim() || 'Parcel'}`,
+      status: 'pending'
+    });
+  } catch (err) {
+    console.error('Could not save delivery:', err);
+    showToast('Could not submit delivery request.');
+    return;
+  }
+
   closeDeliveryPage();
 
   setTimeout(() => {
@@ -3654,6 +4069,7 @@ function chooseDeliveryVehicle() {
       walker:    { icon: 'fa-person-walking', title: 'Searching for a walker' }
     };
     const meta = labels[deliveryVehicle.id] || labels.motorbike;
+    activeSearchKind = 'delivery';
     openSearchingOverlay('delivery', meta);
   }, 420);
 }
@@ -3675,8 +4091,26 @@ function openSearchingOverlay(kind, meta) {
 }
 function closeSearchingOverlay() { searchingOverlay.classList.remove('open'); }
 
-cancelSearchBtn.addEventListener('click', () => {
+cancelSearchBtn.addEventListener('click', async () => {
   closeSearchingOverlay();
+
+  /* Mark active ride/delivery as cancelled and cancel the transaction */
+  if (activeSearchKind === 'ride' && activeRideId) {
+    try {
+      await update(ref(database, `rides/${activeRideId}`), { status: 'cancelled', cancelledAt: Date.now() });
+      await cancelTransactionByReference(activeRideId, 'Ride cancelled');
+    } catch (e) { console.warn(e); }
+  } else if (activeSearchKind === 'delivery' && activeDeliveryId) {
+    try {
+      await update(ref(database, `deliveries/${activeDeliveryId}`), { status: 'cancelled', cancelledAt: Date.now() });
+      await cancelTransactionByReference(activeDeliveryId, 'Delivery cancelled');
+    } catch (e) { console.warn(e); }
+  }
+
+  activeRideId = null;
+  activeDeliveryId = null;
+  activeSearchKind = null;
+
   showToast('Search cancelled');
   setTimeout(() => {
     clearTripLayers();
@@ -3686,6 +4120,430 @@ cancelSearchBtn.addEventListener('click', () => {
     showPane('home');
   }, 220);
 });
+
+/* ============================================================
+   TRANSACTIONS — save / update helpers
+   ============================================================ */
+async function saveTransaction({ type, referenceId, amount, description, status = 'completed' }) {
+  if (!currentUser) return null;
+  try {
+    const txRef = push(ref(database, 'transactions'));
+    const txId = txRef.key;
+    await set(txRef, {
+      txId,
+      customerId: currentUser.uid,
+      customerName: customerData?.fullName || 'Customer',
+      type,
+      referenceId,
+      amount: Math.round(amount || 0),
+      description: description || '',
+      status,
+      createdAt: Date.now()
+    });
+    return txId;
+  } catch (err) {
+    console.warn('Could not save transaction:', err);
+    return null;
+  }
+}
+
+async function updateErrandTransaction(errandId, updates) {
+  try {
+    const snap = await get(ref(database, 'transactions'));
+    const data = snap.val() || {};
+    for (const id in data) {
+      const tx = data[id];
+      if (tx && tx.type === 'errand' && tx.referenceId === errandId) {
+        await update(ref(database, `transactions/${id}`), updates);
+      }
+    }
+  } catch (err) {
+    console.warn('Could not update errand transaction:', err);
+  }
+}
+
+async function cancelTransactionByReference(referenceId, reason) {
+  try {
+    const snap = await get(ref(database, 'transactions'));
+    const data = snap.val() || {};
+    for (const id in data) {
+      const tx = data[id];
+      if (tx && tx.referenceId === referenceId && tx.status !== 'completed') {
+        await update(ref(database, `transactions/${id}`), {
+          status: 'cancelled',
+          cancelReason: reason || '',
+          updatedAt: Date.now()
+        });
+      }
+    }
+  } catch (err) {
+    console.warn('Could not cancel transaction:', err);
+  }
+}
+
+/* ============================================================
+   HISTORY PAGE
+   ============================================================ */
+function openHistoryPage() {
+  currentPage = 'history';
+  historyPage.classList.add('open');
+  loadHistory();
+}
+
+function closeHistoryPage() {
+  historyPage.classList.remove('open');
+  if (historyListenerUnsub) {
+    historyListenerUnsub();
+    historyListenerUnsub = null;
+  }
+}
+historyBackBtn.addEventListener('click', closeHistoryPage);
+
+historyTabs.addEventListener('click', (e) => {
+  const btn = e.target.closest('.filter-tab');
+  if (!btn) return;
+  historyTabs.querySelectorAll('.filter-tab').forEach(t => t.classList.toggle('active', t === btn));
+  historyFilter = btn.dataset.filter || 'all';
+  renderHistory();
+});
+
+function loadHistory() {
+  if (!currentUser) return;
+
+  if (historyListenerUnsub) {
+    historyListenerUnsub();
+    historyListenerUnsub = null;
+  }
+
+  historyList.innerHTML = '<div class="loader-row" style="padding:60px 20px;"><span class="mini-spin"></span> Loading your history…</div>';
+
+  const ridesRef     = ref(database, 'rides');
+  const deliveriesRef= ref(database, 'deliveries');
+  const errandsRef   = ref(database, 'errands');
+
+  const state = { rides: null, deliveries: null, errands: null };
+
+  function tryRender() {
+    if (state.rides === null || state.deliveries === null || state.errands === null) return;
+    historyCache.rides = state.rides;
+    historyCache.deliveries = state.deliveries;
+    historyCache.errands = state.errands;
+    renderHistory();
+  }
+
+  const unsubs = [];
+
+  unsubs.push(onValue(ridesRef, (snap) => {
+    const data = snap.val() || {};
+    const arr = [];
+    for (const id in data) {
+      const r = data[id];
+      if (r && r.customerId === currentUser.uid) arr.push({ ...r, rideId: id });
+    }
+    arr.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+    state.rides = arr;
+    tryRender();
+  }, (err) => { console.warn(err); state.rides = []; tryRender(); }));
+
+  unsubs.push(onValue(deliveriesRef, (snap) => {
+    const data = snap.val() || {};
+    const arr = [];
+    for (const id in data) {
+      const d = data[id];
+      if (d && d.customerId === currentUser.uid) arr.push({ ...d, deliveryId: id });
+    }
+    arr.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+    state.deliveries = arr;
+    tryRender();
+  }, (err) => { console.warn(err); state.deliveries = []; tryRender(); }));
+
+  unsubs.push(onValue(errandsRef, (snap) => {
+    const data = snap.val() || {};
+    const arr = [];
+    for (const id in data) {
+      const e = data[id];
+      if (e && e.customerId === currentUser.uid) arr.push({ ...e, errandId: id });
+    }
+    arr.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+    state.errands = arr;
+    tryRender();
+  }, (err) => { console.warn(err); state.errands = []; tryRender(); }));
+
+  historyListenerUnsub = () => { unsubs.forEach(u => u()); };
+}
+
+function renderHistory() {
+  const rides = historyCache.rides || [];
+  const deliveries = historyCache.deliveries || [];
+  const errands = historyCache.errands || [];
+
+  /* Combine into a unified list with type tag */
+  const combined = [];
+  rides.forEach(r => combined.push({ ...r, _type: 'ride', _id: r.rideId, _ts: r.createdAt || 0 }));
+  deliveries.forEach(d => combined.push({ ...d, _type: 'delivery', _id: d.deliveryId, _ts: d.createdAt || 0 }));
+  errands.forEach(e => combined.push({ ...e, _type: 'errand', _id: e.errandId, _ts: e.createdAt || 0 }));
+
+  combined.sort((a, b) => b._ts - a._ts);
+
+  const filtered = historyFilter === 'all'
+    ? combined
+    : combined.filter(item => item._type === historyFilter);
+
+  if (!filtered.length) {
+    historyList.innerHTML = `
+      <div class="empty-state">
+        <i class="fas fa-clock-rotate-left"></i>
+        <h3>No history yet</h3>
+        <p>Your rides, deliveries, and errands will appear here once you've made a request.</p>
+      </div>`;
+    return;
+  }
+
+  /* Summary strip */
+  const totalRides = rides.length;
+  const totalDeliveries = deliveries.length;
+  const totalErrands = errands.length;
+  const totalSpent = combined
+    .filter(item => item.status === 'completed')
+    .reduce((sum, item) => sum + (item._type === 'errand' ? (item.willingToPay || 0) : (item.fare || 0)), 0);
+
+  const summaryHtml = `
+    <div class="summary-strip">
+      <div class="summary-tile">
+        <small>Total trips</small>
+        <strong>${totalRides + totalDeliveries}</strong>
+      </div>
+      <div class="summary-tile dark">
+        <small>Total spent</small>
+        <strong>K ${escapeHtml(formatPrice(totalSpent))}</strong>
+      </div>
+    </div>
+  `;
+
+  let html = summaryHtml;
+  filtered.forEach(item => {
+    html += renderHistoryItem(item);
+  });
+  historyList.innerHTML = html;
+}
+
+function renderHistoryItem(item) {
+  if (item._type === 'ride') return renderHistoryRide(item);
+  if (item._type === 'delivery') return renderHistoryDelivery(item);
+  if (item._type === 'errand') return renderHistoryErrand(item);
+  return '';
+}
+
+function historyStatusClass(status) {
+  if (!status) return 'pending';
+  if (['pending', 'accepted', 'completed', 'cancelled', 'rejected', 'searching', 'in_progress'].includes(status)) return status;
+  return 'pending';
+}
+
+function renderHistoryRide(r) {
+  const pickup = r.pickup?.label || 'Pickup';
+  const dropoff = r.dropoff?.label || 'Drop-off';
+  const status = historyStatusClass(r.status);
+  return `
+    <div class="history-item">
+      <div class="h-ico ride"><i class="fas fa-car-side"></i></div>
+      <div class="h-body">
+        <div class="h-title">Ride</div>
+        <div class="h-route">
+          <span>${escapeHtml(pickup)}</span>
+          <i class="fas fa-arrow-right"></i>
+          <span>${escapeHtml(dropoff)}</span>
+        </div>
+        <div class="h-meta">
+          <span class="h-chip status-${status}">${escapeHtml(statusLabel(status))}</span>
+          <span class="h-chip"><i class="fas fa-clock"></i> ${escapeHtml(formatDateTime(r.createdAt))}</span>
+          ${r.distance ? `<span class="h-chip"><i class="fas fa-route"></i> ${escapeHtml(formatDistance(r.distance))}</span>` : ''}
+        </div>
+      </div>
+      <div class="h-price">
+        <strong>K ${escapeHtml(formatPrice(r.fare))}</strong>
+        <small>${escapeHtml(timeAgo(r.createdAt))}</small>
+      </div>
+    </div>
+  `;
+}
+
+function renderHistoryDelivery(d) {
+  const pickup = d.pickup?.label || 'Pickup';
+  const dropoff = d.dropoff?.label || 'Drop-off';
+  const status = historyStatusClass(d.status);
+  return `
+    <div class="history-item">
+      <div class="h-ico delivery"><i class="fas fa-box"></i></div>
+      <div class="h-body">
+        <div class="h-title">Delivery · ${escapeHtml(d.parcelName || 'Parcel')}</div>
+        <div class="h-route">
+          <span>${escapeHtml(pickup)}</span>
+          <i class="fas fa-arrow-right"></i>
+          <span>${escapeHtml(dropoff)}</span>
+        </div>
+        <div class="h-meta">
+          <span class="h-chip status-${status}">${escapeHtml(statusLabel(status))}</span>
+          <span class="h-chip"><i class="fas fa-clock"></i> ${escapeHtml(formatDateTime(d.createdAt))}</span>
+          ${d.vehicleLabel ? `<span class="h-chip"><i class="fas fa-motorcycle"></i> ${escapeHtml(d.vehicleLabel)}</span>` : ''}
+        </div>
+      </div>
+      <div class="h-price">
+        <strong>K ${escapeHtml(formatPrice(d.fare))}</strong>
+        <small>${escapeHtml(timeAgo(d.createdAt))}</small>
+      </div>
+    </div>
+  `;
+}
+
+function renderHistoryErrand(e) {
+  const pickup = e.pickup?.label || 'Pickup';
+  const status = historyStatusClass(e.status);
+  return `
+    <div class="history-item">
+      <div class="h-ico errand"><i class="fas fa-clipboard-list"></i></div>
+      <div class="h-body">
+        <div class="h-title">${escapeHtml(e.title || 'Errand')}</div>
+        <div class="h-route">
+          <span>${escapeHtml(pickup)}</span>
+        </div>
+        <div class="h-meta">
+          <span class="h-chip status-${status}">${escapeHtml(statusLabel(status))}</span>
+          <span class="h-chip"><i class="fas fa-clock"></i> ${escapeHtml(formatDateTime(e.createdAt))}</span>
+        </div>
+      </div>
+      <div class="h-price">
+        <strong>K ${escapeHtml(formatPrice(e.willingToPay))}</strong>
+        <small>${escapeHtml(timeAgo(e.createdAt))}</small>
+      </div>
+    </div>
+  `;
+}
+
+/* ============================================================
+   TRANSACTIONS PAGE
+   ============================================================ */
+function openTransactionsPage() {
+  currentPage = 'transactions';
+  transactionsPage.classList.add('open');
+  loadTransactions();
+}
+
+function closeTransactionsPage() {
+  transactionsPage.classList.remove('open');
+  if (txListenerUnsub) {
+    txListenerUnsub();
+    txListenerUnsub = null;
+  }
+}
+transactionsBackBtn.addEventListener('click', closeTransactionsPage);
+
+txTabs.addEventListener('click', (e) => {
+  const btn = e.target.closest('.filter-tab');
+  if (!btn) return;
+  txTabs.querySelectorAll('.filter-tab').forEach(t => t.classList.toggle('active', t === btn));
+  txFilter = btn.dataset.filter || 'all';
+  renderTransactions();
+});
+
+function loadTransactions() {
+  if (!currentUser) return;
+
+  if (txListenerUnsub) {
+    txListenerUnsub();
+    txListenerUnsub = null;
+  }
+
+  transactionsList.innerHTML = '<div class="loader-row" style="padding:60px 20px;"><span class="mini-spin"></span> Loading transactions…</div>';
+
+  const txRef = ref(database, 'transactions');
+  txListenerUnsub = onValue(txRef, (snap) => {
+    const data = snap.val() || {};
+    const arr = [];
+    for (const id in data) {
+      const t = data[id];
+      if (t && t.customerId === currentUser.uid) arr.push({ ...t, txId: id });
+    }
+    arr.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+    txCache = arr;
+    renderTransactions();
+  }, (err) => {
+    console.warn('Transactions listener error:', err);
+    transactionsList.innerHTML = `
+      <div class="empty-state">
+        <i class="fas fa-triangle-exclamation"></i>
+        <h3>Could not load transactions</h3>
+      </div>`;
+  });
+}
+
+function renderTransactions() {
+  const filtered = txFilter === 'all'
+    ? txCache
+    : txCache.filter(t => t.type === txFilter);
+
+  if (!filtered.length) {
+    transactionsList.innerHTML = `
+      <div class="empty-state">
+        <i class="fas fa-receipt"></i>
+        <h3>No transactions yet</h3>
+        <p>Your ride, delivery and errand payments will show up here.</p>
+      </div>`;
+    return;
+  }
+
+  /* Summary */
+  const totalSpent = txCache
+    .filter(t => t.status === 'completed')
+    .reduce((sum, t) => sum + (t.amount || 0), 0);
+  const totalPending = txCache
+    .filter(t => t.status === 'pending')
+    .reduce((sum, t) => sum + (t.amount || 0), 0);
+
+  let html = `
+    <div class="summary-strip">
+      <div class="summary-tile">
+        <small>Pending</small>
+        <strong>K ${escapeHtml(formatPrice(totalPending))}</strong>
+      </div>
+      <div class="summary-tile dark">
+        <small>Total paid</small>
+        <strong>K ${escapeHtml(formatPrice(totalSpent))}</strong>
+      </div>
+    </div>
+  `;
+
+  filtered.forEach(t => {
+    html += renderTransactionItem(t);
+  });
+  transactionsList.innerHTML = html;
+}
+
+function renderTransactionItem(t) {
+  const isErrand = t.type === 'errand';
+  const icon = t.type === 'ride' ? 'fa-car-side'
+             : t.type === 'delivery' ? 'fa-box'
+             : 'fa-clipboard-list';
+  const label = t.type === 'ride' ? 'Ride'
+              : t.type === 'delivery' ? 'Delivery'
+              : 'Errand';
+  const status = ['completed', 'pending', 'failed', 'cancelled'].includes(t.status) ? t.status : 'pending';
+  const statusText = status.charAt(0).toUpperCase() + status.slice(1);
+
+  return `
+    <div class="tx-item">
+      <div class="tx-ico out"><i class="fas ${icon}"></i></div>
+      <div class="tx-body">
+        <div class="tx-title">${escapeHtml(t.description || label)}</div>
+        <div class="tx-sub">${escapeHtml(label)} · ${escapeHtml(formatDateTime(t.createdAt))}</div>
+      </div>
+      <div class="tx-amount">
+        <strong>K ${escapeHtml(formatPrice(t.amount))}</strong>
+        <span class="tx-status ${status}">${escapeHtml(statusText)}</span>
+      </div>
+    </div>
+  `;
+}
 
 /* ============================================================
    AUTH + MAINTENANCE + BAN CHECK
@@ -3763,7 +4621,6 @@ onAuthStateChanged(auth, async (user) => {
       locateUser({ center: true, silent: false });
     });
 
-    /* Preload errand badge */
     loadErrandsForBadge();
 
     hideLoading();
@@ -3800,6 +4657,8 @@ document.addEventListener('keydown', (e) => {
     else if (errandDetailsPage.classList.contains('open')) closeErrandDetailsPage();
     else if (postedErrandsPage.classList.contains('open')) closePostedErrandsPage();
     else if (postErrandPage.classList.contains('open')) closePostErrandPage();
+    else if (historyPage.classList.contains('open')) closeHistoryPage();
+    else if (transactionsPage.classList.contains('open')) closeTransactionsPage();
     else if (deliveryPage.classList.contains('open')) closeDeliveryPage();
     else if (ridePage.classList.contains('open')) closeRidePage();
     else if (sidebar.classList.contains('open')) closeSidebar();
