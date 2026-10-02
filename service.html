@@ -101,7 +101,6 @@ input, textarea, select { font-family: inherit; }
   position: fixed; inset: 0; z-index: 1;
   background: #e8eaed;
 }
-/* Light tint to keep OSM tiles warm and clean */
 .leaflet-tile-pane { filter: saturate(0.92) contrast(1.04) brightness(1.02); }
 .leaflet-container { font-family: inherit; background: #e8eaed; }
 .leaflet-control-attribution {
@@ -137,6 +136,14 @@ input, textarea, select { font-family: inherit; }
   box-shadow: 0 3px 10px rgba(0,0,0,0.42);
   box-sizing: border-box;
 }
+.mk-dest {
+  width: 20px; height: 20px;
+  background: #175cd3; border: 3.5px solid #ffffff;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.42);
+  box-sizing: border-box;
+}
 
 /* ==========================================================
    FLOATING BUTTONS
@@ -153,11 +160,10 @@ input, textarea, select { font-family: inherit; }
 .float-btn:active { transform: scale(0.92); }
 
 #sidebarBtn { top: 14px; left: 14px; }
-
 #locateBtn { right: 14px; bottom: 96px; }
 
 /* ==========================================================
-   FLOAT BALANCE PILL (TOP)
+   FLOAT BALANCE PILL (TOP RIGHT)
    ========================================================== */
 .float-balance-pill {
   position: fixed;
@@ -216,14 +222,95 @@ input, textarea, select { font-family: inherit; }
   margin: 0 2px 0 0;
   display: inline;
 }
-.float-balance-pill.is-low {
-  background: #7f1d1d;
+.float-balance-pill.is-low { background: #7f1d1d; }
+.float-balance-pill.is-low .fb-ico { background: rgba(255,255,255,0.16); }
+
+/* ==========================================================
+   ONLINE / OFFLINE TOGGLE (TOP CENTER)
+   ========================================================== */
+#onlineToggle {
+  position: fixed;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 650;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 16px;
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--text-primary);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.16), 0 0 0 1px rgba(0,0,0,0.05);
+  transition: transform 0.3s var(--spring), background 0.25s, color 0.25s, box-shadow 0.25s;
 }
-.float-balance-pill.is-low .fb-ico {
-  background: rgba(255,255,255,0.16);
+#onlineToggle:active { transform: translateX(-50%) scale(0.95); }
+#onlineToggle .ot-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--text-tertiary);
+  transition: background 0.25s, box-shadow 0.25s;
+  flex-shrink: 0;
+}
+#onlineToggle.online {
+  background: #0a0a0a;
+  color: #ffffff;
+  box-shadow:
+    0 8px 22px -6px rgba(18,183,106,0.45),
+    0 0 0 1px rgba(255,255,255,0.06) inset;
+}
+#onlineToggle.online .ot-dot {
+  background: var(--success);
+  box-shadow: 0 0 0 4px rgba(18,183,106,0.28);
+  animation: onlinePulse 1.8s var(--ease-smooth) infinite;
+}
+@keyframes onlinePulse {
+  0%, 100% { box-shadow: 0 0 0 4px rgba(18,183,106,0.28); }
+  50%      { box-shadow: 0 0 0 8px rgba(18,183,106,0.05); }
+}
+#onlineToggle.busy {
+  opacity: 0.6;
+  pointer-events: none;
 }
 
-/* Account pill button */
+/* Active trip pill */
+#activeTripPill {
+  position: fixed;
+  top: 68px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 640;
+  display: none;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: #0a0a0a;
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  box-shadow: 0 6px 20px -6px rgba(0,0,0,0.5);
+  animation: fadeIn 0.3s var(--ease-out);
+}
+#activeTripPill.show { display: inline-flex; }
+#activeTripPill .at-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 0 3px rgba(18,183,106,0.25);
+  animation: dotPulse 1.4s var(--ease-smooth) infinite;
+}
+@keyframes dotPulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.4; }
+}
+
+/* ==========================================================
+   ACCOUNT PILL (BOTTOM)
+   ========================================================== */
 .account-pill {
   position: fixed; z-index: 600;
   bottom: 20px; left: 50%;
@@ -248,7 +335,9 @@ input, textarea, select { font-family: inherit; }
 .account-pill .pill-status-dot.pending { background: var(--warn); box-shadow: 0 0 0 3px rgba(247,144,9,0.22); }
 .account-pill .pill-status-dot.rejected { background: var(--danger); box-shadow: 0 0 0 3px rgba(217,45,32,0.22); }
 
-/* Floating toast */
+/* ==========================================================
+   TOAST
+   ========================================================== */
 #toast {
   position: fixed; left: 50%; bottom: 92px; z-index: 6000;
   transform: translate(-50%, 24px);
@@ -771,7 +860,6 @@ input, textarea, select { font-family: inherit; }
   display: none;
 }
 .upload-box.has-image .remove-img { display: flex; }
-
 .upload-box .nrc-hint {
   position: absolute;
   bottom: 8px;
@@ -1051,6 +1139,8 @@ input, textarea, select { font-family: inherit; }
 }
 .history-item .h-ico.errand { background: #027a48; }
 .history-item .h-ico.float  { background: #b54708; }
+.history-item .h-ico.ride   { background: #0a0a0a; }
+.history-item .h-ico.delivery { background: #175cd3; }
 .history-item .h-body { flex: 1; min-width: 0; }
 .history-item .h-title {
   font-size: 0.92rem; font-weight: 800;
@@ -1084,6 +1174,8 @@ input, textarea, select { font-family: inherit; }
 }
 .history-item .h-chip.status-pending   { background: var(--warn-soft);    color: #b54708; }
 .history-item .h-chip.status-accepted  { background: var(--success-soft); color: #027a48; }
+.history-item .h-chip.status-arrived   { background: var(--info-soft);    color: #175cd3; }
+.history-item .h-chip.status-in_progress { background: var(--info-soft);  color: #175cd3; }
 .history-item .h-chip.status-completed { background: var(--info-soft);    color: #175cd3; }
 .history-item .h-chip.status-cancelled { background: #f4f4f5;             color: #52525b; }
 .history-item .h-chip.status-rejected  { background: var(--danger-soft);  color: #b42318; }
@@ -1317,8 +1409,254 @@ input, textarea, select { font-family: inherit; }
 .modal-foot .legend .l-dot.route { background: #0a0a0a; border-radius: 2px; }
 
 /* ==========================================================
+   REQUEST MODAL + SLIDE-TO-ACTION
+   ========================================================== */
+.request-overlay {
+  position: fixed; inset: 0; z-index: 5500;
+  background: rgba(10,10,10,0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+}
+.request-overlay.open { display: flex; animation: fadeIn 0.24s var(--ease-out); }
+
+.request-card {
+  background: #ffffff;
+  border-radius: 26px 26px 0 0;
+  width: 100%;
+  max-width: 520px;
+  padding: 14px 20px 24px;
+  box-shadow: 0 -18px 50px rgba(0,0,0,0.35);
+  animation: sheetUp 0.42s var(--panel-ease);
+  max-height: 92vh;
+  overflow-y: auto;
+}
+@keyframes sheetUp {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+
+.request-handle {
+  width: 42px; height: 4px; border-radius: 999px;
+  background: rgba(0,0,0,0.14);
+  margin: 4px auto 16px;
+}
+
+.request-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: var(--fill-gray);
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+.request-tag.new {
+  background: #0a0a0a;
+  color: #fff;
+  animation: tagPulse 1.4s var(--ease-smooth) infinite;
+}
+@keyframes tagPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(10,10,10,0.4); }
+  50%      { box-shadow: 0 0 0 8px rgba(10,10,10,0); }
+}
+
+.request-customer {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 14px;
+  background: var(--fill-gray);
+  border-radius: 14px;
+  margin-bottom: 14px;
+}
+.request-customer .rc-avatar {
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  background: #ffffff;
+  overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 1px var(--line);
+}
+.request-customer .rc-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.request-customer .rc-avatar i { color: var(--text-tertiary); font-size: 1.3rem; }
+.request-customer .rc-body { flex: 1; min-width: 0; }
+.request-customer .rc-body strong {
+  display: block;
+  font-size: 1rem; font-weight: 800;
+  letter-spacing: -0.3px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.request-customer .rc-body span {
+  display: block;
+  font-size: 0.76rem;
+  color: var(--text-secondary);
+  margin-top: 3px;
+}
+
+.request-route {
+  position: relative;
+  background: var(--fill-gray);
+  border-radius: 14px;
+  padding: 4px;
+  margin-bottom: 14px;
+}
+.request-route .rr-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  border-radius: 11px;
+}
+.request-route .rr-row + .rr-row { border-top: 1px solid rgba(0,0,0,0.05); }
+.request-route .rr-dot {
+  width: 12px; height: 12px; border-radius: 50%;
+  background: #0a0a0a;
+  box-shadow: 0 0 0 3.5px rgba(10,10,10,0.13);
+  flex-shrink: 0;
+}
+.request-route .rr-dot.square {
+  border-radius: 3.5px;
+  background: #175cd3;
+  box-shadow: 0 0 0 3.5px rgba(23,92,211,0.13);
+}
+.request-route .rr-txt { flex: 1; min-width: 0; }
+.request-route .rr-txt small {
+  display: block;
+  font-size: 0.6rem; font-weight: 800;
+  letter-spacing: 1.1px; text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 2px;
+}
+.request-route .rr-txt strong {
+  display: block;
+  font-size: 0.86rem; font-weight: 600;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+.request-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.request-stat {
+  background: var(--fill-gray);
+  border-radius: 12px;
+  padding: 12px;
+  text-align: center;
+}
+.request-stat small {
+  display: block;
+  font-size: 0.58rem; font-weight: 800;
+  letter-spacing: 1px; text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 5px;
+}
+.request-stat strong {
+  display: block;
+  font-size: 0.98rem; font-weight: 800;
+  letter-spacing: -0.3px;
+}
+.request-stat.price {
+  background: #0a0a0a;
+  color: #ffffff;
+}
+.request-stat.price small { color: rgba(255,255,255,0.55); }
+.request-stat.price strong { color: #ffffff; font-size: 1.1rem; }
+
+/* Slide-to-action button */
+.slide-btn {
+  position: relative;
+  width: 100%;
+  height: 62px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #0f5132 0%, #0a0a0a 100%);
+  color: #ffffff;
+  overflow: hidden;
+  user-select: none;
+  touch-action: none;
+  margin-bottom: 10px;
+  transition: background 0.3s;
+}
+.slide-btn.arrive { background: linear-gradient(135deg, #b54708 0%, #0a0a0a 100%); }
+.slide-btn.start  { background: linear-gradient(135deg, #175cd3 0%, #0a0a0a 100%); }
+.slide-btn.end    { background: linear-gradient(135deg, #d92d20 0%, #0a0a0a 100%); }
+
+.slide-btn .slide-fill {
+  position: absolute;
+  top: 0; left: 0; bottom: 0;
+  width: 62px;
+  background: rgba(255,255,255,0.12);
+  border-radius: 999px;
+  pointer-events: none;
+  transition: width 0.06s linear;
+}
+.slide-btn .slide-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.86rem;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  pointer-events: none;
+  padding-left: 40px;
+}
+.slide-btn .slide-label i { margin-right: 8px; }
+.slide-btn .slide-handle {
+  position: absolute;
+  top: 5px; left: 5px;
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #0a0a0a;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.05rem;
+  cursor: grab;
+  box-shadow: 0 6px 16px -4px rgba(0,0,0,0.4);
+  transition: transform 0.22s var(--spring);
+  touch-action: none;
+  z-index: 2;
+}
+.slide-btn .slide-handle:active { cursor: grabbing; }
+.slide-btn .slide-handle.dragging { transition: none; }
+
+.slide-btn.is-busy {
+  opacity: 0.7;
+  pointer-events: none;
+}
+.slide-btn.is-busy .slide-label { letter-spacing: 0.6px; }
+
+.request-cancel-btn {
+  width: 100%;
+  padding: 13px;
+  border-radius: 999px;
+  background: var(--fill-gray);
+  color: var(--text-primary);
+  font-size: 0.86rem;
+  font-weight: 700;
+  transition: background 0.2s;
+}
+.request-cancel-btn:hover { background: var(--fill-gray-hover); }
+
+/* ==========================================================
    RESPONSIVE
    ========================================================== */
+@media (max-width: 400px) {
+  #onlineToggle { font-size: 0.68rem; padding: 10px 12px; }
+  .float-balance-pill .fb-txt small { display: none; }
+}
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.001ms !important;
@@ -1343,6 +1681,18 @@ input, textarea, select { font-family: inherit; }
 
 <!-- FULLSCREEN MAP -->
 <div id="map"></div>
+
+<!-- ONLINE TOGGLE (top center) -->
+<button id="onlineToggle">
+  <span class="ot-dot"></span>
+  <span id="onlineToggleLabel">Offline</span>
+</button>
+
+<!-- ACTIVE TRIP PILL -->
+<button id="activeTripPill">
+  <span class="at-dot"></span>
+  <span id="activeTripLabel">Active trip</span>
+</button>
 
 <!-- FLOATING FLOAT BALANCE -->
 <button class="float-balance-pill" id="floatBalancePill" title="Float balance — tap to top up">
@@ -1369,6 +1719,59 @@ input, textarea, select { font-family: inherit; }
 </button>
 
 <div id="toast"></div>
+
+<!-- REQUEST MODAL -->
+<div class="request-overlay" id="requestOverlay">
+  <div class="request-card">
+    <div class="request-handle"></div>
+    <div class="request-tag new" id="requestTag"><i class="fas fa-bolt"></i> <span id="requestTagText">New request</span></div>
+    <div class="request-customer">
+      <div class="rc-avatar" id="reqAvatar"><i class="fas fa-user"></i></div>
+      <div class="rc-body">
+        <strong id="reqCustomerName">Customer</strong>
+        <span id="reqCustomerPhone">—</span>
+      </div>
+    </div>
+    <div class="request-route">
+      <div class="rr-row">
+        <span class="rr-dot"></span>
+        <div class="rr-txt">
+          <small>Pickup</small>
+          <strong id="reqPickup">—</strong>
+        </div>
+      </div>
+      <div class="rr-row">
+        <span class="rr-dot square"></span>
+        <div class="rr-txt">
+          <small>Drop-off</small>
+          <strong id="reqDropoff">—</strong>
+        </div>
+      </div>
+    </div>
+    <div class="request-stats">
+      <div class="request-stat">
+        <small>Distance</small>
+        <strong id="reqDistance">—</strong>
+      </div>
+      <div class="request-stat">
+        <small>Time</small>
+        <strong id="reqDuration">—</strong>
+      </div>
+      <div class="request-stat price">
+        <small>Earn</small>
+        <strong id="reqPrice">K 0</strong>
+      </div>
+    </div>
+    <div class="slide-btn accept" id="slideBtn">
+      <div class="slide-fill" id="slideFill"></div>
+      <span class="slide-label" id="slideLabel"><i class="fas fa-arrow-right"></i> Slide to accept</span>
+      <div class="slide-handle" id="slideHandle">
+        <i class="fas fa-chevron-right"></i>
+      </div>
+    </div>
+    <button class="request-cancel-btn" id="requestCancelBtn">Decline</button>
+  </div>
+</div>
 
 <!-- SIDEBAR -->
 <div id="sidebarOverlay"></div>
@@ -1504,12 +1907,13 @@ input, textarea, select { font-family: inherit; }
     <button class="icon-btn" data-close-page="historyPage" aria-label="Back"><i class="fas fa-arrow-left"></i></button>
     <div style="flex:1;">
       <h2>History</h2>
-      <div class="page-head-sub">Offers &amp; float requests</div>
+      <div class="page-head-sub">Offers, trips &amp; float</div>
     </div>
   </div>
   <div class="page-body">
     <div class="filter-tabs" id="historyTabs">
       <button class="filter-tab active" data-filter="all">All</button>
+      <button class="filter-tab" data-filter="trip">Trips</button>
       <button class="filter-tab" data-filter="offer">Offers</button>
       <button class="filter-tab" data-filter="float">Float</button>
     </div>
@@ -1679,12 +2083,8 @@ const UPLOAD_PRESET = 'h3eyhc2o';
 
 /* ============================================================
    MAP TUNING
-   ------------------------------------------------------------
-   OpenStreetMap max zoom is 19. At zoom 19 on a typical phone
-   screen the visible width is roughly 20–40 metres, matching
-   the "about 20 m" request.
    ============================================================ */
-const PROVIDER_ZOOM = 19;
+const PROVIDER_ZOOM = 17;
 const MODAL_ZOOM    = 16;
 const OSM_TILE_URL  = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 const OSM_ATTR      = '&copy; OpenStreetMap contributors';
@@ -1709,6 +2109,11 @@ const logoutBtn       = $('logoutBtn');
 
 const floatBalancePill  = $('floatBalancePill');
 const floatBalanceValue = $('floatBalanceValue');
+
+const onlineToggle       = $('onlineToggle');
+const onlineToggleLabel  = $('onlineToggleLabel');
+const activeTripPill     = $('activeTripPill');
+const activeTripLabel    = $('activeTripLabel');
 
 const accountPage     = $('accountPage');
 const heroAvatar      = $('heroAvatar');
@@ -1749,9 +2154,25 @@ const mapModal        = $('mapModal');
 const mapModalClose   = $('mapModalClose');
 const mapModalRecenter= $('mapModalRecenter');
 const mapModalTitle   = $('mapModalTitle');
-const mapModalLegend  = $('mapModalLegend');
 const routeLegendRow  = $('routeLegendRow');
 const routeLegendText = $('routeLegendText');
+
+const requestOverlay     = $('requestOverlay');
+const requestTag         = $('requestTag');
+const requestTagText     = $('requestTagText');
+const reqAvatar          = $('reqAvatar');
+const reqCustomerName    = $('reqCustomerName');
+const reqCustomerPhone   = $('reqCustomerPhone');
+const reqPickup          = $('reqPickup');
+const reqDropoff         = $('reqDropoff');
+const reqDistance        = $('reqDistance');
+const reqDuration        = $('reqDuration');
+const reqPrice           = $('reqPrice');
+const slideBtn           = $('slideBtn');
+const slideFill          = $('slideFill');
+const slideLabel         = $('slideLabel');
+const slideHandle        = $('slideHandle');
+const requestCancelBtn   = $('requestCancelBtn');
 
 const toastEl = $('toast');
 
@@ -1765,6 +2186,10 @@ let floatBalance = 0;
 let userLocation = null;
 let map = null;
 let userMarker = null;
+let mainRouteLayer = null;
+let pickupMarker = null;
+let destMarker = null;
+
 let modalMap = null;
 let modalUserMarker = null;
 let modalTargetMarker = null;
@@ -1777,7 +2202,27 @@ let errandsCache = {};
 let errandsUnsub = null;
 let myOffersUnsub = null;
 let currentFilter = 'all';
-let historyCache = { offers: [], float: [] };
+let historyCache = { offers: [], float: [], trips: [] };
+
+/* Online / request listening */
+let isOnline = false;
+let searchRadiusKm = 15;
+let settingsUnsub = null;
+
+let requestsRidesUnsub = null;
+let requestsDeliveriesUnsub = null;
+let incomingRides = {};
+let incomingDeliveries = {};
+let declinedKeys = {};
+
+/* Current active trip stages */
+let activeStage = null; // null | 'incoming' | 'accepted' | 'arrived' | 'in_progress'
+let activeTrip = null;  // { kind: 'ride'|'delivery', id, data }
+let tripUnsub = null;
+let tripLocationUnsub = null;
+
+/* Location pinger */
+let locationPingInterval = null;
 
 const DEFAULT_LOCATION = { lat: -15.4167, lng: 28.2833 };
 
@@ -1849,6 +2294,16 @@ function formatDistance(m) {
   return (m / 1000).toFixed(m < 10000 ? 1 : 0) + ' km';
 }
 
+function formatDuration(seconds) {
+  if (seconds == null || !isFinite(seconds)) return '—';
+  const mins = Math.round(seconds / 60);
+  if (mins < 1) return '< 1 min';
+  if (mins < 60) return mins + ' min';
+  const h = Math.floor(mins / 60);
+  const m = mins % 60;
+  return h + 'h ' + m + 'm';
+}
+
 function roleLabel(role) {
   if (role === 'walker') return 'Walker';
   if (role === 'rider') return 'Rider';
@@ -1863,7 +2318,6 @@ function roleIcon(role) {
   return 'fa-user';
 }
 
-/* OSRM profile per role for the map-check route. */
 function osrmProfileForRole(role) {
   if (role === 'walker') return 'foot';
   if (role === 'rider')  return 'bike';
@@ -1874,6 +2328,14 @@ function routeLegendLabelForRole(role) {
   if (role === 'walker') return 'Walking route';
   if (role === 'rider')  return 'Cycling route';
   return 'Driving route';
+}
+
+/* Vehicle label for a delivery, per provider role */
+function vehicleLabelFor(role) {
+  if (role === 'walker') return 'Walking';
+  if (role === 'rider')  return 'Motorbike';
+  if (role === 'driver') return 'Car';
+  return 'Vehicle';
 }
 
 /* ============================================================
@@ -1906,8 +2368,6 @@ function listenFloatBalance(uid) {
 
 /* ============================================================
    MAP
-   ------------------------------------------------------------
-   Standard OpenStreetMap raster tiles.
    ============================================================ */
 function initMap() {
   if (map) return;
@@ -1940,6 +2400,81 @@ function setUserMarker(lat, lng) {
   else userMarker = L.marker([lat, lng], { icon, zIndexOffset: 800, interactive: false }).addTo(map);
 }
 
+function setPickupMarker(lat, lng) {
+  if (!map) return;
+  const icon = L.divIcon({
+    className: '',
+    html: '<div class="mk-pickup"></div>',
+    iconSize: [20,20],
+    iconAnchor: [10,20]
+  });
+  if (pickupMarker) pickupMarker.setLatLng([lat, lng]);
+  else pickupMarker = L.marker([lat, lng], { icon, zIndexOffset: 1000 }).addTo(map);
+}
+
+function setDestMarker(lat, lng) {
+  if (!map) return;
+  const icon = L.divIcon({
+    className: '',
+    html: '<div class="mk-dest"></div>',
+    iconSize: [20,20],
+    iconAnchor: [10,20]
+  });
+  if (destMarker) destMarker.setLatLng([lat, lng]);
+  else destMarker = L.marker([lat, lng], { icon, zIndexOffset: 1000 }).addTo(map);
+}
+
+function clearMainRoute() {
+  if (mainRouteLayer && map) {
+    try { map.removeLayer(mainRouteLayer); } catch (e) {}
+  }
+  mainRouteLayer = null;
+}
+
+function clearTripLayers() {
+  clearMainRoute();
+  if (pickupMarker && map) { try { map.removeLayer(pickupMarker); } catch(e){} pickupMarker = null; }
+  if (destMarker && map) { try { map.removeLayer(destMarker); } catch(e){} destMarker = null; }
+}
+
+async function drawMainRoute(from, to, profile = 'driving', padding = [60, 60]) {
+  if (!map || !from || !to) return;
+
+  clearMainRoute();
+
+  try {
+    const url =
+      `https://router.project-osrm.org/route/v1/${profile}/` +
+      `${from.lng},${from.lat};${to.lng},${to.lat}` +
+      `?overview=full&geometries=geojson&steps=false`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('Routing failed');
+    const data = await res.json();
+    if (!data.routes || !data.routes[0]) throw new Error('No route');
+
+    const coords = data.routes[0].geometry.coordinates.map(([lng, lat]) => [lat, lng]);
+    mainRouteLayer = L.layerGroup().addTo(map);
+    L.polyline(coords, { color:'#ffffff', weight: 8, opacity: 0.95, lineJoin:'round', lineCap:'round' }).addTo(mainRouteLayer);
+    L.polyline(coords, { color:'#0a0a0a', weight: 4.5, opacity: 1, lineJoin:'round', lineCap:'round' }).addTo(mainRouteLayer);
+
+    if (coords.length > 1) {
+      map.fitBounds(L.latLngBounds(coords), { padding, maxZoom: 17, animate: true });
+    }
+  } catch (err) {
+    console.warn('Route fetch failed:', err);
+    /* Fallback: dashed straight line */
+    if (from && to) {
+      const straight = [[from.lat, from.lng], [to.lat, to.lng]];
+      mainRouteLayer = L.layerGroup().addTo(map);
+      L.polyline(straight, {
+        color: '#0a0a0a', weight: 3, opacity: 0.85,
+        dashArray: '6 8', lineCap: 'round'
+      }).addTo(mainRouteLayer);
+      map.fitBounds(L.latLngBounds(straight), { padding, maxZoom: 16 });
+    }
+  }
+}
+
 function locateUser({ center = true, silent = false } = {}) {
   if (!navigator.geolocation) {
     if (!silent) showToast('Geolocation not supported.');
@@ -1953,7 +2488,6 @@ function locateUser({ center = true, silent = false } = {}) {
       const { latitude, longitude } = pos.coords;
       userLocation = { lat: latitude, lng: longitude };
       setUserMarker(latitude, longitude);
-      /* Zoom tightly around the user — PROVIDER_ZOOM gives ~20 m across */
       if (center && map) map.setView([latitude, longitude], PROVIDER_ZOOM, { animate: true });
     },
     (err) => {
@@ -1965,6 +2499,34 @@ function locateUser({ center = true, silent = false } = {}) {
     },
     { enableHighAccuracy: true, timeout: 12000, maximumAge: 30000 }
   );
+}
+
+/* ============================================================
+   LOCATION PING (writes to providers/{uid}/location while online)
+   ============================================================ */
+function pingLocationOnce() {
+  if (!currentUser || !navigator.geolocation) return;
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      const { latitude, longitude } = pos.coords;
+      update(ref(database, `providers/${currentUser.uid}`), {
+        location: { lat: latitude, lng: longitude, updatedAt: Date.now() }
+      }).catch(() => {});
+    },
+    () => {},
+    { enableHighAccuracy: false, timeout: 8000, maximumAge: 30000 }
+  );
+}
+function startLocationPing() {
+  stopLocationPing();
+  pingLocationOnce();
+  locationPingInterval = setInterval(pingLocationOnce, 15000);
+}
+function stopLocationPing() {
+  if (locationPingInterval) {
+    clearInterval(locationPingInterval);
+    locationPingInterval = null;
+  }
 }
 
 /* ============================================================
@@ -2009,6 +2571,616 @@ locateBtn.addEventListener('click', () => {
 floatBalancePill.addEventListener('click', openBuyFloatPage);
 
 /* ============================================================
+   ONLINE / OFFLINE TOGGLE
+   ============================================================ */
+function setOnlineUI() {
+  if (isOnline) {
+    onlineToggle.classList.add('online');
+    onlineToggleLabel.textContent = 'Online';
+  } else {
+    onlineToggle.classList.remove('online');
+    onlineToggleLabel.textContent = 'Offline';
+  }
+}
+
+async function toggleOnline() {
+  if (!providerRecord) {
+    showToast('Apply as a service provider first.');
+    openAccountPage();
+    return;
+  }
+  if (providerRecord.status !== 'approved') {
+    showToast('Your provider account is not yet approved.');
+    openAccountPage();
+    return;
+  }
+  if (!providerRecord.role) {
+    showToast('No role assigned to your account.');
+    openAccountPage();
+    return;
+  }
+  if (floatBalance <= 0) {
+    showToast('You need float balance to go online.');
+    openBuyFloatPage();
+    return;
+  }
+  if (activeStage) {
+    showToast('Finish or cancel the active trip first.');
+    return;
+  }
+
+  onlineToggle.classList.add('busy');
+  isOnline = !isOnline;
+
+  try {
+    await update(ref(database, `providers/${currentUser.uid}`), {
+      online: isOnline,
+      onlineChangedAt: Date.now()
+    });
+  } catch (err) {
+    console.warn('Could not persist online state:', err);
+  }
+
+  onlineToggle.classList.remove('busy');
+  setOnlineUI();
+
+  if (isOnline) {
+    showToast('You are online — listening for requests');
+    attachRequestListeners();
+    startLocationPing();
+  } else {
+    showToast('You are now offline');
+    detachRequestListeners();
+    stopLocationPing();
+  }
+}
+
+onlineToggle.addEventListener('click', toggleOnline);
+
+/* ============================================================
+   REQUEST LISTENERS
+   ============================================================ */
+function detachRequestListeners() {
+  if (requestsRidesUnsub) { requestsRidesUnsub(); requestsRidesUnsub = null; }
+  if (requestsDeliveriesUnsub) { requestsDeliveriesUnsub(); requestsDeliveriesUnsub = null; }
+}
+
+function attachRequestListeners() {
+  detachRequestListeners();
+  if (!providerRecord || providerRecord.status !== 'approved') return;
+
+  requestsRidesUnsub = onValue(ref(database, 'rides'), (snap) => {
+    const data = snap.val() || {};
+    const mapR = {};
+    for (const id in data) {
+      const r = data[id];
+      if (!r) continue;
+      if (r.status === 'searching' && !r.providerId) {
+        mapR[id] = { ...r, rideId: id };
+      }
+    }
+    incomingRides = mapR;
+    evaluateQueue();
+  }, (err) => { console.warn('Rides listener error:', err); });
+
+  requestsDeliveriesUnsub = onValue(ref(database, 'deliveries'), (snap) => {
+    const data = snap.val() || {};
+    const mapD = {};
+    for (const id in data) {
+      const d = data[id];
+      if (!d) continue;
+      if (d.status === 'searching' && !d.providerId) {
+        mapD[id] = { ...d, deliveryId: id };
+      }
+    }
+    incomingDeliveries = mapD;
+    evaluateQueue();
+  }, (err) => { console.warn('Deliveries listener error:', err); });
+}
+
+function canAcceptKind(kind, request) {
+  const role = providerRecord && providerRecord.role;
+  if (!role) return false;
+
+  if (kind === 'ride') {
+    /* Drivers only take rides */
+    return role === 'driver';
+  }
+  if (kind === 'delivery') {
+    const v = String(request.vehicleId || '').toLowerCase();
+    if (role === 'driver') {
+      return v === 'motorbike';
+    }
+    if (role === 'rider') {
+      return v === 'motorbike' || v === 'cyclist';
+    }
+    if (role === 'walker') {
+      return v === 'walker';
+    }
+  }
+  return false;
+}
+
+function isWithinRadius(request, anchor) {
+  if (!anchor) return false;
+  const pickup = request.pickup;
+  if (!pickup || !isFinite(pickup.lat) || !isFinite(pickup.lng)) return false;
+  const d = haversineMeters(anchor.lat, anchor.lng, pickup.lat, pickup.lng);
+  return d <= searchRadiusKm * 1000;
+}
+
+function hasEnoughFloat(request) {
+  const fare = request.fare || 0;
+  return floatBalance >= fare;
+}
+
+function evaluateQueue() {
+  if (!isOnline) return;
+  if (activeStage) return;
+  if (requestOverlay.classList.contains('open')) return;
+
+  const anchor = userLocation || DEFAULT_LOCATION;
+  const candidates = [];
+
+  for (const id in incomingRides) {
+    const r = incomingRides[id];
+    const key = 'ride:' + id;
+    if (declinedKeys[key]) continue;
+    if (!canAcceptKind('ride', r)) continue;
+    if (!isWithinRadius(r, anchor)) continue;
+    if (!hasEnoughFloat(r)) continue;
+    candidates.push({ kind: 'ride', id, data: r, ts: r.createdAt || 0 });
+  }
+
+  for (const id in incomingDeliveries) {
+    const d = incomingDeliveries[id];
+    const key = 'delivery:' + id;
+    if (declinedKeys[key]) continue;
+    if (!canAcceptKind('delivery', d)) continue;
+    if (!isWithinRadius(d, anchor)) continue;
+    if (!hasEnoughFloat(d)) continue;
+    candidates.push({ kind: 'delivery', id, data: d, ts: d.createdAt || 0 });
+  }
+
+  if (!candidates.length) return;
+
+  candidates.sort((a, b) => b.ts - a.ts);
+  const pick = candidates[0];
+  showRequestModal(pick.kind, pick.id, pick.data);
+}
+
+/* ============================================================
+   REQUEST MODAL — INCOMING
+   ============================================================ */
+function showRequestModal(kind, id, data) {
+  if (requestOverlay.classList.contains('open')) return;
+
+  activeTrip = { kind, id, data };
+  activeStage = 'incoming';
+
+  /* Customer card */
+  const customerName  = data.customerName  || (kind === 'delivery' ? data.senderName : '') || 'Customer';
+  const customerPhone = data.customerPhone || (kind === 'delivery' ? data.senderPhone : '') || '—';
+  const customerPhoto = data.customerPhoto || data.senderPhoto || '';
+
+  if (customerPhoto) {
+    reqAvatar.innerHTML = `<img src="${escapeHtml(customerPhoto)}" alt="">`;
+  } else {
+    reqAvatar.innerHTML = `<i class="fas fa-user"></i>`;
+  }
+  reqCustomerName.textContent  = customerName;
+  reqCustomerPhone.textContent = customerPhone;
+
+  /* Route */
+  reqPickup.textContent  = data.pickup?.label || 'Pickup';
+  reqDropoff.textContent = data.dropoff?.label || 'Drop-off';
+
+  /* Stats */
+  const dist = data.distance || 0;
+  const dur  = data.duration || 0;
+  reqDistance.textContent = dist ? formatDistance(dist) : '—';
+  reqDuration.textContent = dur ? formatDuration(dur) : '—';
+  reqPrice.textContent    = 'K ' + formatPrice(data.fare);
+
+  /* Tag */
+  requestTag.classList.add('new');
+  requestTagText.textContent = kind === 'ride'
+    ? 'New ride request'
+    : 'New delivery request';
+
+  /* Slide button — accept stage */
+  slideBtn.className = 'slide-btn accept';
+  slideLabel.innerHTML = '<i class="fas fa-arrow-right"></i> Slide to accept';
+  slideHandle.innerHTML = '<i class="fas fa-chevron-right"></i>';
+  slideBtn.classList.remove('is-busy');
+  resetSlide();
+
+  requestCancelBtn.textContent = 'Decline';
+  requestCancelBtn.onclick = () => declineCurrentRequest();
+
+  requestOverlay.classList.add('open');
+}
+
+function declineCurrentRequest() {
+  if (!activeTrip) return;
+  const key = activeTrip.kind + ':' + activeTrip.id;
+  declinedKeys[key] = true;
+  closeRequestModal();
+  showToast('Request declined');
+  /* re-evaluate for next request */
+  setTimeout(evaluateQueue, 400);
+}
+
+function closeRequestModal() {
+  requestOverlay.classList.remove('open');
+  activeTrip = null;
+  activeStage = null;
+  resetSlide();
+  updateActiveTripPill();
+}
+
+function updateActiveTripPill() {
+  if (activeStage && activeStage !== 'incoming' && activeTrip) {
+    activeTripPill.classList.add('show');
+    if (activeStage === 'accepted')     activeTripLabel.textContent = 'Heading to pickup';
+    else if (activeStage === 'arrived') activeTripLabel.textContent = 'At pickup — waiting';
+    else if (activeStage === 'in_progress') activeTripLabel.textContent = 'Trip in progress';
+  } else {
+    activeTripPill.classList.remove('show');
+  }
+}
+
+activeTripPill.addEventListener('click', () => {
+  if (!activeTrip) return;
+  /* Reopen modal for the active trip */
+  if (!requestOverlay.classList.contains('open')) {
+    requestOverlay.classList.add('open');
+    /* Keep stage — don't reset */
+    if (activeStage === 'accepted')    setSlideStageAccepted();
+    if (activeStage === 'arrived')     setSlideStageArrived();
+    if (activeStage === 'in_progress') setSlideStageInProgress();
+  }
+});
+
+/* ============================================================
+   SLIDE-TO-ACTION
+   ============================================================ */
+let slideDragging = false;
+let slideStartX = 0;
+let slideMaxX = 0;
+
+function resetSlide() {
+  slideHandle.style.transform = '';
+  slideHandle.classList.remove('dragging');
+  slideLabel.style.opacity = '';
+  slideFill.style.width = '62px';
+  slideDragging = false;
+}
+
+function slidePointerDown(e) {
+  if (slideBtn.classList.contains('is-busy')) return;
+  slideDragging = true;
+  slideStartX = e.clientX;
+  const rect = slideBtn.getBoundingClientRect();
+  slideMaxX = rect.width - slideHandle.offsetWidth - 10;
+  slideHandle.classList.add('dragging');
+  try { slideHandle.setPointerCapture(e.pointerId); } catch (err) {}
+}
+
+function slidePointerMove(e) {
+  if (!slideDragging) return;
+  const dx = Math.max(0, Math.min(slideMaxX, e.clientX - slideStartX));
+  slideHandle.style.transform = `translateX(${dx}px)`;
+  slideFill.style.width = (62 + dx) + 'px';
+  slideLabel.style.opacity = String(Math.max(0, 1 - dx / slideMaxX * 1.1));
+
+  if (dx >= slideMaxX * 0.88) {
+    slideDragging = false;
+    slideHandle.classList.remove('dragging');
+    triggerSlideAction();
+  }
+}
+
+function slidePointerUp() {
+  if (!slideDragging) return;
+  slideDragging = false;
+  slideHandle.classList.remove('dragging');
+  resetSlide();
+}
+
+slideHandle.addEventListener('pointerdown', slidePointerDown);
+slideHandle.addEventListener('pointermove', slidePointerMove);
+slideHandle.addEventListener('pointerup', slidePointerUp);
+slideHandle.addEventListener('pointercancel', slidePointerUp);
+
+function setSlideBusy(text) {
+  slideBtn.classList.add('is-busy');
+  slideLabel.innerHTML = text;
+  slideHandle.style.transform = '';
+  slideFill.style.width = '62px';
+}
+
+function resetSlideBusy() {
+  slideBtn.classList.remove('is-busy');
+}
+
+function setSlideStageAccept() {
+  slideBtn.className = 'slide-btn accept';
+  slideLabel.innerHTML = '<i class="fas fa-arrow-right"></i> Slide to accept';
+  slideHandle.innerHTML = '<i class="fas fa-chevron-right"></i>';
+  resetSlide();
+}
+function setSlideStageAccepted() {
+  slideBtn.className = 'slide-btn arrive';
+  slideLabel.innerHTML = '<i class="fas fa-location-dot"></i> Slide to arrive';
+  slideHandle.innerHTML = '<i class="fas fa-chevron-right"></i>';
+  resetSlide();
+}
+function setSlideStageArrived() {
+  slideBtn.className = 'slide-btn start';
+  slideLabel.innerHTML = '<i class="fas fa-play"></i> Slide to start trip';
+  slideHandle.innerHTML = '<i class="fas fa-chevron-right"></i>';
+  resetSlide();
+}
+function setSlideStageInProgress() {
+  slideBtn.className = 'slide-btn end';
+  slideLabel.innerHTML = '<i class="fas fa-flag-checkered"></i> Slide to end trip';
+  slideHandle.innerHTML = '<i class="fas fa-chevron-right"></i>';
+  resetSlide();
+}
+
+async function triggerSlideAction() {
+  if (!activeTrip || !activeStage) { resetSlide(); return; }
+
+  try {
+    if (activeStage === 'incoming')      await handleAccept();
+    else if (activeStage === 'accepted') await handleArrive();
+    else if (activeStage === 'arrived')  await handleStartTrip();
+    else if (activeStage === 'in_progress') await handleEndTrip();
+  } catch (err) {
+    console.error(err);
+    showToast('Action failed: ' + (err.message || err));
+    resetSlideBusy();
+    /* Reset slide to correct stage */
+    if (activeStage === 'incoming')      setSlideStageAccept();
+    else if (activeStage === 'accepted') setSlideStageAccepted();
+    else if (activeStage === 'arrived')  setSlideStageArrived();
+    else if (activeStage === 'in_progress') setSlideStageInProgress();
+  }
+}
+
+/* ============================================================
+   TRIP ACTIONS
+   ============================================================ */
+async function handleAccept() {
+  if (!activeTrip) return;
+  const { kind, id, data } = activeTrip;
+  setSlideBusy('<i class="fas fa-spinner fa-spin"></i> Accepting…');
+
+  const role = providerRecord?.role || 'driver';
+  const providerName  = providerRecord?.fullName || providerRecord?.name || userRecord?.name || 'Provider';
+  const providerPhone = providerRecord?.phone || userRecord?.phone || '';
+  const providerPhoto = providerRecord?.profileUrl || userRecord?.profileUrl || '';
+
+  const updates = {
+    status: 'accepted',
+    providerId: currentUser.uid,
+    providerName,
+    providerPhone,
+    providerPhoto,
+    providerRole: role,
+    acceptedAt: Date.now()
+  };
+  if (kind === 'ride') {
+    updates.vehicleLabel = vehicleLabelFor(role);
+  } else {
+    updates.vehicleLabel = data.vehicleLabel || vehicleLabelFor(role);
+  }
+
+  const path = kind === 'ride' ? `rides/${id}` : `deliveries/${id}`;
+  await update(ref(database, path), updates);
+
+  activeStage = 'accepted';
+  activeTrip.data = { ...data, ...updates };
+
+  setSlideStageAccepted();
+  requestCancelBtn.textContent = 'Cancel trip';
+  requestCancelBtn.onclick = () => cancelActiveTrip();
+  updateActiveTripPill();
+
+  /* Draw route from provider (userLocation) → pickup */
+  const from = userLocation || DEFAULT_LOCATION;
+  const pickup = data.pickup;
+  if (pickup && isFinite(pickup.lat) && isFinite(pickup.lng)) {
+    setPickupMarker(pickup.lat, pickup.lng);
+    await drawMainRoute(from, { lat: pickup.lat, lng: pickup.lng }, osrmProfileForRole(role));
+  }
+
+  /* Watch this trip's status in case admin/customer cancels */
+  attachTripWatcher(kind, id);
+
+  showToast('Trip accepted — heading to pickup');
+}
+
+async function handleArrive() {
+  if (!activeTrip) return;
+  const { kind, id } = activeTrip;
+  setSlideBusy('<i class="fas fa-spinner fa-spin"></i> Marking arrived…');
+
+  const path = kind === 'ride' ? `rides/${id}` : `deliveries/${id}`;
+  await update(ref(database, path), {
+    status: 'arrived',
+    arrivedAt: Date.now()
+  });
+
+  activeStage = 'arrived';
+  setSlideStageArrived();
+  updateActiveTripPill();
+  showToast('Marked as arrived at pickup');
+}
+
+async function handleStartTrip() {
+  if (!activeTrip) return;
+  const { kind, id } = activeTrip;
+  setSlideBusy('<i class="fas fa-spinner fa-spin"></i> Starting trip…');
+
+  const path = kind === 'ride' ? `rides/${id}` : `deliveries/${id}`;
+  await update(ref(database, path), {
+    status: 'in_progress',
+    startedAt: Date.now()
+  });
+
+  activeStage = 'in_progress';
+  setSlideStageInProgress();
+  updateActiveTripPill();
+
+  /* Redraw route: pickup → destination */
+  const pickup = activeTrip.data?.pickup;
+  const dropoff = activeTrip.data?.dropoff;
+  if (pickup && dropoff && isFinite(pickup.lat) && isFinite(pickup.lng) && isFinite(dropoff.lat) && isFinite(dropoff.lng)) {
+    setPickupMarker(pickup.lat, pickup.lng);
+    setDestMarker(dropoff.lat, dropoff.lng);
+    await drawMainRoute(
+      { lat: pickup.lat, lng: pickup.lng },
+      { lat: dropoff.lat, lng: dropoff.lng },
+      osrmProfileForRole(providerRecord?.role || 'driver')
+    );
+  }
+
+  showToast('Trip started');
+}
+
+async function handleEndTrip() {
+  if (!activeTrip) return;
+  const { kind, id, data } = activeTrip;
+  setSlideBusy('<i class="fas fa-spinner fa-spin"></i> Completing…');
+
+  const path = kind === 'ride' ? `rides/${id}` : `deliveries/${id}`;
+  const fare = Math.round(data.fare || 0);
+
+  /* Mark trip completed */
+  await update(ref(database, path), {
+    status: 'completed',
+    completedAt: Date.now(),
+    completedBy: 'provider'
+  });
+
+  /* Deduct fare from float balance */
+  const newBalance = Math.max(0, (floatBalance || 0) - fare);
+  try {
+    await update(ref(database, `providers/${currentUser.uid}`), {
+      floatBalance: newBalance
+    });
+  } catch (err) { console.warn('Could not deduct float:', err); }
+
+  /* Mark the matching transaction as completed */
+  try {
+    const txSnap = await get(ref(database, 'transactions'));
+    const txs = txSnap.val() || {};
+    for (const tid in txs) {
+      const tx = txs[tid];
+      if (tx && tx.referenceId === id && tx.status !== 'completed' && tx.status !== 'cancelled') {
+        await update(ref(database, `transactions/${tid}`), {
+          status: 'completed',
+          completedAt: Date.now()
+        });
+      }
+    }
+  } catch (err) { console.warn('Could not update transaction:', err); }
+
+  /* Clear map */
+  clearTripLayers();
+
+  showToast(`Trip completed — K ${fare} earned`);
+
+  /* Reset modal & cleanup */
+  closeRequestModal();
+  detachTripWatcher();
+  clearTripLayers();
+
+  /* Recenter on self */
+  setTimeout(() => {
+    if (userLocation && map) {
+      map.setView([userLocation.lat, userLocation.lng], PROVIDER_ZOOM, { animate: true });
+    }
+    pingLocationOnce();
+    /* Re-evaluate for next request */
+    evaluateQueue();
+  }, 400);
+}
+
+async function cancelActiveTrip() {
+  if (!activeTrip) return;
+  if (!confirm('Cancel this trip? It will be sent back to searching.')) return;
+
+  const { kind, id } = activeTrip;
+  const path = kind === 'ride' ? `rides/${id}` : `deliveries/${id}`;
+
+  try {
+    await update(ref(database, path), {
+      status: 'searching',
+      providerId: null,
+      providerName: null,
+      providerPhone: null,
+      providerPhoto: null,
+      providerRole: null,
+      acceptedAt: null,
+      arrivedAt: null,
+      startedAt: null,
+      cancelledByProviderAt: Date.now()
+    });
+  } catch (err) {
+    console.warn(err);
+  }
+
+  detachTripWatcher();
+  clearTripLayers();
+  closeRequestModal();
+  showToast('Trip cancelled');
+  setTimeout(evaluateQueue, 400);
+}
+
+/* ============================================================
+   TRIP WATCHER (in case customer/admin cancels)
+   ============================================================ */
+function attachTripWatcher(kind, id) {
+  detachTripWatcher();
+  const path = kind === 'ride' ? `rides/${id}` : `deliveries/${id}`;
+  tripUnsub = onValue(ref(database, path), (snap) => {
+    if (!snap.exists()) return;
+    const trip = snap.val();
+    if (!trip) return;
+
+    if (trip.status === 'cancelled') {
+      showToast('Trip was cancelled by customer');
+      detachTripWatcher();
+      clearTripLayers();
+      closeRequestModal();
+      setTimeout(evaluateQueue, 400);
+      return;
+    }
+
+    /* If someone else took it (shouldn't happen) or status changed remotely */
+    if (trip.status === 'searching' && trip.providerId !== currentUser.uid) {
+      detachTripWatcher();
+      closeRequestModal();
+    }
+  });
+}
+function detachTripWatcher() {
+  if (tripUnsub) { tripUnsub(); tripUnsub = null; }
+  if (tripLocationUnsub) { tripLocationUnsub(); tripLocationUnsub = null; }
+}
+
+/* ============================================================
+   ACCOUNT PAGE
+   ============================================================ */
+function openAccountPage() {
+  applyUserUI();
+  openPage('accountPage');
+}
+
+/* ============================================================
    AUTH BOOT
    ============================================================ */
 onAuthStateChanged(auth, async (user) => {
@@ -2016,7 +3188,7 @@ onAuthStateChanged(auth, async (user) => {
   currentUser = user;
 
   try {
-    /* Check maintenance */
+    /* Maintenance check */
     const maintSnap = await get(ref(database, 'system/maintenance'));
     if (maintSnap.exists() && maintSnap.val().enabled === true) {
       document.body.innerHTML = `
@@ -2034,11 +3206,10 @@ onAuthStateChanged(auth, async (user) => {
       return;
     }
 
-    /* Load provider record (if any) */
+    /* Load provider record */
     const provSnap = await get(ref(database, `providers/${user.uid}`));
     providerRecord = provSnap.exists() ? provSnap.val() : null;
 
-    /* Merge auth user info */
     userRecord = {
       uid: user.uid,
       name: (providerRecord && (providerRecord.fullName || providerRecord.name)) ||
@@ -2046,20 +3217,36 @@ onAuthStateChanged(auth, async (user) => {
             (user.email ? user.email.split('@')[0] : 'Provider'),
       phone: (providerRecord && providerRecord.phone) || user.phoneNumber || '—',
       email: user.email || '—',
-      profileUrl: (providerRecord && providerRecord.profileUrl) ||
-                  user.photoURL || ''
+      profileUrl: (providerRecord && providerRecord.profileUrl) || user.photoURL || ''
     };
 
     applyUserUI();
     initMap();
 
-    /* Listen to float balance */
+    /* Load search radius from admin settings */
+    loadSettings();
+    /* If provider was already online in DB, honor that */
+    if (providerRecord && providerRecord.online === true &&
+        providerRecord.status === 'approved' && providerRecord.role) {
+      isOnline = true;
+      setOnlineUI();
+    } else {
+      isOnline = false;
+      setOnlineUI();
+    }
+
     listenFloatBalance(user.uid);
 
     requestAnimationFrame(() => {
       if (map) map.invalidateSize();
       locateUser({ center: true, silent: true });
     });
+
+    /* If already online from DB and has float, attach listeners */
+    if (isOnline) {
+      attachRequestListeners();
+      startLocationPing();
+    }
 
     hideLoading();
   } catch (err) {
@@ -2068,6 +3255,17 @@ onAuthStateChanged(auth, async (user) => {
     hideLoading();
   }
 });
+
+function loadSettings() {
+  if (settingsUnsub) { settingsUnsub(); settingsUnsub = null; }
+  settingsUnsub = onValue(ref(database, 'system/settings'), (snap) => {
+    if (!snap.exists()) return;
+    const s = snap.val() || {};
+    if (s.searchRadiusKm && isFinite(s.searchRadiusKm)) {
+      searchRadiusKm = s.searchRadiusKm;
+    }
+  });
+}
 
 /* ============================================================
    UI APPLICATION
@@ -2091,7 +3289,6 @@ function applyUserUI() {
   detPhone.textContent     = userRecord.phone;
   detEmail.textContent     = userRecord.email;
 
-  /* Role chip */
   if (status === 'approved' && role) {
     sidebarRoleChip.className = 'sidebar-role-chip approved';
     sidebarRoleChip.textContent = `${roleLabel(role)} · Approved`;
@@ -2106,7 +3303,6 @@ function applyUserUI() {
     sidebarRoleChip.textContent = 'Not Applied';
   }
 
-  /* Hero status */
   heroStatus.className = 'hero-status ' + (status || 'none');
   if (status === 'pending') {
     heroStatus.innerHTML = '<i class="fas fa-clock"></i> Pending Approval';
@@ -2153,7 +3349,7 @@ function renderAccountApplySection() {
         <div class="st-ico"><i class="fas fa-circle-check"></i></div>
         <div class="st-body">
           <strong>You're approved!</strong>
-          <p>You're an approved <b>${escapeHtml(roleLabel(role))}</b>. Head to Errands to start picking up tasks.</p>
+          <p>You're an approved <b>${escapeHtml(roleLabel(role))}</b>. Toggle <b>Online</b> to start receiving requests.</p>
         </div>
       </div>`;
     return;
@@ -2517,9 +3713,7 @@ async function submitApplication(role) {
       status: 'pending',
       updatedAt: Date.now()
     };
-    if (role === 'rider') {
-      updates.bikeUrls = bikeUrls;
-    }
+    if (role === 'rider') updates.bikeUrls = bikeUrls;
     if (role === 'driver') {
       updates.licenseUrl = licenseUrl;
       updates.carUrls = carUrls;
@@ -2546,14 +3740,6 @@ async function submitApplication(role) {
 }
 
 /* ============================================================
-   ACCOUNT PAGE
-   ============================================================ */
-function openAccountPage() {
-  applyUserUI();
-  openPage('accountPage');
-}
-
-/* ============================================================
    ERRANDS PAGE
    ============================================================ */
 function openErrandsPage() {
@@ -2566,22 +3752,17 @@ function loadErrands() {
   errandsList.innerHTML = '<div class="loader-row"><span class="mini-spin"></span> Loading errands…</div>';
 
   const errandsRef = ref(database, 'errands');
-
   errandsUnsub = onValue(errandsRef, (snap) => {
     const data = snap.val() || {};
     const arr = [];
     for (const id in data) {
       const e = data[id];
       if (!e) continue;
-      if (e.status === 'pending') {
-        arr.push({ ...e, errandId: id });
-      }
+      if (e.status === 'pending') arr.push({ ...e, errandId: id });
     }
     arr.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-
     errandsCache = {};
     arr.forEach(e => { errandsCache[e.errandId] = e; });
-
     renderErrands(arr);
   }, (err) => {
     console.warn('Errands listener error:', err);
@@ -2733,11 +3914,7 @@ function openErrandDetail(errandId) {
 }
 
 async function submitOffer(errand) {
-  /* ANY signed-in provider can make an offer — no approval required */
-  if (!currentUser) {
-    showToast('Session expired. Please sign in again.');
-    return;
-  }
+  if (!currentUser) { showToast('Session expired.'); return; }
 
   const priceEl = $('offerPrice');
   const msgEl = $('offerMessage');
@@ -2783,7 +3960,7 @@ async function submitOffer(errand) {
 }
 
 /* ============================================================
-   MAP CHECK MODAL — with route drawing
+   MAP CHECK MODAL
    ============================================================ */
 async function openMapCheck(errandId) {
   const e = errandsCache[errandId];
@@ -2824,7 +4001,6 @@ async function openMapCheck(errandId) {
     modalMap.invalidateSize();
     drawModalMarkers();
     fitModalBounds();
-
     await drawModalRoute();
   }, 320);
 }
@@ -2860,7 +4036,7 @@ function drawModalMarkers() {
 
 function clearModalRoute() {
   if (modalRouteLayer && modalMap) {
-    modalMap.removeLayer(modalRouteLayer);
+    try { modalMap.removeLayer(modalRouteLayer); } catch (e) {}
   }
   modalRouteLayer = null;
   modalRouteLine = null;
@@ -2892,9 +4068,7 @@ async function drawModalRoute() {
     if (!res.ok) throw new Error('Routing failed');
     const data = await res.json();
 
-    if (!data.routes || data.routes.length === 0) {
-      throw new Error('No route');
-    }
+    if (!data.routes || data.routes.length === 0) throw new Error('No route');
 
     const route = data.routes[0];
     const coords = route.geometry.coordinates.map(([lng, lat]) => [lat, lng]);
@@ -2912,11 +4086,9 @@ async function drawModalRoute() {
     if (coords.length > 1) {
       modalMap.fitBounds(L.latLngBounds(coords), { padding: [40, 40], maxZoom: 17 });
     }
-
   } catch (err) {
     if (err.name === 'AbortError') return;
     console.warn('Route fetch failed:', err);
-    /* Fallback: straight dashed line */
     if (userLocation && currentModalTarget && modalMap) {
       const straight = [
         [userLocation.lat, userLocation.lng],
@@ -2924,11 +4096,8 @@ async function drawModalRoute() {
       ];
       modalRouteLayer = L.layerGroup().addTo(modalMap);
       L.polyline(straight, {
-        color: '#0a0a0a',
-        weight: 3,
-        opacity: 0.85,
-        dashArray: '6 8',
-        lineCap: 'round'
+        color: '#0a0a0a', weight: 3, opacity: 0.85,
+        dashArray: '6 8', lineCap: 'round'
       }).addTo(modalRouteLayer);
     }
   }
@@ -2940,10 +4109,7 @@ function fitModalBounds() {
   if (currentModalTarget) points.push([currentModalTarget.lat, currentModalTarget.lng]);
   if (userLocation) points.push([userLocation.lat, userLocation.lng]);
   if (points.length === 0) return;
-  if (points.length === 1) {
-    modalMap.setView(points[0], MODAL_ZOOM);
-    return;
-  }
+  if (points.length === 1) { modalMap.setView(points[0], MODAL_ZOOM); return; }
   const bounds = L.latLngBounds(points);
   modalMap.fitBounds(bounds, { padding: [40, 40], maxZoom: 16 });
 }
@@ -2991,18 +4157,20 @@ historyTabs.addEventListener('click', (e) => {
 function loadHistory() {
   if (myOffersUnsub) { myOffersUnsub(); myOffersUnsub = null; }
   historyList.innerHTML = '<div class="loader-row"><span class="mini-spin"></span> Loading history…</div>';
-
   if (!currentUser) return;
 
   const errandsRef = ref(database, 'errands');
   const floatRef   = ref(database, 'floatRequests');
+  const ridesRef   = ref(database, 'rides');
+  const delivsRef  = ref(database, 'deliveries');
 
-  const state = { offers: null, float: null };
+  const state = { offers: null, float: null, trips: null };
 
   function tryRender() {
-    if (state.offers === null || state.float === null) return;
+    if (state.offers === null || state.float === null || state.trips === null) return;
     historyCache.offers = state.offers;
     historyCache.float = state.float;
+    historyCache.trips = state.trips;
     renderHistory();
   }
 
@@ -3018,11 +4186,8 @@ function loadHistory() {
         if (pid === currentUser.uid) {
           const o = e.offers[pid];
           offers.push({
-            ...o,
-            errandId,
-            errandTitle: e.title,
-            errandStatus: e.status,
-            errandPickup: e.pickup,
+            ...o, errandId, errandTitle: e.title,
+            errandStatus: e.status, errandPickup: e.pickup,
             errandBudget: e.willingToPay
           });
         }
@@ -3045,57 +4210,132 @@ function loadHistory() {
     tryRender();
   }, (err) => { console.warn(err); state.float = []; tryRender(); }));
 
+  /* My trips (rides + deliveries where I'm the provider) */
+  const tripsArr = [];
+  let ridesLoaded = false, delivsLoaded = false;
+  function tryTrips() {
+    if (!ridesLoaded || !delivsLoaded) return;
+    tripsArr.sort((a, b) => (b._ts || 0) - (a._ts || 0));
+    state.trips = tripsArr;
+    tryRender();
+  }
+  unsubs.push(onValue(ridesRef, (snap) => {
+    const data = snap.val() || {};
+    for (const id in data) {
+      const r = data[id];
+      if (r && r.providerId === currentUser.uid) {
+        tripsArr.push({ ...r, _kind: 'trip', _type: 'ride', id, _ts: r.createdAt || 0 });
+      }
+    }
+    ridesLoaded = true;
+    /* rebuild to avoid dupes */
+    rebuildTrips();
+    tryTrips();
+  }, (err) => { console.warn(err); ridesLoaded = true; tryTrips(); }));
+  unsubs.push(onValue(delivsRef, (snap) => {
+    const data = snap.val() || {};
+    for (const id in data) {
+      const d = data[id];
+      if (d && d.providerId === currentUser.uid) {
+        tripsArr.push({ ...d, _kind: 'trip', _type: 'delivery', id, _ts: d.createdAt || 0 });
+      }
+    }
+    delivsLoaded = true;
+    rebuildTrips();
+    tryTrips();
+  }, (err) => { console.warn(err); delivsLoaded = true; tryTrips(); }));
+
+  let rideTrips = [], delivTrips = [];
+  function rebuildTrips() {
+    // simpler approach: rebuild full list each time
+    tripsArr.length = 0;
+    for (const r of rideTrips) tripsArr.push(r);
+    for (const d of delivTrips) tripsArr.push(d);
+  }
+
   myOffersUnsub = () => { unsubs.forEach(u => u()); };
 }
 
 function renderHistory() {
   const offers = historyCache.offers || [];
   const floats = historyCache.float || [];
+  const trips  = historyCache.trips || [];
 
   let combined = [];
-  offers.forEach(o => combined.push({ ...o, _kind: 'offer', _ts: o.createdAt || 0 }));
-  floats.forEach(f => combined.push({ ...f, _kind: 'float', _ts: f.createdAt || 0 }));
+  offers.forEach(o => combined.push({ ...o, _category: 'offer', _ts: o.createdAt || 0 }));
+  floats.forEach(f => combined.push({ ...f, _category: 'float', _ts: f.createdAt || 0 }));
+  trips.forEach(t => combined.push({ ...t, _category: 'trip', _ts: t.createdAt || 0 }));
 
   combined.sort((a, b) => b._ts - a._ts);
 
   const filtered = currentFilter === 'all'
     ? combined
-    : combined.filter(x => x._kind === currentFilter);
+    : combined.filter(x => x._category === currentFilter);
 
   if (!filtered.length) {
     historyList.innerHTML = `
       <div class="empty-state">
         <i class="fas fa-clock-rotate-left"></i>
         <h3>No history yet</h3>
-        <p>Your offers and float requests will appear here.</p>
+        <p>Your accepted trips, offers and float requests will appear here.</p>
       </div>`;
     return;
   }
 
-  const accepted = offers.filter(o => o.status === 'accepted').length;
-  const totalEarned = offers
-    .filter(o => o.status === 'accepted' || o.status === 'completed')
-    .reduce((sum, o) => sum + (o.price || 0), 0);
+  const completed = trips.filter(t => t.status === 'completed').length;
+  const earned = trips
+    .filter(t => t.status === 'completed')
+    .reduce((sum, t) => sum + (t.fare || 0), 0);
 
   let html = `
     <div class="summary-strip">
       <div class="summary-tile">
-        <small>Accepted</small>
-        <strong>${accepted}</strong>
+        <small>Completed trips</small>
+        <strong>${completed}</strong>
       </div>
       <div class="summary-tile dark">
         <small>Total earned</small>
-        <strong>K ${escapeHtml(formatPrice(totalEarned))}</strong>
+        <strong>K ${escapeHtml(formatPrice(earned))}</strong>
       </div>
     </div>
   `;
 
   filtered.forEach(item => {
-    if (item._kind === 'offer') html += renderOfferHistory(item);
-    else html += renderFloatHistory(item);
+    if (item._category === 'offer') html += renderOfferHistory(item);
+    else if (item._category === 'float') html += renderFloatHistory(item);
+    else html += renderTripHistory(item);
   });
 
   historyList.innerHTML = html;
+}
+
+function renderTripHistory(t) {
+  const statusClass = ['searching','accepted','arrived','in_progress','completed','cancelled'].includes(t.status)
+    ? t.status : 'pending';
+  const isRide = t._type === 'ride';
+  return `
+    <div class="history-item">
+      <div class="h-ico ${isRide ? 'ride' : 'delivery'}">
+        <i class="fas ${isRide ? 'fa-car-side' : 'fa-box'}"></i>
+      </div>
+      <div class="h-body">
+        <div class="h-title">${isRide ? 'Ride' : 'Delivery · ' + escapeHtml(t.parcelName || '')}</div>
+        <div class="h-route">
+          <span>${escapeHtml(t.pickup?.label || 'Pickup')}</span>
+          <i class="fas fa-arrow-right" style="font-size:0.62rem;color:#aeaeb2;"></i>
+          <span>${escapeHtml(t.dropoff?.label || 'Drop-off')}</span>
+        </div>
+        <div class="h-meta">
+          <span class="h-chip status-${statusClass}">${escapeHtml(t.status ? t.status.charAt(0).toUpperCase() + t.status.slice(1).replace('_',' ') : 'Pending')}</span>
+          <span class="h-chip"><i class="fas fa-clock"></i> ${escapeHtml(formatDateTime(t.createdAt))}</span>
+        </div>
+      </div>
+      <div class="h-price">
+        <strong>K ${escapeHtml(formatPrice(t.fare))}</strong>
+        <small>${escapeHtml(timeAgo(t.createdAt))}</small>
+      </div>
+    </div>
+  `;
 }
 
 function renderOfferHistory(o) {
@@ -3106,13 +4346,10 @@ function renderOfferHistory(o) {
       <div class="h-ico errand"><i class="fas fa-clipboard-list"></i></div>
       <div class="h-body">
         <div class="h-title">${escapeHtml(o.errandTitle || 'Errand')}</div>
-        <div class="h-route">
-          <span>${escapeHtml(pickupLabel)}</span>
-        </div>
+        <div class="h-route"><span>${escapeHtml(pickupLabel)}</span></div>
         <div class="h-meta">
           <span class="h-chip status-${statusClass}">${escapeHtml(o.status ? o.status.charAt(0).toUpperCase() + o.status.slice(1) : 'Pending')}</span>
           <span class="h-chip"><i class="fas fa-clock"></i> ${escapeHtml(formatDateTime(o.createdAt))}</span>
-          <span class="h-chip"><i class="fas fa-user"></i> ${escapeHtml(o.errandStatus || '')}</span>
         </div>
       </div>
       <div class="h-price">
@@ -3130,9 +4367,7 @@ function renderFloatHistory(f) {
       <div class="h-ico float"><i class="fas fa-wallet"></i></div>
       <div class="h-body">
         <div class="h-title">Float top-up</div>
-        <div class="h-route">
-          <span>${escapeHtml(f.reference || 'Balance top-up')}</span>
-        </div>
+        <div class="h-route"><span>${escapeHtml(f.reference || 'Balance top-up')}</span></div>
         <div class="h-meta">
           <span class="h-chip status-${statusClass}">${escapeHtml(f.status ? f.status.charAt(0).toUpperCase() + f.status.slice(1) : 'Pending')}</span>
           <span class="h-chip"><i class="fas fa-clock"></i> ${escapeHtml(formatDateTime(f.createdAt))}</span>
@@ -3200,9 +4435,7 @@ function renderDepositNumbers(numbers) {
       try {
         await navigator.clipboard.writeText(val.replace(/\s+/g, ''));
         showToast('Number copied');
-      } catch {
-        showToast('Could not copy — ' + val);
-      }
+      } catch { showToast('Could not copy — ' + val); }
     });
   });
 }
@@ -3228,16 +4461,13 @@ async function submitFloatRequest() {
   const screenshot = floatScreenshotUrl.value;
 
   if (!amountRaw || !isFinite(amount) || amount <= 0) {
-    floatError.innerText = 'Please enter a valid amount.';
-    return;
+    floatError.innerText = 'Please enter a valid amount.'; return;
   }
   if (!screenshot) {
-    floatError.innerText = 'Please upload your payment screenshot.';
-    return;
+    floatError.innerText = 'Please upload your payment screenshot.'; return;
   }
   if (!currentUser) {
-    floatError.innerText = 'Session expired. Please sign in again.';
-    return;
+    floatError.innerText = 'Session expired.'; return;
   }
 
   const original = submitFloatBtn.innerHTML;
@@ -3284,6 +4514,7 @@ function openSettingsPage() {
 
 $('settingsRefreshLocation').addEventListener('click', () => {
   locateUser({ center: true });
+  pingLocationOnce();
   showToast('Refreshing location…');
 });
 
@@ -3304,6 +4535,15 @@ $('settingsLogout').addEventListener('click', doLogout);
 logoutBtn.addEventListener('click', doLogout);
 
 async function doLogout() {
+  /* Go offline before signing out */
+  try {
+    if (currentUser) {
+      await update(ref(database, `providers/${currentUser.uid}`), { online: false });
+    }
+  } catch (e) {}
+  stopLocationPing();
+  detachRequestListeners();
+  detachTripWatcher();
   try { await signOut(auth); } catch (err) { console.warn(err); }
   localStorage.removeItem('providerUid');
   localStorage.removeItem('providerEmail');
