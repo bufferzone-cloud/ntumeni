@@ -1,0 +1,2732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>NTUMENI | Admin Panel</title>
+<link rel="icon" href="logo.png">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script type="importmap">
+{ "imports": {
+  "firebase/app": "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js",
+  "firebase/auth": "https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js",
+  "firebase/database": "https://www.gstatic.com/firebasejs/12.12.0/firebase-database.js"
+}}
+</script>
+<style>
+:root{
+  --ink:#0a0a0a; --paper:#ffffff;
+  --tp:#0a0a0a; --ts:#6e6e73; --tt:#aeaeb2;
+  --fg:#f4f4f5; --fgh:#ebebed;
+  --line:rgba(0,0,0,0.08);
+  --danger:#d92d20; --danger-s:#fef3f2;
+  --success:#12b76a; --success-s:#ecfdf3;
+  --warn:#f79009; --warn-s:#fffaeb;
+  --info:#2e90fa; --info-s:#eff8ff;
+  --radius:14px; --radius-sm:10px;
+  --spring:cubic-bezier(0.34,1.56,0.64,1);
+  --ease:cubic-bezier(0.22,1,0.36,1);
+  --panel-ease:cubic-bezier(0.32,0.72,0,1);
+  --sidebar-w:250px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;width:100%}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',Roboto,sans-serif;
+  color:var(--tp);background:#f7f7f8;
+  -webkit-font-smoothing:antialiased;
+}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,textarea,select{font-family:inherit}
+.hidden{display:none !important}
+a{color:inherit;text-decoration:none}
+
+/* ========== LOGIN ========== */
+#loginScreen{
+  position:fixed;inset:0;z-index:9000;
+  background:linear-gradient(135deg,#0a0a0a 0%,#1c1c1e 100%);
+  display:flex;align-items:center;justify-content:center;padding:20px;
+}
+.login-card{
+  background:#fff;border-radius:24px;padding:36px 30px;
+  max-width:420px;width:100%;
+  box-shadow:0 32px 80px -20px rgba(0,0,0,0.5);
+  animation:loginIn .5s var(--spring);
+}
+@keyframes loginIn{from{opacity:0;transform:translateY(20px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+.login-logo{
+  width:72px;height:72px;border-radius:50%;
+  background:#0a0a0a;color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.7rem;margin:0 auto 20px;
+  box-shadow:0 12px 32px -8px rgba(0,0,0,0.4);
+}
+.login-card h1{font-size:1.5rem;font-weight:800;letter-spacing:-.5px;text-align:center;margin-bottom:6px}
+.login-card .login-sub{font-size:.82rem;color:var(--ts);text-align:center;margin-bottom:26px}
+.form-input{
+  width:100%;padding:13px 16px;font-size:.94rem;
+  border:1.5px solid transparent;border-radius:12px;
+  background:var(--fg);outline:none;color:var(--tp);
+  margin-bottom:12px;
+  transition:background .3s,border-color .3s,box-shadow .3s;
+}
+.form-input:hover{background:var(--fgh)}
+.form-input:focus{background:#fff;border-color:#0a0a0a;box-shadow:0 0 0 4px rgba(0,0,0,0.10)}
+.login-btn{
+  width:100%;padding:14px;border-radius:12px;
+  background:linear-gradient(180deg,#2b2b2e 0%,#0a0a0a 60%,#000 100%);
+  color:#fff;font-weight:700;font-size:.94rem;
+  display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  box-shadow:0 8px 20px -6px rgba(0,0,0,0.4);
+  margin-top:6px;transition:transform .35s var(--spring);
+}
+.login-btn:active{transform:scale(.97)}
+.login-btn:disabled{opacity:.55;cursor:not-allowed}
+.login-err{
+  color:var(--danger);font-size:.8rem;font-weight:500;
+  background:var(--danger-s);border:1px solid rgba(217,45,32,0.18);
+  padding:10px 14px;border-radius:10px;margin-bottom:12px;line-height:1.5;
+}
+.login-err:empty{display:none}
+.login-hint{font-size:.72rem;color:var(--tt);text-align:center;margin-top:18px;line-height:1.5}
+
+/* ========== LAYOUT ========== */
+#app{display:flex;height:100vh;width:100%}
+
+/* Sidebar */
+.sidebar{
+  width:var(--sidebar-w);flex-shrink:0;
+  background:#0a0a0a;color:#fff;
+  display:flex;flex-direction:column;
+  transition:transform .4s var(--panel-ease);
+  z-index:800;
+}
+.sidebar-brand{
+  padding:22px 20px 18px;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+  display:flex;align-items:center;gap:12px;flex-shrink:0;
+}
+.sidebar-brand .brand-mark{
+  width:38px;height:38px;border-radius:10px;
+  background:#fff;color:#0a0a0a;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1rem;font-weight:800;flex-shrink:0;
+}
+.sidebar-brand .brand-txt strong{display:block;font-size:.92rem;font-weight:800;letter-spacing:-.2px}
+.sidebar-brand .brand-txt span{display:block;font-size:.6rem;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-top:2px}
+
+.sidebar-nav{flex:1;overflow-y:auto;padding:12px 10px}
+.nav-group-label{
+  font-size:.6rem;font-weight:800;letter-spacing:1.6px;text-transform:uppercase;
+  color:rgba(255,255,255,0.35);padding:14px 14px 6px;
+}
+.nav-btn{
+  width:100%;display:flex;align-items:center;gap:13px;
+  padding:11px 14px;border-radius:10px;
+  color:rgba(255,255,255,0.72);
+  font-size:.86rem;font-weight:600;
+  text-align:left;margin-bottom:2px;
+  transition:background .2s,color .2s;
+  position:relative;
+}
+.nav-btn:hover{background:rgba(255,255,255,0.06);color:#fff}
+.nav-btn.active{background:#fff;color:#0a0a0a}
+.nav-btn i{width:20px;text-align:center;font-size:.9rem}
+.nav-badge{
+  position:absolute;right:12px;top:50%;transform:translateY(-50%);
+  background:var(--danger);color:#fff;
+  font-size:.58rem;font-weight:800;padding:2px 7px;border-radius:99px;
+  min-width:18px;text-align:center;
+}
+.nav-badge.zero{display:none}
+.nav-btn.active .nav-badge{background:#0a0a0a;color:#fff}
+
+.sidebar-foot{
+  padding:12px 10px 16px;border-top:1px solid rgba(255,255,255,0.08);flex-shrink:0;
+}
+.admin-chip{
+  display:flex;align-items:center;gap:10px;padding:10px 12px;
+  background:rgba(255,255,255,0.06);border-radius:10px;margin-bottom:8px;
+}
+.admin-chip .ac-avatar{
+  width:34px;height:34px;border-radius:50%;background:#fff;color:#0a0a0a;
+  display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:800;
+  flex-shrink:0;overflow:hidden;
+}
+.admin-chip .ac-avatar img{width:100%;height:100%;object-fit:cover}
+.admin-chip .ac-meta{min-width:0;flex:1}
+.admin-chip .ac-meta strong{display:block;font-size:.82rem;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.admin-chip .ac-meta span{display:block;font-size:.66rem;color:rgba(255,255,255,0.5);margin-top:1px}
+.logout-btn{
+  width:100%;display:flex;align-items:center;gap:13px;
+  padding:11px 14px;border-radius:10px;
+  color:rgba(255,100,100,0.9);font-size:.86rem;font-weight:700;
+  transition:background .2s;
+}
+.logout-btn:hover{background:rgba(217,45,32,0.15)}
+
+/* Main */
+.main{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden}
+.topbar{
+  flex-shrink:0;height:62px;
+  background:rgba(255,255,255,0.92);backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--line);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 22px;z-index:700;
+}
+.topbar h1{font-size:1.05rem;font-weight:800;letter-spacing:-.3px}
+.topbar .tb-sub{font-size:.7rem;color:var(--ts);margin-top:1px}
+.tb-left{display:flex;align-items:center;gap:14px;min-width:0}
+.menu-btn{
+  display:none;width:38px;height:38px;border-radius:10px;
+  background:var(--fg);align-items:center;justify-content:center;font-size:.95rem;
+}
+.tb-right{display:flex;align-items:center;gap:10px}
+.tb-pill{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:7px 13px;border-radius:99px;
+  background:var(--fg);font-size:.75rem;font-weight:700;color:var(--ts);
+}
+.tb-pill .dot{width:7px;height:7px;border-radius:50%;background:var(--success)}
+
+/* Content */
+.content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:22px;min-height:0}
+.view{display:none;animation:viewIn .35s var(--ease)}
+.view.active{display:block}
+@keyframes viewIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ========== CARDS & TABLES ========== */
+.card{
+  background:#fff;border-radius:var(--radius);
+  box-shadow:0 0 0 1px var(--line),0 2px 8px rgba(0,0,0,0.03);
+  padding:18px;margin-bottom:16px;
+}
+.card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.card-head h2{font-size:.98rem;font-weight:800;letter-spacing:-.3px}
+.card-head p{font-size:.75rem;color:var(--ts);margin-top:2px}
+.card-head .card-actions{display:flex;gap:8px;flex-wrap:wrap}
+
+/* Metrics */
+.metrics-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(190px,1fr));
+  gap:12px;margin-bottom:16px;
+}
+.metric{
+  background:#fff;border-radius:var(--radius);
+  box-shadow:0 0 0 1px var(--line),0 2px 8px rgba(0,0,0,0.03);
+  padding:16px 18px;position:relative;overflow:hidden;
+  transition:transform .3s var(--spring),box-shadow .3s;
+  cursor:default;
+}
+.metric:hover{transform:translateY(-2px);box-shadow:0 0 0 1px rgba(0,0,0,0.12),0 8px 20px -8px rgba(0,0,0,0.18)}
+.metric.dark{background:#0a0a0a;color:#fff}
+.metric .m-label{
+  font-size:.62rem;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;
+  color:var(--tt);margin-bottom:8px;display:flex;align-items:center;gap:7px;
+}
+.metric.dark .m-label{color:rgba(255,255,255,0.55)}
+.metric .m-value{font-size:1.85rem;font-weight:800;letter-spacing:-1px;line-height:1}
+.metric .m-value small{font-size:.9rem;font-weight:700;opacity:.55;margin-right:3px}
+.metric.dark .m-value{color:#fff}
+.metric .m-sub{font-size:.7rem;color:var(--ts);margin-top:6px}
+.metric.dark .m-sub{color:rgba(255,255,255,0.55)}
+.metric .m-ico{
+  position:absolute;right:14px;top:14px;
+  width:34px;height:34px;border-radius:10px;
+  background:var(--fg);display:flex;align-items:center;justify-content:center;
+  font-size:.85rem;color:var(--tp);
+}
+.metric.dark .m-ico{background:rgba(255,255,255,0.12);color:#fff}
+
+/* Filter tabs */
+.tabs{display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:14px;padding-bottom:2px}
+.tabs::-webkit-scrollbar{display:none}
+.tab{
+  flex-shrink:0;padding:8px 14px;border-radius:99px;
+  font-size:.78rem;font-weight:700;color:var(--ts);background:var(--fg);
+  transition:background .2s,color .2s;white-space:nowrap;
+}
+.tab.active{background:#0a0a0a;color:#fff}
+.tab:hover:not(.active){background:var(--fgh)}
+
+/* List items */
+.list-item{
+  display:flex;align-items:center;gap:14px;
+  padding:13px 4px;
+  border-bottom:1px solid var(--line);
+  transition:background .18s;cursor:pointer;
+}
+.list-item:hover{background:var(--fg);margin:0 -8px;padding:13px 12px;border-radius:10px;border-color:transparent}
+.list-item:last-child{border-bottom:none}
+.li-avatar{
+  width:42px;height:42px;border-radius:50%;background:var(--fg);
+  overflow:hidden;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.9rem;color:var(--tt);
+}
+.li-avatar img{width:100%;height:100%;object-fit:cover}
+.li-body{flex:1;min-width:0}
+.li-title{font-size:.88rem;font-weight:700;color:var(--tp);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.li-sub{font-size:.74rem;color:var(--ts);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.li-right{text-align:right;flex-shrink:0}
+.li-right strong{display:block;font-size:.9rem;font-weight:800;letter-spacing:-.2px}
+.li-right small{display:block;font-size:.65rem;color:var(--tt);margin-top:2px}
+.status-chip{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:.62rem;font-weight:800;letter-spacing:.5px;text-transform:uppercase;
+  padding:3px 9px;border-radius:99px;
+}
+.status-chip.pending   {background:var(--warn-s);color:#b54708}
+.status-chip.approved  {background:var(--success-s);color:#027a48}
+.status-chip.accepted  {background:var(--success-s);color:#027a48}
+.status-chip.completed {background:var(--info-s);color:#175cd3}
+.status-chip.cancelled {background:#f4f4f5;color:#52525b}
+.status-chip.rejected  {background:var(--danger-s);color:#b42318}
+.status-chip.banned    {background:var(--danger-s);color:#b42318}
+.status-chip.searching {background:var(--info-s);color:#175cd3}
+.status-chip.in_progress {background:var(--success-s);color:#027a48}
+.status-chip.active    {background:var(--info-s);color:#175cd3}
+.status-chip.driver    {background:#0a0a0a;color:#fff}
+.status-chip.rider     {background:#175cd3;color:#fff}
+.status-chip.walker    {background:#027a48;color:#fff}
+
+/* Empty */
+.empty{
+  text-align:center;padding:60px 24px;color:var(--ts);
+}
+.empty i{font-size:2.6rem;color:#d8d8dc;display:block;margin-bottom:14px}
+.empty h3{font-size:1rem;font-weight:800;color:var(--tp);margin-bottom:6px}
+.empty p{font-size:.82rem;line-height:1.55;max-width:300px;margin:0 auto}
+
+/* Buttons */
+.btn{
+  padding:9px 16px;border-radius:10px;font-size:.8rem;font-weight:700;
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  transition:transform .3s var(--spring),background .2s,box-shadow .2s;
+  white-space:nowrap;
+}
+.btn:active{transform:scale(.96)}
+.btn-primary{background:#0a0a0a;color:#fff;box-shadow:0 4px 12px -4px rgba(0,0,0,0.4)}
+.btn-primary:hover{background:#1c1c1e}
+.btn-ghost{background:var(--fg);color:var(--tp)}
+.btn-ghost:hover{background:var(--fgh)}
+.btn-success{background:var(--success);color:#fff}
+.btn-success:hover{background:#0ea35c}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-danger:hover{background:#b91c14}
+.btn-warn{background:var(--warn);color:#fff}
+.btn-warn:hover{background:#d97a08}
+.btn-sm{padding:7px 12px;font-size:.74rem}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* Form grid */
+.form-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:14px}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:.68rem;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--ts)}
+.field input,.field select,.field textarea{
+  padding:10px 12px;font-size:.86rem;
+  border:1.5px solid transparent;border-radius:10px;
+  background:var(--fg);outline:none;color:var(--tp);
+  transition:background .3s,border-color .3s,box-shadow .3s;
+}
+.field input:focus,.field select:focus,.field textarea:focus{
+  background:#fff;border-color:#0a0a0a;box-shadow:0 0 0 3px rgba(0,0,0,0.08);
+}
+.field.full{grid-column:1/-1}
+.field textarea{resize:vertical;min-height:80px;line-height:1.5}
+
+/* Map */
+.map-wrap{
+  position:relative;height:380px;border-radius:var(--radius);
+  overflow:hidden;background:#e8eaed;
+  box-shadow:0 0 0 1px var(--line);
+}
+.map-wrap.tall{height:520px}
+.map-wrap .leaflet-container{height:100%;width:100%;background:#e8eaed;font-family:inherit}
+.leaflet-tile-pane{filter:saturate(.92) contrast(1.04) brightness(1.02)}
+
+/* Detail drawer */
+.drawer-overlay{
+  position:fixed;inset:0;z-index:1900;
+  background:rgba(0,0,0,0.42);backdrop-filter:blur(3px);
+  opacity:0;visibility:hidden;transition:opacity .35s,visibility .35s;
+}
+.drawer-overlay.open{opacity:1;visibility:visible}
+.drawer{
+  position:fixed;top:0;right:0;bottom:0;z-index:2000;
+  width:520px;max-width:92vw;background:#fff;
+  display:flex;flex-direction:column;
+  transform:translateX(100%);
+  transition:transform .46s var(--panel-ease);
+  box-shadow:-14px 0 46px rgba(0,0,0,0.2);
+}
+.drawer.open{transform:translateX(0)}
+.drawer-head{
+  padding:18px 20px;border-bottom:1px solid var(--line);
+  display:flex;align-items:flex-start;gap:14px;flex-shrink:0;
+}
+.drawer-head .dh-body{flex:1;min-width:0}
+.drawer-head h2{font-size:1.05rem;font-weight:800;letter-spacing:-.3px}
+.drawer-head p{font-size:.75rem;color:var(--ts);margin-top:3px}
+.drawer-close{
+  width:36px;height:36px;border-radius:50%;background:var(--fg);
+  display:flex;align-items:center;justify-content:center;font-size:.85rem;color:var(--ts);
+  flex-shrink:0;transition:background .2s,transform .3s;
+}
+.drawer-close:hover{background:#0a0a0a;color:#fff;transform:rotate(90deg)}
+.drawer-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:20px}
+.drawer-foot{
+  padding:14px 20px;border-top:1px solid var(--line);
+  display:flex;gap:10px;justify-content:flex-end;flex-shrink:0;flex-wrap:wrap;
+}
+
+/* Detail rows */
+.detail-section{margin-bottom:22px}
+.detail-section h3{
+  font-size:.66rem;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;
+  color:var(--tt);margin-bottom:10px;
+  display:flex;align-items:center;gap:8px;
+}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.detail-box{
+  background:var(--fg);border-radius:10px;padding:10px 12px;
+}
+.detail-box.full{grid-column:1/-1}
+.detail-box small{
+  display:block;font-size:.6rem;font-weight:800;letter-spacing:.8px;
+  text-transform:uppercase;color:var(--tt);margin-bottom:3px;
+}
+.detail-box strong{
+  display:block;font-size:.85rem;font-weight:700;color:var(--tp);
+  word-break:break-word;line-height:1.35;
+}
+.detail-box.link strong{color:var(--info);cursor:pointer;text-decoration:underline}
+.detail-box.link strong:hover{opacity:.75}
+
+/* Image thumbnails */
+.img-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px}
+.img-thumb{
+  position:relative;width:100%;aspect-ratio:1/1;border-radius:10px;
+  overflow:hidden;background:var(--fg);cursor:pointer;
+  box-shadow:0 0 0 1px var(--line);
+  transition:transform .3s var(--spring);
+}
+.img-thumb:hover{transform:scale(1.03)}
+.img-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.img-thumb .thumb-label{
+  position:absolute;bottom:0;left:0;right:0;
+  background:linear-gradient(0deg,rgba(0,0,0,0.7),transparent);
+  color:#fff;font-size:.6rem;font-weight:700;padding:14px 6px 4px;
+  letter-spacing:.4px;text-transform:uppercase;text-align:center;
+}
+
+/* Lightbox */
+.lightbox{
+  position:fixed;inset:0;z-index:6000;
+  background:rgba(0,0,0,0.9);backdrop-filter:blur(6px);
+  display:none;align-items:center;justify-content:center;padding:20px;
+}
+.lightbox.open{display:flex;animation:fadeIn .25s}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.lightbox img{max-width:100%;max-height:90vh;border-radius:12px;box-shadow:0 24px 64px rgba(0,0,0,0.6)}
+.lightbox-close{
+  position:absolute;top:20px;right:20px;
+  width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,0.15);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:1.1rem;
+  cursor:pointer;transition:background .2s;
+}
+.lightbox-close:hover{background:rgba(255,255,255,0.25)}
+
+/* Loading */
+.loader{display:flex;align-items:center;justify-content:center;gap:10px;padding:50px 20px;color:var(--ts);font-size:.84rem}
+.spinner{
+  width:18px;height:18px;border-radius:50%;
+  border:2.5px solid rgba(0,0,0,0.12);border-top-color:#0a0a0a;
+  animation:spin .8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Toast */
+#toast{
+  position:fixed;left:50%;bottom:30px;z-index:6000;
+  transform:translate(-50%,24px);
+  background:#0a0a0a;color:#fff;font-size:.84rem;font-weight:600;
+  padding:13px 22px;border-radius:99px;
+  box-shadow:0 14px 34px -10px rgba(0,0,0,0.6);
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .3s,transform .4s var(--spring),visibility .3s;
+  max-width:88vw;text-align:center;
+}
+#toast.show{opacity:1;visibility:visible;transform:translate(-50%,0)}
+
+/* Stats row */
+.stats-row{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+  gap:10px;margin-bottom:16px;
+}
+.stat-mini{
+  background:var(--fg);border-radius:10px;padding:12px 14px;
+}
+.stat-mini small{
+  display:block;font-size:.6rem;font-weight:800;letter-spacing:.8px;
+  text-transform:uppercase;color:var(--tt);margin-bottom:4px;
+}
+.stat-mini strong{display:block;font-size:1.2rem;font-weight:800;letter-spacing:-.5px}
+
+/* Sub-detail offers */
+.offer-line{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:12px;background:var(--fg);border-radius:10px;margin-bottom:8px;
+}
+.offer-line .ol-avatar{
+  width:38px;height:38px;border-radius:50%;background:#fff;overflow:hidden;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:.85rem;color:var(--tt);
+}
+.offer-line .ol-avatar img{width:100%;height:100%;object-fit:cover}
+.offer-line .ol-body{flex:1;min-width:0}
+.offer-line .ol-body strong{display:block;font-size:.85rem;font-weight:700}
+.offer-line .ol-body p{font-size:.75rem;color:var(--ts);margin-top:2px;line-height:1.4;word-break:break-word}
+.offer-line .ol-right{text-align:right;flex-shrink:0}
+.offer-line .ol-right strong{display:block;font-size:.9rem;font-weight:800}
+.offer-line .ol-right small{display:block;font-size:.6rem;color:var(--tt);margin-top:2px}
+
+/* Mobile */
+.sidebar-backdrop{
+  position:fixed;inset:0;z-index:790;background:rgba(0,0,0,0.42);
+  backdrop-filter:blur(3px);opacity:0;visibility:hidden;
+  transition:opacity .35s,visibility .35s;
+}
+.sidebar-backdrop.open{opacity:1;visibility:visible}
+
+@media(max-width:900px){
+  .sidebar{position:fixed;top:0;left:0;bottom:0;transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .menu-btn{display:flex}
+  .detail-grid{grid-template-columns:1fr}
+  .content{padding:16px}
+  .topbar{padding:0 14px}
+}
+@media(max-width:600px){
+  .metrics-grid{grid-template-columns:1fr 1fr}
+  .metric .m-value{font-size:1.5rem}
+  .drawer{width:100%}
+  .topbar h1{font-size:.95rem}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms !important;transition-duration:.001ms !important}
+}
+</style>
+</head>
+<body>
+
+<!-- ========== LOGIN ========== -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo"><i class="fas fa-shield-halved"></i></div>
+    <h1>NTUMENI Admin</h1>
+    <p class="login-sub">Sign in to manage the platform</p>
+
+    <div id="loginError" class="login-err"></div>
+
+    <form id="loginForm">
+      <input type="email" id="loginEmail" class="form-input" placeholder="Admin email" autocomplete="email" required>
+      <input type="password" id="loginPassword" class="form-input" placeholder="Password" autocomplete="current-password" required>
+      <button type="submit" id="loginBtn" class="login-btn">
+        <i class="fas fa-arrow-right-to-bracket"></i> SIGN IN
+      </button>
+    </form>
+
+    <p class="login-hint">
+      Access restricted to authorised administrators.<br>
+      Your account must exist under <code>admins/</code> in the database.
+    </p>
+  </div>
+</div>
+
+<!-- ========== APP ========== -->
+<div id="app" class="hidden">
+
+  <!-- Sidebar backdrop (mobile) -->
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-mark">N</div>
+      <div class="brand-txt">
+        <strong>NTUMENI</strong>
+        <span>Admin Console</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-group-label">Overview</div>
+      <button class="nav-btn active" data-view="dashboard">
+        <i class="fas fa-gauge-high"></i> Dashboard
+      </button>
+      <button class="nav-btn" data-view="rides">
+        <i class="fas fa-car-side"></i> Rides
+        <span class="nav-badge zero" id="badgeRides">0</span>
+      </button>
+      <button class="nav-btn" data-view="deliveries">
+        <i class="fas fa-box"></i> Deliveries
+        <span class="nav-badge zero" id="badgeDeliveries">0</span>
+      </button>
+      <button class="nav-btn" data-view="errands">
+        <i class="fas fa-clipboard-list"></i> Errands
+        <span class="nav-badge zero" id="badgeErrands">0</span>
+      </button>
+
+      <div class="nav-group-label">People</div>
+      <button class="nav-btn" data-view="providers">
+        <i class="fas fa-briefcase"></i> Service Providers
+        <span class="nav-badge zero" id="badgeProviders">0</span>
+      </button>
+      <button class="nav-btn" data-view="customers">
+        <i class="fas fa-users"></i> Customers
+      </button>
+
+      <div class="nav-group-label">Finance</div>
+      <button class="nav-btn" data-view="float">
+        <i class="fas fa-wallet"></i> Float Requests
+        <span class="nav-badge zero" id="badgeFloat">0</span>
+      </button>
+      <button class="nav-btn" data-view="transactions">
+        <i class="fas fa-receipt"></i> Transactions
+      </button>
+
+      <div class="nav-group-label">Configuration</div>
+      <button class="nav-btn" data-view="pricing">
+        <i class="fas fa-tags"></i> Pricing &amp; Fares
+      </button>
+      <button class="nav-btn" data-view="settings">
+        <i class="fas fa-gear"></i> Settings
+      </button>
+    </nav>
+
+    <div class="sidebar-foot">
+      <div class="admin-chip">
+        <div class="ac-avatar" id="adminAvatar"><i class="fas fa-user-shield"></i></div>
+        <div class="ac-meta">
+          <strong id="adminName">Admin</strong>
+          <span id="adminEmail">—</span>
+        </div>
+      </div>
+      <button class="logout-btn" id="logoutBtn">
+        <i class="fas fa-arrow-right-from-bracket"></i> Sign Out
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+    <div class="topbar">
+      <div class="tb-left">
+        <button class="menu-btn" id="menuBtn"><i class="fas fa-bars"></i></button>
+        <div>
+          <h1 id="viewTitle">Dashboard</h1>
+          <div class="tb-sub" id="viewSub">Platform overview</div>
+        </div>
+      </div>
+      <div class="tb-right">
+        <span class="tb-pill"><span class="dot"></span> Live</span>
+      </div>
+    </div>
+
+    <div class="content" id="content">
+
+      <!-- DASHBOARD -->
+      <section class="view active" id="view-dashboard">
+        <div class="metrics-grid" id="dashboardMetrics"></div>
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h2>Live Activity Map</h2>
+              <p>Active rides &amp; deliveries right now</p>
+            </div>
+            <div class="card-actions">
+              <button class="btn btn-ghost btn-sm" id="refreshMapBtn"><i class="fas fa-rotate"></i> Refresh</button>
+            </div>
+          </div>
+          <div class="map-wrap tall" id="dashboardMap"></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><h2>Recent Activity</h2><p>Latest platform events</p></div>
+          </div>
+          <div id="recentActivity"><div class="loader"><span class="spinner"></span> Loading…</div></div>
+        </div>
+      </section>
+
+      <!-- RIDES -->
+      <section class="view" id="view-rides">
+        <div class="card">
+          <div class="card-head">
+            <div><h2>Live Ride Map</h2><p>Active rides in progress</p></div>
+          </div>
+          <div class="map-wrap" id="ridesMap"></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><h2>All Rides</h2><p id="ridesCount">—</p></div>
+          </div>
+          <div class="tabs" id="ridesTabs">
+            <button class="tab active" data-filter="all">All</button>
+            <button class="tab" data-filter="searching">Searching</button>
+            <button class="tab" data-filter="accepted">Accepted</button>
+            <button class="tab" data-filter="in_progress">In Progress</button>
+            <button class="tab" data-filter="completed">Completed</button>
+            <button class="tab" data-filter="cancelled">Cancelled</button>
+          </div>
+          <div id="ridesList"><div class="loader"><span class="spinner"></span> Loading rides…</div></div>
+        </div>
+      </section>
+
+      <!-- DELIVERIES -->
+      <section class="view" id="view-deliveries">
+        <div class="card">
+          <div class="card-head">
+            <div><h2>Live Delivery Map</h2><p>Active deliveries in progress</p></div>
+          </div>
+          <div class="map-wrap" id="deliveriesMap"></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><h2>All Deliveries</h2><p id="deliveriesCount">—</p></div>
+          </div>
+          <div class="tabs" id="deliveriesTabs">
+            <button class="tab active" data-filter="all">All</button>
+            <button class="tab" data-filter="searching">Searching</button>
+            <button class="tab" data-filter="accepted">Accepted</button>
+            <button class="tab" data-filter="in_progress">In Progress</button>
+            <button class="tab" data-filter="completed">Completed</button>
+            <button class="tab" data-filter="cancelled">Cancelled</button>
+          </div>
+          <div id="deliveriesList"><div class="loader"><span class="spinner"></span> Loading deliveries…</div></div>
+        </div>
+      </section>
+
+      <!-- ERRANDS -->
+      <section class="view" id="view-errands">
+        <div class="card">
+          <div class="card-head">
+            <div><h2>All Errands</h2><p id="errandsCount">—</p></div>
+          </div>
+          <div class="tabs" id="errandsTabs">
+            <button class="tab active" data-filter="all">All</button>
+            <button class="tab" data-filter="pending">Pending</button>
+            <button class="tab" data-filter="accepted">Accepted</button>
+            <button class="tab" data-filter="completed">Completed</button>
+            <button class="tab" data-filter="cancelled">Cancelled</button>
+          </div>
+          <div id="errandsList"><div class="loader"><span class="spinner"></span> Loading errands…</div></div>
+        </div>
+      </section>
+
+      <!-- PROVIDERS -->
+      <section class="view" id="view-providers">
+        <div class="card">
+          <div class="card-head">
+            <div><h2>Service Providers</h2><p id="providersCount">—</p></div>
+          </div>
+          <div class="tabs" id="providersTabs">
+            <button class="tab active" data-filter="all">All</button>
+            <button class="tab" data-filter="pending">Pending</button>
+            <button class="tab" data-filter="approved">Approved</button>
+            <button class="tab" data-filter="rejected">Rejected</button>
+            <button class="tab" data-filter="banned">Banned</button>
+          </div>
+          <div id="providersList"><div class="loader"><span class="spinner"></span> Loading providers…</div></div>
+        </div>
+      </section>
+
+      <!-- CUSTOMERS -->
+      <section class="view" id="view-customers">
+        <div class="card">
+          <div class="card-head">
+            <div><h2>Customers</h2><p id="customersCount">—</p></div>
+          </div>
+          <div class="tabs" id="customersTabs">
+            <button class="tab active" data-filter="all">All</button>
+            <button class="tab" data-filter="active">Active</button>
+            <button class="tab" data-filter="banned">Banned</button>
+          </div>
+          <div id="customersList"><div class="loader"><span class="spinner"></span> Loading customers…</div></div>
+        </div>
+      </section>
+
+      <!-- FLOAT REQUESTS -->
+      <section class="view" id="view-float">
+        <div class="card">
+          <div class="card-head">
+            <div><h2>Float Requests</h2><p id="floatCount">—</p></div>
+          </div>
+          <div class="tabs" id="floatTabs">
+            <button class="tab active" data-filter="all">All</button>
+            <button class="tab" data-filter="pending">Pending</button>
+            <button class="tab" data-filter="approved">Approved</button>
+            <button class="tab" data-filter="rejected">Rejected</button>
+          </div>
+          <div id="floatList"><div class="loader"><span class="spinner"></span> Loading float requests…</div></div>
+        </div>
+      </section>
+
+      <!-- TRANSACTIONS -->
+      <section class="view" id="view-transactions">
+        <div class="metrics-grid" id="txMetrics"></div>
+        <div class="card">
+          <div class="card-head">
+            <div><h2>All Transactions</h2><p id="txCount">—</p></div>
+          </div>
+          <div class="tabs" id="txTabs">
+            <button class="tab active" data-filter="all">All</button>
+            <button class="tab" data-filter="ride">Rides</button>
+            <button class="tab" data-filter="delivery">Deliveries</button>
+            <button class="tab" data-filter="errand">Errands</button>
+            <button class="tab" data-filter="completed">Completed</button>
+            <button class="tab" data-filter="pending">Pending</button>
+          </div>
+          <div id="txList"><div class="loader"><span class="spinner"></span> Loading transactions…</div></div>
+        </div>
+      </section>
+
+      <!-- PRICING -->
+      <section class="view" id="view-pricing">
+        <div class="card">
+          <div class="card-head">
+            <div><h2>Ride Pricing</h2><p>Fare formula for standard rides</p></div>
+          </div>
+          <div class="form-grid">
+            <div class="field">
+              <label>Base fare (K)</label>
+              <input type="number" id="pricingRideBase" min="0" step="1">
+            </div>
+            <div class="field">
+              <label>Per km (K)</label>
+              <input type="number" id="pricingRidePerKm" min="0" step="0.1">
+            </div>
+            <div class="field">
+              <label>Per minute (K)</label>
+              <input type="number" id="pricingRidePerMin" min="0" step="0.1">
+            </div>
+            <div class="field">
+              <label>Minimum fare (K)</label>
+              <input type="number" id="pricingRideMin" min="0" step="1">
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div><h2>Delivery Pricing</h2><p>Fare formula per delivery vehicle</p></div>
+          </div>
+
+          <h3 style="font-size:.7rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--ts);margin:6px 0 10px;">
+            <i class="fas fa-motorcycle"></i> Motorbike
+          </h3>
+          <div class="form-grid">
+            <div class="field"><label>Base fare (K)</label><input type="number" id="pricingMotoBase" min="0" step="1"></div>
+            <div class="field"><label>Per km (K)</label><input type="number" id="pricingMotoPerKm" min="0" step="0.1"></div>
+            <div class="field"><label>Per minute (K)</label><input type="number" id="pricingMotoPerMin" min="0" step="0.1"></div>
+            <div class="field"><label>Minimum fare (K)</label><input type="number" id="pricingMotoMin" min="0" step="1"></div>
+          </div>
+
+          <h3 style="font-size:.7rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--ts);margin:16px 0 10px;">
+            <i class="fas fa-bicycle"></i> Cyclist
+          </h3>
+          <div class="form-grid">
+            <div class="field"><label>Base fare (K)</label><input type="number" id="pricingCycBase" min="0" step="1"></div>
+            <div class="field"><label>Per km (K)</label><input type="number" id="pricingCycPerKm" min="0" step="0.1"></div>
+            <div class="field"><label>Per minute (K)</label><input type="number" id="pricingCycPerMin" min="0" step="0.1"></div>
+            <div class="field"><label>Minimum fare (K)</label><input type="number" id="pricingCycMin" min="0" step="1"></div>
+          </div>
+
+          <h3 style="font-size:.7rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--ts);margin:16px 0 10px;">
+            <i class="fas fa-person-walking"></i> Walker
+          </h3>
+          <div class="form-grid">
+            <div class="field"><label>Base fare (K)</label><input type="number" id="pricingWalkBase" min="0" step="1"></div>
+            <div class="field"><label>Per km (K)</label><input type="number" id="pricingWalkPerKm" min="0" step="0.1"></div>
+            <div class="field"><label>Per minute (K)</label><input type="number" id="pricingWalkPerMin" min="0" step="0.1"></div>
+            <div class="field"><label>Minimum fare (K)</label><input type="number" id="pricingWalkMin" min="0" step="1"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <button class="btn btn-primary" id="savePricingBtn" style="width:100%;">
+            <i class="fas fa-floppy-disk"></i> Save Pricing Configuration
+          </button>
+          <p style="font-size:.72rem;color:var(--ts);margin-top:10px;text-align:center;line-height:1.5;">
+            Saved to <code>system/pricing</code>. Customer app reads these values when calculating fares.
+          </p>
+        </div>
+      </section>
+
+      <!-- SETTINGS -->
+      <section class="view" id="view-settings">
+        <div class="card">
+          <div class="card-head">
+            <div><h2>Search Radius</h2><p>Maximum distance a provider can be from a customer's request</p></div>
+          </div>
+          <div class="form-grid">
+            <div class="field full">
+              <label>Radius (km)</label>
+              <input type="number" id="settingRadius" min="1" step="0.5" placeholder="15">
+            </div>
+          </div>
+          <p style="font-size:.75rem;color:var(--ts);line-height:1.55;margin-bottom:14px;">
+            Providers further than this distance from the pickup point will not see the request.
+            Applies to rides, deliveries and errands.
+          </p>
+          <button class="btn btn-primary" id="saveRadiusBtn">
+            <i class="fas fa-floppy-disk"></i> Save Radius
+          </button>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div><h2>Maintenance Mode</h2><p>Take the platform offline temporarily</p></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;padding:14px;background:var(--fg);border-radius:10px;">
+            <input type="checkbox" id="settingMaintenanceToggle" style="width:20px;height:20px;accent-color:#0a0a0a;cursor:pointer;">
+            <label for="settingMaintenanceToggle" style="font-size:.88rem;font-weight:600;cursor:pointer;flex:1;">
+              Enable maintenance mode (blocks all users)
+            </label>
+          </div>
+          <div class="field full">
+            <label>Maintenance message</label>
+            <textarea id="settingMaintenanceMsg" placeholder="We'll be back shortly. Thank you for your patience."></textarea>
+          </div>
+          <button class="btn btn-primary" id="saveMaintenanceBtn" style="margin-top:14px;">
+            <i class="fas fa-floppy-disk"></i> Save Maintenance Settings
+          </button>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div><h2>Float Deposit Numbers</h2><p>Payment numbers shown to providers who buy float</p></div>
+            <div class="card-actions">
+              <button class="btn btn-ghost btn-sm" id="addDepositBtn"><i class="fas fa-plus"></i> Add</button>
+            </div>
+          </div>
+          <div id="depositNumbersList"></div>
+          <button class="btn btn-primary" id="saveDepositBtn" style="margin-top:14px;">
+            <i class="fas fa-floppy-disk"></i> Save Deposit Numbers
+          </button>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div><h2>Platform Info</h2><p>System details</p></div>
+          </div>
+          <div class="detail-grid">
+            <div class="detail-box"><small>App version</small><strong>Admin v1.0</strong></div>
+            <div class="detail-box"><small>Database</small><strong>Firebase RTDB</strong></div>
+            <div class="detail-box"><small>Map provider</small><strong>OpenStreetMap</strong></div>
+            <div class="detail-box"><small>Signed in as</small><strong id="settingsAdminEmail">—</strong></div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<!-- Detail drawer -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<aside class="drawer" id="drawer">
+  <div class="drawer-head">
+    <div class="dh-body">
+      <h2 id="drawerTitle">Details</h2>
+      <p id="drawerSub">—</p>
+    </div>
+    <button class="drawer-close" id="drawerClose"><i class="fas fa-xmark"></i></button>
+  </div>
+  <div class="drawer-body" id="drawerBody"></div>
+  <div class="drawer-foot" id="drawerFoot"></div>
+</aside>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+  <div class="lightbox-close" id="lightboxClose"><i class="fas fa-xmark"></i></div>
+  <img id="lightboxImg" src="" alt="">
+</div>
+
+<div id="toast"></div>
+
+<script type="module">
+import { initializeApp } from "firebase/app";
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { getDatabase, ref, set, get, update, push, onValue, remove } from "firebase/database";
+
+/* ============================================================
+   FIREBASE
+   ============================================================ */
+const firebaseConfig = {
+  apiKey: "AIzaSyAI2w79Geshn90Oplf1Bzk3xkAUC7XGQDs",
+  authDomain: "ntumeni-a7dd0.firebaseapp.com",
+  databaseURL: "https://ntumeni-a7dd0-default-rtdb.firebaseio.com",
+  projectId: "ntumeni-a7dd0",
+  storageBucket: "ntumeni-a7dd0.firebasestorage.app",
+  messagingSenderId: "751127478739",
+  appId: "1:751127478739:web:3a1003fcc0184b40f16f26"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const database = getDatabase(app);
+
+/* ============================================================
+   DEFAULTS
+   ============================================================ */
+const DEFAULT_PRICING = {
+  ride:    { baseFare: 5, pricePerKm: 8, pricePerMinute: 1, minimumFare: 10 },
+  motorbike:{ baseFare: 4, pricePerKm: 6, pricePerMinute: 0.5, minimumFare: 8 },
+  cyclist: { baseFare: 3, pricePerKm: 4, pricePerMinute: 0.3, minimumFare: 6 },
+  walker:  { baseFare: 2, pricePerKm: 2, pricePerMinute: 0.2, minimumFare: 5 }
+};
+
+const DEFAULT_SETTINGS = {
+  searchRadiusKm: 15,
+  maintenance: { enabled: false, message: 'NTUMENI is currently undergoing scheduled maintenance. Please check back shortly.' },
+  depositNumbers: [
+    { label: 'Airtel Money', number: '0977 000 000' },
+    { label: 'MTN Money',    number: '0966 000 000' },
+    { label: 'Zamtel Money', number: '0955 000 000' }
+  ]
+};
+
+/* ============================================================
+   STATE
+   ============================================================ */
+let currentAdmin = null;
+let state = {
+  providers: {},
+  customers: {},
+  rides: {},
+  deliveries: {},
+  errands: {},
+  floatRequests: {},
+  transactions: {},
+  pricing: JSON.parse(JSON.stringify(DEFAULT_PRICING)),
+  settings: JSON.parse(JSON.stringify(DEFAULT_SETTINGS))
+};
+let activeFilters = {
+  rides: 'all',
+  deliveries: 'all',
+  errands: 'all',
+  providers: 'all',
+  customers: 'all',
+  float: 'all',
+  transactions: 'all'
+};
+let unsubs = [];
+let dashMap = null;
+let ridesMap = null;
+let delivsMap = null;
+let dashMarkers = [];
+let rideMarkers = [];
+let delivMarkers = [];
+let depositDraft = [];
+
+const $ = id => document.getElementById(id);
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+function toast(msg, dur=2500){
+  const t = $('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(()=>t.classList.remove('show'), dur);
+}
+
+function esc(s){
+  if (s == null) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function fmtPrice(n){
+  if (n == null || !isFinite(n)) return '0';
+  return String(Math.round(n));
+}
+
+function fmtDateTime(ts){
+  if (!ts) return '—';
+  return new Date(ts).toLocaleString(undefined, {
+    day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'
+  });
+}
+
+function timeAgo(ts){
+  if (!ts) return '—';
+  const diff = Date.now() - ts;
+  const m = Math.floor(diff/60000);
+  if (m < 1) return 'just now';
+  if (m < 60) return m + 'm ago';
+  const h = Math.floor(m/60);
+  if (h < 24) return h + 'h ago';
+  const d = Math.floor(h/24);
+  if (d < 7) return d + 'd ago';
+  return new Date(ts).toLocaleDateString();
+}
+
+function statusChip(status){
+  if (!status) return '<span class="status-chip pending">Pending</span>';
+  const s = String(status).toLowerCase();
+  const label = s.replace(/_/g,' ').replace(/\b\w/g, c=>c.toUpperCase());
+  return `<span class="status-chip ${esc(s)}">${esc(label)}</span>`;
+}
+
+function roleChip(role){
+  if (!role) return '';
+  const r = String(role).toLowerCase();
+  const label = r.charAt(0).toUpperCase() + r.slice(1);
+  return `<span class="status-chip ${esc(r)}">${esc(label)}</span>`;
+}
+
+function openLightbox(url){
+  if (!url) return;
+  $('lightboxImg').src = url;
+  $('lightbox').classList.add('open');
+}
+$('lightboxClose').addEventListener('click', ()=>$('lightbox').classList.remove('open'));
+$('lightbox').addEventListener('click', e=>{ if (e.target.id === 'lightbox') $('lightbox').classList.remove('open'); });
+
+/* ============================================================
+   LOGIN
+   ============================================================ */
+$('loginForm').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const email = $('loginEmail').value.trim().toLowerCase();
+  const pwd = $('loginPassword').value;
+  const errEl = $('loginError');
+  const btn = $('loginBtn');
+  errEl.textContent = '';
+
+  if (!email || !pwd){ errEl.textContent = 'Email and password are required.'; return; }
+
+  const original = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing in…';
+
+  try {
+    const cred = await signInWithEmailAndPassword(auth, email, pwd);
+    const uid = cred.user.uid;
+
+    const adminSnap = await get(ref(database, `admins/${uid}`));
+    if (!adminSnap.exists()){
+      await signOut(auth);
+      errEl.textContent = 'This account is not registered as an administrator.';
+      return;
+    }
+    // onAuthStateChanged will handle the rest
+  } catch (err){
+    let msg = 'Invalid email or password.';
+    if (err.code === 'auth/too-many-requests') msg = 'Too many attempts. Please try again later.';
+    else if (err.code === 'auth/network-request-failed') msg = 'Network error. Check your connection.';
+    errEl.textContent = msg;
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = original;
+  }
+});
+
+$('logoutBtn').addEventListener('click', async ()=>{
+  try { await signOut(auth); } catch(e){}
+  location.reload();
+});
+
+/* ============================================================
+   AUTH STATE
+   ============================================================ */
+onAuthStateChanged(auth, async user=>{
+  if (!user){
+    $('loginScreen').classList.remove('hidden');
+    $('app').classList.add('hidden');
+    return;
+  }
+
+  // Verify admin
+  const snap = await get(ref(database, `admins/${user.uid}`));
+  if (!snap.exists()){
+    await signOut(auth);
+    $('loginScreen').classList.remove('hidden');
+    $('app').classList.add('hidden');
+    $('loginError').textContent = 'Access denied — administrator account required.';
+    return;
+  }
+
+  const adminData = snap.val();
+  currentAdmin = {
+    uid: user.uid,
+    email: user.email,
+    name: adminData.name || adminData.displayName || 'Admin',
+    photoUrl: adminData.photoUrl || ''
+  };
+
+  // Apply to UI
+  $('adminName').textContent = currentAdmin.name;
+  $('adminEmail').textContent = currentAdmin.email;
+  $('settingsAdminEmail').textContent = currentAdmin.email;
+  if (currentAdmin.photoUrl){
+    $('adminAvatar').innerHTML = `<img src="${esc(currentAdmin.photoUrl)}" alt="">`;
+  }
+
+  $('loginScreen').classList.add('hidden');
+  $('app').classList.remove('hidden');
+
+  bootDataListeners();
+  initMaps();
+  loadPricingAndSettings();
+});
+
+/* ============================================================
+   VIEW ROUTING
+   ============================================================ */
+const VIEW_META = {
+  dashboard:   { title:'Dashboard',            sub:'Platform overview' },
+  rides:       { title:'Rides',                sub:'Track and manage all rides' },
+  deliveries:  { title:'Deliveries',           sub:'Track and manage all deliveries' },
+  errands:     { title:'Errands',              sub:'Posted errands and offers' },
+  providers:   { title:'Service Providers',    sub:'Approve and manage providers' },
+  customers:   { title:'Customers',            sub:'Manage customer accounts' },
+  float:       { title:'Float Requests',       sub:'Approve provider top-ups' },
+  transactions:{ title:'Transactions',         sub:'All payment records' },
+  pricing:     { title:'Pricing & Fares',      sub:'Configure fare formulas' },
+  settings:    { title:'Settings',             sub:'Radius, maintenance, deposit numbers' }
+};
+
+function switchView(view){
+  document.querySelectorAll('.nav-btn').forEach(b=>{
+    b.classList.toggle('active', b.dataset.view === view);
+  });
+  document.querySelectorAll('.view').forEach(v=>{
+    v.classList.toggle('active', v.id === 'view-' + view);
+  });
+  const meta = VIEW_META[view] || { title:view, sub:'' };
+  $('viewTitle').textContent = meta.title;
+  $('viewSub').textContent = meta.sub;
+  closeSidebar();
+
+  // Re-render the specific view
+  if (view === 'dashboard')  renderDashboard();
+  if (view === 'rides')      renderRides();
+  if (view === 'deliveries') renderDeliveries();
+  if (view === 'errands')    renderErrands();
+  if (view === 'providers')  renderProviders();
+  if (view === 'customers')  renderCustomers();
+  if (view === 'float')      renderFloatRequests();
+  if (view === 'transactions')renderTransactions();
+  if (view === 'pricing')    fillPricingForm();
+  if (view === 'settings')   fillSettingsForm();
+
+  // Invalidate maps after view switches
+  setTimeout(()=>{
+    if (view === 'dashboard' && dashMap) dashMap.invalidateSize();
+    if (view === 'rides' && ridesMap) ridesMap.invalidateSize();
+    if (view === 'deliveries' && delivsMap) delivsMap.invalidateSize();
+  }, 250);
+}
+
+document.querySelectorAll('.nav-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>switchView(btn.dataset.view));
+});
+
+/* Mobile sidebar */
+function openSidebar(){ $('sidebar').classList.add('open'); $('sidebarBackdrop').classList.add('open'); }
+function closeSidebar(){ $('sidebar').classList.remove('open'); $('sidebarBackdrop').classList.remove('open'); }
+$('menuBtn').addEventListener('click', openSidebar);
+$('sidebarBackdrop').addEventListener('click', closeSidebar);
+
+/* ============================================================
+   DATA LISTENERS
+   ============================================================ */
+function clearAllUnsubs(){
+  unsubs.forEach(u=>{ try{u();}catch(e){} });
+  unsubs = [];
+}
+
+function bootDataListeners(){
+  clearAllUnsubs();
+
+  unsubs.push(onValue(ref(database, 'providers'), snap=>{
+    state.providers = snap.val() || {};
+    updateBadges();
+    if ($('view-providers').classList.contains('active')) renderProviders();
+    renderDashboard();
+  }));
+
+  unsubs.push(onValue(ref(database, 'customers'), snap=>{
+    state.customers = snap.val() || {};
+    if ($('view-customers').classList.contains('active')) renderCustomers();
+    renderDashboard();
+  }));
+
+  unsubs.push(onValue(ref(database, 'rides'), snap=>{
+    state.rides = snap.val() || {};
+    updateBadges();
+    if ($('view-rides').classList.contains('active')) renderRides();
+    renderDashboard();
+    renderRideMarkers();
+  }));
+
+  unsubs.push(onValue(ref(database, 'deliveries'), snap=>{
+    state.deliveries = snap.val() || {};
+    updateBadges();
+    if ($('view-deliveries').classList.contains('active')) renderDeliveries();
+    renderDashboard();
+    renderDeliveryMarkers();
+  }));
+
+  unsubs.push(onValue(ref(database, 'errands'), snap=>{
+    state.errands = snap.val() || {};
+    updateBadges();
+    if ($('view-errands').classList.contains('active')) renderErrands();
+    renderDashboard();
+  }));
+
+  unsubs.push(onValue(ref(database, 'floatRequests'), snap=>{
+    state.floatRequests = snap.val() || {};
+    updateBadges();
+    if ($('view-float').classList.contains('active')) renderFloatRequests();
+    renderDashboard();
+  }));
+
+  unsubs.push(onValue(ref(database, 'transactions'), snap=>{
+    state.transactions = snap.val() || {};
+    if ($('view-transactions').classList.contains('active')) renderTransactions();
+    renderDashboard();
+  }));
+}
+
+function updateBadges(){
+  const pendingProviders = Object.values(state.providers).filter(p=>p.status === 'pending').length;
+  const activeRides = Object.values(state.rides).filter(r=>['searching','accepted','in_progress'].includes(r.status)).length;
+  const activeDeliv = Object.values(state.deliveries).filter(d=>['searching','accepted','in_progress'].includes(d.status)).length;
+  const pendingErrands = Object.values(state.errands).filter(e=>e.status === 'pending').length;
+  const pendingFloat = Object.values(state.floatRequests).filter(f=>f.status === 'pending').length;
+
+  setBadge('badgeProviders', pendingProviders);
+  setBadge('badgeRides', activeRides);
+  setBadge('badgeDeliveries', activeDeliv);
+  setBadge('badgeErrands', pendingErrands);
+  setBadge('badgeFloat', pendingFloat);
+}
+
+function setBadge(id, n){
+  const el = $(id);
+  if (!el) return;
+  el.textContent = n > 99 ? '99+' : String(n);
+  el.classList.toggle('zero', n === 0);
+}
+
+/* ============================================================
+   MAPS
+   ============================================================ */
+const OSM_URL = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+const OSM_ATTR = '&copy; OpenStreetMap contributors';
+const DEFAULT_CENTER = [-15.4167, 28.2833];
+
+function createMap(elId, center, zoom){
+  const el = $(elId);
+  if (!el) return null;
+  const m = L.map(el, {
+    zoomControl:true, attributionControl:true, preferCanvas:true,
+    maxZoom:19, minZoom:3
+  }).setView(center || DEFAULT_CENTER, zoom || 12);
+  L.tileLayer(OSM_URL, { attribution: OSM_ATTR, subdomains:'abc', maxZoom:19, crossOrigin:true }).addTo(m);
+  return m;
+}
+
+function initMaps(){
+  if (!dashMap)   dashMap   = createMap('dashboardMap', DEFAULT_CENTER, 12);
+  if (!ridesMap)  ridesMap  = createMap('ridesMap', DEFAULT_CENTER, 12);
+  if (!delivsMap) delivsMap = createMap('deliveriesMap', DEFAULT_CENTER, 12);
+  renderRideMarkers();
+  renderDeliveryMarkers();
+  renderDashboardMarkers();
+}
+
+function clearMarkers(arr, map){
+  if (!map) return;
+  arr.forEach(m=>{ try{ map.removeLayer(m); }catch(e){} });
+  arr.length = 0;
+}
+
+function pickupIcon(){
+  return L.divIcon({
+    className:'',
+    html:`<div style="width:16px;height:16px;background:#0a0a0a;border:3px solid #fff;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,0.4);"></div>`,
+    iconSize:[16,16], iconAnchor:[8,8]
+  });
+}
+function dropoffIcon(){
+  return L.divIcon({
+    className:'',
+    html:`<div style="width:18px;height:18px;background:#175cd3;border:3px solid #fff;border-radius:50% 50% 50% 0;transform:rotate(-45deg);box-shadow:0 2px 8px rgba(0,0,0,0.4);"></div>`,
+    iconSize:[18,18], iconAnchor:[9,18]
+  });
+}
+function liveIcon(color){
+  return L.divIcon({
+    className:'',
+    html:`<div style="width:22px;height:22px;background:${color};border:3px solid #fff;border-radius:50%;box-shadow:0 0 0 4px ${color}33, 0 3px 10px rgba(0,0,0,0.4);"></div>`,
+    iconSize:[22,22], iconAnchor:[11,11]
+  });
+}
+
+/* ============================================================
+   DASHBOARD
+   ============================================================ */
+function renderDashboard(){
+  const providers = Object.values(state.providers);
+  const customers = Object.values(state.customers);
+  const rides = Object.values(state.rides);
+  const delivs = Object.values(state.deliveries);
+  const errands = Object.values(state.errands);
+  const floats = Object.values(state.floatRequests);
+  const txs = Object.values(state.transactions);
+
+  const activeRides = rides.filter(r=>['searching','accepted','in_progress'].includes(r.status)).length;
+  const activeDeliv = delivs.filter(d=>['searching','accepted','in_progress'].includes(d.status)).length;
+  const pendingProviders = providers.filter(p=>p.status === 'pending').length;
+  const pendingErrands = errands.filter(e=>e.status === 'pending').length;
+  const pendingFloat = floats.filter(f=>f.status === 'pending').length;
+
+  const today = new Date(); today.setHours(0,0,0,0);
+  const todayTs = today.getTime();
+  const revenueToday = txs.filter(t=>t.status === 'completed' && t.createdAt >= todayTs).reduce((s,t)=>s+(t.amount||0),0);
+  const totalRevenue = txs.filter(t=>t.status === 'completed').reduce((s,t)=>s+(t.amount||0),0);
+
+  $('dashboardMetrics').innerHTML = `
+    <div class="metric dark">
+      <div class="m-label">Total revenue</div>
+      <div class="m-value"><small>K</small>${esc(fmtPrice(totalRevenue))}</div>
+      <div class="m-sub">All completed transactions</div>
+      <div class="m-ico"><i class="fas fa-coins"></i></div>
+    </div>
+    <div class="metric">
+      <div class="m-label">Today</div>
+      <div class="m-value"><small>K</small>${esc(fmtPrice(revenueToday))}</div>
+      <div class="m-sub">Revenue since midnight</div>
+      <div class="m-ico"><i class="fas fa-chart-line"></i></div>
+    </div>
+    <div class="metric">
+      <div class="m-label">Active rides</div>
+      <div class="m-value">${activeRides}</div>
+      <div class="m-sub">${rides.length} total</div>
+      <div class="m-ico"><i class="fas fa-car-side"></i></div>
+    </div>
+    <div class="metric">
+      <div class="m-label">Active deliveries</div>
+      <div class="m-value">${activeDeliv}</div>
+      <div class="m-sub">${delivs.length} total</div>
+      <div class="m-ico"><i class="fas fa-box"></i></div>
+    </div>
+    <div class="metric">
+      <div class="m-label">Pending errands</div>
+      <div class="m-value">${pendingErrands}</div>
+      <div class="m-sub">${errands.length} total</div>
+      <div class="m-ico"><i class="fas fa-clipboard-list"></i></div>
+    </div>
+    <div class="metric">
+      <div class="m-label">Providers</div>
+      <div class="m-value">${providers.length}</div>
+      <div class="m-sub">${pendingProviders} pending approval</div>
+      <div class="m-ico"><i class="fas fa-briefcase"></i></div>
+    </div>
+    <div class="metric">
+      <div class="m-label">Customers</div>
+      <div class="m-value">${customers.length}</div>
+      <div class="m-sub">Registered users</div>
+      <div class="m-ico"><i class="fas fa-users"></i></div>
+    </div>
+    <div class="metric">
+      <div class="m-label">Float pending</div>
+      <div class="m-value">${pendingFloat}</div>
+      <div class="m-sub">Awaiting approval</div>
+      <div class="m-ico"><i class="fas fa-wallet"></i></div>
+    </div>
+  `;
+
+  // Recent activity
+  const events = [];
+  rides.forEach(r=>events.push({ ts:r.createdAt||0, kind:'Ride', text:`${r.customerName||'Customer'} · ${r.pickup?.label||'Pickup'} → ${r.dropoff?.label||'Drop-off'}`, amount:r.fare, status:r.status, id:r.rideId, type:'ride' }));
+  delivs.forEach(d=>events.push({ ts:d.createdAt||0, kind:'Delivery', text:`${d.parcelName||'Parcel'} · ${d.vehicleLabel||''}`, amount:d.fare, status:d.status, id:d.deliveryId, type:'delivery' }));
+  errands.forEach(e=>events.push({ ts:e.createdAt||0, kind:'Errand', text:`${e.customerName||'Customer'} · ${e.title||'Task'}`, amount:e.willingToPay, status:e.status, id:e.errandId, type:'errand' }));
+  floats.forEach(f=>events.push({ ts:f.createdAt||0, kind:'Float', text:`${f.providerName||'Provider'} · top-up`, amount:f.amount, status:f.status, id:f.id, type:'float' }));
+
+  events.sort((a,b)=>b.ts-a.ts);
+
+  const act = events.slice(0,12);
+  if (!act.length){
+    $('recentActivity').innerHTML = `<div class="empty"><i class="fas fa-inbox"></i><h3>No activity yet</h3><p>New rides, deliveries and errands will appear here.</p></div>`;
+  } else {
+    $('recentActivity').innerHTML = act.map(ev=>`
+      <div class="list-item" data-activity-type="${esc(ev.type)}" data-activity-id="${esc(ev.id)}">
+        <div class="li-avatar"><i class="fas ${ev.type==='ride'?'fa-car-side':ev.type==='delivery'?'fa-box':ev.type==='errand'?'fa-clipboard-list':'fa-wallet'}"></i></div>
+        <div class="li-body">
+          <div class="li-title">${esc(ev.kind)} · ${esc(ev.text)}</div>
+          <div class="li-sub">${esc(timeAgo(ev.ts))}</div>
+        </div>
+        <div class="li-right">
+          <strong>K ${esc(fmtPrice(ev.amount))}</strong>
+          <div style="margin-top:3px;">${statusChip(ev.status)}</div>
+        </div>
+      </div>
+    `).join('');
+    $('recentActivity').querySelectorAll('[data-activity-type]').forEach(el=>{
+      el.addEventListener('click', ()=>{
+        const t = el.dataset.activityType;
+        const id = el.dataset.activityId;
+        if (t === 'ride') openRideDetail(id);
+        else if (t === 'delivery') openDeliveryDetail(id);
+        else if (t === 'errand') openErrandDetail(id);
+        else if (t === 'float') openFloatDetail(id);
+      });
+    });
+  }
+
+  renderDashboardMarkers();
+}
+
+function renderDashboardMarkers(){
+  if (!dashMap) return;
+  clearMarkers(dashMarkers, dashMap);
+  const bounds = [];
+
+  Object.values(state.rides).forEach(r=>{
+    if (!['searching','accepted','in_progress'].includes(r.status)) return;
+    if (r.pickup && isFinite(r.pickup.lat) && isFinite(r.pickup.lng)){
+      const m = L.marker([r.pickup.lat, r.pickup.lng], { icon: pickupIcon() })
+        .bindPopup(`<b>Ride</b><br>${esc(r.pickup.label||'Pickup')}`).addTo(dashMap);
+      dashMarkers.push(m);
+      bounds.push([r.pickup.lat, r.pickup.lng]);
+    }
+    if (r.dropoff && isFinite(r.dropoff.lat) && isFinite(r.dropoff.lng)){
+      const m = L.marker([r.dropoff.lat, r.dropoff.lng], { icon: dropoffIcon() })
+        .bindPopup(`<b>Ride destination</b><br>${esc(r.dropoff.label||'Drop-off')}`).addTo(dashMap);
+      dashMarkers.push(m);
+      bounds.push([r.dropoff.lat, r.dropoff.lng]);
+    }
+  });
+  Object.values(state.deliveries).forEach(d=>{
+    if (!['searching','accepted','in_progress'].includes(d.status)) return;
+    if (d.pickup && isFinite(d.pickup.lat) && isFinite(d.pickup.lng)){
+      const m = L.marker([d.pickup.lat, d.pickup.lng], { icon: pickupIcon() })
+        .bindPopup(`<b>Delivery pickup</b><br>${esc(d.pickup.label||'')}`).addTo(dashMap);
+      dashMarkers.push(m);
+      bounds.push([d.pickup.lat, d.pickup.lng]);
+    }
+    if (d.dropoff && isFinite(d.dropoff.lat) && isFinite(d.dropoff.lng)){
+      const m = L.marker([d.dropoff.lat, d.dropoff.lng], { icon: dropoffIcon() })
+        .bindPopup(`<b>Delivery destination</b><br>${esc(d.dropoff.label||'')}`).addTo(dashMap);
+      dashMarkers.push(m);
+      bounds.push([d.dropoff.lat, d.dropoff.lng]);
+    }
+  });
+
+  if (bounds.length > 1){
+    dashMap.fitBounds(bounds, { padding:[40,40], maxZoom:14 });
+  } else if (bounds.length === 1){
+    dashMap.setView(bounds[0], 14);
+  }
+}
+
+/* ============================================================
+   RIDES
+   ============================================================ */
+document.querySelectorAll('#ridesTabs .tab').forEach(t=>{
+  t.addEventListener('click', ()=>{
+    document.querySelectorAll('#ridesTabs .tab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    activeFilters.rides = t.dataset.filter;
+    renderRides();
+  });
+});
+
+function renderRides(){
+  const all = Object.values(state.rides).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+  const filtered = activeFilters.rides === 'all' ? all : all.filter(r=>r.status === activeFilters.rides);
+  $('ridesCount').textContent = `${filtered.length} ride${filtered.length===1?'':'s'}`;
+
+  if (!filtered.length){
+    $('ridesList').innerHTML = `<div class="empty"><i class="fas fa-car-side"></i><h3>No rides</h3><p>No rides match the current filter.</p></div>`;
+  } else {
+    $('ridesList').innerHTML = filtered.map(r=>{
+      const pickup = r.pickup?.label || 'Pickup';
+      const drop = r.dropoff?.label || 'Drop-off';
+      return `
+        <div class="list-item" data-ride="${esc(r.rideId)}">
+          <div class="li-avatar"><i class="fas fa-car-side"></i></div>
+          <div class="li-body">
+            <div class="li-title">${esc(r.customerName || 'Customer')}</div>
+            <div class="li-sub">${esc(pickup)} → ${esc(drop)}</div>
+          </div>
+          <div class="li-right">
+            <strong>K ${esc(fmtPrice(r.fare))}</strong>
+            <div style="margin-top:3px;">${statusChip(r.status)}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+    $('ridesList').querySelectorAll('[data-ride]').forEach(el=>{
+      el.addEventListener('click', ()=>openRideDetail(el.dataset.ride));
+    });
+  }
+
+  renderRideMarkers();
+}
+
+function renderRideMarkers(){
+  if (!ridesMap) return;
+  clearMarkers(rideMarkers, ridesMap);
+  const bounds = [];
+  Object.values(state.rides).forEach(r=>{
+    if (!['searching','accepted','in_progress'].includes(r.status)) return;
+    if (r.pickup && isFinite(r.pickup.lat) && isFinite(r.pickup.lng)){
+      const m = L.marker([r.pickup.lat, r.pickup.lng], { icon: pickupIcon() })
+        .bindPopup(`<b>${esc(r.customerName||'Customer')}</b><br>${esc(r.pickup.label||'')}<br>K ${esc(fmtPrice(r.fare))}`)
+        .addTo(ridesMap);
+      m.on('click', ()=>openRideDetail(r.rideId));
+      rideMarkers.push(m);
+      bounds.push([r.pickup.lat, r.pickup.lng]);
+    }
+    if (r.dropoff && isFinite(r.dropoff.lat) && isFinite(r.dropoff.lng)){
+      const m = L.marker([r.dropoff.lat, r.dropoff.lng], { icon: dropoffIcon() })
+        .bindPopup(`<b>Destination</b><br>${esc(r.dropoff.label||'')}`).addTo(ridesMap);
+      rideMarkers.push(m);
+      bounds.push([r.dropoff.lat, r.dropoff.lng]);
+    }
+  });
+  if (bounds.length > 1) ridesMap.fitBounds(bounds, { padding:[40,40], maxZoom:14 });
+  else if (bounds.length === 1) ridesMap.setView(bounds[0], 14);
+}
+
+function openRideDetail(id){
+  const r = state.rides[id];
+  if (!r) { toast('Ride not found'); return; }
+  $('drawerTitle').textContent = 'Ride details';
+  $('drawerSub').textContent = r.customerName || 'Customer';
+
+  $('drawerBody').innerHTML = `
+    <div class="detail-section">
+      <h3><i class="fas fa-circle-info"></i> Status</h3>
+      <div class="detail-grid">
+        <div class="detail-box"><small>Status</small><strong>${statusChip(r.status)}</strong></div>
+        <div class="detail-box"><small>Fare</small><strong>K ${esc(fmtPrice(r.fare))}</strong></div>
+        <div class="detail-box"><small>Distance</small><strong>${r.distance?((r.distance/1000).toFixed(2)+' km'):'—'}</strong></div>
+        <div class="detail-box"><small>Duration</small><strong>${r.duration?(Math.round(r.duration/60)+' min'):'—'}</strong></div>
+        <div class="detail-box full"><small>Created</small><strong>${esc(fmtDateTime(r.createdAt))} (${esc(timeAgo(r.createdAt))})</strong></div>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <h3><i class="fas fa-user"></i> Customer</h3>
+      <div class="detail-grid">
+        <div class="detail-box full"><small>Name</small><strong>${esc(r.customerName||'—')}</strong></div>
+        <div class="detail-box full"><small>Phone</small><strong>${esc(r.customerPhone||'—')}</strong></div>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <h3><i class="fas fa-route"></i> Route</h3>
+      <div class="detail-grid">
+        <div class="detail-box full"><small>Pickup</small><strong>${esc(r.pickup?.label||'—')}</strong></div>
+        <div class="detail-box full"><small>Drop-off</small><strong>${esc(r.dropoff?.label||'—')}</strong></div>
+      </div>
+    </div>
+
+    ${(r.pickup || r.dropoff) ? `<div class="map-wrap" id="detailMap" style="height:260px;"></div>` : ''}
+  `;
+
+  $('drawerFoot').innerHTML = `
+    ${['searching','accepted','in_progress'].includes(r.status) ? `
+      <button class="btn btn-danger" id="rideCancelBtn"><i class="fas fa-ban"></i> Cancel ride</button>
+    ` : ''}
+    <button class="btn btn-ghost" id="rideCloseBtn">Close</button>
+  `;
+
+  openDrawer();
+
+  if (r.pickup || r.dropoff){
+    setTimeout(()=>{
+      const dm = createMap('detailMap', r.pickup ? [r.pickup.lat,r.pickup.lng] : [r.dropoff.lat,r.dropoff.lng], 13);
+      if (dm){
+        const pts = [];
+        if (r.pickup) { L.marker([r.pickup.lat, r.pickup.lng], { icon: pickupIcon() }).addTo(dm).bindPopup('Pickup'); pts.push([r.pickup.lat,r.pickup.lng]); }
+        if (r.dropoff){ L.marker([r.dropoff.lat, r.dropoff.lng], { icon: dropoffIcon() }).addTo(dm).bindPopup('Drop-off'); pts.push([r.dropoff.lat,r.dropoff.lng]); }
+        if (pts.length > 1) dm.fitBounds(pts, { padding:[30,30] });
+      }
+    }, 200);
+  }
+
+  const cancelBtn = $('rideCancelBtn');
+  if (cancelBtn) cancelBtn.addEventListener('click', ()=>cancelRide(id));
+  $('rideCloseBtn').addEventListener('click', closeDrawer);
+}
+
+async function cancelRide(id){
+  if (!confirm('Cancel this ride? This cannot be undone.')) return;
+  try {
+    await update(ref(database, `rides/${id}`), { status:'cancelled', cancelledAt: Date.now(), cancelledBy:'admin' });
+    // Cancel related transaction
+    for (const txId in state.transactions){
+      const tx = state.transactions[txId];
+      if (tx.referenceId === id && tx.status !== 'completed'){
+        await update(ref(database, `transactions/${txId}`), { status:'cancelled' });
+      }
+    }
+    toast('Ride cancelled');
+    closeDrawer();
+  } catch (err){
+    toast('Could not cancel: ' + err.message);
+  }
+}
+
+/* ============================================================
+   DELIVERIES
+   ============================================================ */
+document.querySelectorAll('#deliveriesTabs .tab').forEach(t=>{
+  t.addEventListener('click', ()=>{
+    document.querySelectorAll('#deliveriesTabs .tab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    activeFilters.deliveries = t.dataset.filter;
+    renderDeliveries();
+  });
+});
+
+function renderDeliveries(){
+  const all = Object.values(state.deliveries).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+  const filtered = activeFilters.deliveries === 'all' ? all : all.filter(d=>d.status === activeFilters.deliveries);
+  $('deliveriesCount').textContent = `${filtered.length} deliver${filtered.length===1?'y':'ies'}`;
+
+  if (!filtered.length){
+    $('deliveriesList').innerHTML = `<div class="empty"><i class="fas fa-box"></i><h3>No deliveries</h3><p>No deliveries match the current filter.</p></div>`;
+  } else {
+    $('deliveriesList').innerHTML = filtered.map(d=>{
+      const pickup = d.pickup?.label || 'Pickup';
+      const drop = d.dropoff?.label || 'Drop-off';
+      return `
+        <div class="list-item" data-delivery="${esc(d.deliveryId)}">
+          <div class="li-avatar"><i class="fas fa-box"></i></div>
+          <div class="li-body">
+            <div class="li-title">${esc(d.parcelName || 'Parcel')}</div>
+            <div class="li-sub">${esc(pickup)} → ${esc(drop)}</div>
+          </div>
+          <div class="li-right">
+            <strong>K ${esc(fmtPrice(d.fare))}</strong>
+            <div style="margin-top:3px;">${statusChip(d.status)}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+    $('deliveriesList').querySelectorAll('[data-delivery]').forEach(el=>{
+      el.addEventListener('click', ()=>openDeliveryDetail(el.dataset.delivery));
+    });
+  }
+
+  renderDeliveryMarkers();
+}
+
+function renderDeliveryMarkers(){
+  if (!delivsMap) return;
+  clearMarkers(delivMarkers, delivsMap);
+  const bounds = [];
+  Object.values(state.deliveries).forEach(d=>{
+    if (!['searching','accepted','in_progress'].includes(d.status)) return;
+    if (d.pickup && isFinite(d.pickup.lat) && isFinite(d.pickup.lng)){
+      const m = L.marker([d.pickup.lat, d.pickup.lng], { icon: pickupIcon() })
+        .bindPopup(`<b>${esc(d.parcelName||'Delivery')}</b><br>${esc(d.pickup.label||'')}<br>K ${esc(fmtPrice(d.fare))}`)
+        .addTo(delivsMap);
+      m.on('click', ()=>openDeliveryDetail(d.deliveryId));
+      delivMarkers.push(m);
+      bounds.push([d.pickup.lat, d.pickup.lng]);
+    }
+    if (d.dropoff && isFinite(d.dropoff.lat) && isFinite(d.dropoff.lng)){
+      const m = L.marker([d.dropoff.lat, d.dropoff.lng], { icon: dropoffIcon() })
+        .bindPopup(`<b>Destination</b><br>${esc(d.dropoff.label||'')}`).addTo(delivsMap);
+      delivMarkers.push(m);
+      bounds.push([d.dropoff.lat, d.dropoff.lng]);
+    }
+  });
+  if (bounds.length > 1) delivsMap.fitBounds(bounds, { padding:[40,40], maxZoom:14 });
+  else if (bounds.length === 1) delivsMap.setView(bounds[0], 14);
+}
+
+function openDeliveryDetail(id){
+  const d = state.deliveries[id];
+  if (!d) { toast('Delivery not found'); return; }
+  $('drawerTitle').textContent = 'Delivery details';
+  $('drawerSub').textContent = d.parcelName || 'Parcel';
+
+  $('drawerBody').innerHTML = `
+    <div class="detail-section">
+      <h3><i class="fas fa-circle-info"></i> Status</h3>
+      <div class="detail-grid">
+        <div class="detail-box"><small>Status</small><strong>${statusChip(d.status)}</strong></div>
+        <div class="detail-box"><small>Fare</small><strong>K ${esc(fmtPrice(d.fare))}</strong></div>
+        <div class="detail-box"><small>Vehicle</small><strong>${esc(d.vehicleLabel||'—')}</strong></div>
+        <div class="detail-box"><small>Distance</small><strong>${d.distance?((d.distance/1000).toFixed(2)+' km'):'—'}</strong></div>
+        <div class="detail-box full"><small>Created</small><strong>${esc(fmtDateTime(d.createdAt))} (${esc(timeAgo(d.createdAt))})</strong></div>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <h3><i class="fas fa-user"></i> Sender</h3>
+      <div class="detail-grid">
+        <div class="detail-box"><small>Name</small><strong>${esc(d.senderName||'—')}</strong></div>
+        <div class="detail-box"><small>Phone</small><strong>${esc(d.senderPhone||'—')}</strong></div>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <h3><i class="fas fa-user-check"></i> Receiver</h3>
+      <div class="detail-grid">
+        <div class="detail-box"><small>Name</small><strong>${esc(d.receiverName||'—')}</strong></div>
+        <div class="detail-box"><small>Phone</small><strong>${esc(d.receiverPhone||'—')}</strong></div>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <h3><i class="fas fa-box"></i> Parcel</h3>
+      <div class="detail-grid">
+        <div class="detail-box full"><small>Name</small><strong>${esc(d.parcelName||'—')}</strong></div>
+        <div class="detail-box full"><small>Description</small><strong>${esc(d.parcelDesc||'—')}</strong></div>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <h3><i class="fas fa-route"></i> Route</h3>
+      <div class="detail-grid">
+        <div class="detail-box full"><small>Pickup</small><strong>${esc(d.pickup?.label||'—')}</strong></div>
+        <div class="detail-box full"><small>Drop-off</small><strong>${esc(d.dropoff?.label||'—')}</strong></div>
+      </div>
+    </div>
+
+    ${(d.pickup || d.dropoff) ? `<div class="map-wrap" id="detailMap" style="height:260px;"></div>` : ''}
+  `;
+
+  $('drawerFoot').innerHTML = `
+    ${['searching','accepted','in_progress'].includes(d.status) ? `
+      <button class="btn btn-danger" id="delivCancelBtn"><i class="fas fa-ban"></i> Cancel delivery</button>
+    ` : ''}
+    <button class="btn btn-ghost" id="delivCloseBtn">Close</button>
+  `;
+
+  openDrawer();
+
+  if (d.pickup || d.dropoff){
+    setTimeout(()=>{
+      const dm = createMap('detailMap', d.pickup ? [d.pickup.lat,d.pickup.lng] : [d.dropoff.lat,d.dropoff.lng], 13);
+      if (dm){
+        const pts = [];
+        if (d.pickup) { L.marker([d.pickup.lat, d.pickup.lng], { icon: pickupIcon() }).addTo(dm).bindPopup('Pickup'); pts.push([d.pickup.lat,d.pickup.lng]); }
+        if (d.dropoff){ L.marker([d.dropoff.lat, d.dropoff.lng], { icon: dropoffIcon() }).addTo(dm).bindPopup('Drop-off'); pts.push([d.dropoff.lat,d.dropoff.lng]); }
+        if (pts.length > 1) dm.fitBounds(pts, { padding:[30,30] });
+      }
+    }, 200);
+  }
+
+  const cancelBtn = $('delivCancelBtn');
+  if (cancelBtn) cancelBtn.addEventListener('click', ()=>cancelDelivery(id));
+  $('delivCloseBtn').addEventListener('click', closeDrawer);
+}
+
+async function cancelDelivery(id){
+  if (!confirm('Cancel this delivery? This cannot be undone.')) return;
+  try {
+    await update(ref(database, `deliveries/${id}`), { status:'cancelled', cancelledAt: Date.now(), cancelledBy:'admin' });
+    for (const txId in state.transactions){
+      const tx = state.transactions[txId];
+      if (tx.referenceId === id && tx.status !== 'completed'){
+        await update(ref(database, `transactions/${txId}`), { status:'cancelled' });
+      }
+    }
+    toast('Delivery cancelled');
+    closeDrawer();
+  } catch (err){
+    toast('Could not cancel: ' + err.message);
+  }
+}
+
+/* ============================================================
+   ERRANDS
+   ============================================================ */
+document.querySelectorAll('#errandsTabs .tab').forEach(t=>{
+  t.addEventListener('click', ()=>{
+    document.querySelectorAll('#errandsTabs .tab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    activeFilters.errands = t.dataset.filter;
+    renderErrands();
+  });
+});
+
+function renderErrands(){
+  const all = Object.values(state.errands).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+  const filtered = activeFilters.errands === 'all' ? all : all.filter(e=>e.status === activeFilters.errands);
+  $('errandsCount').textContent = `${filtered.length} errand${filtered.length===1?'':'s'}`;
+
+  if (!filtered.length){
+    $('errandsList').innerHTML = `<div class="empty"><i class="fas fa-clipboard-list"></i><h3>No errands</h3><p>No errands match the current filter.</p></div>`;
+  } else {
+    $('errandsList').innerHTML = filtered.map(e=>{
+      const offerCount = e.offers ? Object.keys(e.offers).length : 0;
+      return `
+        <div class="list-item" data-errand="${esc(e.errandId)}">
+          <div class="li-avatar"><i class="fas fa-clipboard-list"></i></div>
+          <div class="li-body">
+            <div class="li-title">${esc(e.title||'Untitled')}</div>
+            <div class="li-sub">${esc(e.customerName||'')} · ${offerCount} offer${offerCount===1?'':'s'}</div>
+          </div>
+          <div class="li-right">
+            <strong>K ${esc(fmtPrice(e.willingToPay))}</strong>
+            <div style="margin-top:3px;">${statusChip(e.status)}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+    $('errandsList').querySelectorAll('[data-errand]').forEach(el=>{
+      el.addEventListener('click', ()=>openErrandDetail(el.dataset.errand));
+    });
+  }
+}
+
+function openErrandDetail(id){
+  const e = state.errands[id];
+  if (!e) { toast('Errand not found'); return; }
+  $('drawerTitle').textContent = e.title || 'Errand';
+  $('drawerSub').textContent = e.customerName || 'Customer';
+
+  const offers = e.offers ? Object.values(e.offers) : [];
+
+  $('drawerBody').innerHTML = `
+    <div class="detail-section">
+      <h3><i class="fas fa-circle-info"></i> Status</h3>
+      <div class="detail-grid">
+        <div class="detail-box"><small>Status</small><strong>${statusChip(e.status)}</strong></div>
+        <div class="detail-box"><small>Willing to pay</small><strong>K ${esc(fmtPrice(e.willingToPay))}</strong></div>
+        <div class="detail-box full"><small>Created</small><strong>${esc(fmtDateTime(e.createdAt))}</strong></div>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <h3><i class="fas fa-user"></i> Customer</h3>
+      <div class="detail-grid">
+        <div class="detail-box"><small>Name</small><strong>${esc(e.customerName||'—')}</strong></div>
+        <div class="detail-box"><small>Phone</small><strong>${esc(e.customerPhone||'—')}</strong></div>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <h3><i class="fas fa-align-left"></i> Description</h3>
+      <div class="detail-box full"><strong style="font-weight:500;line-height:1.55;">${esc(e.description||'—')}</strong></div>
+    </div>
+
+    ${e.imageUrl ? `
+      <div class="detail-section">
+        <h3><i class="fas fa-image"></i> Attached image</h3>
+        <div class="img-grid">
+          <div class="img-thumb" data-lightbox="${esc(e.imageUrl)}"><img src="${esc(e.imageUrl)}" alt=""></div>
+        </div>
+      </div>
+    ` : ''}
+
+    <div class="detail-section">
+      <h3><i class="fas fa-location-dot"></i> Pickup</h3>
+      <div class="detail-box full"><strong>${esc(e.pickup?.label||'—')}</strong></div>
+    </div>
+
+    <div class="detail-section">
+      <h3><i class="fas fa-hand-holding-dollar"></i> Offers (${offers.length})</h3>
+      ${offers.length ? offers.map(o=>`
+        <div class="offer-line">
+          <div class="ol-avatar">${o.providerPhoto?`<img src="${esc(o.providerPhoto)}" alt="">`:`<i class="fas fa-user"></i>`}</div>
+          <div class="ol-body">
+            <strong>${esc(o.providerName||'Provider')}</strong>
+            <p>${esc(o.message||'')}</p>
+            <div style="margin-top:4px;">${statusChip(o.status||'pending')} <span style="font-size:.68rem;color:var(--tt);margin-left:6px;">${esc(roleChip(o.providerRole))}</span></div>
+          </div>
+          <div class="ol-right">
+            <strong>K ${esc(fmtPrice(o.price))}</strong>
+            <small>${esc(timeAgo(o.createdAt))}</small>
+          </div>
+        </div>
+      `).join('') : `<div style="text-align:center;padding:20px;color:var(--ts);font-size:.82rem;">No offers yet.</div>`}
+    </div>
+  `;
+
+  $('drawerFoot').innerHTML = `
+    ${e.status === 'pending' ? `<button class="btn btn-danger" id="errandCancelBtn"><i class="fas fa-ban"></i> Cancel errand</button>` : ''}
+    <button class="btn btn-ghost" id="errandCloseBtn">Close</button>
+  `;
+
+  openDrawer();
+
+  $('drawerBody').querySelectorAll('[data-lightbox]').forEach(el=>{
+    el.addEventListener('click', ()=>openLightbox(el.dataset.lightbox));
+  });
+
+  const cancelBtn = $('errandCancelBtn');
+  if (cancelBtn) cancelBtn.addEventListener('click', ()=>cancelErrand(id));
+  $('errandCloseBtn').addEventListener('click', closeDrawer);
+}
+
+async function cancelErrand(id){
+  if (!confirm('Cancel this errand?')) return;
+  try {
+    await update(ref(database, `errands/${id}`), { status:'cancelled', cancelledAt: Date.now(), cancelledBy:'admin' });
+    for (const txId in state.transactions){
+      const tx = state.transactions[txId];
+      if (tx.referenceId === id && tx.status !== 'completed'){
+        await update(ref(database, `transactions/${txId}`), { status:'cancelled' });
+      }
+    }
+    toast('Errand cancelled');
+    closeDrawer();
+  } catch (err){
+    toast('Could not cancel: ' + err.message);
+  }
+}
+
+/* ============================================================
+   PROVIDERS
+   ============================================================ */
+document.querySelectorAll('#providersTabs .tab').forEach(t=>{
+  t.addEventListener('click', ()=>{
+    document.querySelectorAll('#providersTabs .tab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    activeFilters.providers = t.dataset.filter;
+    renderProviders();
+  });
+});
+
+function renderProviders(){
+  const all = Object.entries(state.providers).map(([id,p])=>({...p, _id:id}))
+    .sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+  let filtered = all;
+  if (activeFilters.providers === 'banned') filtered = all.filter(p=>p.banned === true);
+  else if (activeFilters.providers !== 'all') filtered = all.filter(p=>p.status === activeFilters.providers && p.banned !== true);
+
+  $('providersCount').textContent = `${filtered.length} provider${filtered.length===1?'':'s'}`;
+
+  if (!filtered.length){
+    $('providersList').innerHTML = `<div class="empty"><i class="fas fa-briefcase"></i><h3>No providers</h3><p>No providers match the current filter.</p></div>`;
+    return;
+  }
+
+  $('providersList').innerHTML = filtered.map(p=>{
+    const name = p.fullName || `${p.firstName||''} ${p.lastName||''}`.trim() || 'Provider';
+    const role = p.role || '';
+    const isBanned = p.banned === true;
+    const st = isBanned ? 'banned' : (p.status || 'pending');
+    return `
+      <div class="list-item" data-provider="${esc(p._id)}">
+        <div class="li-avatar">${p.profileUrl?`<img src="${esc(p.profileUrl)}" alt="">`:`<i class="fas fa-user"></i>`}</div>
+        <div class="li-body">
+          <div class="li-title">${esc(name)} ${role ? roleChip(role) : ''}</div>
+          <div class="li-sub">${esc(p.email||'')} · ${esc(p.phone||'')}</div>
+        </div>
+        <div class="li-right">
+          <strong>K ${esc(fmtPrice(p.floatBalance||0))}</strong>
+          <div style="margin-top:3px;">${statusChip(st)}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  $('providersList').querySelectorAll('[data-provider]').forEach(el=>{
+    el.addEventListener('click', ()=>openProviderDetail(el.dataset.provider));
+  });
+}
+
+function openProviderDetail(id){
+  const p = state.providers[id];
+  if (!p) { toast('Provider not found'); return; }
+  const name = p.fullName || `${p.firstName||''} ${p.lastName||''}`.trim() || 'Provider';
+  $('drawerTitle').textContent = name;
+  $('drawerSub').textContent = (p.email||'') + ' · ' + (p.phone||'');
+
+  const imgs = [];
+  if (p.profileUrl) imgs.push({ url:p.profileUrl, label:'Profile' });
+  if (p.nrcFront)   imgs.push({ url:p.nrcFront, label:'NRC front' });
+  if (p.nrcBack)    imgs.push({ url:p.nrcBack, label:'NRC back' });
+  if (p.licenseUrl) imgs.push({ url:p.licenseUrl, label:'Licence' });
+  (p.bikeUrls||[]).forEach((u,i)=>imgs.push({ url:u, label:'Bike '+(i+1) }));
+  (p.carUrls||[]).forEach((u,i)=>imgs.push({ url:u, label:'Car '+(i+1) }));
+
+  const isBanned = p.banned === true;
+  const st = isBanned ? 'banned' : (p.status || 'pending');
+
+  $('drawerBody').innerHTML = `
+    <div class="detail-section">
+      <h3><i class="fas fa-circle-info"></i> Account</h3>
+      <div class="detail-grid">
+        <div class="detail-box"><small>Status</small><strong>${statusChip(st)}</strong></div>
+        <div class="detail-box"><small>Role</small><strong>${p.role ? roleChip(p.role) : '—'}</strong></div>
+        <div class="detail-box"><small>Float balance</small><strong>K ${esc(fmtPrice(p.floatBalance||0))}</strong></div>
+        <div class="detail-box"><small>Joined</small><strong>${esc(fmtDateTime(p.createdAt))}</strong></div>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <h3><i class="fas fa-user"></i> Contact</h3>
+      <div class="detail-grid">
+        <div class="detail-box full"><small>Email</small><strong>${esc(p.email||'—')}</strong></div>
+        <div class="detail-box full"><small>Phone</small><strong>${esc(p.phone||'—')}</strong></div>
+        <div class="detail-box full"><small>UID</small><strong style="font-family:monospace;font-size:.72rem;">${esc(id)}</strong></div>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <h3><i class="fas fa-coins"></i> Float Balance Adjustment</h3>
+      <div class="detail-grid">
+        <div class="field full" style="grid-column:1/-1;">
+          <label>Adjust by (use negative to deduct)</label>
+          <input type="number" id="floatAdjustInput" step="1" placeholder="e.g. 500 or -200">
+        </div>
+      </div>
+      <button class="btn btn-ghost btn-sm" id="floatAdjustBtn" style="width:100%;"><i class="fas fa-plus-minus"></i> Apply adjustment</button>
+    </div>
+
+    ${imgs.length ? `
+      <div class="detail-section">
+        <h3><i class="fas fa-images"></i> Documents (${imgs.length})</h3>
+        <div class="img-grid">
+          ${imgs.map(im=>`<div class="img-thumb" data-lightbox="${esc(im.url)}"><img src="${esc(im.url)}" alt=""><span class="thumb-label">${esc(im.label)}</span></div>`).join('')}
+        </div>
+      </div>
+    ` : ''}
+  `;
+
+  const foot = [];
+  if (!isBanned && p.status !== 'approved'){
+    foot.push(`<button class="btn btn-success" id="provApproveBtn"><i class="fas fa-check"></i> Approve</button>`);
+  }
+  if (!isBanned && p.status !== 'rejected'){
+    foot.push(`<button class="btn btn-warn" id="provRejectBtn"><i class="fas fa-xmark"></i> Reject</button>`);
+  }
+  if (isBanned){
+    foot.push(`<button class="btn btn-ghost" id="provUnbanBtn"><i class="fas fa-unlock"></i> Unban</button>`);
+  } else {
+    foot.push(`<button class="btn btn-danger" id="provBanBtn"><i class="fas fa-ban"></i> Ban provider</button>`);
+  }
+  foot.push(`<button class="btn btn-ghost" id="provCloseBtn">Close</button>`);
+  $('drawerFoot').innerHTML = foot.join('');
+
+  openDrawer();
+
+  $('drawerBody').querySelectorAll('[data-lightbox]').forEach(el=>{
+    el.addEventListener('click', ()=>openLightbox(el.dataset.lightbox));
+  });
+
+  const approveBtn = $('provApproveBtn');
+  if (approveBtn) approveBtn.addEventListener('click', ()=>setProviderStatus(id, 'approved'));
+  const rejectBtn = $('provRejectBtn');
+  if (rejectBtn) rejectBtn.addEventListener('click', ()=>setProviderStatus(id, 'rejected'));
+  const banBtn = $('provBanBtn');
+  if (banBtn) banBtn.addEventListener('click', ()=>banProvider(id, true));
+  const unbanBtn = $('provUnbanBtn');
+  if (unbanBtn) unbanBtn.addEventListener('click', ()=>banProvider(id, false));
+  $('provCloseBtn').addEventListener('click', closeDrawer);
+
+  const adjBtn = $('floatAdjustBtn');
+  if (adjBtn) adjBtn.addEventListener('click', async ()=>{
+    const input = $('floatAdjustInput');
+    const delta = parseFloat(input.value);
+    if (!isFinite(delta) || delta === 0){ toast('Enter a non-zero number'); return; }
+    const current = p.floatBalance || 0;
+    const next = Math.round(current + delta);
+    try {
+      await update(ref(database, `providers/${id}`), { floatBalance: next });
+      toast(`Float updated: K ${next}`);
+      input.value = '';
+      closeDrawer();
+    } catch (err){
+      toast('Could not adjust: ' + err.message);
+    }
+  });
+}
+
+async function setProviderStatus(id, status){
+  try {
+    await update(ref(database, `providers/${id}`), { status });
+    toast(`Provider ${status}`);
+    closeDrawer();
+  } catch (err){
+    toast('Could not update: ' + err.message);
+  }
+}
+
+async function banProvider(id, banned){
+  if (banned && !confirm('Ban this provider? They will not be able to sign in.')) return;
+  try {
+    const updates = { banned };
+    if (banned){
+      updates.bannedAt = Date.now();
+      updates.banReason = 'Banned by admin';
+    } else {
+      updates.bannedAt = null;
+      updates.banReason = null;
+    }
+    await update(ref(database, `providers/${id}`), updates);
+    toast(banned ? 'Provider banned' : 'Provider unbanned');
+    closeDrawer();
+  } catch (err){
+    toast('Could not update: ' + err.message);
+  }
+}
+
+/* ============================================================
+   CUSTOMERS
+   ============================================================ */
+document.querySelectorAll('#customersTabs .tab').forEach(t=>{
+  t.addEventListener('click', ()=>{
+    document.querySelectorAll('#customersTabs .tab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    activeFilters.customers = t.dataset.filter;
+    renderCustomers();
+  });
+});
+
+function renderCustomers(){
+  const all = Object.entries(state.customers).map(([id,c])=>({...c, _id:id}))
+    .sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+  let filtered = all;
+  if (activeFilters.customers === 'banned') filtered = all.filter(c=>c.banned === true);
+  else if (activeFilters.customers === 'active') filtered = all.filter(c=>c.banned !== true);
+
+  $('customersCount').textContent = `${filtered.length} customer${filtered.length===1?'':'s'}`;
+
+  if (!filtered.length){
+    $('customersList').innerHTML = `<div class="empty"><i class="fas fa-users"></i><h3>No customers</h3><p>No customers match the current filter.</p></div>`;
+    return;
+  }
+
+  $('customersList').innerHTML = filtered.map(c=>{
+    const name = c.fullName || `${c.firstName||''} ${c.lastName||''}`.trim() || 'Customer';
+    const isBanned = c.banned === true;
+    return `
+      <div class="list-item" data-customer="${esc(c._id)}">
+        <div class="li-avatar">${c.profileUrl?`<img src="${esc(c.profileUrl)}" alt="">`:`<i class="fas fa-user"></i>`}</div>
+        <div class="li-body">
+          <div class="li-title">${esc(name)}</div>
+          <div class="li-sub">${esc(c.phone||'')}</div>
+        </div>
+        <div class="li-right">
+          <div>${statusChip(isBanned ? 'banned' : 'active')}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  $('customersList').querySelectorAll('[data-customer]').forEach(el=>{
+    el.addEventListener('click', ()=>openCustomerDetail(el.dataset.customer));
+  });
+}
+
+function openCustomerDetail(id){
+  const c = state.customers[id];
+  if (!c) { toast('Customer not found'); return; }
+  const name = c.fullName || `${c.firstName||''} ${c.lastName||''}`.trim() || 'Customer';
+  $('drawerTitle').textContent = name;
+  $('drawerSub').textContent = c.phone || '';
+
+  const isBanned = c.banned === true;
+
+  // Stats
+  const rides = Object.values(state.rides).filter(r=>r.customerId === id);
+  const delivs = Object.values(state.deliveries).filter(d=>d.customerId === id);
+  const errands = Object.values(state.errands).filter(e=>e.customerId === id);
+  const txs = Object.values(state.transactions).filter(t=>t.customerId === id && t.status === 'completed');
+  const totalSpent = txs.reduce((s,t)=>s+(t.amount||0),0);
+
+  $('drawerBody').innerHTML = `
+    <div class="detail-section">
+      <h3><i class="fas fa-circle-info"></i> Account</h3>
+      <div class="detail-grid">
+        <div class="detail-box"><small>Status</small><strong>${statusChip(isBanned?'banned':'active')}</strong></div>
+        <div class="detail-box"><small>Joined</small><strong>${esc(fmtDateTime(c.createdAt))}</strong></div>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <h3><i class="fas fa-user"></i> Contact</h3>
+      <div class="detail-grid">
+        <div class="detail-box full"><small>Name</small><strong>${esc(name)}</strong></div>
+        <div class="detail-box full"><small>Phone</small><strong>${esc(c.phone||'—')}</strong></div>
+        <div class="detail-box full"><small>UID</small><strong style="font-family:monospace;font-size:.72rem;">${esc(id)}</strong></div>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <h3><i class="fas fa-chart-simple"></i> Activity</h3>
+      <div class="stats-row" style="grid-template-columns:1fr 1fr;">
+        <div class="stat-mini"><small>Rides</small><strong>${rides.length}</strong></div>
+        <div class="stat-mini"><small>Deliveries</small><strong>${delivs.length}</strong></div>
+        <div class="stat-mini"><small>Errands</small><strong>${errands.length}</strong></div>
+        <div class="stat-mini"><small>Total spent</small><strong>K ${esc(fmtPrice(totalSpent))}</strong></div>
+      </div>
+    </div>
+
+    ${c.profileUrl ? `
+      <div class="detail-section">
+        <h3><i class="fas fa-image"></i> Profile photo</h3>
+        <div class="img-grid">
+          <div class="img-thumb" data-lightbox="${esc(c.profileUrl)}"><img src="${esc(c.profileUrl)}" alt=""></div>
+        </div>
+      </div>
+    ` : ''}
+  `;
+
+  const foot = [];
+  if (isBanned){
+    foot.push(`<button class="btn btn-ghost" id="custUnbanBtn"><i class="fas fa-unlock"></i> Unban</button>`);
+  } else {
+    foot.push(`<button class="btn btn-danger" id="custBanBtn"><i class="fas fa-ban"></i> Ban customer</button>`);
+  }
+  foot.push(`<button class="btn btn-ghost" id="custCloseBtn">Close</button>`);
+  $('drawerFoot').innerHTML = foot.join('');
+
+  openDrawer();
+
+  $('drawerBody').querySelectorAll('[data-lightbox]').forEach(el=>{
+    el.addEventListener('click', ()=>openLightbox(el.dataset.lightbox));
+  });
+
+  const banBtn = $('custBanBtn');
+  if (banBtn) banBtn.addEventListener('click', ()=>banCustomer(id, true));
+  const unbanBtn = $('custUnbanBtn');
+  if (unbanBtn) unbanBtn.addEventListener('click', ()=>banCustomer(id, false));
+  $('custCloseBtn').addEventListener('click', closeDrawer);
+}
+
+async function banCustomer(id, banned){
+  if (banned && !confirm('Ban this customer?')) return;
+  try {
+    const updates = { banned };
+    if (banned){
+      updates.bannedAt = Date.now();
+      updates.banReason = 'Banned by admin';
+    } else {
+      updates.bannedAt = null;
+      updates.banReason = null;
+    }
+    await update(ref(database, `customers/${id}`), updates);
+    toast(banned ? 'Customer banned' : 'Customer unbanned');
+    closeDrawer();
+  } catch (err){
+    toast('Could not update: ' + err.message);
+  }
+}
+
+/* ============================================================
+   FLOAT REQUESTS
+   ============================================================ */
+document.querySelectorAll('#floatTabs .tab').forEach(t=>{
+  t.addEventListener('click', ()=>{
+    document.querySelectorAll('#floatTabs .tab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    activeFilters.float = t.dataset.filter;
+    renderFloatRequests();
+  });
+});
+
+function renderFloatRequests(){
+  const all = Object.entries(state.floatRequests).map(([id,f])=>({...f, _id:id}))
+    .sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+  const filtered = activeFilters.float === 'all' ? all : all.filter(f=>f.status === activeFilters.float);
+
+  $('floatCount').textContent = `${filtered.length} request${filtered.length===1?'':'s'}`;
+
+  if (!filtered.length){
+    $('floatList').innerHTML = `<div class="empty"><i class="fas fa-wallet"></i><h3>No float requests</h3><p>No requests match the current filter.</p></div>`;
+    return;
+  }
+
+  $('floatList').innerHTML = filtered.map(f=>`
+    <div class="list-item" data-float="${esc(f._id)}">
+      <div class="li-avatar"><i class="fas fa-wallet"></i></div>
+      <div class="li-body">
+        <div class="li-title">${esc(f.providerName||'Provider')}</div>
+        <div class="li-sub">${esc(f.providerPhone||'')} · ${esc(timeAgo(f.createdAt))}</div>
+      </div>
+      <div class="li-right">
+        <strong>K ${esc(fmtPrice(f.amount))}</strong>
+        <div style="margin-top:3px;">${statusChip(f.status)}</div>
+      </div>
+    </div>
+  `).join('');
+
+  $('floatList').querySelectorAll('[data-float]').forEach(el=>{
+    el.addEventListener('click', ()=>openFloatDetail(el.dataset.float));
+  });
+}
+
+function openFloatDetail(id){
+  const f = state.floatRequests[id];
+  if (!f) { toast('Request not found'); return; }
+  $('drawerTitle').textContent = 'Float request';
+  $('drawerSub').textContent = f.providerName || 'Provider';
+
+  const provider = state.providers[f.providerId];
+  const currentBalance = provider ? (provider.floatBalance || 0) : 0;
+
+  $('drawerBody').innerHTML = `
+    <div class="detail-section">
+      <h3><i class="fas fa-circle-info"></i> Request</h3>
+      <div class="detail-grid">
+        <div class="detail-box"><small>Status</small><strong>${statusChip(f.status)}</strong></div>
+        <div class="detail-box"><small>Amount</small><strong>K ${esc(fmtPrice(f.amount))}</strong></div>
+        <div class="detail-box full"><small>Submitted</small><strong>${esc(fmtDateTime(f.createdAt))}</strong></div>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <h3><i class="fas fa-user"></i> Provider</h3>
+      <div class="detail-grid">
+        <div class="detail-box full"><small>Name</small><strong>${esc(f.providerName||'—')}</strong></div>
+        <div class="detail-box full"><small>Phone</small><strong>${esc(f.providerPhone||'—')}</strong></div>
+        <div class="detail-box full"><small>Current float balance</small><strong>K ${esc(fmtPrice(currentBalance))}</strong></div>
+      </div>
+    </div>
+
+    ${f.screenshotUrl ? `
+      <div class="detail-section">
+        <h3><i class="fas fa-receipt"></i> Payment screenshot</h3>
+        <div class="img-grid">
+          <div class="img-thumb" data-lightbox="${esc(f.screenshotUrl)}" style="aspect-ratio:auto;"><img src="${esc(f.screenshotUrl)}" alt="" style="height:200px;object-fit:contain;background:#0a0a0a;"></div>
+        </div>
+      </div>
+    ` : ''}
+  `;
+
+  const foot = [];
+  if (f.status === 'pending'){
+    foot.push(`<button class="btn btn-success" id="floatApproveBtn"><i class="fas fa-check"></i> Approve &amp; credit</button>`);
+    foot.push(`<button class="btn btn-danger" id="floatRejectBtn"><i class="fas fa-xmark"></i> Reject</button>`);
+  }
+  foot.push(`<button class="btn btn-ghost" id="floatCloseBtn">Close</button>`);
+  $('drawerFoot').innerHTML = foot.join('');
+
+  openDrawer();
+
+  $('drawerBody').querySelectorAll('[data-lightbox]').forEach(el=>{
+    el.addEventListener('click', ()=>openLightbox(el.dataset.lightbox));
+  });
+
+  const approveBtn = $('floatApproveBtn');
+  if (approveBtn) approveBtn.addEventListener('click', ()=>approveFloat(id));
+  const rejectBtn = $('floatRejectBtn');
+  if (rejectBtn) rejectBtn.addEventListener('click', ()=>rejectFloat(id));
+  $('floatCloseBtn').addEventListener('click', closeDrawer);
+}
+
+async function approveFloat(id){
+  const f = state.floatRequests[id];
+  if (!f) return;
+  const provider = state.providers[f.providerId];
+  const current = provider ? (provider.floatBalance || 0) : 0;
+  const next = current + (f.amount || 0);
+
+  try {
+    await update(ref(database, `floatRequests/${id}`), {
+      status:'approved',
+      approvedAt: Date.now(),
+      approvedBy: currentAdmin.uid
+    });
+    if (provider){
+      await update(ref(database, `providers/${f.providerId}`), { floatBalance: next });
+    }
+    toast(`Approved. Provider balance now K ${next}`);
+    closeDrawer();
+  } catch (err){
+    toast('Could not approve: ' + err.message);
+  }
+}
+
+async function rejectFloat(id){
+  if (!confirm('Reject this float request?')) return;
+  try {
+    await update(ref(database, `floatRequests/${id}`), {
+      status:'rejected',
+      rejectedAt: Date.now(),
+      rejectedBy: currentAdmin.uid
+    });
+    toast('Request rejected');
+    closeDrawer();
+  } catch (err){
+    toast('Could not reject: ' + err.message);
+  }
+}
+
+/* ============================================================
+   TRANSACTIONS
+   ============================================================ */
+document.querySelectorAll('#txTabs .tab').forEach(t=>{
+  t.addEventListener('click', ()=>{
+    document.querySelectorAll('#txTabs .tab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    activeFilters.transactions = t.dataset.filter;
+    renderTransactions();
+  });
+});
+
+function renderTransactions(){
+  const all = Object.entries(state.transactions).map(([id,t])=>({...t, _id:id}))
+    .sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+
+  let filtered = all;
+  const f = activeFilters.transactions;
+  if (f === 'ride' || f === 'delivery' || f === 'errand') filtered = all.filter(t=>t.type === f);
+  else if (f === 'completed' || f === 'pending') filtered = all.filter(t=>t.status === f);
+
+  const totalCompleted = all.filter(t=>t.status === 'completed').reduce((s,t)=>s+(t.amount||0),0);
+  const totalPending = all.filter(t=>t.status === 'pending').reduce((s,t)=>s+(t.amount||0),0);
+  const totalCancelled = all.filter(t=>t.status === 'cancelled').reduce((s,t)=>s+(t.amount||0),0);
+
+  $('txMetrics').innerHTML = `
+    <div class="metric dark">
+      <div class="m-label">Completed</div>
+      <div class="m-value"><small>K</small>${esc(fmtPrice(totalCompleted))}</div>
+      <div class="m-ico"><i class="fas fa-check"></i></div>
+    </div>
+    <div class="metric">
+      <div class="m-label">Pending</div>
+      <div class="m-value"><small>K</small>${esc(fmtPrice(totalPending))}</div>
+      <div class="m-ico"><i class="fas fa-clock"></i></div>
+    </div>
+    <div class="metric">
+      <div class="m-label">Cancelled</div>
+      <div class="m-value"><small>K</small>${esc(fmtPrice(totalCancelled))}</div>
+      <div class="m-ico"><i class="fas fa-xmark"></i></div>
+    </div>
+    <div class="metric">
+      <div class="m-label">Total records</div>
+      <div class="m-value">${all.length}</div>
+      <div class="m-ico"><i class="fas fa-receipt"></i></div>
+    </div>
+  `;
+
+  $('txCount').textContent = `${filtered.length} transaction${filtered.length===1?'':'s'}`;
+
+  if (!filtered.length){
+    $('txList').innerHTML = `<div class="empty"><i class="fas fa-receipt"></i><h3>No transactions</h3><p>No records match the filter.</p></div>`;
+    return;
+  }
+
+  $('txList').innerHTML = filtered.map(t=>{
+    const icon = t.type==='ride'?'fa-car-side':t.type==='delivery'?'fa-box':'fa-clipboard-list';
+    return `
+      <div class="list-item">
+        <div class="li-avatar"><i class="fas ${icon}"></i></div>
+        <div class="li-body">
+          <div class="li-title">${esc(t.description||t.type||'Transaction')}</div>
+          <div class="li-sub">${esc(t.type||'')} · ${esc(fmtDateTime(t.createdAt))}</div>
+        </div>
+        <div class="li-right">
+          <strong>K ${esc(fmtPrice(t.amount))}</strong>
+          <div style="margin-top:3px;">${statusChip(t.status)}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+/* ============================================================
+   PRICING
+   ============================================================ */
+function loadPricingAndSettings(){
+  get(ref(database, 'system/pricing')).then(snap=>{
+    if (snap.exists()){
+      const p = snap.val();
+      state.pricing = {
+        ride:     Object.assign({}, DEFAULT_PRICING.ride,     p.ride || {}),
+        motorbike:Object.assign({}, DEFAULT_PRICING.motorbike,p.motorbike || {}),
+        cyclist:  Object.assign({}, DEFAULT_PRICING.cyclist,  p.cyclist || {}),
+        walker:   Object.assign({}, DEFAULT_PRICING.walker,   p.walker || {})
+      };
+    }
+    fillPricingForm();
+  });
+
+  get(ref(database, 'system/settings')).then(snap=>{
+    if (snap.exists()){
+      const s = snap.val();
+      state.settings = Object.assign({}, DEFAULT_SETTINGS, s);
+      if (!Array.isArray(state.settings.depositNumbers)){
+        state.settings.depositNumbers = Array.isArray(s.depositNumbers) ? s.depositNumbers : (s.depositNumbers ? Object.values(s.depositNumbers) : DEFAULT_SETTINGS.depositNumbers);
+      }
+    }
+    depositDraft = JSON.parse(JSON.stringify(state.settings.depositNumbers || []));
+    fillSettingsForm();
+  }).catch(()=>{
+    fillSettingsForm();
+  });
+}
+
+function fillPricingForm(){
+  const p = state.pricing;
+  $('pricingRideBase').value   = p.ride.baseFare;
+  $('pricingRidePerKm').value  = p.ride.pricePerKm;
+  $('pricingRidePerMin').value = p.ride.pricePerMinute;
+  $('pricingRideMin').value    = p.ride.minimumFare;
+  $('pricingMotoBase').value   = p.motorbike.baseFare;
+  $('pricingMotoPerKm').value  = p.motorbike.pricePerKm;
+  $('pricingMotoPerMin').value = p.motorbike.pricePerMinute;
+  $('pricingMotoMin').value    = p.motorbike.minimumFare;
+  $('pricingCycBase').value    = p.cyclist.baseFare;
+  $('pricingCycPerKm').value   = p.cyclist.pricePerKm;
+  $('pricingCycPerMin').value  = p.cyclist.pricePerMinute;
+  $('pricingCycMin').value     = p.cyclist.minimumFare;
+  $('pricingWalkBase').value   = p.walker.baseFare;
+  $('pricingWalkPerKm').value  = p.walker.pricePerKm;
+  $('pricingWalkPerMin').value = p.walker.pricePerMinute;
+  $('pricingWalkMin').value    = p.walker.minimumFare;
+}
+
+$('savePricingBtn').addEventListener('click', async ()=>{
+  const parse = id => parseFloat($(id).value) || 0;
+  const pricing = {
+    ride:      { baseFare: parse('pricingRideBase'), pricePerKm: parse('pricingRidePerKm'), pricePerMinute: parse('pricingRidePerMin'), minimumFare: parse('pricingRideMin') },
+    motorbike: { baseFare: parse('pricingMotoBase'), pricePerKm: parse('pricingMotoPerKm'), pricePerMinute: parse('pricingMotoPerMin'), minimumFare: parse('pricingMotoMin') },
+    cyclist:   { baseFare: parse('pricingCycBase'),  pricePerKm: parse('pricingCycPerKm'),  pricePerMinute: parse('pricingCycPerMin'),  minimumFare: parse('pricingCycMin') },
+    walker:    { baseFare: parse('pricingWalkBase'), pricePerKm: parse('pricingWalkPerKm'), pricePerMinute: parse('pricingWalkPerMin'), minimumFare: parse('pricingWalkMin') }
+  };
+  try {
+    await set(ref(database, 'system/pricing'), pricing);
+    state.pricing = pricing;
+    toast('Pricing saved');
+  } catch (err){
+    toast('Could not save: ' + err.message);
+  }
+});
+
+/* ============================================================
+   SETTINGS
+   ============================================================ */
+function fillSettingsForm(){
+  $('settingRadius').value = state.settings.searchRadiusKm || 15;
+  const maint = state.settings.maintenance || {};
+  $('settingMaintenanceToggle').checked = !!maint.enabled;
+  $('settingMaintenanceMsg').value = maint.message || DEFAULT_SETTINGS.maintenance.message;
+  renderDepositNumbersForm();
+}
+
+function renderDepositNumbersForm(){
+  const wrap = $('depositNumbersList');
+  if (!depositDraft.length){
+    wrap.innerHTML = `<div style="text-align:center;padding:20px;color:var(--ts);font-size:.82rem;background:var(--fg);border-radius:10px;">No deposit numbers yet. Click "Add" to create one.</div>`;
+    return;
+  }
+  wrap.innerHTML = depositDraft.map((d,i)=>`
+    <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin-bottom:8px;align-items:center;">
+      <input type="text" class="form-input" style="margin-bottom:0;padding:9px 12px;font-size:.85rem;" data-dep-label="${i}" value="${esc(d.label||'')}" placeholder="Label (e.g. Airtel Money)">
+      <input type="text" class="form-input" style="margin-bottom:0;padding:9px 12px;font-size:.85rem;" data-dep-number="${i}" value="${esc(d.number||'')}" placeholder="Number">
+      <button class="btn btn-ghost btn-sm" data-dep-remove="${i}" style="padding:9px 12px;"><i class="fas fa-trash"></i></button>
+    </div>
+  `).join('');
+
+  wrap.querySelectorAll('[data-dep-label]').forEach(inp=>{
+    inp.addEventListener('input', e=>{
+      const i = parseInt(e.target.dataset.depLabel, 10);
+      depositDraft[i].label = e.target.value;
+    });
+  });
+  wrap.querySelectorAll('[data-dep-number]').forEach(inp=>{
+    inp.addEventListener('input', e=>{
+      const i = parseInt(e.target.dataset.depNumber, 10);
+      depositDraft[i].number = e.target.value;
+    });
+  });
+  wrap.querySelectorAll('[data-dep-remove]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const i = parseInt(btn.dataset.depRemove, 10);
+      depositDraft.splice(i, 1);
+      renderDepositNumbersForm();
+    });
+  });
+}
+
+$('addDepositBtn').addEventListener('click', ()=>{
+  depositDraft.push({ label:'', number:'' });
+  renderDepositNumbersForm();
+});
+
+$('saveRadiusBtn').addEventListener('click', async ()=>{
+  const v = parseFloat($('settingRadius').value);
+  if (!isFinite(v) || v <= 0){ toast('Enter a valid radius'); return; }
+  try {
+    await update(ref(database, 'system/settings'), { searchRadiusKm: v });
+    state.settings.searchRadiusKm = v;
+    toast(`Radius saved: ${v} km`);
+  } catch (err){
+    toast('Could not save: ' + err.message);
+  }
+});
+
+$('saveMaintenanceBtn').addEventListener('click', async ()=>{
+  const enabled = $('settingMaintenanceToggle').checked;
+  const message = $('settingMaintenanceMsg').value.trim() || DEFAULT_SETTINGS.maintenance.message;
+  try {
+    await set(ref(database, 'system/maintenance'), { enabled, message });
+    await update(ref(database, 'system/settings'), { maintenance: { enabled, message } });
+    state.settings.maintenance = { enabled, message };
+    toast(enabled ? 'Maintenance mode ON' : 'Maintenance mode OFF');
+  } catch (err){
+    toast('Could not save: ' + err.message);
+  }
+});
+
+$('saveDepositBtn').addEventListener('click', async ()=>{
+  const clean = depositDraft.filter(d=>d.label && d.number);
+  try {
+    await update(ref(database, 'system/settings'), { depositNumbers: clean });
+    await set(ref(database, 'system/floatNumbers'), clean);
+    state.settings.depositNumbers = clean;
+    toast('Deposit numbers saved');
+  } catch (err){
+    toast('Could not save: ' + err.message);
+  }
+});
+
+/* ============================================================
+   DRAWER
+   ============================================================ */
+function openDrawer(){ $('drawer').classList.add('open'); $('drawerOverlay').classList.add('open'); }
+function closeDrawer(){ $('drawer').classList.remove('open'); $('drawerOverlay').classList.remove('open'); }
+$('drawerClose').addEventListener('click', closeDrawer);
+$('drawerOverlay').addEventListener('click', closeDrawer);
+
+/* ============================================================
+   MISC
+   ============================================================ */
+$('refreshMapBtn').addEventListener('click', ()=>{
+  renderDashboardMarkers();
+  toast('Map refreshed');
+});
+
+document.addEventListener('keydown', e=>{
+  if (e.key === 'Escape'){
+    if ($('lightbox').classList.contains('open')) $('lightbox').classList.remove('open');
+    else if ($('drawer').classList.contains('open')) closeDrawer();
+    else if ($('sidebar').classList.contains('open')) closeSidebar();
+  }
+});
+
+window.addEventListener('resize', ()=>{
+  if (dashMap) dashMap.invalidateSize();
+  if (ridesMap) ridesMap.invalidateSize();
+  if (delivsMap) delivsMap.invalidateSize();
+});
+</script>
+</body>
+</html>
