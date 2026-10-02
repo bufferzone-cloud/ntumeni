@@ -45,6 +45,7 @@
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
   --panel-ease: cubic-bezier(0.32, 0.72, 0, 1);
+  --map-h: 50vh;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -53,11 +54,15 @@ html, body { height: 100%; width: 100%; overflow: hidden; -webkit-text-size-adju
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   color: var(--text-primary);
-  background: #e8eaed;
+  background: #ffffff;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   user-select: none;
   -webkit-user-select: none;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
 }
 
 button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
@@ -92,11 +97,13 @@ input, textarea, select { font-family: inherit; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* ==========================================================
-   FULLSCREEN MAP
+   SPLIT LAYOUT
    ========================================================== */
 #map {
-  position: fixed; inset: 0; z-index: 1;
+  flex: 0 0 var(--map-h);
+  position: relative;
   background: #e8eaed;
+  z-index: 1;
 }
 .leaflet-tile-pane { filter: saturate(0.92) contrast(1.04) brightness(1.02); }
 .leaflet-container { font-family: inherit; background: #e8eaed; }
@@ -108,6 +115,26 @@ input, textarea, select { font-family: inherit; }
 }
 .leaflet-control-attribution a { color: #6e6e73 !important; }
 
+#detailPanel {
+  flex: 1 1 auto;
+  min-height: 0;
+  background: #ffffff;
+  border-top: 1px solid var(--line);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
+  z-index: 5;
+  box-shadow: 0 -8px 24px rgba(0,0,0,0.06);
+}
+#detailPanel .dp-inner {
+  max-width: 620px;
+  margin: 0 auto;
+  padding: 18px 18px 26px;
+}
+
+/* ==========================================================
+   MAP MARKERS
+   ========================================================== */
 .mk-user {
   width: 18px; height: 18px; border-radius: 50%;
   background: #ffffff; border: 4px solid #0a0a0a;
@@ -143,89 +170,40 @@ input, textarea, select { font-family: inherit; }
 }
 
 /* ==========================================================
-   FLOATING BUTTONS
+   FLOATING CONTROLS ON MAP
    ========================================================== */
 .float-btn {
   position: fixed; z-index: 600;
-  width: 48px; height: 48px; border-radius: 14px;
+  width: 46px; height: 46px; border-radius: 14px;
   background: #ffffff;
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.1rem; color: var(--ink);
+  font-size: 1.05rem; color: var(--ink);
   box-shadow: 0 4px 18px rgba(0,0,0,0.16), 0 0 0 1px rgba(0,0,0,0.05);
   transition: transform 0.3s var(--spring);
 }
 .float-btn:active { transform: scale(0.92); }
 
 #sidebarBtn { top: 14px; left: 14px; }
-#locateBtn { right: 14px; bottom: 96px; }
 
-/* ==========================================================
-   FLOAT BALANCE PILL
-   ========================================================== */
-.float-balance-pill {
+/* Map-only controls positioned near bottom of map */
+#mapControls {
   position: fixed;
-  top: 14px;
+  top: calc(var(--map-h) - 62px);
   right: 14px;
   z-index: 600;
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  padding: 12px 18px 12px 14px;
-  border-radius: 999px;
-  background: #0a0a0a;
-  color: #ffffff;
-  box-shadow:
-    0 8px 22px -8px rgba(0,0,0,0.55),
-    0 0 0 1px rgba(255,255,255,0.06) inset;
-  transition: transform 0.35s var(--spring), background 0.25s;
-  cursor: pointer;
-}
-.float-balance-pill:active { transform: scale(0.96); }
-
-.float-balance-pill .fb-ico {
-  width: 28px; height: 28px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.14);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 0.82rem;
-  flex-shrink: 0;
-}
-.float-balance-pill .fb-txt {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  line-height: 1;
-  min-width: 0;
+  gap: 10px;
 }
-.float-balance-pill .fb-txt small {
-  font-size: 0.58rem;
-  font-weight: 700;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.55);
-  margin-bottom: 4px;
+#mapControls .float-btn {
+  position: static;
 }
-.float-balance-pill .fb-txt strong {
-  font-size: 0.98rem;
-  font-weight: 800;
-  letter-spacing: -0.3px;
-  font-variant-numeric: tabular-nums;
+#navigateFloatBtn {
+  background: #0a0a0a; color: #fff;
 }
-.float-balance-pill .fb-txt strong small {
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: rgba(255,255,255,0.75);
-  letter-spacing: 0;
-  margin: 0 2px 0 0;
-  display: inline;
-}
-.float-balance-pill.is-low   { background: #7f1d1d; }
-.float-balance-pill.is-warn  { background: #b54708; }
-.float-balance-pill.is-low .fb-ico,
-.float-balance-pill.is-warn .fb-ico { background: rgba(255,255,255,0.16); }
 
 /* ==========================================================
-   ONLINE TOGGLE
+   TOP HUD (Online toggle + float pill)
    ========================================================== */
 #onlineToggle {
   position: fixed;
@@ -236,11 +214,11 @@ input, textarea, select { font-family: inherit; }
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 11px 16px;
+  padding: 10px 15px;
   border-radius: 999px;
   background: #ffffff;
   color: var(--text-primary);
-  font-size: 0.74rem;
+  font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 0.6px;
   text-transform: uppercase;
@@ -270,123 +248,318 @@ input, textarea, select { font-family: inherit; }
   0%, 100% { box-shadow: 0 0 0 4px rgba(18,183,106,0.28); }
   50%      { box-shadow: 0 0 0 8px rgba(18,183,106,0.05); }
 }
-#onlineToggle.busy {
-  opacity: 0.6;
-  pointer-events: none;
-}
+#onlineToggle.busy { opacity: 0.6; pointer-events: none; }
 
-/* Active trip pill */
-#activeTripPill {
+.float-balance-pill {
   position: fixed;
-  top: 68px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 640;
-  display: none;
+  top: 14px;
+  right: 14px;
+  z-index: 600;
+  display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 14px;
+  padding: 10px 15px 10px 12px;
   border-radius: 999px;
   background: #0a0a0a;
   color: #ffffff;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.3px;
-  box-shadow: 0 6px 20px -6px rgba(0,0,0,0.5);
-  animation: fadeIn 0.3s var(--ease-out);
+  box-shadow:
+    0 8px 22px -8px rgba(0,0,0,0.55),
+    0 0 0 1px rgba(255,255,255,0.06) inset;
+  transition: transform 0.35s var(--spring), background 0.25s;
 }
-#activeTripPill.show { display: inline-flex; }
-#activeTripPill .at-dot {
-  width: 8px; height: 8px; border-radius: 50%;
-  background: var(--success);
-  box-shadow: 0 0 0 3px rgba(18,183,106,0.25);
-  animation: dotPulse 1.4s var(--ease-smooth) infinite;
-}
-@keyframes dotPulse {
-  0%, 100% { opacity: 1; }
-  50%      { opacity: 0.4; }
-}
-
-/* Float gate banner (when online but not enough float for a type) */
-#floatGateBanner {
-  position: fixed;
-  top: 112px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 638;
-  display: none;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 16px;
-  border-radius: 14px;
-  background: #7f1d1d;
-  color: #fff;
-  font-size: 0.74rem;
-  font-weight: 700;
-  letter-spacing: 0.2px;
-  box-shadow: 0 10px 26px -10px rgba(0,0,0,0.55);
-  max-width: calc(100vw - 28px);
-  animation: fadeIn 0.3s var(--ease-out);
-  cursor: pointer;
-}
-#floatGateBanner.show { display: inline-flex; }
-#floatGateBanner i.bi { font-size: 0.95rem; flex-shrink: 0; }
-#floatGateBanner .bg-txt { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-#floatGateBanner .bg-go {
-  background: rgba(255,255,255,0.18);
-  padding: 6px 12px;
-  border-radius: 999px;
-  font-size: 0.68rem;
-  font-weight: 800;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
+.float-balance-pill:active { transform: scale(0.96); }
+.float-balance-pill .fb-ico {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.14);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.78rem;
   flex-shrink: 0;
-  margin-left: auto;
 }
+.float-balance-pill .fb-txt {
+  display: flex; flex-direction: column; align-items: flex-start; line-height: 1;
+}
+.float-balance-pill .fb-txt small {
+  font-size: 0.55rem; font-weight: 700;
+  letter-spacing: 1.2px; text-transform: uppercase;
+  color: rgba(255,255,255,0.55);
+  margin-bottom: 4px;
+}
+.float-balance-pill .fb-txt strong {
+  font-size: 0.92rem; font-weight: 800;
+  letter-spacing: -0.3px;
+  font-variant-numeric: tabular-nums;
+}
+.float-balance-pill .fb-txt strong small {
+  font-size: 0.68rem; font-weight: 700;
+  color: rgba(255,255,255,0.75);
+  letter-spacing: 0;
+  margin: 0 2px 0 0;
+  display: inline;
+}
+.float-balance-pill.is-low   { background: #7f1d1d; }
+.float-balance-pill.is-warn  { background: #b54708; }
 
 /* ==========================================================
-   ACCOUNT PILL (BOTTOM)
+   DETAIL PANEL CONTENT
    ========================================================== */
-.account-pill {
-  position: fixed; z-index: 600;
-  bottom: 20px; left: 50%;
-  transform: translateX(-50%);
-  background: #0a0a0a; color: #ffffff;
-  font-size: 0.92rem;
-  font-weight: 800;
-  letter-spacing: -0.2px;
-  padding: 14px 24px;
-  border-radius: 999px;
-  display: inline-flex; align-items: center; gap: 10px;
-  box-shadow: 0 14px 32px -10px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.05);
-  transition: transform 0.35s var(--spring);
-}
-.account-pill:active { transform: translateX(-50%) scale(0.96); }
-.account-pill i { font-size: 0.95rem; }
-.account-pill .pill-status-dot {
-  width: 8px; height: 8px; border-radius: 50%;
-  background: var(--success);
-  box-shadow: 0 0 0 3px rgba(18,183,106,0.22);
-}
-.account-pill .pill-status-dot.pending { background: var(--warn); box-shadow: 0 0 0 3px rgba(247,144,9,0.22); }
-.account-pill .pill-status-dot.rejected { background: var(--danger); box-shadow: 0 0 0 3px rgba(217,45,32,0.22); }
 
-/* ==========================================================
-   TOAST
-   ========================================================== */
-#toast {
-  position: fixed; left: 50%; bottom: 92px; z-index: 6000;
-  transform: translate(-50%, 24px);
+/* Panel heads */
+.dp-title {
+  font-size: 1.1rem; font-weight: 800;
+  letter-spacing: -0.35px;
+  margin-bottom: 4px;
+  display: flex; align-items: center; gap: 10px;
+}
+.dp-sub {
+  font-size: 0.82rem; color: var(--text-secondary);
+  line-height: 1.5; margin-bottom: 16px;
+}
+
+/* Status banner (idle, online etc) */
+.dp-status {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px;
+  border-radius: 14px;
+  margin-bottom: 14px;
+}
+.dp-status .ds-ico {
+  width: 44px; height: 44px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+.dp-status.online   { background: var(--success-soft); }
+.dp-status.online .ds-ico   { background: rgba(18,183,106,0.15);  color: #027a48; }
+.dp-status.offline  { background: var(--fill-gray); }
+.dp-status.offline .ds-ico  { background: #ffffff;  color: var(--text-secondary); }
+.dp-status.warn     { background: var(--warn-soft); }
+.dp-status.warn .ds-ico     { background: rgba(247,144,9,0.18);  color: #b54708; }
+.dp-status.danger   { background: var(--danger-soft); }
+.dp-status.danger .ds-ico   { background: rgba(217,45,32,0.15);  color: #b42318; }
+.dp-status .ds-body { flex: 1; min-width: 0; }
+.dp-status .ds-body strong {
+  display: block; font-size: 0.94rem; font-weight: 800;
+  letter-spacing: -0.25px; margin-bottom: 2px;
+}
+.dp-status .ds-body span {
+  display: block; font-size: 0.78rem;
+  color: var(--text-secondary); line-height: 1.45;
+}
+
+/* Primary action button */
+.dp-btn {
+  width: 100%;
+  padding: 15px 20px;
+  border-radius: 14px;
   background: #0a0a0a; color: #fff;
-  font-size: 0.84rem; font-weight: 600;
-  padding: 13px 22px; border-radius: 999px;
-  box-shadow: 0 14px 34px -10px rgba(0,0,0,0.6);
-  opacity: 0; visibility: hidden;
-  transition: opacity 0.32s var(--ease-out), transform 0.42s var(--spring), visibility 0.32s;
-  max-width: 88vw; text-align: center; line-height: 1.4;
-  pointer-events: none;
+  font-size: 0.92rem; font-weight: 800;
+  letter-spacing: -0.2px;
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 9px;
+  box-shadow: 0 8px 20px -8px rgba(0,0,0,0.55);
+  transition: transform 0.3s var(--spring);
+  margin-top: 4px;
 }
-#toast.show { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
+.dp-btn:active { transform: scale(0.98); }
+.dp-btn:disabled { opacity: 0.55; pointer-events: none; }
+.dp-btn.ghost {
+  background: var(--fill-gray);
+  color: var(--text-primary);
+  box-shadow: none;
+}
+.dp-btn.navigate {
+  background: linear-gradient(135deg, #175cd3 0%, #0a0a0a 100%);
+}
+.dp-btn-row { display: flex; gap: 10px; margin-top: 6px; }
+.dp-btn-row .dp-btn { margin-top: 0; }
+
+/* Route block */
+.dp-route {
+  background: var(--fill-gray);
+  border-radius: 14px;
+  padding: 4px;
+  margin-bottom: 14px;
+}
+.dp-route .rr-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px;
+  border-radius: 11px;
+}
+.dp-route .rr-row + .rr-row { border-top: 1px solid rgba(0,0,0,0.05); }
+.dp-route .rr-dot {
+  width: 12px; height: 12px; border-radius: 50%;
+  background: #0a0a0a;
+  box-shadow: 0 0 0 3.5px rgba(10,10,10,0.13);
+  flex-shrink: 0;
+}
+.dp-route .rr-dot.square {
+  border-radius: 3.5px;
+  background: #175cd3;
+  box-shadow: 0 0 0 3.5px rgba(23,92,211,0.13);
+}
+.dp-route .rr-txt { flex: 1; min-width: 0; }
+.dp-route .rr-txt small {
+  display: block;
+  font-size: 0.6rem; font-weight: 800;
+  letter-spacing: 1.1px; text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 2px;
+}
+.dp-route .rr-txt strong {
+  display: block;
+  font-size: 0.86rem; font-weight: 600;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+/* Customer card */
+.dp-customer {
+  display: flex; align-items: center; gap: 13px;
+  padding: 14px;
+  background: var(--fill-gray);
+  border-radius: 14px;
+  margin-bottom: 14px;
+}
+.dp-customer .dc-avatar {
+  width: 48px; height: 48px; border-radius: 50%;
+  background: #ffffff;
+  overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 1px var(--line);
+}
+.dp-customer .dc-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.dp-customer .dc-avatar i { color: var(--text-tertiary); font-size: 1.2rem; }
+.dp-customer .dc-body { flex: 1; min-width: 0; }
+.dp-customer .dc-body strong {
+  display: block; font-size: 0.94rem; font-weight: 800;
+  letter-spacing: -0.25px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.dp-customer .dc-body span {
+  display: block; font-size: 0.76rem;
+  color: var(--text-secondary); margin-top: 2px;
+}
+.dp-customer .dc-call {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  background: var(--success); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+  text-decoration: none;
+  box-shadow: 0 6px 14px -4px rgba(18,183,106,0.5);
+}
+.dp-customer .dc-call:active { transform: scale(0.92); }
+
+/* Stats */
+.dp-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.dp-stat {
+  background: var(--fill-gray);
+  border-radius: 12px;
+  padding: 12px 10px;
+  text-align: center;
+}
+.dp-stat small {
+  display: block; font-size: 0.56rem; font-weight: 800;
+  letter-spacing: 1px; text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 5px;
+}
+.dp-stat strong {
+  display: block; font-size: 0.94rem; font-weight: 800;
+  letter-spacing: -0.3px;
+}
+.dp-stat.price { background: #0a0a0a; color: #fff; }
+.dp-stat.price small { color: rgba(255,255,255,0.55); }
+.dp-stat.price strong { color: #fff; font-size: 1.05rem; }
+
+/* Commission strip */
+.dp-commission {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: var(--warn-soft);
+  border: 1px solid rgba(247,144,9,0.22);
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #b54708;
+  margin-bottom: 14px;
+}
+
+/* Slide-to-action (unchanged design, moved into panel) */
+.slide-btn {
+  position: relative;
+  width: 100%;
+  height: 60px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #0f5132 0%, #0a0a0a 100%);
+  color: #ffffff;
+  overflow: hidden;
+  user-select: none;
+  touch-action: none;
+  margin-bottom: 10px;
+  transition: background 0.3s;
+}
+.slide-btn.arrive { background: linear-gradient(135deg, #b54708 0%, #0a0a0a 100%); }
+.slide-btn.start  { background: linear-gradient(135deg, #175cd3 0%, #0a0a0a 100%); }
+.slide-btn.end    { background: linear-gradient(135deg, #d92d20 0%, #0a0a0a 100%); }
+.slide-btn .slide-fill {
+  position: absolute; top: 0; left: 0; bottom: 0;
+  width: 60px;
+  background: rgba(255,255,255,0.12);
+  border-radius: 999px;
+  pointer-events: none;
+  transition: width 0.06s linear;
+}
+.slide-btn .slide-label {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.84rem; font-weight: 800;
+  letter-spacing: 1.3px; text-transform: uppercase;
+  pointer-events: none;
+  padding-left: 40px;
+}
+.slide-btn .slide-label i { margin-right: 8px; }
+.slide-btn .slide-handle {
+  position: absolute; top: 5px; left: 5px;
+  width: 50px; height: 50px;
+  border-radius: 50%;
+  background: #ffffff; color: #0a0a0a;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+  cursor: grab;
+  box-shadow: 0 6px 16px -4px rgba(0,0,0,0.4);
+  transition: transform 0.22s var(--spring);
+  touch-action: none;
+  z-index: 2;
+}
+.slide-btn .slide-handle.dragging { transition: none; }
+.slide-btn.is-busy { opacity: 0.7; pointer-events: none; }
+
+/* Request tag */
+.dp-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 0.64rem; font-weight: 800;
+  letter-spacing: 0.8px; text-transform: uppercase;
+  padding: 5px 11px; border-radius: 999px;
+  background: #0a0a0a; color: #fff;
+  margin-bottom: 12px;
+  animation: tagPulse 1.4s var(--ease-smooth) infinite;
+}
+.dp-tag.info {
+  background: var(--info-soft); color: #175cd3;
+  animation: none;
+}
+@keyframes tagPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(10,10,10,0.4); }
+  50%      { box-shadow: 0 0 0 8px rgba(10,10,10,0); }
+}
 
 /* ==========================================================
    SIDEBAR
@@ -411,7 +584,6 @@ input, textarea, select { font-family: inherit; }
   box-shadow: 14px 0 46px rgba(0,0,0,0.22);
 }
 #sidebar.open { transform: translateX(0); }
-
 .sidebar-head {
   padding: 26px 22px 20px;
   border-bottom: 1px solid var(--line);
@@ -436,10 +608,9 @@ input, textarea, select { font-family: inherit; }
   display: block; font-size: 0.72rem; color: var(--text-secondary);
   margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-
 .sidebar-role-chip {
   display: inline-flex; align-items: center; gap: 5px;
-  font-size: 0.62rem; font-weight: 800; letter-spacing: 0.6px;
+  font-size: 0.6rem; font-weight: 800; letter-spacing: 0.6px;
   text-transform: uppercase;
   padding: 3px 9px; border-radius: 999px;
   margin-top: 5px;
@@ -467,7 +638,6 @@ input, textarea, select { font-family: inherit; }
   font-size: 1rem; color: var(--text-secondary);
 }
 .nav-item:hover i { color: var(--ink); }
-
 .sidebar-foot {
   padding: 14px 12px 20px;
   border-top: 1px solid var(--line);
@@ -485,7 +655,7 @@ input, textarea, select { font-family: inherit; }
 .logout-btn i { width: 22px; text-align: center; font-size: 1rem; }
 
 /* ==========================================================
-   SLIDE-UP PAGES
+   FULLSCREEN PAGES (Account, Errands, History, etc.)
    ========================================================== */
 .page {
   position: fixed; inset: 0; z-index: 3000;
@@ -530,15 +700,13 @@ input, textarea, select { font-family: inherit; }
   transition: background 0.25s var(--ease-smooth), transform 0.3s var(--spring);
   flex-shrink: 0;
 }
-.icon-btn:hover  { background: var(--fill-gray-hover); }
 .icon-btn:active { transform: scale(0.92); }
 
 /* ==========================================================
    SHARED UI
    ========================================================== */
 .section-label {
-  font-size: 0.72rem;
-  font-weight: 700;
+  font-size: 0.72rem; font-weight: 700;
   color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.6px;
@@ -552,14 +720,11 @@ input, textarea, select { font-family: inherit; }
   margin-bottom: 0.85rem;
 }
 .input-icon-group > i {
-  position: absolute;
-  left: 15px;
-  top: 50%;
+  position: absolute; left: 15px; top: 50%;
   transform: translateY(-50%);
   color: var(--text-tertiary);
   font-size: 0.95rem;
-  pointer-events: none;
-  z-index: 1;
+  pointer-events: none; z-index: 1;
 }
 .input-icon-group.textarea-group > i { top: 22px; transform: none; }
 .input-icon-group:focus-within > i { color: #0a0a0a; }
@@ -586,16 +751,11 @@ input, textarea, select { font-family: inherit; }
 .pill-textarea { resize: vertical; min-height: 96px; line-height: 1.5; }
 
 .btn {
-  font-size: 0.94rem;
-  font-weight: 600;
-  border: none;
-  border-radius: var(--radius-sm);
-  padding: 14px 20px;
-  width: 100%;
+  font-size: 0.94rem; font-weight: 600;
+  border: none; border-radius: var(--radius-sm);
+  padding: 14px 20px; width: 100%;
   cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  display: inline-flex; align-items: center; justify-content: center;
   gap: 9px;
   transition: transform 0.35s var(--spring), box-shadow 0.35s, background 0.22s;
 }
@@ -605,23 +765,14 @@ input, textarea, select { font-family: inherit; }
   box-shadow: 0 8px 20px -6px rgba(0,0,0,0.40);
   margin-top: 6px;
 }
-.btn-primary:hover:not(:disabled) { transform: translateY(-2px); }
 .btn-primary:active:not(:disabled) { transform: translateY(0) scale(0.975); }
 .btn:disabled { opacity: 0.55; cursor: not-allowed; }
-
-.btn-ghost {
-  background: var(--fill-gray);
-  color: var(--text-primary);
-}
-.btn-ghost:hover { background: var(--fill-gray-hover); }
+.btn-ghost { background: var(--fill-gray); color: var(--text-primary); }
 
 .error-msg {
-  color: #d92d20;
-  font-size: 0.78rem;
-  font-weight: 500;
+  color: #d92d20; font-size: 0.78rem; font-weight: 500;
   margin: 0.4rem 0 0.75rem 4px;
-  line-height: 1.45;
-  white-space: pre-wrap;
+  line-height: 1.45; white-space: pre-wrap;
 }
 .error-msg:empty { display: none; }
 
@@ -629,20 +780,16 @@ input, textarea, select { font-family: inherit; }
    ACCOUNT PAGE
    ========================================================== */
 .account-hero {
-  background: #0a0a0a;
-  color: #fff;
+  background: #0a0a0a; color: #fff;
   border-radius: 20px;
   padding: 22px;
   margin-bottom: 16px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
+  display: flex; align-items: center; gap: 16px;
 }
 .account-hero .hero-avatar {
   width: 68px; height: 68px; border-radius: 50%;
   background: rgba(255,255,255,0.1);
-  overflow: hidden;
-  flex-shrink: 0;
+  overflow: hidden; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
   box-shadow: 0 0 0 3px rgba(255,255,255,0.08);
 }
@@ -670,93 +817,58 @@ input, textarea, select { font-family: inherit; }
 .account-hero .hero-status.approved { background: rgba(18,183,106,0.18); color: #5fd999; }
 .account-hero .hero-status.rejected { background: rgba(217,45,32,0.18); color: #f28b82; }
 .account-hero .hero-status.none     { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.6); }
-.account-hero .hero-status i { font-size: 0.7rem; }
 
-.role-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 10px;
-  margin-bottom: 16px;
-}
+.role-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 16px; }
 .role-card {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 16px;
-  border-radius: 16px;
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px; border-radius: 16px;
   background: #ffffff;
   box-shadow: 0 0 0 1px var(--line), 0 2px 10px rgba(0,0,0,0.03);
   text-align: left;
   transition: transform 0.3s var(--spring), box-shadow 0.24s, background 0.22s;
 }
-.role-card:hover {
-  background: #fafafa;
-  box-shadow: 0 0 0 1.5px rgba(0,0,0,0.16), 0 6px 18px -8px rgba(0,0,0,0.18);
-  transform: translateY(-2px);
-}
 .role-card:active { transform: scale(0.985); }
 .role-card .role-ico {
-  width: 52px; height: 52px;
-  border-radius: 14px;
-  background: #0a0a0a;
-  color: #ffffff;
+  width: 52px; height: 52px; border-radius: 14px;
+  background: #0a0a0a; color: #ffffff;
   display: flex; align-items: center; justify-content: center;
   font-size: 1.25rem; flex-shrink: 0;
 }
 .role-card .role-info { flex: 1; min-width: 0; }
 .role-card .role-info strong {
-  display: block;
-  font-size: 0.98rem; font-weight: 800;
-  letter-spacing: -0.25px;
-  margin-bottom: 3px;
+  display: block; font-size: 0.98rem; font-weight: 800;
+  letter-spacing: -0.25px; margin-bottom: 3px;
 }
 .role-card .role-info span {
-  display: block;
-  font-size: 0.78rem;
-  color: var(--text-secondary);
-  line-height: 1.4;
+  display: block; font-size: 0.78rem; color: var(--text-secondary); line-height: 1.4;
 }
-.role-card .role-arrow {
-  color: var(--text-tertiary);
-  font-size: 0.9rem;
-  flex-shrink: 0;
-}
+.role-card .role-arrow { color: var(--text-tertiary); font-size: 0.9rem; flex-shrink: 0; }
 
 .status-card {
-  border-radius: 16px;
-  padding: 20px;
-  margin-bottom: 16px;
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
+  border-radius: 16px; padding: 20px; margin-bottom: 16px;
+  display: flex; align-items: flex-start; gap: 14px;
 }
-.status-card.pending  { background: var(--warn-soft);    border: 1px solid rgba(247,144,9,0.22); }
+.status-card.pending  { background: var(--warn-soft); border: 1px solid rgba(247,144,9,0.22); }
 .status-card.approved { background: var(--success-soft); border: 1px solid rgba(18,183,106,0.22); }
-.status-card.rejected { background: var(--danger-soft);  border: 1px solid rgba(217,45,32,0.22); }
+.status-card.rejected { background: var(--danger-soft); border: 1px solid rgba(217,45,32,0.22); }
 .status-card .st-ico {
-  width: 44px; height: 44px;
-  border-radius: 50%;
+  width: 44px; height: 44px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.15rem;
-  flex-shrink: 0;
+  font-size: 1.15rem; flex-shrink: 0;
 }
 .status-card.pending  .st-ico { background: rgba(247,144,9,0.2);  color: #b54708; }
 .status-card.approved .st-ico { background: rgba(18,183,106,0.2); color: #027a48; }
 .status-card.rejected .st-ico { background: rgba(217,45,32,0.2);  color: #b42318; }
 .status-card .st-body { flex: 1; min-width: 0; }
 .status-card .st-body strong {
-  display: block;
-  font-size: 0.98rem; font-weight: 800;
-  letter-spacing: -0.25px;
-  margin-bottom: 4px;
+  display: block; font-size: 0.98rem; font-weight: 800;
+  letter-spacing: -0.25px; margin-bottom: 4px;
 }
 .status-card.pending  .st-body strong { color: #b54708; }
 .status-card.approved .st-body strong { color: #027a48; }
 .status-card.rejected .st-body strong { color: #b42318; }
 .status-card .st-body p {
-  font-size: 0.84rem;
-  line-height: 1.5;
-  color: var(--text-secondary);
+  font-size: 0.84rem; line-height: 1.5; color: var(--text-secondary);
 }
 
 .detail-list {
@@ -766,70 +878,52 @@ input, textarea, select { font-family: inherit; }
   margin-bottom: 16px;
 }
 .detail-row {
-  display: flex;
-  align-items: center;
-  gap: 13px;
-  padding: 13px 16px;
-  border-radius: 13px;
+  display: flex; align-items: center; gap: 13px;
+  padding: 13px 16px; border-radius: 13px;
 }
 .detail-row + .detail-row { border-top: 1px solid rgba(0,0,0,0.05); }
 .detail-row i {
   width: 22px; text-align: center;
-  font-size: 0.95rem;
-  color: var(--text-secondary);
+  font-size: 0.95rem; color: var(--text-secondary);
 }
 .detail-row .dr-txt { flex: 1; min-width: 0; }
 .detail-row .dr-txt small {
-  display: block;
-  font-size: 0.62rem; font-weight: 700;
+  display: block; font-size: 0.62rem; font-weight: 700;
   letter-spacing: 1px; text-transform: uppercase;
-  color: var(--text-tertiary);
-  margin-bottom: 2px;
+  color: var(--text-tertiary); margin-bottom: 2px;
 }
 .detail-row .dr-txt strong {
-  display: block;
-  font-size: 0.88rem; font-weight: 600;
+  display: block; font-size: 0.88rem; font-weight: 600;
   color: var(--text-primary);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 
 /* ==========================================================
-   APPLY PAGE — FORMS
+   APPLY PAGE
    ========================================================== */
 .apply-role-head {
-  background: #0a0a0a;
-  color: #fff;
-  border-radius: 20px;
-  padding: 22px;
-  margin-bottom: 18px;
-  text-align: center;
+  background: #0a0a0a; color: #fff;
+  border-radius: 20px; padding: 22px;
+  margin-bottom: 18px; text-align: center;
 }
 .apply-role-head .arh-ico {
-  width: 64px; height: 64px;
-  border-radius: 18px;
+  width: 64px; height: 64px; border-radius: 18px;
   background: rgba(255,255,255,0.1);
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.6rem;
-  margin: 0 auto 14px;
+  font-size: 1.6rem; margin: 0 auto 14px;
 }
 .apply-role-head h3 {
   font-size: 1.15rem; font-weight: 800;
-  letter-spacing: -0.35px;
-  margin-bottom: 6px;
+  letter-spacing: -0.35px; margin-bottom: 6px;
 }
 .apply-role-head p {
-  font-size: 0.84rem;
-  color: rgba(255,255,255,0.65);
-  line-height: 1.5;
-  max-width: 320px;
-  margin: 0 auto;
+  font-size: 0.84rem; color: rgba(255,255,255,0.65);
+  line-height: 1.5; max-width: 320px; margin: 0 auto;
 }
 
 .upload-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 12px;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 10px; margin-bottom: 12px;
 }
 .upload-box {
   position: relative;
@@ -838,39 +932,23 @@ input, textarea, select { font-family: inherit; }
   background: var(--fill-gray);
   border: 2px dashed rgba(0,0,0,0.14);
   border-radius: 14px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  cursor: pointer;
-  overflow: hidden;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 6px;
+  cursor: pointer; overflow: hidden;
   transition: border-color 0.3s, background 0.3s;
-}
-.upload-box:hover {
-  border-color: #0a0a0a;
-  background: #ffffff;
 }
 .upload-box.has-image { border-style: solid; border-color: #0a0a0a; }
 .upload-box img {
-  position: absolute;
-  inset: 0;
-  width: 100%; height: 100%;
-  object-fit: cover;
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; object-fit: cover;
 }
 .upload-box .upload-label {
   font-size: 0.7rem; font-weight: 700;
   color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-  text-align: center;
-  padding: 0 8px;
-  line-height: 1.3;
+  text-transform: uppercase; letter-spacing: 0.4px;
+  text-align: center; padding: 0 8px; line-height: 1.3;
 }
-.upload-box i.upload-icon {
-  font-size: 1.6rem;
-  color: var(--text-tertiary);
-}
+.upload-box i.upload-icon { font-size: 1.6rem; color: var(--text-tertiary); }
 .upload-box.has-image .upload-label,
 .upload-box.has-image i.upload-icon { display: none; }
 .upload-box.is-loading::after {
@@ -884,46 +962,32 @@ input, textarea, select { font-family: inherit; }
   z-index: 4;
 }
 .upload-box .remove-img {
-  position: absolute;
-  top: 6px; right: 6px;
-  width: 26px; height: 26px;
-  border-radius: 50%;
-  background: rgba(10,10,10,0.85);
-  color: #fff;
+  position: absolute; top: 6px; right: 6px;
+  width: 26px; height: 26px; border-radius: 50%;
+  background: rgba(10,10,10,0.85); color: #fff;
   display: flex; align-items: center; justify-content: center;
-  font-size: 0.7rem;
-  z-index: 5;
+  font-size: 0.7rem; z-index: 5;
   display: none;
 }
 .upload-box.has-image .remove-img { display: flex; }
 .upload-box .nrc-hint {
-  position: absolute;
-  bottom: 8px;
-  left: 50%;
+  position: absolute; bottom: 8px; left: 50%;
   transform: translateX(-50%);
-  font-size: 0.6rem;
-  font-weight: 800;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  padding: 3px 10px;
-  border-radius: 999px;
-  background: rgba(10,10,10,0.85);
-  color: #fff;
-  z-index: 3;
-  pointer-events: none;
-  transition: opacity 0.2s;
+  font-size: 0.6rem; font-weight: 800;
+  letter-spacing: 1px; text-transform: uppercase;
+  padding: 3px 10px; border-radius: 999px;
+  background: rgba(10,10,10,0.85); color: #fff;
+  z-index: 3; pointer-events: none;
 }
-.upload-box.has-image .nrc-hint { opacity: 0.9; }
 
 /* ==========================================================
-   ERRANDS LIST
+   ERRAND CARDS
    ========================================================== */
 .errand-card {
   background: #ffffff;
   border-radius: 16px;
   box-shadow: 0 0 0 1px var(--line), 0 2px 8px rgba(0,0,0,0.04);
-  margin-bottom: 14px;
-  overflow: hidden;
+  margin-bottom: 14px; overflow: hidden;
   animation: cardIn 0.4s var(--ease-out);
 }
 @keyframes cardIn {
@@ -931,104 +995,65 @@ input, textarea, select { font-family: inherit; }
   to   { opacity: 1; transform: translateY(0); }
 }
 .errand-card-head {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+  display: flex; align-items: center; gap: 12px;
   padding: 14px 16px 10px;
 }
 .errand-card-avatar {
-  width: 42px; height: 42px;
-  border-radius: 50%;
-  background: var(--fill-gray);
-  overflow: hidden;
-  flex-shrink: 0;
+  width: 42px; height: 42px; border-radius: 50%;
+  background: var(--fill-gray); overflow: hidden; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
 }
 .errand-card-avatar img { width: 100%; height: 100%; object-fit: cover; }
 .errand-card-avatar i { color: var(--text-tertiary); font-size: 1rem; }
-
 .errand-card-meta { flex: 1; min-width: 0; }
 .errand-card-meta strong {
-  display: block;
-  font-size: 0.9rem; font-weight: 700;
+  display: block; font-size: 0.9rem; font-weight: 700;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .errand-card-meta span {
-  display: block;
-  font-size: 0.72rem;
-  color: var(--text-secondary);
-  margin-top: 1px;
+  display: block; font-size: 0.72rem; color: var(--text-secondary); margin-top: 1px;
 }
-
 .errand-card-body { padding: 4px 16px 12px; }
 .errand-card-body h4 {
   font-size: 0.98rem; font-weight: 800;
-  letter-spacing: -0.25px;
-  margin-bottom: 6px;
+  letter-spacing: -0.25px; margin-bottom: 6px;
 }
 .errand-card-body p {
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-  line-height: 1.5;
-  margin-bottom: 10px;
-  white-space: pre-wrap;
-  word-break: break-word;
+  font-size: 0.85rem; color: var(--text-secondary);
+  line-height: 1.5; margin-bottom: 10px;
+  white-space: pre-wrap; word-break: break-word;
 }
 .errand-card-image {
-  border-radius: 12px;
-  overflow: hidden;
-  margin-bottom: 10px;
-  background: var(--fill-gray);
-  max-height: 280px;
+  border-radius: 12px; overflow: hidden; margin-bottom: 10px;
+  background: var(--fill-gray); max-height: 280px;
 }
 .errand-card-image img {
-  width: 100%; max-height: 280px;
-  object-fit: cover; display: block;
+  width: 100%; max-height: 280px; object-fit: cover; display: block;
 }
-.errand-tags {
-  display: flex; flex-wrap: wrap; gap: 6px;
-  margin-bottom: 4px;
-}
+.errand-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 4px; }
 .errand-tag {
   display: inline-flex; align-items: center; gap: 6px;
   font-size: 0.72rem; font-weight: 600;
   color: var(--text-secondary);
   background: var(--fill-gray);
-  padding: 5px 10px;
-  border-radius: 999px;
+  padding: 5px 10px; border-radius: 999px;
 }
-.errand-tag i { font-size: 0.7rem; }
-.errand-tag.price {
-  background: #0a0a0a; color: #fff;
-  font-weight: 800;
-}
-.errand-tag.accepted {
-  background: var(--success-soft); color: #027a48;
-}
-
-.errand-card-footer {
-  display: flex;
-  border-top: 1px solid var(--line);
-}
+.errand-tag.price { background: #0a0a0a; color: #fff; font-weight: 800; }
+.errand-card-footer { display: flex; border-top: 1px solid var(--line); }
 .errand-card-footer button {
-  flex: 1;
-  padding: 13px 8px;
+  flex: 1; padding: 13px 8px;
   font-size: 0.82rem; font-weight: 700;
-  display: inline-flex;
-  align-items: center; justify-content: center;
-  gap: 7px;
-  transition: background 0.2s;
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 7px; transition: background 0.2s;
 }
-.errand-card-footer button:hover { background: var(--fill-gray); }
 .errand-card-footer button + button { border-left: 1px solid var(--line); }
 .errand-card-footer button.primary { background: #0a0a0a; color: #fff; }
-.errand-card-footer button.primary:hover { background: #1c1c1e; }
-.errand-card-footer button i { font-size: 0.78rem; }
 
-/* Empty */
+/* ==========================================================
+   EMPTY / LOADER
+   ========================================================== */
 .empty-state {
-  text-align: center;
-  padding: 60px 24px;
+  text-align: center; padding: 60px 24px;
   color: var(--text-secondary);
 }
 .empty-state i {
@@ -1037,17 +1062,12 @@ input, textarea, select { font-family: inherit; }
 }
 .empty-state h3 {
   font-size: 1.05rem; font-weight: 800;
-  color: var(--text-primary);
-  margin-bottom: 6px;
-  letter-spacing: -0.3px;
+  color: var(--text-primary); margin-bottom: 6px; letter-spacing: -0.3px;
 }
 .empty-state p {
-  font-size: 0.86rem;
-  line-height: 1.55;
-  max-width: 320px;
-  margin: 0 auto;
+  font-size: 0.86rem; line-height: 1.55;
+  max-width: 320px; margin: 0 auto;
 }
-
 .loader-row {
   display: flex; align-items: center; justify-content: center;
   gap: 10px; padding: 40px 26px;
@@ -1059,91 +1079,65 @@ input, textarea, select { font-family: inherit; }
   animation: spin 0.8s linear infinite;
 }
 
-/* Float gate card (used in errands + settings) */
+/* Float gate card */
 .float-gate-card {
   background: var(--danger-soft);
   border: 1px solid rgba(217,45,32,0.22);
   border-radius: 16px;
-  padding: 22px 20px;
-  text-align: center;
-  margin-bottom: 14px;
+  padding: 22px 20px; text-align: center; margin-bottom: 14px;
 }
 .float-gate-card .fg-ico {
-  width: 60px; height: 60px;
-  border-radius: 50%;
-  background: rgba(217,45,32,0.15);
-  color: var(--danger);
+  width: 60px; height: 60px; border-radius: 50%;
+  background: rgba(217,45,32,0.15); color: var(--danger);
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.4rem;
-  margin: 0 auto 14px;
+  font-size: 1.4rem; margin: 0 auto 14px;
 }
 .float-gate-card h3 {
   font-size: 1.05rem; font-weight: 800;
-  letter-spacing: -0.3px;
-  color: #b42318;
-  margin-bottom: 6px;
+  letter-spacing: -0.3px; color: #b42318; margin-bottom: 6px;
 }
 .float-gate-card p {
-  font-size: 0.84rem;
-  color: #912018;
-  line-height: 1.55;
-  margin-bottom: 4px;
+  font-size: 0.84rem; color: #912018; line-height: 1.55; margin-bottom: 4px;
 }
 .float-gate-card .fg-amount {
-  font-size: 0.9rem;
-  font-weight: 800;
-  color: #7a1c11;
-  margin: 10px 0 16px;
+  font-size: 0.9rem; font-weight: 800;
+  color: #7a1c11; margin: 10px 0 16px;
 }
 
 /* ==========================================================
-   ERRAND DETAILS / OFFER
+   ERRAND DETAIL
    ========================================================== */
 .detail-head-card {
-  background: #0a0a0a;
-  color: #fff;
-  border-radius: 16px;
-  padding: 18px;
-  margin-bottom: 16px;
+  background: #0a0a0a; color: #fff;
+  border-radius: 16px; padding: 18px; margin-bottom: 16px;
 }
 .detail-head-card h3 {
   font-size: 1.05rem; font-weight: 800;
-  letter-spacing: -0.3px;
-  margin-bottom: 6px;
+  letter-spacing: -0.3px; margin-bottom: 6px;
 }
 .detail-head-card p {
-  font-size: 0.82rem;
-  color: rgba(255,255,255,0.7);
-  line-height: 1.5;
-  margin-bottom: 12px;
-  word-break: break-word;
+  font-size: 0.82rem; color: rgba(255,255,255,0.7);
+  line-height: 1.5; margin-bottom: 12px; word-break: break-word;
 }
-.detail-head-stats {
-  display: flex; gap: 10px; flex-wrap: wrap;
-}
+.detail-head-stats { display: flex; gap: 10px; flex-wrap: wrap; }
 .detail-head-stat {
   background: rgba(255,255,255,0.1);
-  padding: 8px 12px;
-  border-radius: 10px;
+  padding: 8px 12px; border-radius: 10px;
   font-size: 0.74rem; font-weight: 700;
   display: inline-flex; align-items: center; gap: 6px;
 }
-.detail-head-stat i { font-size: 0.7rem; opacity: 0.8; }
 
 .offer-form-card {
   background: #ffffff;
-  border-radius: 16px;
-  padding: 18px;
-  margin-bottom: 14px;
+  border-radius: 16px; padding: 18px; margin-bottom: 14px;
   box-shadow: 0 0 0 1px var(--line), 0 2px 10px rgba(0,0,0,0.04);
 }
 
 /* ==========================================================
-   HISTORY
+   HISTORY — EXPANDABLE CARDS
    ========================================================== */
 .filter-tabs {
-  display: flex;
-  gap: 8px;
+  display: flex; gap: 8px;
   padding: 12px 16px 8px;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
@@ -1153,9 +1147,7 @@ input, textarea, select { font-family: inherit; }
 }
 .filter-tabs::-webkit-scrollbar { display: none; }
 .filter-tab {
-  flex-shrink: 0;
-  padding: 9px 16px;
-  border-radius: 999px;
+  flex-shrink: 0; padding: 9px 16px; border-radius: 999px;
   font-size: 0.8rem; font-weight: 700;
   color: var(--text-secondary);
   background: var(--fill-gray);
@@ -1163,112 +1155,189 @@ input, textarea, select { font-family: inherit; }
   white-space: nowrap;
 }
 .filter-tab.active { background: #0a0a0a; color: #fff; }
-.filter-tab:hover:not(.active) { background: var(--fill-gray-hover); }
 
 .summary-strip {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin: 4px 0 16px;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 10px; margin: 4px 0 16px;
 }
 .summary-tile {
-  background: var(--fill-gray);
-  border-radius: 14px;
-  padding: 14px 16px;
+  background: var(--fill-gray); border-radius: 14px; padding: 14px 16px;
 }
 .summary-tile.dark { background: #0a0a0a; color: #fff; }
 .summary-tile small {
-  display: block;
-  font-size: 0.64rem; font-weight: 700;
+  display: block; font-size: 0.64rem; font-weight: 700;
   letter-spacing: 1.1px; text-transform: uppercase;
-  color: var(--text-tertiary);
-  margin-bottom: 6px;
+  color: var(--text-tertiary); margin-bottom: 6px;
 }
 .summary-tile.dark small { color: rgba(255,255,255,0.55); }
 .summary-tile strong {
-  display: block;
-  font-size: 1.35rem; font-weight: 800;
+  display: block; font-size: 1.35rem; font-weight: 800;
   letter-spacing: -0.6px;
 }
 .summary-tile.dark strong { color: #fff; }
 
-.history-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  padding: 14px 16px;
+/* Expandable history card */
+.hist-card {
   background: #ffffff;
   border-radius: 14px;
   box-shadow: 0 0 0 1px var(--line), 0 1px 4px rgba(0,0,0,0.03);
   margin-bottom: 10px;
+  overflow: hidden;
   animation: cardIn 0.35s var(--ease-out);
 }
-.history-item .h-ico {
+.hist-summary {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+.hist-summary:hover { background: var(--fill-gray); }
+.hist-summary .h-ico {
   width: 44px; height: 44px;
   border-radius: 12px;
   background: #0a0a0a; color: #ffffff;
   display: flex; align-items: center; justify-content: center;
   font-size: 1rem; flex-shrink: 0;
 }
-.history-item .h-ico.errand { background: #027a48; }
-.history-item .h-ico.float  { background: #b54708; }
-.history-item .h-ico.ride   { background: #0a0a0a; }
-.history-item .h-ico.delivery { background: #175cd3; }
-.history-item .h-body { flex: 1; min-width: 0; }
-.history-item .h-title {
+.hist-summary .h-ico.ride     { background: #0a0a0a; }
+.hist-summary .h-ico.delivery { background: #175cd3; }
+.hist-summary .h-ico.offer    { background: #027a48; }
+.hist-summary .h-ico.float    { background: #b54708; }
+.hist-summary .h-body { flex: 1; min-width: 0; }
+.hist-summary .h-title {
   font-size: 0.92rem; font-weight: 800;
-  letter-spacing: -0.25px;
-  margin-bottom: 3px;
+  letter-spacing: -0.25px; margin-bottom: 3px;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.history-item .h-route {
-  font-size: 0.76rem;
-  color: var(--text-secondary);
-  line-height: 1.4;
+.hist-summary .h-sub {
+  font-size: 0.74rem; color: var(--text-secondary);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.hist-summary .h-right {
+  text-align: right; flex-shrink: 0;
+  display: flex; flex-direction: column; align-items: flex-end;
+  gap: 3px;
+}
+.hist-summary .h-right strong {
+  font-size: 0.98rem; font-weight: 800; letter-spacing: -0.35px;
+}
+.hist-summary .h-chevron {
+  color: var(--text-tertiary);
+  font-size: 0.8rem;
+  transition: transform 0.28s var(--ease-out);
+  margin-left: 4px;
+  flex-shrink: 0;
+}
+.hist-card.expanded .h-chevron { transform: rotate(180deg); }
+
+.hist-details {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s var(--ease-out);
+  background: #fafafa;
+  border-top: 1px solid transparent;
+}
+.hist-card.expanded .hist-details {
+  max-height: 620px;
+  border-top-color: var(--line);
+}
+.hist-details-inner {
+  padding: 14px 16px 16px;
+}
+.hist-details .hd-section {
+  margin-bottom: 14px;
+}
+.hist-details .hd-section:last-child { margin-bottom: 0; }
+.hist-details .hd-label {
+  font-size: 0.62rem; font-weight: 800;
+  letter-spacing: 1.1px; text-transform: uppercase;
+  color: var(--text-tertiary);
   margin-bottom: 6px;
   display: flex; align-items: center; gap: 6px;
-  min-width: 0;
 }
-.history-item .h-route span {
-  white-space: nowrap; overflow: hidden;
-  text-overflow: ellipsis; min-width: 0;
+.hist-details .hd-row {
+  display: flex; justify-content: space-between;
+  gap: 12px; padding: 6px 0;
+  font-size: 0.82rem;
+  border-bottom: 1px dashed rgba(0,0,0,0.05);
 }
-.history-item .h-meta {
-  display: flex; flex-wrap: wrap; gap: 6px;
-  align-items: center;
-}
-.history-item .h-chip {
-  display: inline-flex; align-items: center; gap: 5px;
-  font-size: 0.68rem; font-weight: 700;
-  padding: 4px 9px;
-  border-radius: 999px;
-  background: var(--fill-gray);
-  color: var(--text-secondary);
-}
-.history-item .h-chip.status-pending   { background: var(--warn-soft);    color: #b54708; }
-.history-item .h-chip.status-accepted  { background: var(--success-soft); color: #027a48; }
-.history-item .h-chip.status-arrived   { background: var(--info-soft);    color: #175cd3; }
-.history-item .h-chip.status-in_progress { background: var(--info-soft);  color: #175cd3; }
-.history-item .h-chip.status-completed { background: var(--info-soft);    color: #175cd3; }
-.history-item .h-chip.status-cancelled { background: #f4f4f5;             color: #52525b; }
-.history-item .h-chip.status-rejected  { background: var(--danger-soft);  color: #b42318; }
-.history-item .h-price {
-  text-align: right;
+.hist-details .hd-row:last-child { border-bottom: none; }
+.hist-details .hd-row .hd-key {
+  color: var(--text-secondary); font-weight: 600;
   flex-shrink: 0;
-  align-self: flex-start;
 }
-.history-item .h-price strong {
-  display: block;
-  font-size: 1rem; font-weight: 800;
-  letter-spacing: -0.35px;
+.hist-details .hd-row .hd-val {
+  color: var(--text-primary); font-weight: 700;
+  text-align: right;
+  word-break: break-word;
 }
-.history-item .h-price small {
-  display: block;
-  font-size: 0.62rem;
-  color: var(--text-tertiary);
-  font-weight: 700;
-  margin-top: 2px;
+.hist-details .hd-route-block {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 4px;
+  margin-bottom: 10px;
+  box-shadow: 0 0 0 1px var(--line);
 }
+.hist-details .hd-route-block .rr-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px;
+}
+.hist-details .hd-route-block .rr-row + .rr-row {
+  border-top: 1px solid rgba(0,0,0,0.05);
+}
+.hist-details .hd-route-block .rr-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: #0a0a0a; flex-shrink: 0;
+  box-shadow: 0 0 0 3px rgba(10,10,10,0.13);
+}
+.hist-details .hd-route-block .rr-dot.square {
+  border-radius: 3px;
+  background: #175cd3;
+  box-shadow: 0 0 0 3px rgba(23,92,211,0.13);
+}
+.hist-details .hd-route-block .rr-txt {
+  flex: 1; min-width: 0;
+  font-size: 0.82rem; font-weight: 600;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.hist-details .hd-actions {
+  display: flex; gap: 8px; margin-top: 10px;
+}
+.hist-details .hd-actions button,
+.hist-details .hd-actions a {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: #0a0a0a; color: #fff;
+  font-size: 0.8rem; font-weight: 700;
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 7px;
+  text-decoration: none;
+  transition: transform 0.28s var(--spring);
+}
+.hist-details .hd-actions button:active,
+.hist-details .hd-actions a:active { transform: scale(0.97); }
+.hist-details .hd-actions button.ghost,
+.hist-details .hd-actions a.ghost {
+  background: var(--fill-gray); color: var(--text-primary);
+}
+
+/* Chip */
+.chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 0.66rem; font-weight: 800;
+  letter-spacing: 0.4px; text-transform: uppercase;
+  padding: 3px 9px; border-radius: 999px;
+}
+.chip.pending   { background: var(--warn-soft);    color: #b54708; }
+.chip.accepted  { background: var(--success-soft); color: #027a48; }
+.chip.arrived   { background: var(--info-soft);    color: #175cd3; }
+.chip.in_progress { background: var(--info-soft);  color: #175cd3; }
+.chip.completed { background: var(--success-soft); color: #027a48; }
+.chip.cancelled { background: #f4f4f5;             color: #52525b; }
+.chip.rejected  { background: var(--danger-soft);  color: #b42318; }
+.chip.searching { background: var(--info-soft);    color: #175cd3; }
+.chip.approved  { background: var(--success-soft); color: #027a48; }
 
 /* ==========================================================
    BUY FLOAT
@@ -1276,132 +1345,94 @@ input, textarea, select { font-family: inherit; }
 .float-hero {
   background: linear-gradient(180deg, #26262a 0%, #0a0a0a 60%, #000 100%);
   color: #ffffff;
-  border-radius: 20px;
-  padding: 26px 22px;
-  margin-bottom: 18px;
-  text-align: center;
+  border-radius: 20px; padding: 26px 22px;
+  margin-bottom: 18px; text-align: center;
   box-shadow: 0 14px 34px -14px rgba(0,0,0,0.55);
 }
 .float-hero .fh-ico {
-  width: 64px; height: 64px;
-  border-radius: 18px;
+  width: 64px; height: 64px; border-radius: 18px;
   background: rgba(255,255,255,0.14);
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.6rem;
-  margin: 0 auto 14px;
+  font-size: 1.6rem; margin: 0 auto 14px;
 }
 .float-hero h2 {
   font-size: 1.4rem; font-weight: 800;
-  letter-spacing: -0.5px;
-  margin-bottom: 6px;
+  letter-spacing: -0.5px; margin-bottom: 6px;
 }
 .float-hero p {
-  font-size: 0.86rem;
-  color: rgba(255,255,255,0.65);
-  line-height: 1.5;
-  max-width: 320px;
-  margin: 0 auto;
+  font-size: 0.86rem; color: rgba(255,255,255,0.65);
+  line-height: 1.5; max-width: 320px; margin: 0 auto;
 }
-
 .deposit-card {
-  background: var(--fill-gray);
-  border-radius: 16px;
-  padding: 16px;
-  margin-bottom: 16px;
+  background: var(--fill-gray); border-radius: 16px;
+  padding: 16px; margin-bottom: 16px;
 }
 .deposit-card .dc-title {
   font-size: 0.72rem; font-weight: 800;
   letter-spacing: 1px; text-transform: uppercase;
-  color: var(--text-secondary);
-  margin-bottom: 12px;
+  color: var(--text-secondary); margin-bottom: 12px;
   display: flex; align-items: center; gap: 8px;
 }
-.deposit-card .dc-title i { color: var(--text-tertiary); }
-
 .deposit-row {
   display: flex; align-items: center; gap: 12px;
   padding: 12px 14px;
-  background: #ffffff;
-  border-radius: 12px;
+  background: #ffffff; border-radius: 12px;
   margin-bottom: 8px;
   box-shadow: 0 0 0 1px var(--line);
 }
 .deposit-row:last-child { margin-bottom: 0; }
 .deposit-row .dr-logo {
-  width: 40px; height: 40px;
-  border-radius: 10px;
-  background: #0a0a0a;
-  color: #fff;
+  width: 40px; height: 40px; border-radius: 10px;
+  background: #0a0a0a; color: #fff;
   display: flex; align-items: center; justify-content: center;
-  font-size: 0.72rem; font-weight: 800;
-  letter-spacing: 0.3px;
-  flex-shrink: 0;
+  font-size: 0.72rem; font-weight: 800; flex-shrink: 0;
 }
 .deposit-row .dr-info { flex: 1; min-width: 0; }
 .deposit-row .dr-info small {
-  display: block;
-  font-size: 0.62rem; font-weight: 700;
+  display: block; font-size: 0.62rem; font-weight: 700;
   letter-spacing: 0.8px; text-transform: uppercase;
-  color: var(--text-tertiary);
-  margin-bottom: 2px;
+  color: var(--text-tertiary); margin-bottom: 2px;
 }
 .deposit-row .dr-info strong {
-  display: block;
-  font-size: 0.94rem; font-weight: 800;
-  letter-spacing: 0.3px;
+  display: block; font-size: 0.94rem; font-weight: 800;
   font-variant-numeric: tabular-nums;
 }
 .deposit-row .copy-btn {
-  width: 38px; height: 38px;
-  border-radius: 10px;
+  width: 38px; height: 38px; border-radius: 10px;
   background: var(--fill-gray);
   display: flex; align-items: center; justify-content: center;
   font-size: 0.85rem;
-  transition: background 0.22s, transform 0.25s;
 }
-.deposit-row .copy-btn:active { transform: scale(0.92); }
-.deposit-row .copy-btn:hover { background: var(--fill-gray-hover); }
 
 /* ==========================================================
    SETTINGS
    ========================================================== */
 .settings-list {
   background: var(--fill-gray);
-  border-radius: 16px;
-  padding: 4px;
-  margin-bottom: 16px;
+  border-radius: 16px; padding: 4px; margin-bottom: 16px;
 }
 .settings-row {
   width: 100%;
   display: flex; align-items: center; gap: 14px;
-  padding: 14px 16px;
-  border-radius: 13px;
-  transition: background 0.22s;
-  text-align: left;
+  padding: 14px 16px; border-radius: 13px;
+  transition: background 0.22s; text-align: left;
 }
 .settings-row + .settings-row { border-top: 1px solid rgba(0,0,0,0.05); }
 .settings-row:hover { background: rgba(255,255,255,0.85); }
 .settings-row i.sr-ico {
-  width: 36px; height: 36px;
-  border-radius: 10px;
+  width: 36px; height: 36px; border-radius: 10px;
   background: #ffffff;
   display: flex; align-items: center; justify-content: center;
-  font-size: 0.9rem;
-  color: var(--text-primary);
-  flex-shrink: 0;
-  box-shadow: 0 0 0 1px var(--line);
+  font-size: 0.9rem; color: var(--text-primary);
+  flex-shrink: 0; box-shadow: 0 0 0 1px var(--line);
 }
 .settings-row .sr-txt { flex: 1; min-width: 0; }
 .settings-row .sr-txt strong {
-  display: block;
-  font-size: 0.9rem; font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 2px;
+  display: block; font-size: 0.9rem; font-weight: 700;
+  color: var(--text-primary); margin-bottom: 2px;
 }
 .settings-row .sr-txt span {
-  display: block;
-  font-size: 0.76rem;
-  color: var(--text-secondary);
+  display: block; font-size: 0.76rem; color: var(--text-secondary);
 }
 .settings-row .sr-arrow { color: var(--text-tertiary); font-size: 0.82rem; }
 
@@ -1413,24 +1444,18 @@ input, textarea, select { font-family: inherit; }
   background: rgba(0,0,0,0.55);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
-  display: none;
-  align-items: center;
-  justify-content: center;
+  display: none; align-items: center; justify-content: center;
   padding: 18px;
 }
-.modal-overlay.open { display: flex; animation: fadeIn 0.24s var(--ease-out); }
+.modal-overlay.open { display: flex; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
 .modal {
-  background: #ffffff;
-  border-radius: 22px;
-  width: 100%;
-  max-width: 520px;
+  background: #ffffff; border-radius: 22px;
+  width: 100%; max-width: 520px;
   overflow: hidden;
   box-shadow: 0 24px 64px rgba(0,0,0,0.4);
   animation: modalIn 0.42s var(--spring);
-  display: flex;
-  flex-direction: column;
+  display: flex; flex-direction: column;
   max-height: 88vh;
 }
 @keyframes modalIn {
@@ -1439,311 +1464,57 @@ input, textarea, select { font-family: inherit; }
 }
 .modal-head {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 16px 18px;
-  border-bottom: 1px solid var(--line);
+  padding: 16px 18px; border-bottom: 1px solid var(--line);
 }
-.modal-head h3 {
-  font-size: 1rem; font-weight: 800;
-  letter-spacing: -0.3px;
-}
+.modal-head h3 { font-size: 1rem; font-weight: 800; letter-spacing: -0.3px; }
 .modal-head .modal-close {
-  width: 36px; height: 36px;
-  border-radius: 10px;
+  width: 36px; height: 36px; border-radius: 10px;
   background: var(--fill-gray);
   display: flex; align-items: center; justify-content: center;
   font-size: 0.9rem;
 }
-#modalMap {
-  width: 100%;
-  height: 380px;
-  background: #e8eaed;
-}
+#modalMap { width: 100%; height: 380px; background: #e8eaed; }
 .modal-foot {
   padding: 12px 18px 16px;
   display: flex; gap: 10px;
 }
 .modal-foot .legend {
-  flex: 1;
-  display: flex; flex-direction: column;
-  gap: 6px;
-  font-size: 0.74rem;
-  color: var(--text-secondary);
-  font-weight: 600;
+  flex: 1; display: flex; flex-direction: column;
+  gap: 6px; font-size: 0.74rem;
+  color: var(--text-secondary); font-weight: 600;
 }
-.modal-foot .legend .l-row {
-  display: flex; align-items: center; gap: 8px;
-}
+.modal-foot .legend .l-row { display: flex; align-items: center; gap: 8px; }
 .modal-foot .legend .l-dot {
-  width: 10px; height: 10px; border-radius: 50%;
-  flex-shrink: 0;
+  width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
 }
 .modal-foot .legend .l-dot.me { background: #0a0a0a; }
 .modal-foot .legend .l-dot.target { background: #175cd3; }
-.modal-foot .legend .l-dot.route { background: #0a0a0a; border-radius: 2px; }
 
 /* ==========================================================
-   REQUEST MODAL + SLIDE-TO-ACTION
+   TOAST
    ========================================================== */
-.request-overlay {
-  position: fixed; inset: 0; z-index: 5500;
-  background: rgba(10,10,10,0.72);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  display: none;
-  align-items: flex-end;
-  justify-content: center;
-}
-.request-overlay.open { display: flex; animation: fadeIn 0.24s var(--ease-out); }
-
-.request-card {
-  background: #ffffff;
-  border-radius: 26px 26px 0 0;
-  width: 100%;
-  max-width: 520px;
-  padding: 14px 20px 24px;
-  box-shadow: 0 -18px 50px rgba(0,0,0,0.35);
-  animation: sheetUp 0.42s var(--panel-ease);
-  max-height: 92vh;
-  overflow-y: auto;
-}
-@keyframes sheetUp {
-  from { transform: translateY(100%); }
-  to   { transform: translateY(0); }
-}
-
-.request-handle {
-  width: 42px; height: 4px; border-radius: 999px;
-  background: rgba(0,0,0,0.14);
-  margin: 4px auto 16px;
-}
-
-.request-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.66rem;
-  font-weight: 800;
-  letter-spacing: 0.8px;
-  text-transform: uppercase;
-  padding: 5px 11px;
-  border-radius: 999px;
-  background: var(--fill-gray);
-  color: var(--text-secondary);
-  margin-bottom: 12px;
-}
-.request-tag.new {
-  background: #0a0a0a;
-  color: #fff;
-  animation: tagPulse 1.4s var(--ease-smooth) infinite;
-}
-@keyframes tagPulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(10,10,10,0.4); }
-  50%      { box-shadow: 0 0 0 8px rgba(10,10,10,0); }
-}
-
-.request-customer {
-  display: flex;
-  align-items: center;
-  gap: 13px;
-  padding: 14px;
-  background: var(--fill-gray);
-  border-radius: 14px;
-  margin-bottom: 14px;
-}
-.request-customer .rc-avatar {
-  width: 52px; height: 52px;
-  border-radius: 50%;
-  background: #ffffff;
-  overflow: hidden;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-  box-shadow: 0 0 0 1px var(--line);
-}
-.request-customer .rc-avatar img { width: 100%; height: 100%; object-fit: cover; }
-.request-customer .rc-avatar i { color: var(--text-tertiary); font-size: 1.3rem; }
-.request-customer .rc-body { flex: 1; min-width: 0; }
-.request-customer .rc-body strong {
-  display: block;
-  font-size: 1rem; font-weight: 800;
-  letter-spacing: -0.3px;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.request-customer .rc-body span {
-  display: block;
-  font-size: 0.76rem;
-  color: var(--text-secondary);
-  margin-top: 3px;
-}
-
-.request-route {
-  position: relative;
-  background: var(--fill-gray);
-  border-radius: 14px;
-  padding: 4px;
-  margin-bottom: 14px;
-}
-.request-route .rr-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 11px 14px;
-  border-radius: 11px;
-}
-.request-route .rr-row + .rr-row { border-top: 1px solid rgba(0,0,0,0.05); }
-.request-route .rr-dot {
-  width: 12px; height: 12px; border-radius: 50%;
-  background: #0a0a0a;
-  box-shadow: 0 0 0 3.5px rgba(10,10,10,0.13);
-  flex-shrink: 0;
-}
-.request-route .rr-dot.square {
-  border-radius: 3.5px;
-  background: #175cd3;
-  box-shadow: 0 0 0 3.5px rgba(23,92,211,0.13);
-}
-.request-route .rr-txt { flex: 1; min-width: 0; }
-.request-route .rr-txt small {
-  display: block;
-  font-size: 0.6rem; font-weight: 800;
-  letter-spacing: 1.1px; text-transform: uppercase;
-  color: var(--text-tertiary);
-  margin-bottom: 2px;
-}
-.request-route .rr-txt strong {
-  display: block;
-  font-size: 0.86rem; font-weight: 600;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-
-.request-stats {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 8px;
-  margin-bottom: 16px;
-}
-.request-stat {
-  background: var(--fill-gray);
-  border-radius: 12px;
-  padding: 12px;
-  text-align: center;
-}
-.request-stat small {
-  display: block;
-  font-size: 0.58rem; font-weight: 800;
-  letter-spacing: 1px; text-transform: uppercase;
-  color: var(--text-tertiary);
-  margin-bottom: 5px;
-}
-.request-stat strong {
-  display: block;
-  font-size: 0.98rem; font-weight: 800;
-  letter-spacing: -0.3px;
-}
-.request-stat.price {
-  background: #0a0a0a;
-  color: #ffffff;
-}
-.request-stat.price small { color: rgba(255,255,255,0.55); }
-.request-stat.price strong { color: #ffffff; font-size: 1.1rem; }
-
-/* Commission preview inside request card */
-.request-commission {
-  display: flex; align-items: center; gap: 10px;
-  padding: 10px 14px;
-  border-radius: 12px;
-  background: var(--warn-soft);
-  border: 1px solid rgba(247,144,9,0.22);
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: #b54708;
-  margin-bottom: 14px;
-}
-.request-commission i { font-size: 0.8rem; }
-
-/* Slide-to-action button */
-.slide-btn {
-  position: relative;
-  width: 100%;
-  height: 62px;
-  border-radius: 999px;
-  background: linear-gradient(135deg, #0f5132 0%, #0a0a0a 100%);
-  color: #ffffff;
-  overflow: hidden;
-  user-select: none;
-  touch-action: none;
-  margin-bottom: 10px;
-  transition: background 0.3s;
-}
-.slide-btn.arrive { background: linear-gradient(135deg, #b54708 0%, #0a0a0a 100%); }
-.slide-btn.start  { background: linear-gradient(135deg, #175cd3 0%, #0a0a0a 100%); }
-.slide-btn.end    { background: linear-gradient(135deg, #d92d20 0%, #0a0a0a 100%); }
-
-.slide-btn .slide-fill {
-  position: absolute;
-  top: 0; left: 0; bottom: 0;
-  width: 62px;
-  background: rgba(255,255,255,0.12);
-  border-radius: 999px;
-  pointer-events: none;
-  transition: width 0.06s linear;
-}
-.slide-btn .slide-label {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.86rem;
-  font-weight: 800;
-  letter-spacing: 1.4px;
-  text-transform: uppercase;
-  pointer-events: none;
-  padding-left: 40px;
-}
-.slide-btn .slide-label i { margin-right: 8px; }
-.slide-btn .slide-handle {
-  position: absolute;
-  top: 5px; left: 5px;
-  width: 52px; height: 52px;
-  border-radius: 50%;
-  background: #ffffff;
-  color: #0a0a0a;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.05rem;
-  cursor: grab;
-  box-shadow: 0 6px 16px -4px rgba(0,0,0,0.4);
-  transition: transform 0.22s var(--spring);
-  touch-action: none;
-  z-index: 2;
-}
-.slide-btn .slide-handle:active { cursor: grabbing; }
-.slide-btn .slide-handle.dragging { transition: none; }
-
-.slide-btn.is-busy {
-  opacity: 0.7;
+#toast {
+  position: fixed; left: 50%;
+  bottom: calc(50vh + 22px);
+  z-index: 6000;
+  transform: translate(-50%, 24px);
+  background: #0a0a0a; color: #fff;
+  font-size: 0.84rem; font-weight: 600;
+  padding: 13px 22px; border-radius: 999px;
+  box-shadow: 0 14px 34px -10px rgba(0,0,0,0.6);
+  opacity: 0; visibility: hidden;
+  transition: opacity 0.32s var(--ease-out), transform 0.42s var(--spring), visibility 0.32s;
+  max-width: 88vw; text-align: center; line-height: 1.4;
   pointer-events: none;
 }
-.slide-btn.is-busy .slide-label { letter-spacing: 0.6px; }
-
-.request-cancel-btn {
-  width: 100%;
-  padding: 13px;
-  border-radius: 999px;
-  background: var(--fill-gray);
-  color: var(--text-primary);
-  font-size: 0.86rem;
-  font-weight: 700;
-  transition: background 0.2s;
-}
-.request-cancel-btn:hover { background: var(--fill-gray-hover); }
+#toast.show { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
 
 /* ==========================================================
    RESPONSIVE
    ========================================================== */
-@media (max-width: 400px) {
-  #onlineToggle { font-size: 0.68rem; padding: 10px 12px; }
+@media (max-width: 380px) {
+  #onlineToggle { font-size: 0.66rem; padding: 9px 12px; }
   .float-balance-pill .fb-txt small { display: none; }
-  #floatGateBanner { font-size: 0.68rem; padding: 9px 12px; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -1767,110 +1538,44 @@ input, textarea, select { font-family: inherit; }
   <div class="l-spinner"></div>
 </div>
 
-<!-- FULLSCREEN MAP -->
+<!-- SPLIT LAYOUT: Map (top) + Detail Panel (bottom) -->
 <div id="map"></div>
 
-<!-- ONLINE TOGGLE -->
+<section id="detailPanel">
+  <div class="dp-inner" id="dpInner">
+    <div class="loader-row"><span class="mini-spin"></span> Loading…</div>
+  </div>
+</section>
+
+<!-- TOP HUD -->
 <button id="onlineToggle">
   <span class="ot-dot"></span>
   <span id="onlineToggleLabel">Offline</span>
 </button>
 
-<!-- ACTIVE TRIP PILL -->
-<button id="activeTripPill">
-  <span class="at-dot"></span>
-  <span id="activeTripLabel">Active trip</span>
-</button>
-
-<!-- FLOAT GATE BANNER -->
-<button id="floatGateBanner">
-  <i class="fas fa-triangle-exclamation bi"></i>
-  <span class="bg-txt" id="floatGateText">Not enough float to see requests</span>
-  <span class="bg-go">Top up</span>
-</button>
-
-<!-- FLOATING FLOAT BALANCE -->
 <button class="float-balance-pill" id="floatBalancePill" title="Float balance — tap to top up">
   <span class="fb-ico"><i class="fas fa-wallet"></i></span>
   <span class="fb-txt">
-    <small>Float balance</small>
+    <small>Float</small>
     <strong><small>K</small><span id="floatBalanceValue">0</span></strong>
   </span>
 </button>
 
-<!-- FLOATING BUTTONS -->
 <button class="float-btn" id="sidebarBtn" aria-label="Open menu">
   <i class="fas fa-bars"></i>
 </button>
 
-<button class="float-btn" id="locateBtn" aria-label="Recenter">
-  <i class="fas fa-crosshairs"></i>
-</button>
-
-<button class="account-pill" id="accountPill">
-  <i class="fas fa-user"></i>
-  <span>Account</span>
-  <span class="pill-status-dot hidden" id="pillStatusDot"></span>
-</button>
+<!-- MAP CONTROLS (bottom-right of map area) -->
+<div id="mapControls">
+  <button class="float-btn" id="locateBtn" aria-label="Recenter">
+    <i class="fas fa-crosshairs"></i>
+  </button>
+  <button class="float-btn hidden" id="navigateFloatBtn" aria-label="Navigate">
+    <i class="fas fa-diamond-turn-right"></i>
+  </button>
+</div>
 
 <div id="toast"></div>
-
-<!-- REQUEST MODAL -->
-<div class="request-overlay" id="requestOverlay">
-  <div class="request-card">
-    <div class="request-handle"></div>
-    <div class="request-tag new" id="requestTag"><i class="fas fa-bolt"></i> <span id="requestTagText">New request</span></div>
-    <div class="request-customer">
-      <div class="rc-avatar" id="reqAvatar"><i class="fas fa-user"></i></div>
-      <div class="rc-body">
-        <strong id="reqCustomerName">Customer</strong>
-        <span id="reqCustomerPhone">—</span>
-      </div>
-    </div>
-    <div class="request-route">
-      <div class="rr-row">
-        <span class="rr-dot"></span>
-        <div class="rr-txt">
-          <small>Pickup</small>
-          <strong id="reqPickup">—</strong>
-        </div>
-      </div>
-      <div class="rr-row">
-        <span class="rr-dot square"></span>
-        <div class="rr-txt">
-          <small>Drop-off</small>
-          <strong id="reqDropoff">—</strong>
-        </div>
-      </div>
-    </div>
-    <div class="request-stats">
-      <div class="request-stat">
-        <small>Distance</small>
-        <strong id="reqDistance">—</strong>
-      </div>
-      <div class="request-stat">
-        <small>Time</small>
-        <strong id="reqDuration">—</strong>
-      </div>
-      <div class="request-stat price">
-        <small>Earn</small>
-        <strong id="reqPrice">K 0</strong>
-      </div>
-    </div>
-    <div class="request-commission" id="requestCommission" style="display:none;">
-      <i class="fas fa-percent"></i>
-      <span id="requestCommissionText"></span>
-    </div>
-    <div class="slide-btn accept" id="slideBtn">
-      <div class="slide-fill" id="slideFill"></div>
-      <span class="slide-label" id="slideLabel"><i class="fas fa-arrow-right"></i> Slide to accept</span>
-      <div class="slide-handle" id="slideHandle">
-        <i class="fas fa-chevron-right"></i>
-      </div>
-    </div>
-    <button class="request-cancel-btn" id="requestCancelBtn">Decline</button>
-  </div>
-</div>
 
 <!-- SIDEBAR -->
 <div id="sidebarOverlay"></div>
@@ -1892,6 +1597,9 @@ input, textarea, select { font-family: inherit; }
     </button>
     <button class="nav-item" data-nav="buyfloat">
       <i class="fas fa-wallet"></i> Buy Float
+    </button>
+    <button class="nav-item" data-nav="account">
+      <i class="fas fa-user-gear"></i> Account
     </button>
     <button class="nav-item" data-nav="settings">
       <i class="fas fa-gear"></i> Settings
@@ -2006,7 +1714,7 @@ input, textarea, select { font-family: inherit; }
     <button class="icon-btn" data-close-page="historyPage" aria-label="Back"><i class="fas fa-arrow-left"></i></button>
     <div style="flex:1;">
       <h2>History</h2>
-      <div class="page-head-sub">Offers, trips &amp; float</div>
+      <div class="page-head-sub">Tap any card for details</div>
     </div>
   </div>
   <div class="page-body">
@@ -2036,7 +1744,7 @@ input, textarea, select { font-family: inherit; }
       <div class="float-hero">
         <div class="fh-ico"><i class="fas fa-wallet"></i></div>
         <h2>Buy Float</h2>
-        <p>Top up your provider wallet. Send your payment to one of the numbers below, then enter the amount and upload the payment screenshot.</p>
+        <p>Send your payment to one of the numbers below, then enter the amount and upload the payment screenshot.</p>
       </div>
 
       <div class="deposit-card" id="depositCard">
@@ -2146,7 +1854,6 @@ input, textarea, select { font-family: inherit; }
       <div class="legend" id="mapModalLegend">
         <div class="l-row"><span class="l-dot me"></span> You (current location)</div>
         <div class="l-row"><span class="l-dot target"></span> Errand pickup</div>
-        <div class="l-row" id="routeLegendRow" style="display:none;"><span class="l-dot route"></span> <span id="routeLegendText">Route</span></div>
       </div>
       <button class="btn btn-primary" id="mapModalRecenter" style="width:auto; margin-top:0; padding:12px 20px;">
         <i class="fas fa-crosshairs"></i> Fit
@@ -2188,7 +1895,7 @@ const UPLOAD_PRESET = 'h3eyhc2o';
 /* ============================================================
    MAP TUNING
    ============================================================ */
-const PROVIDER_ZOOM = 17;
+const PROVIDER_ZOOM = 16;
 const MODAL_ZOOM    = 16;
 const OSM_TILE_URL  = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 const OSM_ATTR      = '&copy; OpenStreetMap contributors';
@@ -2214,8 +1921,7 @@ const $ = (id) => document.getElementById(id);
 const loadingScreen   = $('loadingScreen');
 const sidebarBtn      = $('sidebarBtn');
 const locateBtn       = $('locateBtn');
-const accountPill     = $('accountPill');
-const pillStatusDot   = $('pillStatusDot');
+const navigateFloatBtn= $('navigateFloatBtn');
 const sidebar         = $('sidebar');
 const sidebarOverlay  = $('sidebarOverlay');
 const sidebarAvatar   = $('sidebarAvatar');
@@ -2229,11 +1935,9 @@ const floatBalanceValue = $('floatBalanceValue');
 
 const onlineToggle       = $('onlineToggle');
 const onlineToggleLabel  = $('onlineToggleLabel');
-const activeTripPill     = $('activeTripPill');
-const activeTripLabel    = $('activeTripLabel');
 
-const floatGateBanner    = $('floatGateBanner');
-const floatGateText      = $('floatGateText');
+const detailPanel = $('detailPanel');
+const dpInner     = $('dpInner');
 
 const accountPage     = $('accountPage');
 const heroAvatar      = $('heroAvatar');
@@ -2275,27 +1979,6 @@ const mapModal        = $('mapModal');
 const mapModalClose   = $('mapModalClose');
 const mapModalRecenter= $('mapModalRecenter');
 const mapModalTitle   = $('mapModalTitle');
-const routeLegendRow  = $('routeLegendRow');
-const routeLegendText = $('routeLegendText');
-
-const requestOverlay     = $('requestOverlay');
-const requestTag         = $('requestTag');
-const requestTagText     = $('requestTagText');
-const reqAvatar          = $('reqAvatar');
-const reqCustomerName    = $('reqCustomerName');
-const reqCustomerPhone   = $('reqCustomerPhone');
-const reqPickup          = $('reqPickup');
-const reqDropoff         = $('reqDropoff');
-const reqDistance        = $('reqDistance');
-const reqDuration        = $('reqDuration');
-const reqPrice           = $('reqPrice');
-const requestCommission  = $('requestCommission');
-const requestCommissionText = $('requestCommissionText');
-const slideBtn           = $('slideBtn');
-const slideFill          = $('slideFill');
-const slideLabel         = $('slideLabel');
-const slideHandle        = $('slideHandle');
-const requestCancelBtn   = $('requestCancelBtn');
 
 const toastEl = $('toast');
 
@@ -2317,9 +2000,7 @@ let modalMap = null;
 let modalUserMarker = null;
 let modalTargetMarker = null;
 let modalRouteLayer = null;
-let modalRouteLine = null;
 let currentModalTarget = null;
-let modalRouteAbort = null;
 
 let errandsCache = {};
 let errandsUnsub = null;
@@ -2343,13 +2024,12 @@ let incomingRides = {};
 let incomingDeliveries = {};
 let declinedKeys = {};
 
-/* Current active trip stages */
-let activeStage = null; // null | 'incoming' | 'accepted' | 'arrived' | 'in_progress'
-let activeTrip = null;  // { kind: 'ride'|'delivery', id, data }
+/* Trip state */
+let activeStage = null;   // null | 'incoming' | 'accepted' | 'arrived' | 'in_progress'
+let activeTrip = null;    // { kind, id, data }
 let tripUnsub = null;
 let tripLocationUnsub = null;
 
-/* Location pinger */
 let locationPingInterval = null;
 
 const DEFAULT_LOCATION = { lat: -15.4167, lng: 28.2833 };
@@ -2398,7 +2078,7 @@ function timeAgo(ts) {
 }
 
 function formatDateTime(ts) {
-  if (!ts) return '';
+  if (!ts) return '—';
   const d = new Date(ts);
   return d.toLocaleString(undefined, {
     day: '2-digit', month: 'short', year: 'numeric',
@@ -2452,13 +2132,6 @@ function osrmProfileForRole(role) {
   return 'driving';
 }
 
-function routeLegendLabelForRole(role) {
-  if (role === 'walker') return 'Walking route';
-  if (role === 'rider')  return 'Cycling route';
-  return 'Driving route';
-}
-
-/* Vehicle label for a delivery, per provider role */
 function vehicleLabelFor(role) {
   if (role === 'walker') return 'Walking';
   if (role === 'rider')  return 'Motorbike';
@@ -2466,8 +2139,42 @@ function vehicleLabelFor(role) {
   return 'Vehicle';
 }
 
+function statusLabel(status) {
+  if (!status) return 'Pending';
+  return status.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+}
+
 /* ============================================================
-   FLOAT RULES — reading + derived helpers
+   EXTERNAL NAVIGATION
+   Opens the platform default maps app.
+   iOS: Apple Maps (or Google Maps if installed)
+   Android/Other: Google Maps
+   ============================================================ */
+function isIOS() {
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+         (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+}
+
+function getExternalNavUrl(lat, lng, label) {
+  if (!isFinite(lat) || !isFinite(lng)) return null;
+  const dest = `${lat},${lng}`;
+  const lbl = encodeURIComponent(label || 'Destination');
+  if (isIOS()) {
+    // Apple Maps handles universal links and falls back to web
+    return `https://maps.apple.com/?daddr=${dest}&q=${lbl}&dirflg=d`;
+  }
+  // Google Maps universal link works on Android + web + iOS-with-app
+  return `https://www.google.com/maps/dir/?api=1&destination=${dest}&travelmode=driving`;
+}
+
+function openExternalNav(lat, lng, label) {
+  const url = getExternalNavUrl(lat, lng, label);
+  if (!url) { showToast('Location not available'); return; }
+  window.open(url, '_blank', 'noopener');
+}
+
+/* ============================================================
+   FLOAT RULES
    ============================================================ */
 function listenFloatRules() {
   if (floatRulesUnsub) { floatRulesUnsub(); floatRulesUnsub = null; }
@@ -2479,7 +2186,7 @@ function listenFloatRules() {
     }
     renderFloatRulesView();
     renderFloatBalance();
-    updateFloatGateBanner();
+    renderDetailPanel();
     evaluateQueue();
   }, (err) => { console.warn('Float rules listener error:', err); });
 }
@@ -2491,10 +2198,8 @@ function minFloatFor(kind) {
   return 0;
 }
 
-function hasEnoughFloatFor(kind, req) {
-  // per-type minimum (config-driven)
-  const min = minFloatFor(kind);
-  return floatBalance >= min;
+function hasEnoughFloatFor(kind) {
+  return floatBalance >= minFloatFor(kind);
 }
 
 function commissionFor(kind, fare) {
@@ -2513,7 +2218,6 @@ function errandFee() {
    ============================================================ */
 function renderFloatBalance() {
   floatBalanceValue.textContent = formatPrice(floatBalance);
-
   floatBalancePill.classList.remove('is-low', 'is-warn');
 
   const minOnline = Number(FLOAT_RULES.minFloatToGoOnline || 0);
@@ -2523,7 +2227,6 @@ function renderFloatBalance() {
     Number(FLOAT_RULES.minFloatPerDelivery || 0),
     Number(FLOAT_RULES.minFloatPerErrand || 0)
   );
-
   if (floatBalance <= 0) {
     floatBalancePill.classList.add('is-low');
   } else if (floatBalance < maxOfMins) {
@@ -2542,56 +2245,13 @@ function listenFloatBalance(uid) {
       floatBalance = 0;
     }
     renderFloatBalance();
-    updateFloatGateBanner();
-    // Re-evaluate which requests to offer given the new balance
+    renderDetailPanel();
     evaluateQueue();
-  }, (err) => {
-    console.warn('Float balance listener error:', err);
-  });
+  }, (err) => { console.warn('Float balance listener error:', err); });
 }
 
 /* ============================================================
-   FLOAT GATE BANNER
-   Shows when online, but the provider's balance can't see one or
-   more request types. Tapping opens Buy Float.
-   ============================================================ */
-function updateFloatGateBanner() {
-  if (!floatGateBanner) return;
-
-  if (!isOnline) {
-    floatGateBanner.classList.remove('show');
-    return;
-  }
-
-  const missing = [];
-  if (floatBalance < Number(FLOAT_RULES.minFloatPerRide || 0))     missing.push('rides');
-  if (floatBalance < Number(FLOAT_RULES.minFloatPerDelivery || 0)) missing.push('deliveries');
-  if (floatBalance < Number(FLOAT_RULES.minFloatPerErrand || 0))   missing.push('errands');
-
-  if (!missing.length) {
-    floatGateBanner.classList.remove('show');
-    return;
-  }
-
-  // Show the minimum amount needed to unlock the cheapest gated category
-  const needed = Math.max(
-    Number(FLOAT_RULES.minFloatPerRide || 0),
-    Number(FLOAT_RULES.minFloatPerDelivery || 0),
-    Number(FLOAT_RULES.minFloatPerErrand || 0)
-  );
-
-  const listTxt = missing.length === 3 ? 'all requests'
-                : missing.length === 2 ? missing.join(' & ')
-                : missing[0];
-
-  floatGateText.textContent = `Need K${needed} float to see ${listTxt}`;
-  floatGateBanner.classList.add('show');
-}
-
-floatGateBanner.addEventListener('click', () => openBuyFloatPage());
-
-/* ============================================================
-   FLOAT RULES VIEW (Settings page)
+   FLOAT RULES VIEW
    ============================================================ */
 function renderFloatRulesView() {
   if (!floatRulesView) return;
@@ -2599,52 +2259,31 @@ function renderFloatRulesView() {
     <div class="detail-list" style="margin-bottom:0;">
       <div class="detail-row">
         <i class="fas fa-percent"></i>
-        <div class="dr-txt">
-          <small>Ride commission</small>
-          <strong>${escapeHtml(String(FLOAT_RULES.rideCommissionPercent))}% of fare</strong>
-        </div>
+        <div class="dr-txt"><small>Ride commission</small><strong>${escapeHtml(String(FLOAT_RULES.rideCommissionPercent))}% of fare</strong></div>
       </div>
       <div class="detail-row">
         <i class="fas fa-percent"></i>
-        <div class="dr-txt">
-          <small>Delivery commission</small>
-          <strong>${escapeHtml(String(FLOAT_RULES.deliveryCommissionPercent))}% of fare</strong>
-        </div>
+        <div class="dr-txt"><small>Delivery commission</small><strong>${escapeHtml(String(FLOAT_RULES.deliveryCommissionPercent))}% of fare</strong></div>
       </div>
       <div class="detail-row">
         <i class="fas fa-hand-holding-dollar"></i>
-        <div class="dr-txt">
-          <small>Errand fee</small>
-          <strong>K ${escapeHtml(formatPrice(FLOAT_RULES.errandFixedFee))} per completion</strong>
-        </div>
+        <div class="dr-txt"><small>Errand fee</small><strong>K ${escapeHtml(formatPrice(FLOAT_RULES.errandFixedFee))} per completion</strong></div>
       </div>
       <div class="detail-row">
         <i class="fas fa-door-open"></i>
-        <div class="dr-txt">
-          <small>Minimum to go online</small>
-          <strong>K ${escapeHtml(formatPrice(FLOAT_RULES.minFloatToGoOnline))}</strong>
-        </div>
+        <div class="dr-txt"><small>Minimum to go online</small><strong>K ${escapeHtml(formatPrice(FLOAT_RULES.minFloatToGoOnline))}</strong></div>
       </div>
       <div class="detail-row">
         <i class="fas fa-car"></i>
-        <div class="dr-txt">
-          <small>Min float per ride</small>
-          <strong>K ${escapeHtml(formatPrice(FLOAT_RULES.minFloatPerRide))}</strong>
-        </div>
+        <div class="dr-txt"><small>Min float per ride</small><strong>K ${escapeHtml(formatPrice(FLOAT_RULES.minFloatPerRide))}</strong></div>
       </div>
       <div class="detail-row">
         <i class="fas fa-box"></i>
-        <div class="dr-txt">
-          <small>Min float per delivery</small>
-          <strong>K ${escapeHtml(formatPrice(FLOAT_RULES.minFloatPerDelivery))}</strong>
-        </div>
+        <div class="dr-txt"><small>Min float per delivery</small><strong>K ${escapeHtml(formatPrice(FLOAT_RULES.minFloatPerDelivery))}</strong></div>
       </div>
       <div class="detail-row">
         <i class="fas fa-clipboard-list"></i>
-        <div class="dr-txt">
-          <small>Min float per errand</small>
-          <strong>K ${escapeHtml(formatPrice(FLOAT_RULES.minFloatPerErrand))}</strong>
-        </div>
+        <div class="dr-txt"><small>Min float per errand</small><strong>K ${escapeHtml(formatPrice(FLOAT_RULES.minFloatPerErrand))}</strong></div>
       </div>
     </div>
   `;
@@ -2670,15 +2309,15 @@ function initMap() {
     maxZoom: 19,
     crossOrigin: true
   }).addTo(map);
+
+  setTimeout(() => { if (map) map.invalidateSize(); }, 200);
 }
 
 function setUserMarker(lat, lng) {
   if (!map) return;
   const icon = L.divIcon({
-    className: '',
-    html: '<div class="mk-user"></div>',
-    iconSize: [18,18],
-    iconAnchor: [9,9]
+    className: '', html: '<div class="mk-user"></div>',
+    iconSize: [18,18], iconAnchor: [9,9]
   });
   if (userMarker) userMarker.setLatLng([lat, lng]);
   else userMarker = L.marker([lat, lng], { icon, zIndexOffset: 800, interactive: false }).addTo(map);
@@ -2687,10 +2326,8 @@ function setUserMarker(lat, lng) {
 function setPickupMarker(lat, lng) {
   if (!map) return;
   const icon = L.divIcon({
-    className: '',
-    html: '<div class="mk-pickup"></div>',
-    iconSize: [20,20],
-    iconAnchor: [10,20]
+    className: '', html: '<div class="mk-pickup"></div>',
+    iconSize: [20,20], iconAnchor: [10,20]
   });
   if (pickupMarker) pickupMarker.setLatLng([lat, lng]);
   else pickupMarker = L.marker([lat, lng], { icon, zIndexOffset: 1000 }).addTo(map);
@@ -2699,10 +2336,8 @@ function setPickupMarker(lat, lng) {
 function setDestMarker(lat, lng) {
   if (!map) return;
   const icon = L.divIcon({
-    className: '',
-    html: '<div class="mk-dest"></div>',
-    iconSize: [20,20],
-    iconAnchor: [10,20]
+    className: '', html: '<div class="mk-dest"></div>',
+    iconSize: [20,20], iconAnchor: [10,20]
   });
   if (destMarker) destMarker.setLatLng([lat, lng]);
   else destMarker = L.marker([lat, lng], { icon, zIndexOffset: 1000 }).addTo(map);
@@ -2723,7 +2358,6 @@ function clearTripLayers() {
 
 async function drawMainRoute(from, to, profile = 'driving', padding = [60, 60]) {
   if (!map || !from || !to) return;
-
   clearMainRoute();
 
   try {
@@ -2841,20 +2475,44 @@ document.querySelectorAll('.nav-item').forEach(btn => {
       if (nav === 'errands')       openErrandsPage();
       else if (nav === 'history')  openHistoryPage();
       else if (nav === 'buyfloat') openBuyFloatPage();
+      else if (nav === 'account')  openAccountPage();
       else if (nav === 'settings') openSettingsPage();
     }, 220);
   });
 });
 
-accountPill.addEventListener('click', openAccountPage);
 locateBtn.addEventListener('click', () => {
   locateUser({ center: true });
   showToast('Recentered on your location');
 });
 floatBalancePill.addEventListener('click', openBuyFloatPage);
 
+// Floating map navigate button — opens external maps for the currently active target
+navigateFloatBtn.addEventListener('click', () => {
+  const target = getActiveNavTarget();
+  if (!target) { showToast('No active destination'); return; }
+  openExternalNav(target.lat, target.lng, target.label);
+});
+
+function getActiveNavTarget() {
+  if (!activeTrip || !activeStage || activeStage === 'incoming') return null;
+  const data = activeTrip.data || {};
+
+  // Accepted → navigate to pickup
+  if (activeStage === 'accepted' && data.pickup) {
+    return { lat: data.pickup.lat, lng: data.pickup.lng, label: data.pickup.label || 'Pickup' };
+  }
+  // Arrived → no nav needed (already there)
+  if (activeStage === 'arrived') return null;
+  // In progress → navigate to dropoff
+  if (activeStage === 'in_progress' && data.dropoff) {
+    return { lat: data.dropoff.lat, lng: data.dropoff.lng, label: data.dropoff.label || 'Drop-off' };
+  }
+  return null;
+}
+
 /* ============================================================
-   ONLINE / OFFLINE TOGGLE
+   ONLINE TOGGLE
    ============================================================ */
 function setOnlineUI() {
   if (isOnline) {
@@ -2864,11 +2522,9 @@ function setOnlineUI() {
     onlineToggle.classList.remove('online');
     onlineToggleLabel.textContent = 'Offline';
   }
-  updateFloatGateBanner();
 }
 
 async function toggleOnline() {
-  /* Refresh local state from DB so admin changes take effect */
   try {
     const [pSnap, bSnap] = await Promise.all([
       get(ref(database, `providers/${currentUser.uid}`)),
@@ -2878,32 +2534,25 @@ async function toggleOnline() {
     floatBalance = bSnap.exists() ? (parseInt(bSnap.val(), 10) || 0) : 0;
     renderFloatBalance();
     applyUserUI();
-  } catch (e) {
-    console.warn('Could not refresh provider info before toggle:', e);
-  }
+  } catch (e) { console.warn('Could not refresh provider info:', e); }
 
-  /* Validation */
   if (!providerRecord) {
     showToast('Apply as a service provider first.');
-    openAccountPage();
-    return;
+    openAccountPage(); return;
   }
   if (providerRecord.status !== 'approved') {
     showToast(`Account not approved (status: ${providerRecord.status || 'none'}).`);
-    openAccountPage();
-    return;
+    openAccountPage(); return;
   }
   if (!providerRecord.role) {
     showToast('No role assigned to your account.');
-    openAccountPage();
-    return;
+    openAccountPage(); return;
   }
 
   const minOnline = Number(FLOAT_RULES.minFloatToGoOnline || 0);
   if (floatBalance < minOnline) {
     showToast(`Need at least K${minOnline} float to go online.`);
-    openBuyFloatPage();
-    return;
+    openBuyFloatPage(); return;
   }
   if (activeStage) {
     showToast('Finish or cancel the active trip first.');
@@ -2918,12 +2567,11 @@ async function toggleOnline() {
       online: isOnline,
       onlineChangedAt: Date.now()
     });
-  } catch (err) {
-    console.warn('Could not persist online state:', err);
-  }
+  } catch (err) { console.warn('Could not persist online state:', err); }
 
   onlineToggle.classList.remove('busy');
   setOnlineUI();
+  renderDetailPanel();
 
   if (isOnline) {
     showToast('You are online — listening for requests');
@@ -2948,7 +2596,6 @@ function detachRequestListeners() {
 
 function attachRequestListeners() {
   if (requestsRidesUnsub || requestsDeliveriesUnsub) return;
-
   if (!providerRecord || providerRecord.status !== 'approved') return;
 
   requestsRidesUnsub = onValue(ref(database, 'rides'), (snap) => {
@@ -2983,21 +2630,12 @@ function attachRequestListeners() {
 function canAcceptKind(kind, request) {
   const role = providerRecord && providerRecord.role;
   if (!role) return false;
-
-  if (kind === 'ride') {
-    return role === 'driver';
-  }
+  if (kind === 'ride') return role === 'driver';
   if (kind === 'delivery') {
     const v = String(request.vehicleId || '').toLowerCase();
-    if (role === 'driver') {
-      return v === 'motorbike';
-    }
-    if (role === 'rider') {
-      return v === 'motorbike' || v === 'cyclist';
-    }
-    if (role === 'walker') {
-      return v === 'walker';
-    }
+    if (role === 'driver') return v === 'motorbike';
+    if (role === 'rider')  return v === 'motorbike' || v === 'cyclist';
+    if (role === 'walker') return v === 'walker';
   }
   return false;
 }
@@ -3006,145 +2644,426 @@ function isWithinRadius(request, anchor) {
   if (!anchor) return false;
   const pickup = request.pickup;
   if (!pickup || !isFinite(pickup.lat) || !isFinite(pickup.lng)) return false;
-  const d = haversineMeters(anchor.lat, anchor.lng, pickup.lat, pickup.lng);
-  return d <= searchRadiusKm * 1000;
+  return haversineMeters(anchor.lat, anchor.lng, pickup.lat, pickup.lng) <= searchRadiusKm * 1000;
 }
 
 function evaluateQueue() {
   if (!isOnline) return;
   if (activeStage) return;
-  if (requestOverlay.classList.contains('open')) return;
+  if (!providerRecord || providerRecord.status !== 'approved') return;
 
   const anchor = userLocation || DEFAULT_LOCATION;
   const candidates = [];
 
-  const role = providerRecord && providerRecord.role;
-
   for (const id in incomingRides) {
     const r = incomingRides[id];
-    const key = 'ride:' + id;
-    if (declinedKeys[key]) continue;
+    if (declinedKeys['ride:' + id]) continue;
     if (!canAcceptKind('ride', r)) continue;
     if (!isWithinRadius(r, anchor)) continue;
-    if (!hasEnoughFloatFor('ride', r)) continue;
+    if (!hasEnoughFloatFor('ride')) continue;
     candidates.push({ kind: 'ride', id, data: r, ts: r.createdAt || 0 });
   }
-
   for (const id in incomingDeliveries) {
     const d = incomingDeliveries[id];
-    const key = 'delivery:' + id;
-    if (declinedKeys[key]) continue;
+    if (declinedKeys['delivery:' + id]) continue;
     if (!canAcceptKind('delivery', d)) continue;
     if (!isWithinRadius(d, anchor)) continue;
-    if (!hasEnoughFloatFor('delivery', d)) continue;
+    if (!hasEnoughFloatFor('delivery')) continue;
     candidates.push({ kind: 'delivery', id, data: d, ts: d.createdAt || 0 });
   }
 
   if (!candidates.length) return;
-
   candidates.sort((a, b) => b.ts - a.ts);
   const pick = candidates[0];
-  showRequestModal(pick.kind, pick.id, pick.data);
+  showIncomingRequest(pick.kind, pick.id, pick.data);
 }
 
 /* ============================================================
-   REQUEST MODAL — INCOMING
+   DETAIL PANEL — RENDER STATE
    ============================================================ */
-function showRequestModal(kind, id, data) {
-  if (requestOverlay.classList.contains('open')) return;
+function renderDetailPanel() {
+  if (!dpInner) return;
 
-  activeTrip = { kind, id, data };
-  activeStage = 'incoming';
+  // 1. No provider record
+  if (!providerRecord) {
+    dpInner.innerHTML = `
+      <div class="dp-tag info"><i class="fas fa-circle-info"></i> Setup needed</div>
+      <div class="dp-title">Apply as a service provider</div>
+      <div class="dp-sub">Choose a role to start receiving rides, deliveries and errands on NTUMENI.</div>
+      <div class="dp-status offline">
+        <div class="ds-ico"><i class="fas fa-user-plus"></i></div>
+        <div class="ds-body">
+          <strong>You haven't applied yet</strong>
+          <span>Complete a short application and wait for approval.</span>
+        </div>
+      </div>
+      <button class="dp-btn" id="dpApplyBtn">
+        <i class="fas fa-arrow-right"></i> START APPLICATION
+      </button>
+    `;
+    const btn = $('dpApplyBtn');
+    if (btn) btn.addEventListener('click', openAccountPage);
+    return;
+  }
 
+  // 2. Pending or rejected
+  if (providerRecord.status === 'pending') {
+    dpInner.innerHTML = `
+      <div class="dp-tag info"><i class="fas fa-clock"></i> Pending approval</div>
+      <div class="dp-title">Application under review</div>
+      <div class="dp-sub">Your application as a <b>${escapeHtml(roleLabel(providerRecord.role))}</b> is being reviewed. You'll be notified once approved.</div>
+      <div class="dp-status warn">
+        <div class="ds-ico"><i class="fas fa-hourglass-half"></i></div>
+        <div class="ds-body">
+          <strong>Awaiting admin review</strong>
+          <span>This usually takes a few minutes.</span>
+        </div>
+      </div>
+      <button class="dp-btn ghost" id="dpViewAccountBtn">
+        <i class="fas fa-user"></i> VIEW ACCOUNT
+      </button>
+    `;
+    const btn = $('dpViewAccountBtn');
+    if (btn) btn.addEventListener('click', openAccountPage);
+    return;
+  }
+
+  if (providerRecord.status === 'rejected') {
+    dpInner.innerHTML = `
+      <div class="dp-tag info" style="background:var(--danger-soft);color:#b42318;"><i class="fas fa-circle-xmark"></i> Rejected</div>
+      <div class="dp-title">Application rejected</div>
+      <div class="dp-sub">${escapeHtml(providerRecord.rejectReason || 'Your previous application was not approved. You can apply again.')}</div>
+      <button class="dp-btn" id="dpReapplyBtn">
+        <i class="fas fa-rotate-right"></i> RE-APPLY
+      </button>
+    `;
+    const btn = $('dpReapplyBtn');
+    if (btn) btn.addEventListener('click', openAccountPage);
+    return;
+  }
+
+  // 3. Not online → prompt to go online
+  if (!isOnline) {
+    const minOnline = Number(FLOAT_RULES.minFloatToGoOnline || 0);
+    const canGoOnline = floatBalance >= minOnline;
+    dpInner.innerHTML = `
+      <div class="dp-title">You're offline</div>
+      <div class="dp-sub">Go online to start receiving ride, delivery and errand requests near you.</div>
+
+      <div class="dp-status ${canGoOnline ? 'offline' : 'warn'}">
+        <div class="ds-ico">${canGoOnline ? '<i class="fas fa-power-off"></i>' : '<i class="fas fa-wallet"></i>'}</div>
+        <div class="ds-body">
+          <strong>${canGoOnline ? 'Ready to go online' : 'Top up your float first'}</strong>
+          <span>${canGoOnline
+            ? `You'll be visible to nearby customers. Toggle online above.`
+            : `You need at least K${minOnline} to go online. Your balance is K${formatPrice(floatBalance)}.`}</span>
+        </div>
+      </div>
+
+      ${canGoOnline
+        ? `<button class="dp-btn" id="dpGoOnlineBtn"><i class="fas fa-power-off"></i> GO ONLINE</button>`
+        : `<button class="dp-btn" id="dpBuyFloatBtn"><i class="fas fa-wallet"></i> BUY FLOAT</button>`}
+    `;
+    const goBtn = $('dpGoOnlineBtn');
+    if (goBtn) goBtn.addEventListener('click', toggleOnline);
+    const buyBtn = $('dpBuyFloatBtn');
+    if (buyBtn) buyBtn.addEventListener('click', openBuyFloatPage);
+    return;
+  }
+
+  // 4. Active incoming request
+  if (activeStage === 'incoming' && activeTrip) {
+    renderIncomingRequest();
+    return;
+  }
+
+  // 5. Active accepted/arrived/in-progress trip
+  if (activeTrip && activeStage && activeStage !== 'incoming') {
+    renderActiveTrip();
+    return;
+  }
+
+  // 6. Online & waiting
+  renderWaitingState();
+}
+
+function renderWaitingState() {
+  const missing = [];
+  if (floatBalance < Number(FLOAT_RULES.minFloatPerRide || 0))     missing.push('rides');
+  if (floatBalance < Number(FLOAT_RULES.minFloatPerDelivery || 0)) missing.push('deliveries');
+  if (floatBalance < Number(FLOAT_RULES.minFloatPerErrand || 0))   missing.push('errands');
+
+  const gateBlock = missing.length ? `
+    <div class="dp-status warn">
+      <div class="ds-ico"><i class="fas fa-triangle-exclamation"></i></div>
+      <div class="ds-body">
+        <strong>Some requests are hidden</strong>
+        <span>Your float is below the minimum for ${escapeHtml(missing.join(', '))}. Top up to see them.</span>
+      </div>
+    </div>
+    <button class="dp-btn ghost" id="dpTopUpBtn"><i class="fas fa-wallet"></i> TOP UP FLOAT</button>
+  ` : '';
+
+  dpInner.innerHTML = `
+    <div class="dp-tag info"><i class="fas fa-circle-check"></i> Online</div>
+    <div class="dp-title">Waiting for requests…</div>
+    <div class="dp-sub">You'll see new rides, deliveries and errands appear here as soon as they come in.</div>
+
+    <div class="dp-status online">
+      <div class="ds-ico"><i class="fas fa-satellite-dish"></i></div>
+      <div class="ds-body">
+        <strong>Listening nearby</strong>
+        <span>Searching within ${escapeHtml(String(searchRadiusKm))} km of your location.</span>
+      </div>
+    </div>
+
+    ${gateBlock}
+  `;
+  const topBtn = $('dpTopUpBtn');
+  if (topBtn) topBtn.addEventListener('click', openBuyFloatPage);
+}
+
+/* ============================================================
+   INCOMING REQUEST PANEL
+   ============================================================ */
+function renderIncomingRequest() {
+  if (!activeTrip) return;
+  const { kind, data } = activeTrip;
   const customerName  = data.customerName  || (kind === 'delivery' ? data.senderName : '') || 'Customer';
   const customerPhone = data.customerPhone || (kind === 'delivery' ? data.senderPhone : '') || '—';
   const customerPhoto = data.customerPhoto || data.senderPhoto || '';
 
-  if (customerPhoto) {
-    reqAvatar.innerHTML = `<img src="${escapeHtml(customerPhoto)}" alt="">`;
-  } else {
-    reqAvatar.innerHTML = `<i class="fas fa-user"></i>`;
-  }
-  reqCustomerName.textContent  = customerName;
-  reqCustomerPhone.textContent = customerPhone;
-
-  reqPickup.textContent  = data.pickup?.label || 'Pickup';
-  reqDropoff.textContent = data.dropoff?.label || 'Drop-off';
-
   const dist = data.distance || 0;
   const dur  = data.duration || 0;
-  reqDistance.textContent = dist ? formatDistance(dist) : '—';
-  reqDuration.textContent = dur ? formatDuration(dur) : '—';
-  reqPrice.textContent    = 'K ' + formatPrice(data.fare);
-
-  // Show commission preview
   const fare = Number(data.fare || 0);
+
   let commissionK = 0;
   if (kind === 'ride')          commissionK = commissionFor('ride', fare);
   else if (kind === 'delivery') commissionK = commissionFor('delivery', fare);
 
-  if (commissionK > 0) {
-    requestCommission.style.display = 'flex';
-    requestCommissionText.textContent =
-      `K ${commissionK} commission will be deducted from your float on completion`;
-  } else {
-    requestCommission.style.display = 'none';
-  }
+  const avatarHtml = customerPhoto
+    ? `<img src="${escapeHtml(customerPhoto)}" alt="">`
+    : `<i class="fas fa-user"></i>`;
 
-  requestTag.classList.add('new');
-  requestTagText.textContent = kind === 'ride'
-    ? 'New ride request'
-    : 'New delivery request';
+  dpInner.innerHTML = `
+    <div class="dp-tag"><i class="fas fa-bolt"></i> ${kind === 'ride' ? 'New ride request' : 'New delivery request'}</div>
 
-  slideBtn.className = 'slide-btn accept';
-  slideLabel.innerHTML = '<i class="fas fa-arrow-right"></i> Slide to accept';
-  slideHandle.innerHTML = '<i class="fas fa-chevron-right"></i>';
-  slideBtn.classList.remove('is-busy');
-  resetSlide();
+    <div class="dp-customer">
+      <div class="dc-avatar">${avatarHtml}</div>
+      <div class="dc-body">
+        <strong>${escapeHtml(customerName)}</strong>
+        <span>${escapeHtml(customerPhone)}</span>
+      </div>
+      ${customerPhone && customerPhone !== '—' ? `
+        <a class="dc-call" href="tel:${escapeHtml(customerPhone)}" aria-label="Call customer">
+          <i class="fas fa-phone"></i>
+        </a>
+      ` : ''}
+    </div>
 
-  requestCancelBtn.textContent = 'Decline';
-  requestCancelBtn.onclick = () => declineCurrentRequest();
+    <div class="dp-route">
+      <div class="rr-row">
+        <span class="rr-dot"></span>
+        <div class="rr-txt">
+          <small>Pickup</small>
+          <strong>${escapeHtml(data.pickup?.label || '—')}</strong>
+        </div>
+      </div>
+      <div class="rr-row">
+        <span class="rr-dot square"></span>
+        <div class="rr-txt">
+          <small>Drop-off</small>
+          <strong>${escapeHtml(data.dropoff?.label || '—')}</strong>
+        </div>
+      </div>
+    </div>
 
-  requestOverlay.classList.add('open');
+    <div class="dp-stats">
+      <div class="dp-stat"><small>Distance</small><strong>${escapeHtml(dist ? formatDistance(dist) : '—')}</strong></div>
+      <div class="dp-stat"><small>Time</small><strong>${escapeHtml(dur ? formatDuration(dur) : '—')}</strong></div>
+      <div class="dp-stat price"><small>Earn</small><strong>K ${escapeHtml(formatPrice(fare))}</strong></div>
+    </div>
+
+    ${commissionK > 0 ? `
+      <div class="dp-commission">
+        <i class="fas fa-percent"></i>
+        <span>K ${commissionK} commission deducted from float on completion</span>
+      </div>
+    ` : ''}
+
+    <div class="slide-btn accept" id="slideBtn">
+      <div class="slide-fill" id="slideFill"></div>
+      <span class="slide-label" id="slideLabel"><i class="fas fa-arrow-right"></i> Slide to accept</span>
+      <div class="slide-handle" id="slideHandle">
+        <i class="fas fa-chevron-right"></i>
+      </div>
+    </div>
+
+    <button class="dp-btn ghost" id="dpDeclineBtn">
+      <i class="fas fa-xmark"></i> DECLINE
+    </button>
+  `;
+
+  wireSlideButton();
+  const declineBtn = $('dpDeclineBtn');
+  if (declineBtn) declineBtn.addEventListener('click', declineCurrentRequest);
 }
 
 function declineCurrentRequest() {
   if (!activeTrip) return;
   const key = activeTrip.kind + ':' + activeTrip.id;
   declinedKeys[key] = true;
-  closeRequestModal();
+  activeTrip = null;
+  activeStage = null;
+  renderDetailPanel();
   showToast('Request declined');
   setTimeout(evaluateQueue, 400);
 }
 
-function closeRequestModal() {
-  requestOverlay.classList.remove('open');
-  activeTrip = null;
-  activeStage = null;
-  resetSlide();
-  updateActiveTripPill();
-}
-
-function updateActiveTripPill() {
-  if (activeStage && activeStage !== 'incoming' && activeTrip) {
-    activeTripPill.classList.add('show');
-    if (activeStage === 'accepted')     activeTripLabel.textContent = 'Heading to pickup';
-    else if (activeStage === 'arrived') activeTripLabel.textContent = 'At pickup — waiting';
-    else if (activeStage === 'in_progress') activeTripLabel.textContent = 'Trip in progress';
-  } else {
-    activeTripPill.classList.remove('show');
-  }
-}
-
-activeTripPill.addEventListener('click', () => {
+/* ============================================================
+   ACTIVE TRIP PANEL
+   ============================================================ */
+function renderActiveTrip() {
   if (!activeTrip) return;
-  if (!requestOverlay.classList.contains('open')) {
-    requestOverlay.classList.add('open');
-    if (activeStage === 'accepted')    setSlideStageAccepted();
-    if (activeStage === 'arrived')     setSlideStageArrived();
-    if (activeStage === 'in_progress') setSlideStageInProgress();
+  const { kind, data } = activeTrip;
+  const customerName  = data.customerName  || (kind === 'delivery' ? data.senderName : '') || 'Customer';
+  const customerPhone = data.customerPhone || (kind === 'delivery' ? data.senderPhone : '') || '—';
+  const customerPhoto = data.customerPhoto || data.senderPhoto || '';
+
+  const fare = Number(data.fare || 0);
+  let commissionK = 0;
+  if (kind === 'ride')          commissionK = commissionFor('ride', fare);
+  else if (kind === 'delivery') commissionK = commissionFor('delivery', fare);
+
+  const avatarHtml = customerPhoto
+    ? `<img src="${escapeHtml(customerPhoto)}" alt="">`
+    : `<i class="fas fa-user"></i>`;
+
+  // Stage-specific text and slide button
+  let tagText, tagIcon, titleText, subText, navTarget, slideStageClass, slideStageLabel, slideStageIcon;
+
+  if (activeStage === 'accepted') {
+    tagText = 'Heading to pickup';
+    tagIcon = 'fa-car';
+    titleText = 'Head to the pickup point';
+    subText = 'Drive to the customer and mark arrived when you get there.';
+    navTarget = data.pickup;
+    slideStageClass = 'arrive';
+    slideStageLabel = '<i class="fas fa-location-dot"></i> Slide to arrive';
+  } else if (activeStage === 'arrived') {
+    tagText = 'At pickup';
+    tagIcon = 'fa-map-pin';
+    titleText = 'Waiting at pickup';
+    subText = 'Meet the customer, then start the trip.';
+    navTarget = data.pickup;
+    slideStageClass = 'start';
+    slideStageLabel = '<i class="fas fa-play"></i> Slide to start';
+  } else if (activeStage === 'in_progress') {
+    tagText = 'In progress';
+    tagIcon = 'fa-route';
+    titleText = 'Heading to drop-off';
+    subText = 'Complete the trip when you arrive.';
+    navTarget = data.dropoff;
+    slideStageClass = 'end';
+    slideStageLabel = '<i class="fas fa-flag-checkered"></i> Slide to end';
+  } else {
+    return;
   }
-});
+
+  const navBtnHtml = navTarget
+    ? `<button class="dp-btn navigate" id="dpNavigateBtn">
+         <i class="fas fa-diamond-turn-right"></i> NAVIGATE
+       </button>`
+    : '';
+
+  dpInner.innerHTML = `
+    <div class="dp-tag info"><i class="fas ${tagIcon}"></i> ${escapeHtml(tagText)}</div>
+    <div class="dp-title">${escapeHtml(titleText)}</div>
+    <div class="dp-sub">${escapeHtml(subText)}</div>
+
+    <div class="dp-customer">
+      <div class="dc-avatar">${avatarHtml}</div>
+      <div class="dc-body">
+        <strong>${escapeHtml(customerName)}</strong>
+        <span>${escapeHtml(customerPhone)}</span>
+      </div>
+      ${customerPhone && customerPhone !== '—' ? `
+        <a class="dc-call" href="tel:${escapeHtml(customerPhone)}" aria-label="Call customer">
+          <i class="fas fa-phone"></i>
+        </a>
+      ` : ''}
+    </div>
+
+    <div class="dp-route">
+      <div class="rr-row">
+        <span class="rr-dot"></span>
+        <div class="rr-txt">
+          <small>Pickup</small>
+          <strong>${escapeHtml(data.pickup?.label || '—')}</strong>
+        </div>
+      </div>
+      <div class="rr-row">
+        <span class="rr-dot square"></span>
+        <div class="rr-txt">
+          <small>Drop-off</small>
+          <strong>${escapeHtml(data.dropoff?.label || '—')}</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="dp-stats">
+      <div class="dp-stat"><small>Distance</small><strong>${escapeHtml(data.distance ? formatDistance(data.distance) : '—')}</strong></div>
+      <div class="dp-stat"><small>Time</small><strong>${escapeHtml(data.duration ? formatDuration(data.duration) : '—')}</strong></div>
+      <div class="dp-stat price"><small>Fare</small><strong>K ${escapeHtml(formatPrice(fare))}</strong></div>
+    </div>
+
+    ${commissionK > 0 ? `
+      <div class="dp-commission">
+        <i class="fas fa-percent"></i>
+        <span>K ${commissionK} will be deducted from your float on completion</span>
+      </div>
+    ` : ''}
+
+    <div class="dp-btn-row">
+      ${navBtnHtml}
+    </div>
+
+    <div class="slide-btn ${slideStageClass}" id="slideBtn" style="margin-top:14px;">
+      <div class="slide-fill" id="slideFill"></div>
+      <span class="slide-label" id="slideLabel">${slideStageLabel}</span>
+      <div class="slide-handle" id="slideHandle">
+        <i class="fas fa-chevron-right"></i>
+      </div>
+    </div>
+
+    <button class="dp-btn ghost" id="dpCancelTripBtn">
+      <i class="fas fa-xmark"></i> CANCEL TRIP
+    </button>
+  `;
+
+  wireSlideButton();
+
+  const navBtn = $('dpNavigateBtn');
+  if (navBtn && navTarget) {
+    navBtn.addEventListener('click', () => {
+      openExternalNav(navTarget.lat, navTarget.lng, navTarget.label);
+    });
+  }
+  const cancelBtn = $('dpCancelTripBtn');
+  if (cancelBtn) cancelBtn.addEventListener('click', cancelActiveTrip);
+
+  // Update the floating nav button
+  updateFloatingNavButton();
+}
+
+function updateFloatingNavButton() {
+  const target = getActiveNavTarget();
+  if (target) {
+    navigateFloatBtn.classList.remove('hidden');
+  } else {
+    navigateFloatBtn.classList.add('hidden');
+  }
+}
 
 /* ============================================================
    SLIDE-TO-ACTION
@@ -3152,90 +3071,71 @@ activeTripPill.addEventListener('click', () => {
 let slideDragging = false;
 let slideStartX = 0;
 let slideMaxX = 0;
+let slideIsBusy = false;
 
-function resetSlide() {
-  slideHandle.style.transform = '';
-  slideHandle.classList.remove('dragging');
-  slideLabel.style.opacity = '';
-  slideFill.style.width = '62px';
-  slideDragging = false;
-}
+function wireSlideButton() {
+  const btn = $('slideBtn');
+  const handle = $('slideHandle');
+  const fill = $('slideFill');
+  const label = $('slideLabel');
+  if (!btn || !handle || !fill || !label) return;
 
-function slidePointerDown(e) {
-  if (slideBtn.classList.contains('is-busy')) return;
-  slideDragging = true;
-  slideStartX = e.clientX;
-  const rect = slideBtn.getBoundingClientRect();
-  slideMaxX = rect.width - slideHandle.offsetWidth - 10;
-  slideHandle.classList.add('dragging');
-  try { slideHandle.setPointerCapture(e.pointerId); } catch (err) {}
-}
+  slideIsBusy = false;
+  handle.style.transform = '';
+  fill.style.width = '60px';
+  label.style.opacity = '';
+  handle.classList.remove('dragging');
 
-function slidePointerMove(e) {
-  if (!slideDragging) return;
-  const dx = Math.max(0, Math.min(slideMaxX, e.clientX - slideStartX));
-  slideHandle.style.transform = `translateX(${dx}px)`;
-  slideFill.style.width = (62 + dx) + 'px';
-  slideLabel.style.opacity = String(Math.max(0, 1 - dx / slideMaxX * 1.1));
+  handle.addEventListener('pointerdown', (e) => {
+    if (slideIsBusy) return;
+    slideDragging = true;
+    slideStartX = e.clientX;
+    const rect = btn.getBoundingClientRect();
+    slideMaxX = rect.width - handle.offsetWidth - 10;
+    handle.classList.add('dragging');
+    try { handle.setPointerCapture(e.pointerId); } catch (err) {}
+  });
 
-  if (dx >= slideMaxX * 0.88) {
+  handle.addEventListener('pointermove', (e) => {
+    if (!slideDragging) return;
+    const dx = Math.max(0, Math.min(slideMaxX, e.clientX - slideStartX));
+    handle.style.transform = `translateX(${dx}px)`;
+    fill.style.width = (60 + dx) + 'px';
+    label.style.opacity = String(Math.max(0, 1 - dx / slideMaxX * 1.1));
+    if (dx >= slideMaxX * 0.88) {
+      slideDragging = false;
+      handle.classList.remove('dragging');
+      triggerSlideAction();
+    }
+  });
+
+  const release = () => {
+    if (!slideDragging) return;
     slideDragging = false;
-    slideHandle.classList.remove('dragging');
-    triggerSlideAction();
-  }
+    handle.classList.remove('dragging');
+    handle.style.transform = '';
+    fill.style.width = '60px';
+    label.style.opacity = '';
+  };
+  handle.addEventListener('pointerup', release);
+  handle.addEventListener('pointercancel', release);
 }
-
-function slidePointerUp() {
-  if (!slideDragging) return;
-  slideDragging = false;
-  slideHandle.classList.remove('dragging');
-  resetSlide();
-}
-
-slideHandle.addEventListener('pointerdown', slidePointerDown);
-slideHandle.addEventListener('pointermove', slidePointerMove);
-slideHandle.addEventListener('pointerup', slidePointerUp);
-slideHandle.addEventListener('pointercancel', slidePointerUp);
 
 function setSlideBusy(text) {
-  slideBtn.classList.add('is-busy');
-  slideLabel.innerHTML = text;
-  slideHandle.style.transform = '';
-  slideFill.style.width = '62px';
-}
-
-function resetSlideBusy() {
-  slideBtn.classList.remove('is-busy');
-}
-
-function setSlideStageAccept() {
-  slideBtn.className = 'slide-btn accept';
-  slideLabel.innerHTML = '<i class="fas fa-arrow-right"></i> Slide to accept';
-  slideHandle.innerHTML = '<i class="fas fa-chevron-right"></i>';
-  resetSlide();
-}
-function setSlideStageAccepted() {
-  slideBtn.className = 'slide-btn arrive';
-  slideLabel.innerHTML = '<i class="fas fa-location-dot"></i> Slide to arrive';
-  slideHandle.innerHTML = '<i class="fas fa-chevron-right"></i>';
-  resetSlide();
-}
-function setSlideStageArrived() {
-  slideBtn.className = 'slide-btn start';
-  slideLabel.innerHTML = '<i class="fas fa-play"></i> Slide to start trip';
-  slideHandle.innerHTML = '<i class="fas fa-chevron-right"></i>';
-  resetSlide();
-}
-function setSlideStageInProgress() {
-  slideBtn.className = 'slide-btn end';
-  slideLabel.innerHTML = '<i class="fas fa-flag-checkered"></i> Slide to end trip';
-  slideHandle.innerHTML = '<i class="fas fa-chevron-right"></i>';
-  resetSlide();
+  const btn = $('slideBtn');
+  const label = $('slideLabel');
+  const handle = $('slideHandle');
+  const fill = $('slideFill');
+  if (!btn) return;
+  btn.classList.add('is-busy');
+  slideIsBusy = true;
+  if (label) label.innerHTML = text;
+  if (handle) handle.style.transform = '';
+  if (fill) fill.style.width = '60px';
 }
 
 async function triggerSlideAction() {
-  if (!activeTrip || !activeStage) { resetSlide(); return; }
-
+  if (!activeTrip || !activeStage) return;
   try {
     if (activeStage === 'incoming')      await handleAccept();
     else if (activeStage === 'accepted') await handleArrive();
@@ -3244,17 +3144,21 @@ async function triggerSlideAction() {
   } catch (err) {
     console.error(err);
     showToast('Action failed: ' + (err.message || err));
-    resetSlideBusy();
-    if (activeStage === 'incoming')      setSlideStageAccept();
-    else if (activeStage === 'accepted') setSlideStageAccepted();
-    else if (activeStage === 'arrived')  setSlideStageArrived();
-    else if (activeStage === 'in_progress') setSlideStageInProgress();
+    slideIsBusy = false;
+    renderActiveTrip();
   }
 }
 
 /* ============================================================
    TRIP ACTIONS
    ============================================================ */
+function showIncomingRequest(kind, id, data) {
+  if (activeStage) return;
+  activeTrip = { kind, id, data };
+  activeStage = 'incoming';
+  renderDetailPanel();
+}
+
 async function handleAccept() {
   if (!activeTrip) return;
   const { kind, id, data } = activeTrip;
@@ -3272,13 +3176,11 @@ async function handleAccept() {
     providerPhone,
     providerPhoto,
     providerRole: role,
-    acceptedAt: Date.now()
+    acceptedAt: Date.now(),
+    vehicleLabel: kind === 'ride'
+      ? vehicleLabelFor(role)
+      : (data.vehicleLabel || vehicleLabelFor(role))
   };
-  if (kind === 'ride') {
-    updates.vehicleLabel = vehicleLabelFor(role);
-  } else {
-    updates.vehicleLabel = data.vehicleLabel || vehicleLabelFor(role);
-  }
 
   const path = kind === 'ride' ? `rides/${id}` : `deliveries/${id}`;
   await update(ref(database, path), updates);
@@ -3286,10 +3188,7 @@ async function handleAccept() {
   activeStage = 'accepted';
   activeTrip.data = { ...data, ...updates };
 
-  setSlideStageAccepted();
-  requestCancelBtn.textContent = 'Cancel trip';
-  requestCancelBtn.onclick = () => cancelActiveTrip();
-  updateActiveTripPill();
+  renderDetailPanel();
 
   const from = userLocation || DEFAULT_LOCATION;
   const pickup = data.pickup;
@@ -3314,8 +3213,7 @@ async function handleArrive() {
   });
 
   activeStage = 'arrived';
-  setSlideStageArrived();
-  updateActiveTripPill();
+  renderDetailPanel();
   showToast('Marked as arrived at pickup');
 }
 
@@ -3331,8 +3229,7 @@ async function handleStartTrip() {
   });
 
   activeStage = 'in_progress';
-  setSlideStageInProgress();
-  updateActiveTripPill();
+  renderDetailPanel();
 
   const pickup = activeTrip.data?.pickup;
   const dropoff = activeTrip.data?.dropoff;
@@ -3363,16 +3260,13 @@ async function handleEndTrip() {
     completedBy: 'provider'
   });
 
-  /* ---- NEW: deduct only the configured commission from float ---- */
   let deduction = 0;
   if (kind === 'ride')          deduction = commissionFor('ride', fare);
   else if (kind === 'delivery') deduction = commissionFor('delivery', fare);
 
   const newBalance = Math.max(0, (floatBalance || 0) - deduction);
   try {
-    await update(ref(database, `providers/${currentUser.uid}`), {
-      floatBalance: newBalance
-    });
+    await update(ref(database, `providers/${currentUser.uid}`), { floatBalance: newBalance });
     await push(ref(database, `providers/${currentUser.uid}/floatLedger`), {
       kind: 'commission',
       referenceId: id,
@@ -3384,7 +3278,6 @@ async function handleEndTrip() {
     });
   } catch (err) { console.warn('Could not deduct commission:', err); }
 
-  /* Mark the customer's transaction completed */
   try {
     const txSnap = await get(ref(database, 'transactions'));
     const txs = txSnap.val() || {};
@@ -3404,9 +3297,10 @@ async function handleEndTrip() {
     ? `Trip completed — K ${deduction} commission deducted`
     : 'Trip completed');
 
-  closeRequestModal();
+  activeTrip = null;
+  activeStage = null;
   detachTripWatcher();
-  clearTripLayers();
+  renderDetailPanel();
 
   setTimeout(() => {
     if (userLocation && map) {
@@ -3437,13 +3331,13 @@ async function cancelActiveTrip() {
       startedAt: null,
       cancelledByProviderAt: Date.now()
     });
-  } catch (err) {
-    console.warn(err);
-  }
+  } catch (err) { console.warn(err); }
 
   detachTripWatcher();
   clearTripLayers();
-  closeRequestModal();
+  activeTrip = null;
+  activeStage = null;
+  renderDetailPanel();
   showToast('Trip cancelled');
   setTimeout(evaluateQueue, 400);
 }
@@ -3463,14 +3357,17 @@ function attachTripWatcher(kind, id) {
       showToast('Trip was cancelled by customer');
       detachTripWatcher();
       clearTripLayers();
-      closeRequestModal();
+      activeTrip = null;
+      activeStage = null;
+      renderDetailPanel();
       setTimeout(evaluateQueue, 400);
       return;
     }
-
     if (trip.status === 'searching' && trip.providerId !== currentUser.uid) {
       detachTripWatcher();
-      closeRequestModal();
+      activeTrip = null;
+      activeStage = null;
+      renderDetailPanel();
     }
   });
 }
@@ -3495,7 +3392,6 @@ onAuthStateChanged(auth, async (user) => {
   currentUser = user;
 
   try {
-    /* Maintenance check */
     const maintSnap = await get(ref(database, 'system/maintenance'));
     if (maintSnap.exists() && maintSnap.val().enabled === true) {
       document.body.innerHTML = `
@@ -3513,33 +3409,24 @@ onAuthStateChanged(auth, async (user) => {
       return;
     }
 
-    /* Load provider record */
     const provSnap = await get(ref(database, `providers/${user.uid}`));
     providerRecord = provSnap.exists() ? provSnap.val() : null;
 
-    /* Live provider listener */
     if (providerLiveUnsub) { providerLiveUnsub(); providerLiveUnsub = null; }
     providerLiveUnsub = onValue(ref(database, `providers/${user.uid}`), (snap) => {
       if (!snap.exists()) return;
       const prev = providerRecord || {};
       const next = snap.val() || {};
-
       const statusChanged = prev.status !== next.status;
-      const roleChanged   = prev.role   !== next.role;
-
       providerRecord = next;
       applyUserUI();
-
+      renderDetailPanel();
       if (statusChanged && next.status === 'approved' && prev.status === 'pending') {
         showToast('✅ Your provider account was approved!');
       }
       if (statusChanged && next.status === 'rejected') {
         showToast('❌ Your provider account was rejected.');
       }
-      if (roleChanged) {
-        console.log('[PROVIDER] role changed →', next.role);
-      }
-
       if (isOnline && next.status === 'approved' && !requestsRidesUnsub) {
         attachRequestListeners();
       }
@@ -3548,7 +3435,7 @@ onAuthStateChanged(auth, async (user) => {
     userRecord = {
       uid: user.uid,
       name: (providerRecord && (providerRecord.fullName || providerRecord.name)) ||
-            (user.displayName) ||
+            user.displayName ||
             (user.email ? user.email.split('@')[0] : 'Provider'),
       phone: (providerRecord && providerRecord.phone) || user.phoneNumber || '—',
       email: user.email || '—',
@@ -3562,7 +3449,6 @@ onAuthStateChanged(auth, async (user) => {
     listenFloatRules();
     listenFloatBalance(user.uid);
 
-    /* If provider was already online in DB, honor that */
     if (providerRecord && providerRecord.online === true &&
         providerRecord.status === 'approved' && providerRecord.role) {
       isOnline = true;
@@ -3571,6 +3457,8 @@ onAuthStateChanged(auth, async (user) => {
       isOnline = false;
       setOnlineUI();
     }
+
+    renderDetailPanel();
 
     requestAnimationFrame(() => {
       if (map) map.invalidateSize();
@@ -3597,6 +3485,7 @@ function loadSettings() {
     const s = snap.val() || {};
     if (s.searchRadiusKm && isFinite(s.searchRadiusKm)) {
       searchRadiusKm = s.searchRadiusKm;
+      renderDetailPanel();
     }
   });
 }
@@ -3642,19 +3531,12 @@ function applyUserUI() {
   heroStatus.className = 'hero-status ' + (status || 'none');
   if (status === 'pending') {
     heroStatus.innerHTML = '<i class="fas fa-clock"></i> Pending Approval';
-    pillStatusDot.classList.remove('hidden');
-    pillStatusDot.className = 'pill-status-dot pending';
   } else if (status === 'approved') {
     heroStatus.innerHTML = '<i class="fas fa-circle-check"></i> Approved · ' + roleLabel(role);
-    pillStatusDot.classList.remove('hidden');
-    pillStatusDot.className = 'pill-status-dot';
   } else if (status === 'rejected') {
     heroStatus.innerHTML = '<i class="fas fa-circle-xmark"></i> Rejected';
-    pillStatusDot.classList.remove('hidden');
-    pillStatusDot.className = 'pill-status-dot rejected';
   } else {
     heroStatus.innerHTML = '<i class="fas fa-circle-info"></i> Not Applied';
-    pillStatusDot.classList.add('hidden');
   }
 
   renderAccountApplySection();
@@ -3672,12 +3554,11 @@ function renderAccountApplySection() {
         <div class="st-ico"><i class="fas fa-clock"></i></div>
         <div class="st-body">
           <strong>Application under review</strong>
-          <p>Your application as a <b>${escapeHtml(roleLabel(role))}</b> is being reviewed. You'll be notified once it's approved.</p>
+          <p>Your application as a <b>${escapeHtml(roleLabel(role))}</b> is being reviewed.</p>
         </div>
       </div>`;
     return;
   }
-
   if (status === 'approved' && role) {
     container.innerHTML = `
       <div class="section-label">Application status</div>
@@ -3690,7 +3571,6 @@ function renderAccountApplySection() {
       </div>`;
     return;
   }
-
   if (status === 'rejected' && role) {
     container.innerHTML = `
       <div class="section-label">Application status</div>
@@ -4019,7 +3899,6 @@ async function submitApplication(role) {
     ].filter(Boolean);
     if (!bikeUrls.length) { errEl.innerText = 'Please upload at least one bike photo.'; return; }
   }
-
   if (role === 'driver') {
     licenseUrl = $('applyLicenseUrl')?.value || '';
     carUrls = [
@@ -4039,11 +3918,8 @@ async function submitApplication(role) {
     const updates = {
       uid: currentUser.uid,
       email: currentUser.email || '',
-      name,
-      fullName: name,
-      phone,
-      profileUrl,
-      role,
+      name, fullName: name, phone,
+      profileUrl, role,
       nrcFront: nrcFrontUrl,
       nrcBack: nrcBackUrl,
       status: 'pending',
@@ -4065,6 +3941,7 @@ async function submitApplication(role) {
     }
 
     applyUserUI();
+    renderDetailPanel();
     showToast('✅ Application submitted. Awaiting approval.');
     closePage('applyPage');
     openPage('accountPage');
@@ -4087,22 +3964,20 @@ function openErrandsPage() {
 
 function loadErrands() {
   if (errandsUnsub) { errandsUnsub(); errandsUnsub = null; }
-  errandsList.innerHTML = '<div class="loader-row"><span class="mini-spin"></span> Loading errands…</div>';
 
-  // Float gate — check BEFORE subscribing so we don't even read the list
   if (floatBalance < minFloatFor('errand')) {
     renderErrandFloatGate();
     return;
   }
 
+  errandsList.innerHTML = '<div class="loader-row"><span class="mini-spin"></span> Loading errands…</div>';
+
   const errandsRef = ref(database, 'errands');
   errandsUnsub = onValue(errandsRef, (snap) => {
-    // Re-check float in case it dropped while viewing
     if (floatBalance < minFloatFor('errand')) {
       renderErrandFloatGate();
       return;
     }
-
     const data = snap.val() || {};
     const arr = [];
     for (const id in data) {
@@ -4131,7 +4006,7 @@ function renderErrandFloatGate() {
     <div class="float-gate-card">
       <div class="fg-ico"><i class="fas fa-wallet"></i></div>
       <h3>Not enough float</h3>
-      <p>You need at least <b>K ${escapeHtml(formatPrice(needed))}</b> float balance to view and bid on errands.</p>
+      <p>You need at least <b>K ${escapeHtml(formatPrice(needed))}</b> float to view and bid on errands.</p>
       <div class="fg-amount">Your balance: K ${escapeHtml(formatPrice(floatBalance))}</div>
       <button class="btn btn-primary" id="errandGateTopUpBtn" style="width:100%;">
         <i class="fas fa-plus"></i> BUY FLOAT
@@ -4148,7 +4023,7 @@ function renderErrands(errands) {
       <div class="empty-state">
         <i class="fas fa-clipboard-list"></i>
         <h3>No errands available</h3>
-        <p>New errands posted by customers will appear here. Check back soon.</p>
+        <p>New errands posted by customers will appear here.</p>
       </div>`;
     return;
   }
@@ -4207,7 +4082,7 @@ function renderErrands(errands) {
 }
 
 /* ============================================================
-   ERRAND DETAIL / MAKE OFFER
+   ERRAND DETAIL
    ============================================================ */
 function openErrandDetail(errandId) {
   if (floatBalance < minFloatFor('errand')) {
@@ -4267,10 +4142,10 @@ function openErrandDetail(errandId) {
       </div>
       <div class="input-icon-group textarea-group">
         <textarea id="offerMessage" class="pill-input pill-textarea" maxlength="240"
-                  placeholder="Add a short message (e.g. I can do this in 30 minutes)…"></textarea>
+                  placeholder="Add a short message…"></textarea>
         <i class="fas fa-comment-dots"></i>
       </div>
-      <div class="error-msg" style="color:#b54708;background:#fffaeb;border:1px solid rgba(247,144,9,0.22);border-radius:10px;padding:10px 12px;font-weight:600;margin-bottom:10px;">
+      <div style="color:#b54708;background:#fffaeb;border:1px solid rgba(247,144,9,0.22);border-radius:10px;padding:10px 12px;font-weight:600;margin-bottom:10px;font-size:0.78rem;">
         <i class="fas fa-percent"></i> On completion, <b>K ${escapeHtml(formatPrice(errandFee()))}</b> will be deducted from your float.
       </div>
       <div id="offerError" class="error-msg"></div>
@@ -4324,7 +4199,7 @@ async function submitOffer(errand) {
       createdAt: Date.now()
     });
 
-    showToast('✅ Offer sent! Waiting for customer response.');
+    showToast('✅ Offer sent!');
     closePage('errandDetailPage');
   } catch (err) {
     console.error(err);
@@ -4346,176 +4221,86 @@ async function openMapCheck(errandId) {
   }
   currentModalTarget = { lat: e.pickup.lat, lng: e.pickup.lng, label: e.pickup.label || 'Pickup' };
 
-  const role = (providerRecord && providerRecord.role) || '';
-  if (role) {
-    mapModalTitle.textContent = `${roleLabel(role)} route to pickup`;
-    routeLegendRow.style.display = 'flex';
-    routeLegendText.textContent = routeLegendLabelForRole(role);
-  } else {
-    mapModalTitle.textContent = 'Pickup & your location';
-    routeLegendRow.style.display = 'none';
-  }
-
+  mapModalTitle.textContent = 'Route to pickup';
   mapModal.classList.add('open');
 
   setTimeout(async () => {
     if (!modalMap) {
       modalMap = L.map('modalMap', {
-        zoomControl: true,
-        attributionControl: false,
-        preferCanvas: true,
-        maxZoom: 19,
-        minZoom: 3
+        zoomControl: true, attributionControl: false, preferCanvas: true,
+        maxZoom: 19, minZoom: 3
       }).setView([currentModalTarget.lat, currentModalTarget.lng], MODAL_ZOOM);
-
-      L.tileLayer(OSM_TILE_URL, {
-        subdomains: 'abc',
-        maxZoom: 19,
-        crossOrigin: true
-      }).addTo(modalMap);
+      L.tileLayer(OSM_TILE_URL, { subdomains: 'abc', maxZoom: 19, crossOrigin: true }).addTo(modalMap);
     }
     modalMap.invalidateSize();
-    drawModalMarkers();
-    fitModalBounds();
-    await drawModalRoute();
-  }, 320);
-}
 
-function drawModalMarkers() {
-  if (!modalMap || !currentModalTarget) return;
+    if (modalUserMarker) { modalMap.removeLayer(modalUserMarker); modalUserMarker = null; }
+    if (modalTargetMarker) { modalMap.removeLayer(modalTargetMarker); modalTargetMarker = null; }
+    if (modalRouteLayer) { modalMap.removeLayer(modalRouteLayer); modalRouteLayer = null; }
 
-  if (modalUserMarker) { modalMap.removeLayer(modalUserMarker); modalUserMarker = null; }
-  if (modalTargetMarker) { modalMap.removeLayer(modalTargetMarker); modalTargetMarker = null; }
-
-  const targetIcon = L.divIcon({
-    className: '',
-    html: '<div class="mk-pickup"></div>',
-    iconSize: [20,20],
-    iconAnchor: [10,20]
-  });
-  modalTargetMarker = L.marker([currentModalTarget.lat, currentModalTarget.lng], { icon: targetIcon })
-    .addTo(modalMap)
-    .bindPopup(escapeHtml(currentModalTarget.label));
-
-  if (userLocation) {
-    const meIcon = L.divIcon({
-      className: '',
-      html: '<div class="mk-user"></div>',
-      iconSize: [18,18],
-      iconAnchor: [9,9]
+    const targetIcon = L.divIcon({
+      className: '', html: '<div class="mk-pickup"></div>',
+      iconSize: [20,20], iconAnchor: [10,20]
     });
-    modalUserMarker = L.marker([userLocation.lat, userLocation.lng], { icon: meIcon })
-      .addTo(modalMap)
-      .bindPopup('You');
-  }
-}
+    modalTargetMarker = L.marker([currentModalTarget.lat, currentModalTarget.lng], { icon: targetIcon })
+      .addTo(modalMap).bindPopup(escapeHtml(currentModalTarget.label));
 
-function clearModalRoute() {
-  if (modalRouteLayer && modalMap) {
-    try { modalMap.removeLayer(modalRouteLayer); } catch (e) {}
-  }
-  modalRouteLayer = null;
-  modalRouteLine = null;
-}
-
-async function drawModalRoute() {
-  if (!modalMap || !currentModalTarget || !userLocation) return;
-
-  if (modalRouteAbort) {
-    try { modalRouteAbort.abort(); } catch (e) {}
-    modalRouteAbort = null;
-  }
-
-  clearModalRoute();
-
-  const role = (providerRecord && providerRecord.role) || '';
-  const profile = osrmProfileForRole(role);
-
-  const url =
-    `https://router.project-osrm.org/route/v1/${profile}/` +
-    `${userLocation.lng},${userLocation.lat};${currentModalTarget.lng},${currentModalTarget.lat}` +
-    `?overview=full&geometries=geojson&steps=false`;
-
-  const controller = new AbortController();
-  modalRouteAbort = controller;
-
-  try {
-    const res = await fetch(url, { signal: controller.signal });
-    if (!res.ok) throw new Error('Routing failed');
-    const data = await res.json();
-
-    if (!data.routes || data.routes.length === 0) throw new Error('No route');
-
-    const route = data.routes[0];
-    const coords = route.geometry.coordinates.map(([lng, lat]) => [lat, lng]);
-
-    modalRouteLayer = L.layerGroup().addTo(modalMap);
-    L.polyline(coords, {
-      color: '#ffffff', weight: 8, opacity: 0.95,
-      lineJoin: 'round', lineCap: 'round'
-    }).addTo(modalRouteLayer);
-    modalRouteLine = L.polyline(coords, {
-      color: '#0a0a0a', weight: 4.5, opacity: 1,
-      lineJoin: 'round', lineCap: 'round'
-    }).addTo(modalRouteLayer);
-
-    if (coords.length > 1) {
-      modalMap.fitBounds(L.latLngBounds(coords), { padding: [40, 40], maxZoom: 17 });
+    if (userLocation) {
+      const meIcon = L.divIcon({
+        className: '', html: '<div class="mk-user"></div>',
+        iconSize: [18,18], iconAnchor: [9,9]
+      });
+      modalUserMarker = L.marker([userLocation.lat, userLocation.lng], { icon: meIcon })
+        .addTo(modalMap).bindPopup('You');
     }
-  } catch (err) {
-    if (err.name === 'AbortError') return;
-    console.warn('Route fetch failed:', err);
-    if (userLocation && currentModalTarget && modalMap) {
-      const straight = [
-        [userLocation.lat, userLocation.lng],
-        [currentModalTarget.lat, currentModalTarget.lng]
-      ];
-      modalRouteLayer = L.layerGroup().addTo(modalMap);
-      L.polyline(straight, {
-        color: '#0a0a0a', weight: 3, opacity: 0.85,
-        dashArray: '6 8', lineCap: 'round'
-      }).addTo(modalRouteLayer);
-    }
-  }
-}
 
-function fitModalBounds() {
-  if (!modalMap) return;
-  const points = [];
-  if (currentModalTarget) points.push([currentModalTarget.lat, currentModalTarget.lng]);
-  if (userLocation) points.push([userLocation.lat, userLocation.lng]);
-  if (points.length === 0) return;
-  if (points.length === 1) { modalMap.setView(points[0], MODAL_ZOOM); return; }
-  const bounds = L.latLngBounds(points);
-  modalMap.fitBounds(bounds, { padding: [40, 40], maxZoom: 16 });
+    // Route
+    const role = (providerRecord && providerRecord.role) || '';
+    const profile = osrmProfileForRole(role);
+    if (userLocation) {
+      try {
+        const url = `https://router.project-osrm.org/route/v1/${profile}/` +
+          `${userLocation.lng},${userLocation.lat};${currentModalTarget.lng},${currentModalTarget.lat}` +
+          `?overview=full&geometries=geojson&steps=false`;
+        const res = await fetch(url);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.routes && data.routes[0]) {
+            const coords = data.routes[0].geometry.coordinates.map(([lng, lat]) => [lat, lng]);
+            modalRouteLayer = L.layerGroup().addTo(modalMap);
+            L.polyline(coords, { color:'#ffffff', weight: 8, opacity: 0.95 }).addTo(modalRouteLayer);
+            L.polyline(coords, { color:'#0a0a0a', weight: 4.5, opacity: 1 }).addTo(modalRouteLayer);
+            modalMap.fitBounds(L.latLngBounds(coords), { padding: [40, 40], maxZoom: 17 });
+          }
+        }
+      } catch (err) { console.warn('Route fetch failed:', err); }
+    }
+
+    if (!modalRouteLayer) {
+      const pts = [[userLocation?.lat || currentModalTarget.lat, userLocation?.lng || currentModalTarget.lng],
+                   [currentModalTarget.lat, currentModalTarget.lng]];
+      modalMap.fitBounds(pts, { padding: [40, 40], maxZoom: 16 });
+    }
+  }, 320);
 }
 
 mapModalClose.addEventListener('click', () => {
   mapModal.classList.remove('open');
-  if (modalRouteAbort) { try { modalRouteAbort.abort(); } catch (e) {} modalRouteAbort = null; }
-  clearModalRoute();
 });
 mapModal.addEventListener('click', (e) => {
-  if (e.target === mapModal) {
-    mapModal.classList.remove('open');
-    if (modalRouteAbort) { try { modalRouteAbort.abort(); } catch (e) {} modalRouteAbort = null; }
-    clearModalRoute();
-  }
+  if (e.target === mapModal) mapModal.classList.remove('open');
 });
-mapModalRecenter.addEventListener('click', async () => {
-  if (modalRouteLine) {
-    const bounds = modalRouteLine.getBounds();
-    if (bounds.isValid()) {
-      modalMap.fitBounds(bounds, { padding: [40, 40], maxZoom: 17 });
-      return;
-    }
-  }
-  fitModalBounds();
-  await drawModalRoute();
+mapModalRecenter.addEventListener('click', () => {
+  if (!modalMap) return;
+  const pts = [];
+  if (currentModalTarget) pts.push([currentModalTarget.lat, currentModalTarget.lng]);
+  if (userLocation) pts.push([userLocation.lat, userLocation.lng]);
+  if (pts.length > 1) modalMap.fitBounds(pts, { padding: [40, 40], maxZoom: 16 });
+  else if (pts.length === 1) modalMap.setView(pts[0], MODAL_ZOOM);
 });
 
 /* ============================================================
-   HISTORY PAGE
+   HISTORY PAGE — EXPANDABLE CARDS
    ============================================================ */
 function openHistoryPage() {
   openPage('historyPage');
@@ -4541,6 +4326,8 @@ function loadHistory() {
   const delivsRef  = ref(database, 'deliveries');
 
   const state = { offers: null, float: null, trips: null };
+  const tripsArr = [];
+  let ridesLoaded = false, delivsLoaded = false;
 
   function tryRender() {
     if (state.offers === null || state.float === null || state.trips === null) return;
@@ -4550,9 +4337,14 @@ function loadHistory() {
     renderHistory();
   }
 
+  function tryTrips() {
+    if (!ridesLoaded || !delivsLoaded) return;
+    tripsArr.sort((a, b) => (b._ts || 0) - (a._ts || 0));
+    state.trips = tripsArr.slice();
+    tryRender();
+  }
+
   const unsubs = [];
-  const tripsArr = [];
-  let ridesLoaded = false, delivsLoaded = false;
 
   unsubs.push(onValue(errandsRef, (snap) => {
     const data = snap.val() || {};
@@ -4564,9 +4356,13 @@ function loadHistory() {
         if (pid === currentUser.uid) {
           const o = e.offers[pid];
           offers.push({
-            ...o, errandId, errandTitle: e.title,
-            errandStatus: e.status, errandPickup: e.pickup,
-            errandBudget: e.willingToPay
+            ...o, errandId,
+            errandTitle: e.title,
+            errandStatus: e.status,
+            errandPickup: e.pickup,
+            errandBudget: e.willingToPay,
+            errandDesc: e.description,
+            errandCreatedAt: e.createdAt
           });
         }
       }
@@ -4588,20 +4384,13 @@ function loadHistory() {
     tryRender();
   }, (err) => { console.warn(err); state.float = []; tryRender(); }));
 
-  function tryTrips() {
-    if (!ridesLoaded || !delivsLoaded) return;
-    tripsArr.sort((a, b) => (b._ts || 0) - (a._ts || 0));
-    state.trips = tripsArr.slice();
-    tryRender();
-  }
-
   unsubs.push(onValue(ridesRef, (snap) => {
     const data = snap.val() || {};
     const rideOnly = [];
     for (const id in data) {
       const r = data[id];
       if (r && r.providerId === currentUser.uid) {
-        rideOnly.push({ ...r, _kind: 'trip', _type: 'ride', id, _ts: r.createdAt || 0 });
+        rideOnly.push({ ...r, _type: 'ride', id, _ts: r.createdAt || 0 });
       }
     }
     for (let i = tripsArr.length - 1; i >= 0; i--) {
@@ -4618,7 +4407,7 @@ function loadHistory() {
     for (const id in data) {
       const d = data[id];
       if (d && d.providerId === currentUser.uid) {
-        delivOnly.push({ ...d, _kind: 'trip', _type: 'delivery', id, _ts: d.createdAt || 0 });
+        delivOnly.push({ ...d, _type: 'delivery', id, _ts: d.createdAt || 0 });
       }
     }
     for (let i = tripsArr.length - 1; i >= 0; i--) {
@@ -4677,88 +4466,225 @@ function renderHistory() {
   `;
 
   filtered.forEach(item => {
-    if (item._category === 'offer') html += renderOfferHistory(item);
-    else if (item._category === 'float') html += renderFloatHistory(item);
-    else html += renderTripHistory(item);
+    if (item._category === 'offer') html += renderOfferCard(item);
+    else if (item._category === 'float') html += renderFloatCard(item);
+    else html += renderTripCard(item);
   });
 
   historyList.innerHTML = html;
+
+  // Wire expansion
+  historyList.querySelectorAll('.hist-card').forEach(card => {
+    const summary = card.querySelector('.hist-summary');
+    if (summary) {
+      summary.addEventListener('click', () => {
+        card.classList.toggle('expanded');
+      });
+    }
+  });
+
+  // Wire nav buttons in expanded cards
+  historyList.querySelectorAll('[data-nav-lat]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const lat = parseFloat(btn.dataset.navLat);
+      const lng = parseFloat(btn.dataset.navLng);
+      const label = btn.dataset.navLabel || 'Destination';
+      openExternalNav(lat, lng, label);
+    });
+  });
 }
 
-function renderTripHistory(t) {
-  const statusClass = ['searching','accepted','arrived','in_progress','completed','cancelled'].includes(t.status)
-    ? t.status : 'pending';
+/* Card renderers with expandable detail */
+function statusChip(status) {
+  if (!status) return '<span class="chip pending">Pending</span>';
+  const s = String(status).toLowerCase();
+  return `<span class="chip ${escapeHtml(s)}">${escapeHtml(statusLabel(s))}</span>`;
+}
+
+function renderTripCard(t) {
   const isRide = t._type === 'ride';
+  const title = isRide ? 'Ride' : `Delivery · ${escapeHtml(t.parcelName || 'Parcel')}`;
+  const pickup = t.pickup?.label || 'Pickup';
+  const dropoff = t.dropoff?.label || 'Drop-off';
+  const fare = t.fare || 0;
+  const role = providerRecord?.role || 'driver';
+
+  const deductions = isRide ? commissionFor('ride', fare) : commissionFor('delivery', fare);
+
+  // Build nav buttons
+  const pickupNav = (t.pickup && isFinite(t.pickup.lat) && isFinite(t.pickup.lng))
+    ? `<button data-nav-lat="${t.pickup.lat}" data-nav-lng="${t.pickup.lng}" data-nav-label="${escapeHtml(pickup)}" class="ghost">
+         <i class="fas fa-diamond-turn-right"></i> Pickup
+       </button>` : '';
+  const dropoffNav = (t.dropoff && isFinite(t.dropoff.lat) && isFinite(t.dropoff.lng))
+    ? `<button data-nav-lat="${t.dropoff.lat}" data-nav-lng="${t.dropoff.lng}" data-nav-label="${escapeHtml(dropoff)}" class="ghost">
+         <i class="fas fa-diamond-turn-right"></i> Drop-off
+       </button>` : '';
+
   return `
-    <div class="history-item">
-      <div class="h-ico ${isRide ? 'ride' : 'delivery'}">
-        <i class="fas ${isRide ? 'fa-car-side' : 'fa-box'}"></i>
-      </div>
-      <div class="h-body">
-        <div class="h-title">${isRide ? 'Ride' : 'Delivery · ' + escapeHtml(t.parcelName || '')}</div>
-        <div class="h-route">
-          <span>${escapeHtml(t.pickup?.label || 'Pickup')}</span>
-          <i class="fas fa-arrow-right" style="font-size:0.62rem;color:#aeaeb2;"></i>
-          <span>${escapeHtml(t.dropoff?.label || 'Drop-off')}</span>
+    <div class="hist-card">
+      <div class="hist-summary">
+        <div class="h-ico ${isRide ? 'ride' : 'delivery'}">
+          <i class="fas ${isRide ? 'fa-car-side' : 'fa-box'}"></i>
         </div>
-        <div class="h-meta">
-          <span class="h-chip status-${statusClass}">${escapeHtml(t.status ? t.status.charAt(0).toUpperCase() + t.status.slice(1).replace('_',' ') : 'Pending')}</span>
-          <span class="h-chip"><i class="fas fa-clock"></i> ${escapeHtml(formatDateTime(t.createdAt))}</span>
+        <div class="h-body">
+          <div class="h-title">${title}</div>
+          <div class="h-sub">${escapeHtml(pickup)} → ${escapeHtml(dropoff)}</div>
         </div>
+        <div class="h-right">
+          <strong>K ${escapeHtml(formatPrice(fare))}</strong>
+          ${statusChip(t.status)}
+        </div>
+        <i class="fas fa-chevron-down h-chevron"></i>
       </div>
-      <div class="h-price">
-        <strong>K ${escapeHtml(formatPrice(t.fare))}</strong>
-        <small>${escapeHtml(timeAgo(t.createdAt))}</small>
+      <div class="hist-details">
+        <div class="hist-details-inner">
+          <div class="hd-section">
+            <div class="hd-label"><i class="fas fa-route"></i> Route</div>
+            <div class="hd-route-block">
+              <div class="rr-row">
+                <span class="rr-dot"></span>
+                <span class="rr-txt">${escapeHtml(pickup)}</span>
+              </div>
+              <div class="rr-row">
+                <span class="rr-dot square"></span>
+                <span class="rr-txt">${escapeHtml(dropoff)}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="hd-section">
+            <div class="hd-label"><i class="fas fa-circle-info"></i> Trip info</div>
+            <div class="hd-row"><span class="hd-key">Customer</span><span class="hd-val">${escapeHtml(t.customerName || '—')}</span></div>
+            <div class="hd-row"><span class="hd-key">Distance</span><span class="hd-val">${escapeHtml(t.distance ? formatDistance(t.distance) : '—')}</span></div>
+            <div class="hd-row"><span class="hd-key">Duration</span><span class="hd-val">${escapeHtml(t.duration ? formatDuration(t.duration) : '—')}</span></div>
+            <div class="hd-row"><span class="hd-key">Fare</span><span class="hd-val">K ${escapeHtml(formatPrice(fare))}</span></div>
+            <div class="hd-row"><span class="hd-key">Commission</span><span class="hd-val">K ${escapeHtml(formatPrice(deductions))}</span></div>
+          </div>
+
+          <div class="hd-section">
+            <div class="hd-label"><i class="fas fa-clock"></i> Timeline</div>
+            <div class="hd-row"><span class="hd-key">Created</span><span class="hd-val">${escapeHtml(formatDateTime(t.createdAt))}</span></div>
+            ${t.acceptedAt ? `<div class="hd-row"><span class="hd-key">Accepted</span><span class="hd-val">${escapeHtml(formatDateTime(t.acceptedAt))}</span></div>` : ''}
+            ${t.arrivedAt ? `<div class="hd-row"><span class="hd-key">Arrived</span><span class="hd-val">${escapeHtml(formatDateTime(t.arrivedAt))}</span></div>` : ''}
+            ${t.startedAt ? `<div class="hd-row"><span class="hd-key">Started</span><span class="hd-val">${escapeHtml(formatDateTime(t.startedAt))}</span></div>` : ''}
+            ${t.completedAt ? `<div class="hd-row"><span class="hd-key">Completed</span><span class="hd-val">${escapeHtml(formatDateTime(t.completedAt))}</span></div>` : ''}
+            ${t.cancelledAt ? `<div class="hd-row"><span class="hd-key">Cancelled</span><span class="hd-val">${escapeHtml(formatDateTime(t.cancelledAt))}</span></div>` : ''}
+          </div>
+
+          <div class="hd-section">
+            <div class="hd-label"><i class="fas fa-id-badge"></i> Reference</div>
+            <div class="hd-row"><span class="hd-key">ID</span><span class="hd-val" style="font-family:monospace;font-size:0.72rem;">${escapeHtml(t.id || '—')}</span></div>
+          </div>
+
+          ${(pickupNav || dropoffNav) ? `
+            <div class="hd-actions">
+              ${pickupNav}
+              ${dropoffNav}
+            </div>
+          ` : ''}
+        </div>
       </div>
     </div>
   `;
 }
 
-function renderOfferHistory(o) {
+function renderOfferCard(o) {
+  const pickup = o.errandPickup?.label || 'Pickup';
+  const price = o.price || 0;
   const statusClass = ['pending', 'accepted', 'rejected', 'completed'].includes(o.status) ? o.status : 'pending';
-  const pickupLabel = o.errandPickup?.label || 'Pickup';
+
   return `
-    <div class="history-item">
-      <div class="h-ico errand"><i class="fas fa-clipboard-list"></i></div>
-      <div class="h-body">
-        <div class="h-title">${escapeHtml(o.errandTitle || 'Errand')}</div>
-        <div class="h-route"><span>${escapeHtml(pickupLabel)}</span></div>
-        <div class="h-meta">
-          <span class="h-chip status-${statusClass}">${escapeHtml(o.status ? o.status.charAt(0).toUpperCase() + o.status.slice(1) : 'Pending')}</span>
-          <span class="h-chip"><i class="fas fa-clock"></i> ${escapeHtml(formatDateTime(o.createdAt))}</span>
+    <div class="hist-card">
+      <div class="hist-summary">
+        <div class="h-ico offer"><i class="fas fa-clipboard-list"></i></div>
+        <div class="h-body">
+          <div class="h-title">${escapeHtml(o.errandTitle || 'Errand')}</div>
+          <div class="h-sub">${escapeHtml(pickup)} · Your offer</div>
         </div>
+        <div class="h-right">
+          <strong>K ${escapeHtml(formatPrice(price))}</strong>
+          ${statusChip(statusClass)}
+        </div>
+        <i class="fas fa-chevron-down h-chevron"></i>
       </div>
-      <div class="h-price">
-        <strong>K ${escapeHtml(formatPrice(o.price))}</strong>
-        <small>Your offer</small>
+      <div class="hist-details">
+        <div class="hist-details-inner">
+          <div class="hd-section">
+            <div class="hd-label"><i class="fas fa-align-left"></i> Errand description</div>
+            <div class="hd-route-block" style="padding:10px 12px;">
+              <div style="font-size:0.84rem;color:#0a0a0a;line-height:1.5;">${escapeHtml(o.errandDesc || '—')}</div>
+            </div>
+          </div>
+          <div class="hd-section">
+            <div class="hd-label"><i class="fas fa-circle-info"></i> Offer details</div>
+            <div class="hd-row"><span class="hd-key">Your price</span><span class="hd-val">K ${escapeHtml(formatPrice(price))}</span></div>
+            <div class="hd-row"><span class="hd-key">Customer budget</span><span class="hd-val">K ${escapeHtml(formatPrice(o.errandBudget || 0))}</span></div>
+            <div class="hd-row"><span class="hd-key">Your message</span><span class="hd-val">${escapeHtml(o.message || '—')}</span></div>
+            <div class="hd-row"><span class="hd-key">Pickup</span><span class="hd-val">${escapeHtml(pickup)}</span></div>
+          </div>
+          <div class="hd-section">
+            <div class="hd-label"><i class="fas fa-clock"></i> Timeline</div>
+            <div class="hd-row"><span class="hd-key">Offer sent</span><span class="hd-val">${escapeHtml(formatDateTime(o.createdAt))}</span></div>
+            ${o.errandCreatedAt ? `<div class="hd-row"><span class="hd-key">Errand posted</span><span class="hd-val">${escapeHtml(formatDateTime(o.errandCreatedAt))}</span></div>` : ''}
+          </div>
+          <div class="hd-section">
+            <div class="hd-label"><i class="fas fa-percent"></i> Completion fee</div>
+            <div class="hd-row"><span class="hd-key">Deducted from float</span><span class="hd-val">K ${escapeHtml(formatPrice(errandFee()))}</span></div>
+          </div>
+        </div>
       </div>
     </div>
   `;
 }
 
-function renderFloatHistory(f) {
-  const statusClass = ['pending', 'approved', 'rejected', 'completed'].includes(f.status) ? f.status : 'pending';
+function renderFloatCard(f) {
+  const statusClass = ['pending', 'approved', 'rejected'].includes(f.status) ? f.status : 'pending';
   return `
-    <div class="history-item">
-      <div class="h-ico float"><i class="fas fa-wallet"></i></div>
-      <div class="h-body">
-        <div class="h-title">Float top-up</div>
-        <div class="h-route"><span>${escapeHtml(f.reference || 'Balance top-up')}</span></div>
-        <div class="h-meta">
-          <span class="h-chip status-${statusClass}">${escapeHtml(f.status ? f.status.charAt(0).toUpperCase() + f.status.slice(1) : 'Pending')}</span>
-          <span class="h-chip"><i class="fas fa-clock"></i> ${escapeHtml(formatDateTime(f.createdAt))}</span>
+    <div class="hist-card">
+      <div class="hist-summary">
+        <div class="h-ico float"><i class="fas fa-wallet"></i></div>
+        <div class="h-body">
+          <div class="h-title">Float top-up</div>
+          <div class="h-sub">${escapeHtml(f.reference || 'Balance top-up')}</div>
         </div>
+        <div class="h-right">
+          <strong>K ${escapeHtml(formatPrice(f.amount))}</strong>
+          ${statusChip(statusClass)}
+        </div>
+        <i class="fas fa-chevron-down h-chevron"></i>
       </div>
-      <div class="h-price">
-        <strong>K ${escapeHtml(formatPrice(f.amount))}</strong>
-        <small>Amount</small>
+      <div class="hist-details">
+        <div class="hist-details-inner">
+          <div class="hd-section">
+            <div class="hd-label"><i class="fas fa-circle-info"></i> Request info</div>
+            <div class="hd-row"><span class="hd-key">Amount</span><span class="hd-val">K ${escapeHtml(formatPrice(f.amount))}</span></div>
+            <div class="hd-row"><span class="hd-key">Status</span><span class="hd-val">${escapeHtml(statusLabel(statusClass))}</span></div>
+            <div class="hd-row"><span class="hd-key">Submitted</span><span class="hd-val">${escapeHtml(formatDateTime(f.createdAt))}</span></div>
+            ${f.approvedAt ? `<div class="hd-row"><span class="hd-key">Approved</span><span class="hd-val">${escapeHtml(formatDateTime(f.approvedAt))}</span></div>` : ''}
+            ${f.rejectedAt ? `<div class="hd-row"><span class="hd-key">Rejected</span><span class="hd-val">${escapeHtml(formatDateTime(f.rejectedAt))}</span></div>` : ''}
+          </div>
+          ${f.screenshotUrl ? `
+            <div class="hd-section">
+              <div class="hd-label"><i class="fas fa-receipt"></i> Screenshot</div>
+              <div style="border-radius:10px;overflow:hidden;background:#0a0a0a;box-shadow:0 0 0 1px var(--line);">
+                <img src="${escapeHtml(f.screenshotUrl)}" alt="" style="width:100%;max-height:220px;object-fit:contain;display:block;">
+              </div>
+            </div>
+          ` : ''}
+          <div class="hd-section">
+            <div class="hd-label"><i class="fas fa-id-badge"></i> Reference</div>
+            <div class="hd-row"><span class="hd-key">ID</span><span class="hd-val" style="font-family:monospace;font-size:0.72rem;">${escapeHtml(f.id || '—')}</span></div>
+          </div>
+        </div>
       </div>
     </div>
   `;
 }
 
 /* ============================================================
-   BUY FLOAT PAGE
+   BUY FLOAT
    ============================================================ */
 const FALLBACK_DEPOSIT_NUMBERS = [
   { label: 'Airtel Money', number: '0977 000 000' },
@@ -4773,7 +4699,6 @@ function openBuyFloatPage() {
 
 function loadDepositNumbers() {
   depositRows.innerHTML = '<div class="loader-row" style="padding:16px;"><span class="mini-spin"></span> Loading…</div>';
-
   get(ref(database, 'system/floatNumbers')).then((snap) => {
     let numbers = FALLBACK_DEPOSIT_NUMBERS;
     if (snap.exists()) {
@@ -4782,14 +4707,12 @@ function loadDepositNumbers() {
       else if (typeof raw === 'object') numbers = Object.values(raw);
     }
     renderDepositNumbers(numbers);
-  }).catch(() => {
-    renderDepositNumbers(FALLBACK_DEPOSIT_NUMBERS);
-  });
+  }).catch(() => renderDepositNumbers(FALLBACK_DEPOSIT_NUMBERS));
 }
 
 function renderDepositNumbers(numbers) {
   if (!numbers || !numbers.length) {
-    depositRows.innerHTML = '<p style="font-size:0.84rem;color:#6e6e73;">No deposit numbers configured. Please contact support.</p>';
+    depositRows.innerHTML = '<p style="font-size:0.84rem;color:#6e6e73;">No deposit numbers configured.</p>';
     return;
   }
   depositRows.innerHTML = numbers.map(n => `
@@ -4831,7 +4754,6 @@ submitFloatBtn.addEventListener('click', submitFloatRequest);
 
 async function submitFloatRequest() {
   floatError.innerText = '';
-
   const amountRaw = floatAmount.value;
   const amount = parseInt(amountRaw, 10);
   const screenshot = floatScreenshotUrl.value;
@@ -4859,8 +4781,7 @@ async function submitFloatRequest() {
       providerId: currentUser.uid,
       providerName: userRecord.name || 'Provider',
       providerPhone: userRecord.phone || '',
-      amount,
-      screenshotUrl: screenshot,
+      amount, screenshotUrl: screenshot,
       reference: 'Balance top-up',
       status: 'pending',
       createdAt: Date.now()
@@ -4870,11 +4791,11 @@ async function submitFloatRequest() {
     floatScreenshotUrl.value = '';
     clearUpload('floatScreenshotBox');
 
-    showToast('✅ Float request submitted. Awaiting approval.');
+    showToast('✅ Float request submitted.');
     closePage('buyFloatPage');
   } catch (err) {
     console.error(err);
-    floatError.innerText = 'Could not submit float request: ' + (err.message || err);
+    floatError.innerText = 'Could not submit: ' + (err.message || err);
   } finally {
     submitFloatBtn.disabled = false;
     submitFloatBtn.innerHTML = original;
@@ -4894,20 +4815,12 @@ $('settingsRefreshLocation').addEventListener('click', () => {
   pingLocationOnce();
   showToast('Refreshing location…');
 });
-
 $('settingsEditProfile').addEventListener('click', () => {
   closePage('settingsPage');
   setTimeout(openAccountPage, 200);
 });
-
-$('settingsSupport').addEventListener('click', () => {
-  showToast('Support: support@ntumeni.com');
-});
-
-$('settingsAbout').addEventListener('click', () => {
-  showToast('NTUMENI Service Provider · v1.1');
-});
-
+$('settingsSupport').addEventListener('click', () => showToast('Support: support@ntumeni.com'));
+$('settingsAbout').addEventListener('click', () => showToast('NTUMENI Service Provider · v1.2'));
 $('settingsLogout').addEventListener('click', doLogout);
 logoutBtn.addEventListener('click', doLogout);
 
@@ -4935,11 +4848,7 @@ async function doLogout() {
    ============================================================ */
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
-    if (mapModal.classList.contains('open')) {
-      mapModal.classList.remove('open');
-      if (modalRouteAbort) { try { modalRouteAbort.abort(); } catch (e) {} modalRouteAbort = null; }
-      clearModalRoute();
-    }
+    if (mapModal.classList.contains('open')) mapModal.classList.remove('open');
     else if (applyPage.classList.contains('open')) closePage('applyPage');
     else if (errandDetailPage.classList.contains('open')) closePage('errandDetailPage');
     else if (errandsPage.classList.contains('open')) closePage('errandsPage');
@@ -4962,7 +4871,6 @@ window.addEventListener('resize', () => {
   if (modalMap) modalMap.invalidateSize();
 });
 
-/* Safety fallback for loading */
 setTimeout(() => hideLoading(), 12000);
 </script>
 </body>
