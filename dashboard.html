@@ -45,7 +45,7 @@
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
   --panel-ease: cubic-bezier(0.32, 0.72, 0, 1);
-  --topbar-h: 58px;
+  --topbar-h: 56px;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -56,7 +56,6 @@ body {
   color: var(--text-primary);
   background: #ffffff;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   display: flex;
   flex-direction: column;
   user-select: none;
@@ -105,13 +104,8 @@ input, textarea { font-family: inherit; }
   display: flex; align-items: center; justify-content: center;
   font-size: 2rem; margin-bottom: 22px;
   box-shadow: 0 16px 40px -12px rgba(0,0,0,0.45);
-  animation: blockIconIn 0.5s var(--spring) both;
 }
 .block-overlay.danger .block-icon { background: var(--danger); }
-@keyframes blockIconIn {
-  from { opacity: 0; transform: scale(0.6); }
-  to   { opacity: 1; transform: scale(1); }
-}
 .block-overlay h1 { font-size: 1.45rem; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 10px; }
 .block-overlay p  { font-size: 0.92rem; color: var(--text-secondary); line-height: 1.6; max-width: 340px; }
 .block-reason {
@@ -124,9 +118,7 @@ input, textarea { font-family: inherit; }
   margin-top: 26px; padding: 13px 30px; border-radius: 999px;
   background: #0a0a0a; color: #fff; font-weight: 700; font-size: 0.9rem;
   box-shadow: 0 8px 22px -8px rgba(0,0,0,0.5);
-  transition: transform 0.3s var(--spring);
 }
-.block-btn:active { transform: scale(0.95); }
 .block-overlay.danger .block-btn { background: var(--danger); }
 
 /* TOPBAR */
@@ -135,40 +127,39 @@ input, textarea { font-family: inherit; }
   height: var(--topbar-h);
   display: flex; align-items: center; justify-content: space-between;
   padding: 0 14px;
-  background: rgba(255,255,255,0.92);
+  background: rgba(255,255,255,0.94);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
   border-bottom: 1px solid var(--line);
   position: relative; z-index: 500;
 }
 .icon-btn {
-  width: 42px; height: 42px; border-radius: 12px;
+  width: 40px; height: 40px; border-radius: 12px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.1rem; color: var(--ink);
+  font-size: 1.05rem; color: var(--ink);
   background: var(--fill-gray);
-  transition: background 0.25s var(--ease-smooth), transform 0.3s var(--spring);
+  transition: background 0.25s, transform 0.3s var(--spring);
 }
-.icon-btn:hover  { background: var(--fill-gray-hover); }
 .icon-btn:active { transform: scale(0.92); }
 .topbar-user {
   flex: 1; text-align: center;
-  font-size: 0.95rem; font-weight: 700;
-  letter-spacing: -0.2px; color: var(--text-primary);
+  font-size: 0.94rem; font-weight: 700;
+  letter-spacing: -0.2px;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   padding: 0 10px;
 }
 .topbar-user small {
-  display: block; font-size: 0.63rem; font-weight: 700;
+  display: block; font-size: 0.6rem; font-weight: 700;
   letter-spacing: 1.4px; text-transform: uppercase;
   color: var(--text-tertiary); margin-top: 1px;
 }
 .topbar-logo {
-  width: 42px; height: 42px; border-radius: 12px;
+  width: 40px; height: 40px; border-radius: 12px;
   display: flex; align-items: center; justify-content: center;
   background: var(--fill-gray);
   overflow: hidden; flex-shrink: 0;
 }
-.topbar-logo img { width: 30px; height: 30px; object-fit: contain; }
+.topbar-logo img { width: 28px; height: 28px; object-fit: contain; }
 .topbar-logo span { font-size: 0.5rem; font-weight: 800; color: var(--ink); }
 
 /* MAIN */
@@ -188,18 +179,19 @@ input, textarea { font-family: inherit; }
   display: flex; align-items: center; justify-content: center;
   font-size: 1rem; color: var(--ink);
   box-shadow: 0 4px 16px rgba(0,0,0,0.14), 0 0 0 1px rgba(0,0,0,0.05);
-  transition: transform 0.3s var(--spring);
 }
 .map-overlay-btn:active { transform: scale(0.92); }
 #locateBtn { right: 12px; bottom: 12px; }
 .map-badge {
   position: absolute; top: 12px; left: 12px; z-index: 400;
   background: rgba(10,10,10,0.86);
-  color: #fff; font-size: 0.68rem; font-weight: 700;
+  color: #fff; font-size: 0.66rem; font-weight: 700;
   letter-spacing: 0.7px; text-transform: uppercase;
   padding: 7px 13px; border-radius: 999px;
   display: inline-flex; align-items: center; gap: 7px;
   backdrop-filter: blur(6px);
+  max-width: calc(100% - 24px);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 
 /* ACTION HALF */
@@ -208,7 +200,7 @@ input, textarea { font-family: inherit; }
   background: #ffffff;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  padding: 18px 18px 24px;
+  padding: 16px 16px 20px;
   display: flex; flex-direction: column;
   border-top: 1px solid var(--line);
 }
@@ -218,39 +210,37 @@ input, textarea { font-family: inherit; }
   from { opacity: 0; transform: translateY(12px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-.home-greeting { font-size: 1.15rem; font-weight: 800; letter-spacing: -0.4px; margin-bottom: 3px; }
-.home-sub { font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 16px; }
+.home-greeting { font-size: 1.12rem; font-weight: 800; letter-spacing: -0.4px; margin-bottom: 3px; }
+.home-sub { font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 14px; }
 
 .btn-ride {
   width: 100%;
-  padding: 26px 22px;
+  padding: 22px 20px;
   border-radius: var(--radius);
   background: linear-gradient(180deg, #26262a 0%, #0a0a0a 60%, #000 100%);
   color: #ffffff;
-  display: flex; align-items: center; gap: 16px;
+  display: flex; align-items: center; gap: 14px;
   text-align: left;
   box-shadow: 0 10px 28px -10px rgba(0,0,0,0.55);
-  transition: transform 0.35s var(--spring), box-shadow 0.3s var(--ease-smooth);
   margin-bottom: 12px; flex-shrink: 0;
 }
-.btn-ride:hover  { transform: translateY(-2px); }
-.btn-ride:active { transform: translateY(0) scale(0.982); }
+.btn-ride:active { transform: scale(0.982); }
 .btn-ride .ride-ico {
-  width: 48px; height: 48px; border-radius: 14px;
+  width: 46px; height: 46px; border-radius: 14px;
   background: rgba(255,255,255,0.14);
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.25rem; flex-shrink: 0;
+  font-size: 1.2rem; flex-shrink: 0;
 }
 .btn-ride .ride-txt { flex: 1; min-width: 0; }
 .btn-ride .ride-txt strong {
-  display: block; font-size: 1.05rem; font-weight: 800;
+  display: block; font-size: 1.02rem; font-weight: 800;
   letter-spacing: -0.3px; margin-bottom: 2px;
 }
 .btn-ride .ride-txt span {
-  display: block; font-size: 0.76rem; font-weight: 500;
+  display: block; font-size: 0.74rem; font-weight: 500;
   color: rgba(255,255,255,0.62);
 }
-.btn-ride .ride-arrow { font-size: 0.95rem; color: rgba(255,255,255,0.5); }
+.btn-ride .ride-arrow { font-size: 0.9rem; color: rgba(255,255,255,0.5); }
 
 .square-row {
   display: grid; grid-template-columns: 1fr 1fr;
@@ -263,130 +253,155 @@ input, textarea { font-family: inherit; }
   box-shadow: 0 0 0 1px var(--line), 0 4px 16px -8px rgba(0,0,0,0.18);
   display: flex; flex-direction: column;
   align-items: center; justify-content: center; gap: 10px;
-  transition: transform 0.35s var(--spring), box-shadow 0.3s var(--ease-smooth), background 0.25s;
   padding: 14px;
 }
-.btn-square:hover  { transform: translateY(-3px); background: #fafafa; }
-.btn-square:active { transform: translateY(0) scale(0.97); }
+.btn-square:active { transform: scale(0.97); }
 .btn-square .sq-ico {
-  width: 46px; height: 46px; border-radius: 14px;
+  width: 44px; height: 44px; border-radius: 14px;
   background: var(--fill-gray);
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.15rem; color: var(--ink);
+  font-size: 1.1rem; color: var(--ink);
 }
 .btn-square .sq-label {
-  font-size: 0.85rem; font-weight: 700; letter-spacing: -0.2px;
-  color: var(--text-primary); text-align: center; line-height: 1.25;
+  font-size: 0.84rem; font-weight: 700;
+  letter-spacing: -0.2px; text-align: center;
 }
 
-/* TRIP PANE (planning) */
+/* TRIP PANE */
 .trip-head {
   display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 12px; flex-shrink: 0;
+  margin-bottom: 10px; flex-shrink: 0;
 }
-.trip-head h2 { font-size: 1.05rem; font-weight: 800; letter-spacing: -0.35px; }
+.trip-head h2 { font-size: 1rem; font-weight: 800; letter-spacing: -0.35px; }
 .trip-head button {
-  font-size: 0.78rem; font-weight: 700; color: var(--text-secondary);
+  font-size: 0.76rem; font-weight: 700; color: var(--text-secondary);
   padding: 7px 12px; border-radius: 999px; background: var(--fill-gray);
 }
+
 .points-card {
   position: relative;
   background: var(--fill-gray);
   border-radius: var(--radius);
   padding: 4px;
-  margin-bottom: 14px; flex-shrink: 0;
+  margin-bottom: 10px; flex-shrink: 0;
 }
 .point-row {
-  display: flex; align-items: center; gap: 13px;
-  width: 100%; padding: 13px 14px;
+  display: flex; align-items: center; gap: 12px;
+  width: 100%; padding: 11px 13px;
   border-radius: 13px; text-align: left;
-  transition: background 0.22s var(--ease-smooth);
 }
-.point-row:hover { background: rgba(255,255,255,0.85); }
 .point-dot {
-  width: 12px; height: 12px; border-radius: 50%;
+  width: 11px; height: 11px; border-radius: 50%;
   background: var(--ink); flex-shrink: 0;
-  box-shadow: 0 0 0 3.5px rgba(10,10,10,0.13);
+  box-shadow: 0 0 0 3px rgba(10,10,10,0.13);
 }
 .point-dot.square { border-radius: 3.5px; }
+.point-dot.stop {
+  background: var(--warn);
+  box-shadow: 0 0 0 3px rgba(247,144,9,0.18);
+  border-radius: 3px;
+}
 .point-txt { flex: 1; min-width: 0; }
 .point-txt small {
-  display: block; font-size: 0.62rem; font-weight: 700;
+  display: block; font-size: 0.58rem; font-weight: 700;
   letter-spacing: 1.1px; text-transform: uppercase;
   color: var(--text-tertiary); margin-bottom: 2px;
 }
 .point-txt strong {
-  display: block; font-size: 0.86rem; font-weight: 600;
-  color: var(--text-primary); line-height: 1.3;
+  display: block; font-size: 0.84rem; font-weight: 600;
+  line-height: 1.3;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.point-edit { font-size: 0.78rem; color: var(--text-tertiary); flex-shrink: 0; }
+.point-edit { font-size: 0.76rem; color: var(--text-tertiary); flex-shrink: 0; }
+.point-remove {
+  font-size: 0.78rem; color: var(--danger);
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--danger-soft);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
 .points-divider { height: 1px; background: rgba(0,0,0,0.06); margin: 0 16px; }
+
+.add-stop-row {
+  margin-bottom: 12px; flex-shrink: 0;
+}
+.add-stop-btn {
+  width: 100%; padding: 10px 14px;
+  border-radius: 12px;
+  background: transparent;
+  border: 1.5px dashed rgba(247,144,9,0.45);
+  color: #b54708;
+  font-size: 0.78rem; font-weight: 700;
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 7px;
+  transition: background 0.22s;
+}
+.add-stop-btn:active { background: var(--warn-soft); }
 
 .fare-card {
   background: #0a0a0a; color: #ffffff;
   border-radius: var(--radius);
-  padding: 22px;
-  margin-bottom: 14px; flex-shrink: 0;
+  padding: 16px 18px;
+  margin-bottom: 12px; flex-shrink: 0;
   box-shadow: 0 12px 30px -14px rgba(0,0,0,0.55);
 }
-.fare-top { display: flex; align-items: flex-end; justify-content: space-between; gap: 14px; }
+.fare-top { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
 .fare-top .fare-label {
-  font-size: 0.63rem; font-weight: 700;
-  letter-spacing: 1.4px; text-transform: uppercase;
-  color: rgba(255,255,255,0.5); margin-bottom: 6px;
+  font-size: 0.6rem; font-weight: 700;
+  letter-spacing: 1.3px; text-transform: uppercase;
+  color: rgba(255,255,255,0.5); margin-bottom: 5px;
 }
 .fare-top .fare-amount {
-  font-size: 2.1rem; font-weight: 800; letter-spacing: -1.2px;
-  line-height: 1;
+  font-size: 1.85rem; font-weight: 800; letter-spacing: -1px; line-height: 1;
 }
-.fare-top .fare-amount small { font-size: 1.05rem; font-weight: 700; opacity: 0.65; margin-right: 3px; }
-.fare-stats { display: flex; gap: 8px; }
+.fare-top .fare-amount small { font-size: 0.95rem; font-weight: 700; opacity: 0.65; margin-right: 3px; }
+.fare-stats { display: flex; gap: 7px; }
 .fare-stat {
   background: rgba(255,255,255,0.09);
-  border-radius: 12px; padding: 10px 13px;
-  min-width: 76px; text-align: center;
+  border-radius: 10px; padding: 8px 11px;
+  min-width: 68px; text-align: center;
 }
 .fare-stat small {
-  display: block; font-size: 0.58rem; font-weight: 700;
+  display: block; font-size: 0.54rem; font-weight: 700;
   letter-spacing: 1px; text-transform: uppercase;
-  color: rgba(255,255,255,0.48); margin-bottom: 4px;
+  color: rgba(255,255,255,0.48); margin-bottom: 3px;
 }
-.fare-stat strong { font-size: 0.92rem; font-weight: 700; letter-spacing: -0.2px; }
+.fare-stat strong { font-size: 0.84rem; font-weight: 700; letter-spacing: -0.2px; }
 
 .confirm-btn {
-  width: 100%; padding: 16px;
+  width: 100%; padding: 15px;
   border-radius: var(--radius);
   background: #0a0a0a; color: #fff;
-  font-size: 0.95rem; font-weight: 800; letter-spacing: -0.2px;
+  font-size: 0.94rem; font-weight: 800;
   display: flex; align-items: center; justify-content: center; gap: 10px;
   box-shadow: 0 10px 26px -12px rgba(0,0,0,0.6);
-  transition: transform 0.35s var(--spring);
   flex-shrink: 0;
 }
 .confirm-btn:active { transform: scale(0.978); }
 .confirm-btn:disabled { opacity: 0.5; pointer-events: none; }
 
-/* ACTIVE PANE (searching / provider found / in progress) */
-.active-pane-head {
-  margin-bottom: 14px; flex-shrink: 0;
-  text-align: center;
+/* ACTIVE PANE — compact, no scrolling */
+#paneActive {
+  overflow: hidden;
+  padding: 0;
 }
-.active-pane-head h2 {
-  font-size: 1.1rem; font-weight: 800;
-  letter-spacing: -0.35px; margin-bottom: 4px;
-}
-.active-pane-head p {
-  font-size: 0.82rem; color: var(--text-secondary);
-  line-height: 1.5; margin: 0 auto; max-width: 320px;
+.active-compact {
+  display: flex; flex-direction: column;
+  flex: 1; min-height: 0;
+  gap: 8px;
 }
 
-/* Searching radar — smaller version for the pane */
+/* Searching */
+.searching-wrap {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  flex: 1; min-height: 0;
+  padding: 8px 0;
+}
 .pane-radar {
   position: relative;
-  width: 92px; height: 92px;
-  margin: 4px auto 14px;
-  flex-shrink: 0;
+  width: 78px; height: 78px;
+  margin-bottom: 12px;
 }
 .pane-radar .radar-ring {
   position: absolute; inset: 0;
@@ -402,123 +417,163 @@ input, textarea { font-family: inherit; }
   100% { transform: scale(1.65); opacity: 0; }
 }
 .pane-radar .radar-center {
-  position: absolute; inset: 26px;
+  position: absolute; inset: 22px;
   border-radius: 50%;
   background: #0a0a0a; color: #ffffff;
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.15rem; z-index: 2;
+  font-size: 1rem; z-index: 2;
   box-shadow: 0 0 0 5px rgba(255,255,255,0.9);
 }
-.searching-dots {
-  display: flex; justify-content: center;
-  gap: 6px; margin: 12px 0 18px;
-  flex-shrink: 0;
+.active-pane-head { text-align: center; margin-bottom: 8px; }
+.active-pane-head h2 {
+  font-size: 1rem; font-weight: 800;
+  letter-spacing: -0.35px; margin-bottom: 4px;
 }
-.searching-dots span {
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  background: #0a0a0a; opacity: 0.3;
-  animation: dotBounce 1.2s var(--ease-smooth) infinite;
+.active-pane-head p {
+  font-size: 0.78rem; color: var(--text-secondary);
+  line-height: 1.5; max-width: 300px; margin: 0 auto;
 }
-.searching-dots span:nth-child(2) { animation-delay: 0.15s; }
-.searching-dots span:nth-child(3) { animation-delay: 0.30s; }
-@keyframes dotBounce {
-  0%, 100% { opacity: 0.3; transform: translateY(0); }
-  50%      { opacity: 1;   transform: translateY(-5px); }
-}
-
 .pane-cancel-btn {
-  width: 100%; padding: 13px;
+  width: 100%; padding: 12px;
   border-radius: var(--radius-sm);
   background: var(--fill-gray);
-  color: var(--text-primary);
-  font-size: 0.9rem; font-weight: 700;
-  transition: background 0.22s, transform 0.28s;
+  font-size: 0.86rem; font-weight: 700;
   flex-shrink: 0;
-  margin-top: auto;
 }
 .pane-cancel-btn:active { transform: scale(0.97); }
 
-/* Provider found card */
-.provider-found-card {
-  display: flex; align-items: center; gap: 14px;
-  padding: 14px;
+/* Provider found — compact, no scroll */
+.provider-active {
+  display: flex; flex-direction: column;
+  flex: 1; min-height: 0;
+  gap: 8px;
+}
+.pf-row {
+  display: flex; align-items: center; gap: 11px;
+  padding: 10px 12px;
   background: var(--fill-gray);
-  border-radius: var(--radius);
-  margin-bottom: 12px; text-align: left;
+  border-radius: 14px;
   flex-shrink: 0;
 }
-.provider-found-avatar {
-  width: 56px; height: 56px; border-radius: 50%;
+.pf-avatar {
+  width: 44px; height: 44px; border-radius: 50%;
   background: #fff; overflow: hidden; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 0 0 2px #fff, 0 0 0 4px rgba(0,0,0,0.08);
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px rgba(0,0,0,0.06);
 }
-.provider-found-avatar img { width: 100%; height: 100%; object-fit: cover; }
-.provider-found-avatar i { font-size: 1.4rem; color: var(--text-tertiary); }
-.provider-found-body { flex: 1; min-width: 0; }
-.provider-found-body strong {
-  display: block; font-size: 1rem; font-weight: 800;
-  letter-spacing: -0.3px; margin-bottom: 4px;
+.pf-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.pf-avatar i { font-size: 1.1rem; color: var(--text-tertiary); }
+.pf-body { flex: 1; min-width: 0; }
+.pf-body strong {
+  display: block; font-size: 0.92rem; font-weight: 800;
+  letter-spacing: -0.25px; margin-bottom: 3px;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.provider-found-meta { display: flex; flex-wrap: wrap; gap: 6px; }
-.provider-found-meta span {
-  display: inline-flex; align-items: center; gap: 5px;
-  font-size: 0.7rem; font-weight: 700;
+.pf-meta { display: flex; flex-wrap: wrap; gap: 5px; }
+.pf-meta span {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 0.66rem; font-weight: 700;
   color: var(--text-secondary);
   background: #fff;
-  padding: 4px 9px; border-radius: 999px;
+  padding: 3px 8px; border-radius: 999px;
 }
-.provider-found-meta span i { font-size: 0.62rem; }
-.provider-call-btn {
-  width: 46px; height: 46px; border-radius: 50%;
+.pf-meta span i { font-size: 0.6rem; }
+.pf-call {
+  width: 42px; height: 42px; border-radius: 50%;
   background: var(--success); color: #fff;
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.05rem; flex-shrink: 0;
+  font-size: 1rem; flex-shrink: 0;
   text-decoration: none;
-  box-shadow: 0 6px 16px -4px rgba(18,183,106,0.5);
-  transition: transform 0.28s var(--spring);
+  box-shadow: 0 6px 14px -4px rgba(18,183,106,0.5);
 }
-.provider-call-btn:active { transform: scale(0.92); }
+.pf-call:active { transform: scale(0.92); }
 
-.provider-vehicle-preview {
-  border-radius: var(--radius);
-  overflow: hidden; margin-bottom: 12px;
+/* Route line (compact) */
+.compact-route {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px;
   background: var(--fill-gray);
-  max-height: 130px;
+  border-radius: 12px;
   flex-shrink: 0;
 }
-.provider-vehicle-preview img {
-  width: 100%; max-height: 130px;
-  object-fit: cover; display: block;
+.compact-route .cr-line {
+  display: flex; flex-direction: column;
+  gap: 8px; align-items: center; flex-shrink: 0;
+}
+.compact-route .cr-dot {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: #0a0a0a;
+  box-shadow: 0 0 0 3px rgba(10,10,10,0.13);
+}
+.compact-route .cr-dot.stop {
+  border-radius: 2.5px;
+  background: var(--warn);
+  box-shadow: 0 0 0 3px rgba(247,144,9,0.18);
+}
+.compact-route .cr-dot.dest {
+  border-radius: 2.5px;
+  background: #175cd3;
+  box-shadow: 0 0 0 3px rgba(23,92,211,0.15);
+}
+.compact-route .cr-info {
+  flex: 1; min-width: 0;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.compact-route .cr-text {
+  font-size: 0.78rem; font-weight: 600;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  line-height: 1.2;
+}
+.compact-route .cr-text small {
+  display: block;
+  font-size: 0.54rem; font-weight: 800;
+  letter-spacing: 0.9px; text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 2px;
 }
 
-.trip-status-card {
-  text-align: center;
-  padding: 6px 6px 12px;
+/* Status strip */
+.compact-status {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px;
+  background: #0a0a0a;
+  color: #ffffff;
+  border-radius: 14px;
   flex-shrink: 0;
 }
-.trip-status-icon {
-  width: 60px; height: 60px; border-radius: 50%;
-  background: #0a0a0a; color: #fff;
+.compact-status .cs-ico {
+  width: 42px; height: 42px; border-radius: 50%;
+  background: rgba(255,255,255,0.12);
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.4rem;
-  margin: 0 auto 12px;
+  font-size: 1rem; flex-shrink: 0;
   animation: tripPulse 2s var(--ease-smooth) infinite;
 }
-.trip-status-card h2 {
-  font-size: 1.05rem; font-weight: 800;
-  letter-spacing: -0.35px; margin-bottom: 6px;
-}
-.trip-status-card p {
-  font-size: 0.84rem;
-  color: var(--text-secondary);
-  line-height: 1.5; margin-bottom: 0;
-}
 @keyframes tripPulse {
-  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(10,10,10,0.5); }
-  50%      { transform: scale(1.05); box-shadow: 0 0 0 14px rgba(10,10,10,0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0.3); }
+  50%      { box-shadow: 0 0 0 10px rgba(255,255,255,0); }
+}
+.compact-status .cs-body { flex: 1; min-width: 0; }
+.compact-status .cs-body strong {
+  display: block; font-size: 0.92rem; font-weight: 800;
+  letter-spacing: -0.25px; margin-bottom: 2px;
+}
+.compact-status .cs-body span {
+  display: block; font-size: 0.72rem;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.3;
+}
+.compact-status .cs-fare {
+  text-align: right; flex-shrink: 0;
+}
+.compact-status .cs-fare strong {
+  display: block; font-size: 1.15rem; font-weight: 800;
+  letter-spacing: -0.4px;
+}
+.compact-status .cs-fare small {
+  display: block; font-size: 0.6rem; font-weight: 700;
+  color: rgba(255,255,255,0.55);
+  letter-spacing: 0.8px; text-transform: uppercase;
+  margin-top: 2px;
 }
 
 /* SIDEBAR */
@@ -571,9 +626,7 @@ input, textarea { font-family: inherit; }
   padding: 14px 16px;
   border-radius: 13px;
   font-size: 0.92rem; font-weight: 600;
-  color: var(--text-primary);
   text-align: left;
-  transition: background 0.22s var(--ease-smooth);
   margin-bottom: 3px;
   position: relative;
 }
@@ -582,7 +635,6 @@ input, textarea { font-family: inherit; }
   width: 22px; text-align: center;
   font-size: 1rem; color: var(--text-secondary);
 }
-.nav-item:hover i { color: var(--ink); }
 .nav-badge {
   position: absolute;
   right: 14px; top: 50%;
@@ -590,7 +642,6 @@ input, textarea { font-family: inherit; }
   background: #0a0a0a; color: #fff;
   font-size: 0.62rem; font-weight: 800;
   padding: 3px 8px; border-radius: 999px;
-  letter-spacing: 0.2px;
 }
 .sidebar-foot {
   padding: 14px 12px 20px;
@@ -603,9 +654,7 @@ input, textarea { font-family: inherit; }
   padding: 14px 16px; border-radius: 13px;
   font-size: 0.92rem; font-weight: 700;
   color: var(--danger);
-  transition: background 0.22s;
 }
-.logout-btn:hover { background: var(--danger-soft); }
 .logout-btn i { width: 22px; text-align: center; font-size: 1rem; }
 
 /* PAGES */
@@ -624,7 +673,6 @@ input, textarea { font-family: inherit; }
   transform: translateY(0); visibility: visible;
 }
 #chatPage { z-index: 3100; }
-
 .page-head {
   flex: 0 0 auto;
   display: flex; align-items: center; gap: 12px;
@@ -632,11 +680,10 @@ input, textarea { font-family: inherit; }
   border-bottom: 1px solid var(--line);
   background: rgba(255,255,255,0.94);
   backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
 }
 .page-head h2 { font-size: 1rem; font-weight: 800; letter-spacing: -0.3px; }
 .page-head .page-head-sub {
-  font-size: 0.68rem; font-weight: 600; color: var(--text-tertiary);
+  font-size: 0.66rem; font-weight: 600; color: var(--text-tertiary);
   letter-spacing: 0.6px; text-transform: uppercase;
 }
 .page-body {
@@ -651,41 +698,44 @@ input, textarea { font-family: inherit; }
 
 /* SEARCH */
 .ride-body { flex: 1; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
-.ride-inputs { flex: 0 0 auto; padding: 16px 16px 12px; border-bottom: 1px solid var(--line); }
+.ride-inputs { flex: 0 0 auto; padding: 14px 16px 12px; border-bottom: 1px solid var(--line); }
 .input-card {
   background: var(--fill-gray);
   border-radius: var(--radius);
   padding: 4px;
 }
 .input-row {
-  display: flex; align-items: center; gap: 13px;
-  padding: 11px 14px;
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 13px;
   border-radius: 13px;
-  transition: background 0.22s var(--ease-smooth);
 }
 .input-row.focused { background: #ffffff; box-shadow: 0 0 0 1.5px var(--ink); }
 .input-row .row-dot {
-  width: 12px; height: 12px; border-radius: 50%;
+  width: 11px; height: 11px; border-radius: 50%;
   background: var(--ink); flex-shrink: 0;
-  box-shadow: 0 0 0 3.5px rgba(10,10,10,0.13);
+  box-shadow: 0 0 0 3px rgba(10,10,10,0.13);
 }
 .input-row .row-dot.square { border-radius: 3.5px; }
+.input-row .row-dot.stop {
+  background: var(--warn);
+  box-shadow: 0 0 0 3px rgba(247,144,9,0.18);
+  border-radius: 3px;
+}
 .input-row input {
   flex: 1; min-width: 0;
   border: none; outline: none; background: transparent;
-  font-size: 0.9rem; font-weight: 500;
-  color: var(--text-primary);
+  font-size: 0.88rem; font-weight: 500;
   padding: 3px 0;
 }
 .input-row input::placeholder { color: var(--text-tertiary); font-weight: 400; }
 .row-clear {
-  width: 24px; height: 24px; border-radius: 50%;
+  width: 22px; height: 22px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  font-size: 0.7rem; color: var(--text-secondary);
+  font-size: 0.68rem; color: var(--text-secondary);
   background: rgba(0,0,0,0.07);
   flex-shrink: 0;
 }
-.input-divider { height: 1px; background: rgba(0,0,0,0.07); margin: 0 16px 0 42px; }
+.input-divider { height: 1px; background: rgba(0,0,0,0.07); margin: 0 16px 0 38px; }
 
 .results-area {
   flex: 1; min-height: 0;
@@ -694,60 +744,56 @@ input, textarea { font-family: inherit; }
   padding: 6px 0 24px;
 }
 .results-hint {
-  padding: 30px 24px; text-align: center;
+  padding: 28px 24px; text-align: center;
   color: var(--text-tertiary);
-  font-size: 0.84rem; line-height: 1.6;
+  font-size: 0.82rem; line-height: 1.6;
 }
-.results-hint i { display: block; font-size: 1.9rem; margin-bottom: 12px; color: #d8d8dc; }
+.results-hint i { display: block; font-size: 1.8rem; margin-bottom: 12px; color: #d8d8dc; }
 .results-heading {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 14px 18px 8px;
-  font-size: 0.66rem; font-weight: 800;
+  padding: 12px 18px 8px;
+  font-size: 0.62rem; font-weight: 800;
   letter-spacing: 1.2px; text-transform: uppercase;
   color: var(--text-tertiary);
 }
 .results-heading .rh-count {
   font-weight: 700; color: var(--text-secondary);
-  letter-spacing: 0.4px; text-transform: none; font-size: 0.7rem;
+  letter-spacing: 0.4px; text-transform: none; font-size: 0.68rem;
 }
 .result-item {
   width: 100%;
-  display: flex; align-items: center; gap: 14px;
-  padding: 14px 18px; text-align: left;
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 18px; text-align: left;
   border-bottom: 1px solid rgba(0,0,0,0.045);
-  transition: background 0.18s var(--ease-smooth);
 }
-.result-item:hover  { background: var(--fill-gray); }
-.result-item:active { background: var(--fill-gray-hover); }
+.result-item:active { background: var(--fill-gray); }
 .result-ico {
-  width: 40px; height: 40px; border-radius: 12px;
+  width: 38px; height: 38px; border-radius: 12px;
   background: var(--fill-gray);
   display: flex; align-items: center; justify-content: center;
-  font-size: 0.92rem; color: var(--ink);
-  flex-shrink: 0;
+  font-size: 0.9rem; flex-shrink: 0;
 }
 .result-txt { flex: 1; min-width: 0; }
 .result-txt strong {
-  display: block; font-size: 0.88rem; font-weight: 600;
-  color: var(--text-primary); line-height: 1.3;
+  display: block; font-size: 0.86rem; font-weight: 600;
+  line-height: 1.3;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .result-txt span {
-  display: block; font-size: 0.74rem; color: var(--text-secondary);
+  display: block; font-size: 0.72rem; color: var(--text-secondary);
   margin-top: 2px; white-space: nowrap;
   overflow: hidden; text-overflow: ellipsis;
 }
 .result-dist {
-  font-size: 0.76rem; font-weight: 800;
-  color: var(--text-primary);
+  font-size: 0.72rem; font-weight: 800;
   background: var(--fill-gray);
-  padding: 5px 11px; border-radius: 999px;
+  padding: 5px 10px; border-radius: 999px;
   flex-shrink: 0;
 }
 .loader-row {
   display: flex; align-items: center; justify-content: center;
   gap: 10px; padding: 26px;
-  font-size: 0.82rem; color: var(--text-secondary); font-weight: 500;
+  font-size: 0.8rem; color: var(--text-secondary); font-weight: 500;
 }
 .mini-spin {
   width: 16px; height: 16px; border-radius: 50%;
@@ -758,58 +804,53 @@ input, textarea { font-family: inherit; }
 /* FORMS */
 .pill-input {
   width: 100%;
-  padding: 13px 16px 13px 42px;
-  font-size: 0.94rem;
+  padding: 12px 16px 12px 40px;
+  font-size: 0.92rem;
   border: 1.5px solid transparent;
   border-radius: var(--radius-sm);
   background: var(--fill-gray);
-  outline: none; color: var(--text-primary);
-  transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+  outline: none;
 }
 .pill-input::placeholder { color: var(--text-tertiary); font-weight: 400; }
-.pill-input:hover { background: var(--fill-gray-hover); }
 .pill-input:focus {
-  background: #ffffff;
-  border-color: #0a0a0a;
+  background: #ffffff; border-color: #0a0a0a;
   box-shadow: 0 0 0 4px rgba(0,0,0,0.10);
 }
-.pill-textarea { resize: vertical; min-height: 96px; line-height: 1.5; }
+.pill-textarea { resize: vertical; min-height: 88px; line-height: 1.5; }
 .input-icon-group {
-  position: relative; width: 100%; margin-bottom: 0.85rem;
+  position: relative; width: 100%; margin-bottom: 0.75rem;
 }
 .input-icon-group > i {
-  position: absolute; left: 15px; top: 50%;
+  position: absolute; left: 14px; top: 50%;
   transform: translateY(-50%);
   color: var(--text-tertiary);
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   pointer-events: none; z-index: 1;
 }
-.input-icon-group.textarea-group > i { top: 22px; transform: none; }
+.input-icon-group.textarea-group > i { top: 20px; transform: none; }
 .input-icon-group:focus-within > i { color: #0a0a0a; }
 
 .section-label {
-  font-size: 0.72rem; font-weight: 700;
+  font-size: 0.68rem; font-weight: 700;
   color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.6px;
-  margin: 1.1rem 0 0.55rem;
+  margin: 1rem 0 0.5rem;
 }
 
 .error-msg {
-  color: #d92d20; font-size: 0.78rem; font-weight: 500;
+  color: #d92d20; font-size: 0.76rem; font-weight: 500;
   margin: 0.4rem 0 0.75rem 4px;
   line-height: 1.45; white-space: pre-wrap;
 }
 .error-msg:empty { display: none; }
 
 .btn {
-  font-size: 0.94rem; font-weight: 600;
-  border: none; border-radius: var(--radius-sm);
-  padding: 14px 20px; width: 100%;
-  cursor: pointer;
+  font-size: 0.92rem; font-weight: 600;
+  border-radius: var(--radius-sm);
+  padding: 13px 20px; width: 100%;
   display: inline-flex; align-items: center; justify-content: center;
   gap: 9px;
-  transition: transform 0.35s var(--spring), box-shadow 0.35s;
 }
 .btn-primary {
   background: linear-gradient(180deg, #2b2b2e 0%, #0a0a0a 60%, #000 100%);
@@ -817,23 +858,17 @@ input, textarea { font-family: inherit; }
   box-shadow: 0 8px 20px -6px rgba(0,0,0,0.40);
   margin-top: 6px;
 }
-.btn-primary:hover:not(:disabled) { transform: translateY(-2px); }
-.btn-primary:active:not(:disabled) { transform: translateY(0) scale(0.975); }
 .btn:disabled { opacity: 0.55; cursor: not-allowed; }
 
 .pickup-actions { display: flex; gap: 10px; margin-bottom: 12px; }
 .pickup-action-btn {
-  flex: 1; padding: 11px 12px;
+  flex: 1; padding: 10px 12px;
   border-radius: var(--radius-sm);
   background: var(--fill-gray);
-  font-size: 0.8rem; font-weight: 700;
-  color: var(--text-primary);
+  font-size: 0.78rem; font-weight: 700;
   display: inline-flex; align-items: center; justify-content: center;
-  gap: 8px;
-  transition: background 0.22s;
+  gap: 7px;
 }
-.pickup-action-btn:hover { background: var(--fill-gray-hover); }
-.pickup-action-btn i { font-size: 0.86rem; }
 
 .upload-box {
   position: relative; width: 100%;
@@ -844,25 +879,15 @@ input, textarea { font-family: inherit; }
   display: flex; flex-direction: column;
   align-items: center; justify-content: center; gap: 8px;
   cursor: pointer; overflow: hidden;
-  transition: border-color 0.3s, background 0.3s;
-}
-.upload-box:hover {
-  border-color: #0a0a0a; background: #ffffff;
 }
 .upload-box.has-image { border-style: solid; border-color: #0a0a0a; }
-.upload-box img {
-  position: absolute; inset: 0;
-  width: 100%; height: 100%;
-  object-fit: cover;
-}
+.upload-box img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .upload-box .upload-label {
-  font-size: 0.76rem; font-weight: 700;
+  font-size: 0.74rem; font-weight: 700;
   color: var(--text-secondary);
   text-transform: uppercase; letter-spacing: 0.4px;
 }
-.upload-box i.upload-icon {
-  font-size: 1.8rem; color: var(--text-tertiary);
-}
+.upload-box i.upload-icon { font-size: 1.7rem; color: var(--text-tertiary); }
 .upload-box.has-image .upload-label,
 .upload-box.has-image i.upload-icon { display: none; }
 .upload-box.is-loading::after {
@@ -876,7 +901,7 @@ input, textarea { font-family: inherit; }
   z-index: 4;
 }
 
-/* ERRAND CARDS */
+/* Cards */
 .fb-card {
   background: #ffffff;
   border-radius: 14px;
@@ -903,12 +928,10 @@ input, textarea { font-family: inherit; }
 .fb-meta { flex: 1; min-width: 0; }
 .fb-meta strong {
   display: block; font-size: 0.9rem; font-weight: 700;
-  color: var(--text-primary);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .fb-meta span {
-  display: block; font-size: 0.72rem;
-  color: var(--text-secondary); margin-top: 1px;
+  display: block; font-size: 0.72rem; color: var(--text-secondary); margin-top: 1px;
 }
 .fb-status {
   font-size: 0.62rem; font-weight: 800;
@@ -926,12 +949,11 @@ input, textarea { font-family: inherit; }
 
 .fb-card-body { padding: 4px 16px 12px; }
 .fb-card-body h4 {
-  font-size: 0.98rem; font-weight: 800;
+  font-size: 0.96rem; font-weight: 800;
   letter-spacing: -0.25px; margin-bottom: 6px;
-  color: var(--text-primary);
 }
 .fb-card-body p {
-  font-size: 0.86rem; color: var(--text-secondary);
+  font-size: 0.84rem; color: var(--text-secondary);
   line-height: 1.5; margin-bottom: 10px;
   white-space: pre-wrap; word-break: break-word;
 }
@@ -940,14 +962,8 @@ input, textarea { font-family: inherit; }
   margin-bottom: 10px; background: var(--fill-gray);
   max-height: 320px;
 }
-.fb-image img {
-  width: 100%; max-height: 320px;
-  object-fit: cover; display: block;
-}
-.fb-tags {
-  display: flex; flex-wrap: wrap; gap: 6px;
-  margin-bottom: 4px;
-}
+.fb-image img { width: 100%; max-height: 320px; object-fit: cover; display: block; }
+.fb-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 4px; }
 .fb-tag {
   display: inline-flex; align-items: center; gap: 6px;
   font-size: 0.72rem; font-weight: 600;
@@ -955,7 +971,6 @@ input, textarea { font-family: inherit; }
   background: var(--fill-gray);
   padding: 5px 10px; border-radius: 999px;
 }
-.fb-tag i { font-size: 0.7rem; }
 .fb-tag.price { background: #0a0a0a; color: #fff; font-weight: 800; }
 .fb-card-stats {
   display: flex; align-items: center; justify-content: space-between;
@@ -963,25 +978,17 @@ input, textarea { font-family: inherit; }
   border-top: 1px solid var(--line);
   font-size: 0.72rem; color: var(--text-secondary); font-weight: 600;
 }
-.fb-card-stats .stat-pill {
-  display: inline-flex; align-items: center; gap: 6px;
-}
 .fb-card-footer {
   display: flex; border-top: 1px solid var(--line);
 }
 .fb-card-footer button {
   flex: 1; padding: 12px 8px;
   font-size: 0.82rem; font-weight: 700;
-  color: var(--text-primary);
   display: inline-flex; align-items: center; justify-content: center;
   gap: 7px;
-  transition: background 0.2s;
 }
-.fb-card-footer button:hover { background: var(--fill-gray); }
 .fb-card-footer button + button { border-left: 1px solid var(--line); }
 .fb-card-footer button.primary { background: #0a0a0a; color: #fff; }
-.fb-card-footer button.primary:hover { background: #1c1c1e; }
-.fb-card-footer button i { font-size: 0.78rem; }
 
 .empty-state {
   text-align: center; padding: 50px 24px;
@@ -994,21 +1001,20 @@ input, textarea { font-family: inherit; }
 .empty-state h3 {
   font-size: 1.05rem; font-weight: 800;
   color: var(--text-primary);
-  margin-bottom: 6px; letter-spacing: -0.3px;
+  margin-bottom: 6px;
 }
 .empty-state p {
-  font-size: 0.86rem; line-height: 1.55;
+  font-size: 0.84rem; line-height: 1.55;
   max-width: 320px; margin: 0 auto;
 }
 
-/* OFFERS */
+/* Offers */
 .offer-card {
   background: #ffffff;
   border-radius: 14px;
   box-shadow: 0 0 0 1px var(--line), 0 2px 8px rgba(0,0,0,0.04);
   padding: 16px; margin-bottom: 10px;
   display: flex; gap: 14px; align-items: flex-start;
-  animation: fbCardIn 0.4s var(--ease-out);
 }
 .offer-avatar {
   width: 48px; height: 48px; border-radius: 50%;
@@ -1020,7 +1026,7 @@ input, textarea { font-family: inherit; }
 .offer-avatar i { color: var(--text-tertiary); font-size: 1.2rem; }
 .offer-body { flex: 1; min-width: 0; }
 .offer-body strong {
-  display: block; font-size: 0.94rem; font-weight: 800;
+  display: block; font-size: 0.92rem; font-weight: 800;
   letter-spacing: -0.2px; margin-bottom: 3px;
 }
 .offer-body .offer-message {
@@ -1033,66 +1039,56 @@ input, textarea { font-family: inherit; }
   gap: 12px; flex-wrap: wrap;
 }
 .offer-price {
-  font-size: 1.2rem; font-weight: 800;
+  font-size: 1.15rem; font-weight: 800;
   letter-spacing: -0.5px;
 }
-.offer-price small { font-size: 0.78rem; font-weight: 700; opacity: 0.6; margin-right: 2px; }
+.offer-price small { font-size: 0.76rem; font-weight: 700; opacity: 0.6; margin-right: 2px; }
 .offer-accept-btn {
-  padding: 10px 18px;
+  padding: 9px 16px;
   border-radius: 999px;
   background: #0a0a0a; color: #fff;
-  font-size: 0.82rem; font-weight: 700;
-  display: inline-flex; align-items: center; gap: 7px;
-  transition: transform 0.28s var(--spring);
+  font-size: 0.8rem; font-weight: 700;
+  display: inline-flex; align-items: center; gap: 6px;
 }
-.offer-accept-btn:active { transform: scale(0.95); }
 .offer-accept-btn:disabled { opacity: 0.5; }
 .offers-empty {
-  text-align: center; padding: 34px 20px;
+  text-align: center; padding: 30px 20px;
   color: var(--text-secondary);
   background: var(--fill-gray);
   border-radius: 14px;
 }
-.offers-empty .mini-spin {
-  width: 22px; height: 22px;
-  margin: 0 auto 14px; display: block;
-  border-width: 2.5px;
-}
 .offers-empty strong {
-  display: block; font-size: 0.92rem; font-weight: 800;
+  display: block; font-size: 0.9rem; font-weight: 800;
   color: var(--text-primary); margin-bottom: 4px;
 }
 .offers-empty p {
-  font-size: 0.82rem; line-height: 1.5;
+  font-size: 0.8rem; line-height: 1.5;
   max-width: 300px; margin: 0 auto;
 }
 
 .detail-head-card {
   background: #0a0a0a; color: #fff;
-  border-radius: 14px; padding: 18px; margin-bottom: 16px;
+  border-radius: 14px; padding: 16px; margin-bottom: 16px;
 }
 .detail-head-card h3 {
-  font-size: 1.05rem; font-weight: 800;
+  font-size: 1.02rem; font-weight: 800;
   letter-spacing: -0.3px; margin-bottom: 6px;
 }
 .detail-head-card p {
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   color: rgba(255,255,255,0.7);
   line-height: 1.5; margin-bottom: 12px;
   word-break: break-word;
 }
-.detail-head-stats {
-  display: flex; gap: 10px; flex-wrap: wrap;
-}
+.detail-head-stats { display: flex; gap: 8px; flex-wrap: wrap; }
 .detail-head-stat {
   background: rgba(255,255,255,0.1);
-  padding: 8px 12px; border-radius: 10px;
-  font-size: 0.74rem; font-weight: 700;
+  padding: 7px 11px; border-radius: 10px;
+  font-size: 0.72rem; font-weight: 700;
   display: inline-flex; align-items: center; gap: 6px;
 }
-.detail-head-stat i { font-size: 0.7rem; opacity: 0.8; }
 
-/* CHAT */
+/* Chat */
 .chat-body {
   flex: 1; min-height: 0; overflow-y: auto;
   -webkit-overflow-scrolling: touch;
@@ -1108,14 +1104,9 @@ input, textarea { font-family: inherit; }
   border-radius: 18px;
   font-size: 0.88rem; line-height: 1.45;
   word-break: break-word; white-space: pre-wrap;
-  animation: chatIn 0.24s var(--ease-out);
-}
-@keyframes chatIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: translateY(0); }
 }
 .chat-msg.them {
-  background: #ffffff; color: var(--text-primary);
+  background: #ffffff;
   align-self: flex-start; border-bottom-left-radius: 6px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.06);
 }
@@ -1124,7 +1115,7 @@ input, textarea { font-family: inherit; }
   align-self: flex-end; border-bottom-right-radius: 6px;
 }
 .chat-msg-meta {
-  font-size: 0.64rem; font-weight: 700;
+  font-size: 0.62rem; font-weight: 700;
   opacity: 0.55; margin-top: 4px; display: block;
 }
 .chat-empty {
@@ -1150,7 +1141,6 @@ input, textarea { font-family: inherit; }
   background: var(--fill-gray);
   outline: none; font-size: 0.9rem;
   resize: none; line-height: 1.4;
-  transition: background 0.22s, border-color 0.22s;
 }
 .chat-input-row textarea:focus {
   background: #ffffff; border-color: #0a0a0a;
@@ -1160,12 +1150,9 @@ input, textarea { font-family: inherit; }
   background: #0a0a0a; color: #fff;
   display: flex; align-items: center; justify-content: center;
   font-size: 1rem; flex-shrink: 0;
-  transition: transform 0.28s var(--spring);
 }
-.chat-send-btn:active { transform: scale(0.92); }
-.chat-send-btn:disabled { opacity: 0.5; }
 
-/* VEHICLE SHEET */
+/* Vehicle sheet */
 .sheet-overlay {
   position: fixed; inset: 0; z-index: 3500;
   background: rgba(0,0,0,0.55);
@@ -1173,85 +1160,70 @@ input, textarea { font-family: inherit; }
   -webkit-backdrop-filter: blur(4px);
   display: none; align-items: flex-end; justify-content: center;
 }
-.sheet-overlay.open { display: flex; animation: fadeIn 0.24s var(--ease-out); }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.sheet-overlay.open { display: flex; }
 .sheet {
   background: #ffffff;
   border-radius: 26px 26px 0 0;
   width: 100%; max-width: 560px;
   padding: 12px 20px 28px;
-  animation: sheetUp 0.42s var(--panel-ease);
   box-shadow: 0 -12px 40px rgba(0,0,0,0.28);
-}
-@keyframes sheetUp {
-  from { transform: translateY(100%); }
-  to   { transform: translateY(0); }
 }
 .sheet-handle {
   width: 42px; height: 4px; border-radius: 999px;
   background: rgba(0,0,0,0.14);
   margin: 4px auto 18px;
 }
-.sheet-head { text-align: center; margin-bottom: 18px; }
+.sheet-head { text-align: center; margin-bottom: 16px; }
 .sheet-head h3 {
-  font-size: 1.05rem; font-weight: 800;
+  font-size: 1.02rem; font-weight: 800;
   letter-spacing: -0.35px; margin-bottom: 4px;
 }
 .sheet-head p {
-  font-size: 0.78rem; color: var(--text-secondary); font-weight: 500;
+  font-size: 0.76rem; color: var(--text-secondary);
 }
 .vehicle-list { display: flex; flex-direction: column; gap: 9px; margin-bottom: 14px; }
 .vehicle-item {
   width: 100%;
   display: flex; align-items: center; gap: 14px;
-  padding: 14px 16px;
+  padding: 13px 15px;
   border-radius: var(--radius-sm);
   background: #ffffff;
   box-shadow: 0 0 0 1.5px var(--line);
   text-align: left;
-  transition: transform 0.28s var(--spring), box-shadow 0.24s;
 }
-.vehicle-item:hover {
-  background: #fafafa;
-  box-shadow: 0 0 0 1.5px rgba(0,0,0,0.20);
-  transform: translateY(-1px);
-}
-.vehicle-item:active { transform: scale(0.985); }
 .vehicle-icon {
-  width: 46px; height: 46px; border-radius: 13px;
+  width: 44px; height: 44px; border-radius: 13px;
   background: #0a0a0a; color: #ffffff;
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.15rem; flex-shrink: 0;
+  font-size: 1.1rem; flex-shrink: 0;
 }
 .vehicle-info { flex: 1; min-width: 0; }
 .vehicle-info strong {
-  display: block; font-size: 0.94rem; font-weight: 800;
-  letter-spacing: -0.25px; margin-bottom: 2px;
+  display: block; font-size: 0.92rem; font-weight: 800;
+  margin-bottom: 2px;
 }
 .vehicle-info span {
-  display: block; font-size: 0.74rem;
-  color: var(--text-secondary); font-weight: 500;
+  display: block; font-size: 0.72rem;
+  color: var(--text-secondary);
 }
 .vehicle-price { text-align: right; flex-shrink: 0; }
 .vehicle-price strong {
-  display: block; font-size: 1.1rem; font-weight: 800;
+  display: block; font-size: 1.05rem; font-weight: 800;
   letter-spacing: -0.4px;
 }
 .vehicle-price small {
-  display: block; font-size: 0.66rem;
+  display: block; font-size: 0.62rem;
   color: var(--text-tertiary); font-weight: 700;
   letter-spacing: 0.4px; margin-top: 2px;
 }
 .sheet-cancel {
-  width: 100%; padding: 14px;
+  width: 100%; padding: 13px;
   border-radius: var(--radius-sm);
   background: var(--fill-gray);
-  color: var(--text-primary);
-  font-size: 0.9rem; font-weight: 700;
+  font-size: 0.88rem; font-weight: 700;
 }
-.sheet-cancel:hover { background: var(--fill-gray-hover); }
 
-/* MARKERS */
+/* Markers */
 .mk-dot {
   width: 18px; height: 18px; border-radius: 50%;
   background: #0a0a0a; border: 3.5px solid #ffffff;
@@ -1265,6 +1237,9 @@ input, textarea { font-family: inherit; }
   transform: rotate(-45deg);
   box-shadow: 0 3px 10px rgba(0,0,0,0.42);
   box-sizing: border-box;
+}
+.mk-pin.stop {
+  background: var(--warn);
 }
 .mk-user {
   width: 16px; height: 16px; border-radius: 50%;
@@ -1283,6 +1258,16 @@ input, textarea { font-family: inherit; }
   70%  { transform: scale(1.25); opacity: 0; }
   100% { transform: scale(1.25); opacity: 0; }
 }
+.provider-marker {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  background: #0a0a0a;
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+  border: 3px solid #fff;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.45);
+}
 .leaflet-tile-pane {
   filter: saturate(0.85) contrast(1.05) brightness(1.02);
 }
@@ -1295,13 +1280,13 @@ input, textarea { font-family: inherit; }
 }
 .leaflet-control-attribution a { color: #6e6e73 !important; }
 
-/* TOAST */
+/* Toast */
 #toast {
   position: fixed; left: 50%; bottom: 26px; z-index: 6000;
   transform: translate(-50%, 24px);
   background: #0a0a0a; color: #fff;
-  font-size: 0.84rem; font-weight: 600;
-  padding: 13px 22px; border-radius: 999px;
+  font-size: 0.82rem; font-weight: 600;
+  padding: 12px 22px; border-radius: 999px;
   box-shadow: 0 14px 34px -10px rgba(0,0,0,0.6);
   opacity: 0; visibility: hidden;
   transition: opacity 0.32s var(--ease-out), transform 0.42s var(--spring), visibility 0.32s;
@@ -1310,12 +1295,11 @@ input, textarea { font-family: inherit; }
 }
 #toast.show { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
 
-/* HISTORY */
+/* History */
 .filter-tabs {
   display: flex; gap: 8px;
   padding: 12px 16px 8px;
   overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
   border-bottom: 1px solid var(--line);
   background: #ffffff;
   position: sticky; top: 0; z-index: 10;
@@ -1325,14 +1309,12 @@ input, textarea { font-family: inherit; }
   flex-shrink: 0;
   padding: 9px 16px;
   border-radius: 999px;
-  font-size: 0.8rem; font-weight: 700;
+  font-size: 0.78rem; font-weight: 700;
   color: var(--text-secondary);
   background: var(--fill-gray);
-  transition: background 0.22s, color 0.22s;
   white-space: nowrap;
 }
 .filter-tab.active { background: #0a0a0a; color: #fff; }
-.filter-tab:hover:not(.active) { background: var(--fill-gray-hover); }
 
 .summary-strip {
   display: grid; grid-template-columns: 1fr 1fr;
@@ -1345,33 +1327,29 @@ input, textarea { font-family: inherit; }
 }
 .summary-tile.dark { background: #0a0a0a; color: #fff; }
 .summary-tile small {
-  display: block; font-size: 0.64rem; font-weight: 700;
+  display: block; font-size: 0.62rem; font-weight: 700;
   letter-spacing: 1.1px; text-transform: uppercase;
   color: var(--text-tertiary); margin-bottom: 6px;
 }
 .summary-tile.dark small { color: rgba(255,255,255,0.55); }
 .summary-tile strong {
-  display: block; font-size: 1.35rem; font-weight: 800;
+  display: block; font-size: 1.3rem; font-weight: 800;
   letter-spacing: -0.6px;
 }
 .summary-tile.dark strong { color: #fff; }
 
-/* History expandable cards */
 .hist-card {
   background: #ffffff;
   border-radius: 14px;
   box-shadow: 0 0 0 1px var(--line), 0 1px 4px rgba(0,0,0,0.03);
   margin-bottom: 10px;
   overflow: hidden;
-  animation: fbCardIn 0.35s var(--ease-out);
 }
 .hist-summary {
   display: flex; align-items: center; gap: 14px;
   padding: 14px 16px;
   cursor: pointer;
-  transition: background 0.18s;
 }
-.hist-summary:hover { background: var(--fill-gray); }
 .hist-summary .h-ico {
   width: 44px; height: 44px;
   border-radius: 12px;
@@ -1384,14 +1362,12 @@ input, textarea { font-family: inherit; }
 .hist-summary .h-ico.errand    { background: #027a48; }
 .hist-summary .h-body { flex: 1; min-width: 0; }
 .hist-summary .h-title {
-  font-size: 0.92rem; font-weight: 800;
-  letter-spacing: -0.25px;
-  color: var(--text-primary);
+  font-size: 0.9rem; font-weight: 800;
   margin-bottom: 3px;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .hist-summary .h-sub {
-  font-size: 0.74rem; color: var(--text-secondary);
+  font-size: 0.72rem; color: var(--text-secondary);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .hist-summary .h-right {
@@ -1400,7 +1376,7 @@ input, textarea { font-family: inherit; }
   gap: 3px;
 }
 .hist-summary .h-right strong {
-  font-size: 0.98rem; font-weight: 800; letter-spacing: -0.35px;
+  font-size: 0.94rem; font-weight: 800;
 }
 .hist-summary .h-chevron {
   color: var(--text-tertiary);
@@ -1412,8 +1388,7 @@ input, textarea { font-family: inherit; }
 .hist-card.expanded .h-chevron { transform: rotate(180deg); }
 
 .hist-details {
-  max-height: 0;
-  overflow: hidden;
+  max-height: 0; overflow: hidden;
   transition: max-height 0.35s var(--ease-out);
   background: #fafafa;
   border-top: 1px solid transparent;
@@ -1422,13 +1397,11 @@ input, textarea { font-family: inherit; }
   max-height: 720px;
   border-top-color: var(--line);
 }
-.hist-details-inner {
-  padding: 14px 16px 16px;
-}
+.hist-details-inner { padding: 14px 16px 16px; }
 .hist-details .hd-section { margin-bottom: 14px; }
 .hist-details .hd-section:last-child { margin-bottom: 0; }
 .hist-details .hd-label {
-  font-size: 0.62rem; font-weight: 800;
+  font-size: 0.6rem; font-weight: 800;
   letter-spacing: 1.1px; text-transform: uppercase;
   color: var(--text-tertiary);
   margin-bottom: 6px;
@@ -1437,7 +1410,7 @@ input, textarea { font-family: inherit; }
 .hist-details .hd-row {
   display: flex; justify-content: space-between;
   gap: 12px; padding: 6px 0;
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   border-bottom: 1px dashed rgba(0,0,0,0.05);
 }
 .hist-details .hd-row:last-child { border-bottom: none; }
@@ -1446,8 +1419,7 @@ input, textarea { font-family: inherit; }
   flex-shrink: 0;
 }
 .hist-details .hd-row .hd-val {
-  color: var(--text-primary); font-weight: 700;
-  text-align: right;
+  font-weight: 700; text-align: right;
   word-break: break-word;
 }
 .hist-details .hd-route-block {
@@ -1476,7 +1448,7 @@ input, textarea { font-family: inherit; }
 }
 .hist-details .hd-route-block .rr-txt {
   flex: 1; min-width: 0;
-  font-size: 0.82rem; font-weight: 600;
+  font-size: 0.8rem; font-weight: 600;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .hist-details .hd-actions {
@@ -1488,14 +1460,11 @@ input, textarea { font-family: inherit; }
   padding: 10px 14px;
   border-radius: 10px;
   background: #0a0a0a; color: #fff;
-  font-size: 0.8rem; font-weight: 700;
+  font-size: 0.78rem; font-weight: 700;
   display: inline-flex; align-items: center; justify-content: center;
   gap: 7px;
   text-decoration: none;
-  transition: transform 0.28s var(--spring);
 }
-.hist-details .hd-actions a:active,
-.hist-details .hd-actions button:active { transform: scale(0.97); }
 .hist-details .hd-actions a.ghost,
 .hist-details .hd-actions button.ghost {
   background: var(--fill-gray); color: var(--text-primary);
@@ -1503,7 +1472,7 @@ input, textarea { font-family: inherit; }
 
 .chip {
   display: inline-flex; align-items: center; gap: 5px;
-  font-size: 0.66rem; font-weight: 800;
+  font-size: 0.62rem; font-weight: 800;
   letter-spacing: 0.4px; text-transform: uppercase;
   padding: 3px 9px; border-radius: 999px;
 }
@@ -1516,7 +1485,7 @@ input, textarea { font-family: inherit; }
 .chip.in_progress { background: var(--success-soft); color: #027a48; }
 .chip.arrived   { background: var(--info-soft);    color: #175cd3; }
 
-/* TRANSACTIONS */
+/* Transactions */
 .tx-item {
   display: flex; align-items: center; gap: 14px;
   padding: 14px 16px;
@@ -1524,38 +1493,32 @@ input, textarea { font-family: inherit; }
   border-radius: 14px;
   box-shadow: 0 0 0 1px var(--line), 0 1px 4px rgba(0,0,0,0.03);
   margin-bottom: 10px;
-  animation: fbCardIn 0.35s var(--ease-out);
 }
 .tx-item .tx-ico {
   width: 42px; height: 42px;
   border-radius: 12px;
-  background: var(--fill-gray); color: var(--text-primary);
+  background: var(--fill-gray);
   display: flex; align-items: center; justify-content: center;
   font-size: 1rem; flex-shrink: 0;
 }
 .tx-item .tx-ico.out { background: #fef3f2; color: #b42318; }
-.tx-item .tx-ico.in  { background: #ecfdf3; color: #027a48; }
 .tx-item .tx-body { flex: 1; min-width: 0; }
 .tx-item .tx-title {
-  font-size: 0.9rem; font-weight: 700;
-  color: var(--text-primary);
-  letter-spacing: -0.2px; margin-bottom: 3px;
+  font-size: 0.88rem; font-weight: 700;
+  margin-bottom: 3px;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .tx-item .tx-sub {
-  font-size: 0.72rem; color: var(--text-secondary);
+  font-size: 0.7rem; color: var(--text-secondary);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.tx-item .tx-amount {
-  text-align: right; flex-shrink: 0;
-}
+.tx-item .tx-amount { text-align: right; flex-shrink: 0; }
 .tx-item .tx-amount strong {
-  display: block; font-size: 0.98rem; font-weight: 800;
-  letter-spacing: -0.35px;
+  display: block; font-size: 0.95rem; font-weight: 800;
 }
 .tx-item .tx-amount .tx-status {
   display: inline-block; margin-top: 3px;
-  font-size: 0.6rem; font-weight: 800;
+  font-size: 0.58rem; font-weight: 800;
   letter-spacing: 0.6px; text-transform: uppercase;
   padding: 3px 8px; border-radius: 999px;
 }
@@ -1565,10 +1528,11 @@ input, textarea { font-family: inherit; }
 .tx-status.cancelled { background: #f4f4f5;             color: #52525b; }
 
 @media (max-width: 380px) {
-  .btn-ride { padding: 22px 18px; }
-  .btn-ride .ride-ico { width: 42px; height: 42px; font-size: 1.1rem; }
-  .btn-ride .ride-txt strong { font-size: 0.98rem; }
-  .fare-top .fare-amount { font-size: 1.75rem; }
+  .btn-ride { padding: 20px 16px; }
+  .btn-ride .ride-ico { width: 42px; height: 42px; }
+  .fare-top .fare-amount { font-size: 1.6rem; }
+  .compact-status { padding: 10px 12px; }
+  .compact-status .cs-fare strong { font-size: 1rem; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -1640,7 +1604,7 @@ input, textarea { font-family: inherit; }
 
     <section class="action-half">
 
-      <!-- HOME PANE — original interface -->
+      <!-- HOME PANE -->
       <div class="action-pane active" id="paneHome">
         <div class="home-greeting" id="homeGreeting">Hello 👋</div>
         <div class="home-sub">Where are you headed today?</div>
@@ -1666,7 +1630,7 @@ input, textarea { font-family: inherit; }
         </div>
       </div>
 
-      <!-- TRIP PANE — planning -->
+      <!-- TRIP PANE -->
       <div class="action-pane" id="paneTrip">
         <div class="trip-head">
           <h2 id="tripTitle">Your Trip</h2>
@@ -1678,10 +1642,21 @@ input, textarea { font-family: inherit; }
             <span class="point-dot"></span>
             <span class="point-txt">
               <small>Pickup</small>
-              <strong id="summaryPickup">Current location</strong>
+              <strong id="summaryPickup">Detecting…</strong>
             </span>
             <i class="fas fa-pen-to-square point-edit"></i>
           </button>
+          <div class="points-divider" id="stopDivider" style="display:none;"></div>
+          <div class="point-row" id="stopRowBtn" style="display:none;">
+            <span class="point-dot stop"></span>
+            <span class="point-txt">
+              <small>Stop</small>
+              <strong id="summaryStop">—</strong>
+            </span>
+            <button class="point-remove" id="removeStopBtn" aria-label="Remove stop">
+              <i class="fas fa-xmark"></i>
+            </button>
+          </div>
           <div class="points-divider"></div>
           <button class="point-row" id="dropoffRowBtn">
             <span class="point-dot square"></span>
@@ -1690,6 +1665,12 @@ input, textarea { font-family: inherit; }
               <strong id="summaryDropoff">—</strong>
             </span>
             <i class="fas fa-pen-to-square point-edit"></i>
+          </button>
+        </div>
+
+        <div class="add-stop-row" id="addStopRow">
+          <button class="add-stop-btn" id="addStopBtn">
+            <i class="fas fa-plus"></i> Add a stop
           </button>
         </div>
 
@@ -1717,56 +1698,83 @@ input, textarea { font-family: inherit; }
         </button>
       </div>
 
-      <!-- ACTIVE PANE — searching + provider found + in progress -->
+      <!-- ACTIVE PANE — compact -->
       <div class="action-pane" id="paneActive">
+        <div class="active-compact">
 
-        <!-- Searching state -->
-        <div id="activeSearchingState" style="display:flex; flex-direction:column; flex:1; min-height:0;">
-          <div class="pane-radar">
-            <div class="radar-ring"></div>
-            <div class="radar-ring"></div>
-            <div class="radar-ring"></div>
-            <div class="radar-center">
-              <i class="fas fa-car" id="searchingIcon"></i>
-            </div>
-          </div>
-          <div class="active-pane-head">
-            <h2 id="searchingTitle">Searching for a driver</h2>
-            <p id="searchingSubtitle">Looking for someone nearby to accept your ride…</p>
-          </div>
-          <div class="searching-dots"><span></span><span></span><span></span></div>
-          <button class="pane-cancel-btn" id="cancelSearchBtn">Cancel</button>
-        </div>
-
-        <!-- Provider found / trip active state -->
-        <div id="activeProviderState" style="display:none; flex-direction:column; flex:1; min-height:0;">
-          <div class="provider-found-card">
-            <div class="provider-found-avatar" id="providerFoundAvatar">
-              <i class="fas fa-user"></i>
-            </div>
-            <div class="provider-found-body">
-              <strong id="providerFoundName">Provider</strong>
-              <div class="provider-found-meta">
-                <span id="providerFoundRole"><i class="fas fa-id-badge"></i> Driver</span>
-                <span id="providerFoundVehicle"><i class="fas fa-car"></i> Vehicle</span>
+          <!-- Searching -->
+          <div id="activeSearchingState" class="searching-wrap">
+            <div class="pane-radar">
+              <div class="radar-ring"></div>
+              <div class="radar-ring"></div>
+              <div class="radar-ring"></div>
+              <div class="radar-center">
+                <i class="fas fa-car" id="searchingIcon"></i>
               </div>
             </div>
-            <a class="provider-call-btn" id="providerCallBtn" href="#" style="display:none;">
-              <i class="fas fa-phone"></i>
-            </a>
-          </div>
-
-          <div class="provider-vehicle-preview" id="providerVehiclePreview" style="display:none;"></div>
-
-          <div class="trip-status-card">
-            <div class="trip-status-icon" id="tripStatusIcon">
-              <i class="fas fa-clock"></i>
+            <div class="active-pane-head">
+              <h2 id="searchingTitle">Searching for a driver</h2>
+              <p id="searchingSubtitle">Looking for someone nearby to accept your ride…</p>
             </div>
-            <h2 id="tripStatusTitle">Driver is on the way</h2>
-            <p id="tripStatusSubtitle">They'll arrive at your pickup point soon.</p>
+            <button class="pane-cancel-btn" id="cancelSearchBtn">Cancel</button>
           </div>
 
-          <button class="pane-cancel-btn" id="cancelTripActiveBtn">Cancel</button>
+          <!-- Provider active — compact, no scroll -->
+          <div id="activeProviderState" style="display:none; flex-direction:column; flex:1; min-height:0; gap:8px;">
+
+            <div class="pf-row">
+              <div class="pf-avatar" id="providerFoundAvatar">
+                <i class="fas fa-user"></i>
+              </div>
+              <div class="pf-body">
+                <strong id="providerFoundName">Provider</strong>
+                <div class="pf-meta">
+                  <span id="providerFoundRole"><i class="fas fa-id-badge"></i> Driver</span>
+                  <span id="providerFoundVehicle"><i class="fas fa-car"></i> Vehicle</span>
+                </div>
+              </div>
+              <a class="pf-call" id="providerCallBtn" href="#" style="display:none;">
+                <i class="fas fa-phone"></i>
+              </a>
+            </div>
+
+            <div class="compact-route">
+              <div class="cr-line">
+                <span class="cr-dot" id="crDot1"></span>
+                <span class="cr-dot" id="crDot2" style="display:none;"></span>
+                <span class="cr-dot dest"></span>
+              </div>
+              <div class="cr-info">
+                <div class="cr-text">
+                  <small>Pickup</small>
+                  <span id="crPickup">—</span>
+                </div>
+                <div class="cr-text" id="crStopRow" style="display:none;">
+                  <small>Stop</small>
+                  <span id="crStop">—</span>
+                </div>
+                <div class="cr-text">
+                  <small>Drop-off</small>
+                  <span id="crDropoff">—</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="compact-status">
+              <div class="cs-ico" id="tripStatusIcon"><i class="fas fa-clock"></i></div>
+              <div class="cs-body">
+                <strong id="tripStatusTitle">Driver on the way</strong>
+                <span id="tripStatusSubtitle">Heading to your pickup point</span>
+              </div>
+              <div class="cs-fare">
+                <strong>K <span id="tripFareValue">0</span></strong>
+                <small id="tripFareLabel">Fare</small>
+              </div>
+            </div>
+
+            <button class="pane-cancel-btn" id="cancelTripActiveBtn">Cancel Trip</button>
+          </div>
+
         </div>
       </div>
 
@@ -1809,7 +1817,7 @@ input, textarea { font-family: inherit; }
     <button class="icon-btn" id="rideBackBtn" aria-label="Back"><i class="fas fa-arrow-left"></i></button>
     <div style="flex:1;">
       <h2>Plan your trip</h2>
-      <div class="page-head-sub">Pickup &amp; destination</div>
+      <div class="page-head-sub">Pickup, stops &amp; destination</div>
     </div>
   </div>
   <div class="ride-body">
@@ -1822,6 +1830,14 @@ input, textarea { font-family: inherit; }
             <i class="fas fa-xmark"></i>
           </button>
         </div>
+        <div class="input-divider" id="rideStopDivider" style="display:none;"></div>
+        <div class="input-row" id="stopInputRow" style="display:none;">
+          <span class="row-dot stop"></span>
+          <input type="text" id="stopInput" placeholder="Add a stop" autocomplete="off">
+          <button class="row-clear" id="stopClearBtn" aria-label="Clear" style="display:none;">
+            <i class="fas fa-xmark"></i>
+          </button>
+        </div>
         <div class="input-divider"></div>
         <div class="input-row" id="destInputRow">
           <span class="row-dot square"></span>
@@ -1831,11 +1847,16 @@ input, textarea { font-family: inherit; }
           </button>
         </div>
       </div>
+      <div class="add-stop-row" id="rideAddStopRow" style="margin-top:8px;">
+        <button class="add-stop-btn" id="rideAddStopBtn">
+          <i class="fas fa-plus"></i> Add a stop
+        </button>
+      </div>
     </div>
     <div class="results-area" id="resultsArea">
       <div class="results-hint">
         <i class="fas fa-magnifying-glass-location"></i>
-        Start typing — closest matches within 15 km appear first.
+        Type any place — closest matches appear in real time.
       </div>
     </div>
   </div>
@@ -2081,7 +2102,7 @@ input, textarea { font-family: inherit; }
   </div>
 </div>
 
-<!-- VEHICLE SHEET (bottom sheet for delivery vehicle selection — this is expected UX) -->
+<!-- VEHICLE SHEET -->
 <div class="sheet-overlay" id="vehicleSheet">
   <div class="sheet">
     <div class="sheet-handle"></div>
@@ -2120,9 +2141,6 @@ const app      = initializeApp(firebaseConfig);
 const auth     = getAuth(app);
 const database = getDatabase(app);
 
-/* ============================================================
-   CLOUDINARY
-   ============================================================ */
 const CLOUD_NAME = 'dd3lcymrk';
 const UPLOAD_PRESET = 'h3eyhc2o';
 
@@ -2140,21 +2158,9 @@ const CONFIG = {
 };
 
 const DELIVERY_VEHICLES = {
-  motorbike: {
-    id: 'motorbike', label: 'Motorbike',
-    description: 'Fastest for small parcels',
-    icon: 'fa-motorcycle'
-  },
-  cyclist: {
-    id: 'cyclist', label: 'Cyclist',
-    description: 'Eco-friendly & affordable',
-    icon: 'fa-bicycle'
-  },
-  walker: {
-    id: 'walker', label: 'Walker',
-    description: 'Best for very short distances',
-    icon: 'fa-person-walking'
-  }
+  motorbike: { id: 'motorbike', label: 'Motorbike', description: 'Fastest for small parcels', icon: 'fa-motorcycle' },
+  cyclist:   { id: 'cyclist',   label: 'Cyclist',   description: 'Eco-friendly & affordable', icon: 'fa-bicycle' },
+  walker:    { id: 'walker',    label: 'Walker',    description: 'Best for very short distances', icon: 'fa-person-walking' }
 };
 
 const SEARCH_MAX_RAW_RESULTS = 30;
@@ -2171,7 +2177,6 @@ const maintenanceMsg     = $('maintenanceMsg');
 const bannedOverlay      = $('bannedOverlay');
 const banReasonBox       = $('banReasonBox');
 const bannedLogoutBtn    = $('bannedLogoutBtn');
-
 const appRoot      = $('app');
 const topbarName   = $('topbarName');
 const homeGreeting = $('homeGreeting');
@@ -2199,8 +2204,14 @@ const paneActive    = $('paneActive');
 const tripTitle     = $('tripTitle');
 const summaryPickup = $('summaryPickup');
 const summaryDropoff= $('summaryDropoff');
+const summaryStop   = $('summaryStop');
 const pickupRowBtn  = $('pickupRowBtn');
 const dropoffRowBtn = $('dropoffRowBtn');
+const stopRowBtn    = $('stopRowBtn');
+const removeStopBtn = $('removeStopBtn');
+const stopDivider   = $('stopDivider');
+const addStopRow    = $('addStopRow');
+const addStopBtn    = $('addStopBtn');
 const cancelTripBtn = $('cancelTripBtn');
 const confirmRideBtn= $('confirmRideBtn');
 
@@ -2211,11 +2222,17 @@ const fareDuration = $('fareDuration');
 const ridePage       = $('ridePage');
 const rideBackBtn    = $('rideBackBtn');
 const pickupInput    = $('pickupInput');
+const stopInput      = $('stopInput');
 const destInput      = $('destInput');
 const pickupInputRow = $('pickupInputRow');
+const stopInputRow   = $('stopInputRow');
 const destInputRow   = $('destInputRow');
 const pickupClearBtn = $('pickupClearBtn');
+const stopClearBtn   = $('stopClearBtn');
 const destClearBtn   = $('destClearBtn');
+const rideStopDivider= $('rideStopDivider');
+const rideAddStopRow = $('rideAddStopRow');
+const rideAddStopBtn = $('rideAddStopBtn');
 const resultsArea    = $('resultsArea');
 
 const deliveryPage        = $('deliveryPage');
@@ -2241,7 +2258,6 @@ const postErrandPage    = $('postErrandPage');
 const postErrandBackBtn = $('postErrandBackBtn');
 const errandTitle       = $('errandTitle');
 const errandDescription = $('errandDescription');
-const errandPickupRow   = $('errandPickupRow');
 const errandPickupInput = $('errandPickupInput');
 const errandPickupClear = $('errandPickupClear');
 const errandPickupResults = $('errandPickupResults');
@@ -2255,7 +2271,6 @@ const submitErrandBtn   = $('submitErrandBtn');
 const postedErrandsPage     = $('postedErrandsPage');
 const postedErrandsBackBtn  = $('postedErrandsBackBtn');
 const postedErrandsList     = $('postedErrandsList');
-
 const errandDetailsPage     = $('errandDetailsPage');
 const errandDetailsBackBtn  = $('errandDetailsBackBtn');
 const errandDetailsTitle    = $('errandDetailsTitle');
@@ -2295,10 +2310,17 @@ const providerFoundName     = $('providerFoundName');
 const providerFoundRole     = $('providerFoundRole');
 const providerFoundVehicle  = $('providerFoundVehicle');
 const providerCallBtn       = $('providerCallBtn');
-const providerVehiclePreview= $('providerVehiclePreview');
+const crDot1 = $('crDot1');
+const crDot2 = $('crDot2');
+const crPickup = $('crPickup');
+const crStop = $('crStop');
+const crStopRow = $('crStopRow');
+const crDropoff = $('crDropoff');
 const tripStatusIcon        = $('tripStatusIcon');
 const tripStatusTitle       = $('tripStatusTitle');
 const tripStatusSubtitle    = $('tripStatusSubtitle');
+const tripFareValue         = $('tripFareValue');
+const tripFareLabel         = $('tripFareLabel');
 const cancelTripActiveBtn   = $('cancelTripActiveBtn');
 
 const toastEl = $('toast');
@@ -2312,12 +2334,15 @@ let customerData = null;
 let map = null;
 let userMarker = null;
 let pickupMarker = null;
+let stopMarker = null;
 let dropoffMarker = null;
 let providerMarker = null;
 let routeLayer = null;
+let providerRouteLayer = null;
 
 let userLocation = null;
 let pickupLocation = null;
+let stopLocation = null;
 let dropoffLocation = null;
 let currentRoute = null;
 
@@ -2377,18 +2402,6 @@ function showPane(which) {
   else if (which === 'active') paneActive.classList.add('active');
 }
 
-function showActiveSearching() {
-  activeSearchingState.style.display = 'flex';
-  activeProviderState.style.display = 'none';
-  showPane('active');
-}
-
-function showActiveProvider() {
-  activeSearchingState.style.display = 'none';
-  activeProviderState.style.display = 'flex';
-  showPane('active');
-}
-
 /* ============================================================
    HELPERS
    ============================================================ */
@@ -2405,7 +2418,7 @@ function haversineMeters(lat1, lon1, lat2, lon2) {
   const p2 = lat2 * Math.PI / 180;
   const dp = (lat2 - lat1) * Math.PI / 180;
   const dl = (lon2 - lon1) * Math.PI / 180;
-  const a = Math.sin(dp / 2) ** 2 + Math.cos(p1) * Math.cos(p2) * Math.sin(dl / 2) ** 2;
+  const a = Math.sin(dp/2)**2 + Math.cos(p1)*Math.cos(p2)*Math.sin(dl/2)**2;
   return 2 * R * Math.asin(Math.min(1, Math.sqrt(a)));
 }
 
@@ -2502,21 +2515,17 @@ function vehicleLabelForRole(role) {
    ============================================================ */
 function computeRideFare(distanceMeters, durationSeconds) {
   const cfg = CONFIG.pricing.ride;
-  const distanceKm  = (distanceMeters || 0) / 1000;
-  const durationMin = (durationSeconds || 0) / 60;
-  const subtotal = (cfg.baseFare || 0)
-                 + (distanceKm * (cfg.pricePerKm || 0))
-                 + (durationMin * (cfg.pricePerMinute || 0));
+  const km = (distanceMeters || 0) / 1000;
+  const min = (durationSeconds || 0) / 60;
+  const subtotal = (cfg.baseFare || 0) + (km * (cfg.pricePerKm || 0)) + (min * (cfg.pricePerMinute || 0));
   return { finalFare: Math.max(cfg.minimumFare || 0, subtotal) };
 }
 
 function computeDeliveryFare(vehicleMeta, distanceMeters, durationSeconds) {
   const cfg = CONFIG.pricing[vehicleMeta.id] || CONFIG.pricing.motorbike;
-  const distanceKm  = (distanceMeters || 0) / 1000;
-  const durationMin = (durationSeconds || 0) / 60;
-  const subtotal = (cfg.baseFare || 0)
-                 + (distanceKm * (cfg.pricePerKm || 0))
-                 + (durationMin * (cfg.pricePerMinute || 0));
+  const km = (distanceMeters || 0) / 1000;
+  const min = (durationSeconds || 0) / 60;
+  const subtotal = (cfg.baseFare || 0) + (km * (cfg.pricePerKm || 0)) + (min * (cfg.pricePerMinute || 0));
   return { finalFare: Math.max(cfg.minimumFare || 0, subtotal) };
 }
 
@@ -2570,7 +2579,6 @@ function openCloudUpload(opts) {
       cropping: false,
       folder: 'ntumeni/errands'
     }, opts || {});
-
     cloudinary.openUploadWidget(settings, (err, res) => {
       if (err) return reject(err);
       if (!res) return;
@@ -2598,8 +2606,7 @@ function wireUploadBox(boxEl, hiddenEl, errEl) {
       hiddenEl.value = url;
       boxEl.querySelectorAll('img').forEach(i => i.remove());
       const img = document.createElement('img');
-      img.src = url;
-      img.alt = 'Errand';
+      img.src = url; img.alt = 'Errand';
       boxEl.appendChild(img);
       boxEl.classList.add('has-image');
     } catch (e) {
@@ -2612,7 +2619,7 @@ function wireUploadBox(boxEl, hiddenEl, errEl) {
 }
 
 /* ============================================================
-   LOADING / BLOCK OVERLAYS
+   LOADING OVERLAYS
    ============================================================ */
 function hideLoading() {
   loadingScreen.classList.add('done');
@@ -2634,7 +2641,6 @@ function showBanned(reason) {
    ============================================================ */
 function initMap() {
   if (map) return;
-
   map = L.map('map', {
     zoomControl: false,
     attributionControl: true,
@@ -2642,7 +2648,6 @@ function initMap() {
     maxZoom: 19,
     minZoom: 3
   }).setView([DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lng], 17);
-
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors',
     subdomains: 'abc',
@@ -2663,24 +2668,26 @@ function setPickupMarker(lat, lng) {
   if (pickupMarker) pickupMarker.setLatLng([lat, lng]);
   else pickupMarker = L.marker([lat, lng], { icon, zIndexOffset: 1000 }).addTo(map);
 }
+function setStopMarker(lat, lng) {
+  if (!map) return;
+  const icon = L.divIcon({ className: '', html: '<div class="mk-pin stop"></div>', iconSize: [20,20], iconAnchor: [10,20] });
+  if (stopMarker) stopMarker.setLatLng([lat, lng]);
+  else stopMarker = L.marker([lat, lng], { icon, zIndexOffset: 1000 }).addTo(map);
+}
 function setDropoffMarker(lat, lng) {
   if (!map) return;
   const icon = L.divIcon({ className: '', html: '<div class="mk-pin"></div>', iconSize: [20,20], iconAnchor: [10,20] });
   if (dropoffMarker) dropoffMarker.setLatLng([lat, lng]);
   else dropoffMarker = L.marker([lat, lng], { icon, zIndexOffset: 1000 }).addTo(map);
 }
-function providerMarkerIcon(role) {
-  const icon = vehicleIcon(role);
-  return L.divIcon({
-    className: '',
-    html: `<div style="width:44px;height:44px;border-radius:50%;background:#0a0a0a;color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.1rem;border:3px solid #fff;box-shadow:0 4px 14px rgba(0,0,0,0.45),0 0 0 4px rgba(10,10,10,0.12);"><i class="fas ${icon}"></i></div>`,
-    iconSize: [44, 44],
-    iconAnchor: [22, 22]
-  });
-}
 function setProviderMarker(lat, lng, role) {
   if (!map) return;
-  const icon = providerMarkerIcon(role);
+  const icon = L.divIcon({
+    className: '',
+    html: `<div class="provider-marker"><i class="fas ${vehicleIcon(role)}"></i></div>`,
+    iconSize: [42, 42],
+    iconAnchor: [21, 21]
+  });
   if (providerMarker) {
     providerMarker.setLatLng([lat, lng]);
     providerMarker.setIcon(icon);
@@ -2689,23 +2696,47 @@ function setProviderMarker(lat, lng, role) {
   }
 }
 function removeProviderMarker() {
-  if (providerMarker && map) {
-    try { map.removeLayer(providerMarker); } catch(e) {}
-  }
+  if (providerMarker && map) { try { map.removeLayer(providerMarker); } catch(e) {} }
   providerMarker = null;
 }
 function clearTripLayers() {
   if (!map) return;
   if (routeLayer) { map.removeLayer(routeLayer); routeLayer = null; }
+  if (providerRouteLayer) { map.removeLayer(providerRouteLayer); providerRouteLayer = null; }
   if (dropoffMarker) { map.removeLayer(dropoffMarker); dropoffMarker = null; }
+  if (stopMarker) { map.removeLayer(stopMarker); stopMarker = null; }
   if (pickupMarker) { map.removeLayer(pickupMarker); pickupMarker = null; }
   removeProviderMarker();
   currentRoute = null;
 }
 
 /* ============================================================
-   GEOLOCATION
+   GEOLOCATION + REVERSE GEOCODING
    ============================================================ */
+async function reverseGeocode(lat, lng) {
+  try {
+    const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&zoom=18&addressdetails=1`;
+    const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (!data || !data.display_name) return null;
+    const addr = data.address || {};
+    const primary = addr.road || addr.pedestrian || addr.footway || addr.neighbourhood || addr.suburb || '';
+    const secondary = addr.suburb || addr.neighbourhood || addr.city || addr.town || addr.village || '';
+    let label = '';
+    if (primary && secondary && primary !== secondary) label = `${primary}, ${secondary}`;
+    else label = primary || secondary || (data.display_name.split(',')[0] || 'Current location');
+    return {
+      lat, lng,
+      label: label.trim(),
+      address: data.display_name
+    };
+  } catch (e) {
+    console.warn('Reverse geocode failed:', e);
+    return null;
+  }
+}
+
 function locateUser({ center = true, silent = false } = {}) {
   if (!navigator.geolocation) {
     if (!silent) showToast('Geolocation is not supported.');
@@ -2713,32 +2744,50 @@ function locateUser({ center = true, silent = false } = {}) {
     mapBadgeText.textContent = 'Default location';
     setUserMarker(DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lng);
     if (center && map) map.setView([DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lng], 18);
-    if (!pickupLocation) pickupLocation = { lat: DEFAULT_LOCATION.lat, lng: DEFAULT_LOCATION.lng, label: 'Approximate location' };
+    if (!pickupLocation) {
+      pickupLocation = { lat: DEFAULT_LOCATION.lat, lng: DEFAULT_LOCATION.lng, label: 'Approximate location' };
+      summaryPickup.textContent = pickupLocation.label;
+      pickupInput.value = pickupLocation.label;
+    }
     if (!deliveryPickupLocation) deliveryPickupLocation = { lat: DEFAULT_LOCATION.lat, lng: DEFAULT_LOCATION.lng, label: 'Approximate location' };
     return;
   }
   mapBadgeText.textContent = 'Locating…';
   navigator.geolocation.getCurrentPosition(
-    (pos) => {
+    async (pos) => {
       const { latitude, longitude } = pos.coords;
       userLocation = { lat: latitude, lng: longitude };
       setUserMarker(latitude, longitude);
-      mapBadgeText.textContent = 'You are here';
       if (center && map) map.setView([latitude, longitude], 18);
-      if (!pickupLocation) pickupLocation = { lat: latitude, lng: longitude, label: 'Current location' };
-      if (!deliveryPickupLocation) deliveryPickupLocation = { lat: latitude, lng: longitude, label: 'Current location' };
+      // Reverse geocode to get a real place name
+      const place = await reverseGeocode(latitude, longitude);
+      const label = place ? place.label : 'My current location';
+      mapBadgeText.textContent = label;
+      if (!pickupLocation) {
+        pickupLocation = { lat: latitude, lng: longitude, label, address: place?.address || '' };
+        summaryPickup.textContent = pickupLocation.label;
+        pickupInput.value = pickupLocation.label;
+      }
+      if (!deliveryPickupLocation) {
+        deliveryPickupLocation = { lat: latitude, lng: longitude, label, address: place?.address || '' };
+        deliveryPickupInput.value = deliveryPickupLocation.label;
+      }
     },
-    (err) => {
+    async (err) => {
       console.warn('Geolocation error:', err);
       userLocation = { ...DEFAULT_LOCATION };
       setUserMarker(DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lng);
       mapBadgeText.textContent = 'Approximate location';
-      if (!pickupLocation) pickupLocation = { lat: DEFAULT_LOCATION.lat, lng: DEFAULT_LOCATION.lng, label: 'Approximate location' };
+      if (!pickupLocation) {
+        pickupLocation = { lat: DEFAULT_LOCATION.lat, lng: DEFAULT_LOCATION.lng, label: 'Approximate location' };
+        summaryPickup.textContent = pickupLocation.label;
+        pickupInput.value = pickupLocation.label;
+      }
       if (!deliveryPickupLocation) deliveryPickupLocation = { lat: DEFAULT_LOCATION.lat, lng: DEFAULT_LOCATION.lng, label: 'Approximate location' };
       if (!silent) showToast('Location permission denied — using approximate.');
       if (center && map) map.setView([DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lng], 18);
     },
-    { enableHighAccuracy: true, timeout: 12000, maximumAge: 30000 }
+    { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
   );
 }
 
@@ -2774,7 +2823,7 @@ async function doLogout() {
 }
 
 /* ============================================================
-   SEARCH
+   FUZZY SEARCH (Nominatim with multiple fallbacks)
    ============================================================ */
 function getSearchAnchor() {
   if (searchPage === 'errand') return userLocation || DEFAULT_LOCATION;
@@ -2783,21 +2832,15 @@ function getSearchAnchor() {
       ? (deliveryDropoffLocation || userLocation || DEFAULT_LOCATION)
       : (deliveryPickupLocation || userLocation || DEFAULT_LOCATION);
   }
+  if (searchField === 'stop') {
+    return (pickupLocation || dropoffLocation || userLocation || DEFAULT_LOCATION);
+  }
   return searchField === 'pickup'
     ? (dropoffLocation || userLocation || DEFAULT_LOCATION)
-    : (pickupLocation || userLocation || DEFAULT_LOCATION);
+    : (pickupLocation || stopLocation || userLocation || DEFAULT_LOCATION);
 }
 
-function buildNominatimUrl(query, anchor) {
-  let viewbox = '';
-  if (anchor) {
-    const latDelta = CONFIG.searchRadiusKm / 111;
-    const lngDelta = CONFIG.searchRadiusKm / (111 * Math.max(0.15, Math.cos(anchor.lat * Math.PI / 180)));
-    viewbox = [
-      anchor.lng - lngDelta, anchor.lat + latDelta,
-      anchor.lng + lngDelta, anchor.lat - latDelta
-    ].join(',');
-  }
+function buildNominatimUrl(query, anchor, useViewbox) {
   const params = new URLSearchParams({
     format: 'json',
     addressdetails: '1',
@@ -2805,30 +2848,59 @@ function buildNominatimUrl(query, anchor) {
     q: query,
     dedupe: '1'
   });
-  if (viewbox) {
+  if (useViewbox && anchor) {
+    const latDelta = CONFIG.searchRadiusKm / 111;
+    const lngDelta = CONFIG.searchRadiusKm / (111 * Math.max(0.15, Math.cos(anchor.lat * Math.PI / 180)));
+    const viewbox = [
+      anchor.lng - lngDelta, anchor.lat + latDelta,
+      anchor.lng + lngDelta, anchor.lat - latDelta
+    ].join(',');
     params.set('viewbox', viewbox);
     params.set('bounded', '0');
   }
   return 'https://nominatim.openstreetmap.org/search?' + params.toString();
 }
 
-async function fetchRawPlaces(query, anchor, signal) {
-  const url = buildNominatimUrl(query, anchor);
+async function fetchNominatim(url, signal) {
   const res = await fetch(url, { headers: { 'Accept': 'application/json' }, signal });
-  if (!res.ok) throw new Error('Search failed');
-  return res.json();
+  if (!res.ok) return [];
+  try { return await res.json(); } catch (e) { return []; }
+}
+
+/* Fuzzy search: tries the exact query first, then variants. */
+async function fuzzyFetchPlaces(query, anchor, signal) {
+  const trimmed = query.trim();
+  if (!trimmed) return [];
+
+  // Attempt 1: original query with location viewbox bias
+  let raw = await fetchNominatim(buildNominatimUrl(trimmed, anchor, true), signal).catch(() => []);
+  if (raw && raw.length) return raw;
+
+  // Attempt 2: append country hint if user is in Zambia (matches local places better)
+  if (!/zambia/i.test(trimmed)) {
+    raw = await fetchNominatim(buildNominatimUrl(trimmed + ', Zambia', anchor, true), signal).catch(() => []);
+    if (raw && raw.length) return raw;
+  }
+
+  // Attempt 3: try individual significant words
+  const words = trimmed.split(/\s+/).filter(w => w.length >= 3).sort((a, b) => b.length - a.length);
+  for (const w of words.slice(0, 2)) {
+    raw = await fetchNominatim(buildNominatimUrl(w, anchor, true), signal).catch(() => []);
+    if (raw && raw.length) return raw;
+  }
+
+  // Attempt 4: no viewbox bias — search everywhere
+  raw = await fetchNominatim(buildNominatimUrl(trimmed, anchor, false), signal).catch(() => []);
+  return raw || [];
 }
 
 function rankPlacesByDistance(rawPlaces, anchor) {
-  const anchorLat = anchor.lat;
-  const anchorLng = anchor.lng;
   const enriched = [];
   for (const p of (rawPlaces || [])) {
     const lat = parseFloat(p.lat);
     const lon = parseFloat(p.lon);
     if (!isFinite(lat) || !isFinite(lon)) continue;
-    const distMeters = haversineMeters(anchorLat, anchorLng, lat, lon);
-    if (CONFIG.searchRadiusKm > 0 && distMeters > CONFIG.searchRadiusKm * 1000 * 1.5) continue;
+    const distMeters = haversineMeters(anchor.lat, anchor.lng, lat, lon);
     enriched.push({ raw: p, lat, lon, distanceMeters: distMeters });
   }
   enriched.sort((a, b) => a.distanceMeters - b.distanceMeters);
@@ -2847,7 +2919,7 @@ function renderResults(rankedPlaces, mode) {
     targetEl.innerHTML = `
       <div class="results-hint">
         <i class="fas fa-circle-question"></i>
-        No places found nearby. Try a different search.
+        No places found. Try a different spelling or a nearby landmark.
       </div>`;
     return;
   }
@@ -2920,9 +2992,24 @@ function handlePlaceSelected(place, mode) {
     return;
   }
 
+  // Ride page
   if (mode === 'pickup') {
     pickupLocation = { lat, lng: lon, label, address };
     pickupInput.value = label;
+    syncClearButtons();
+    setActiveRow(stopInputRow.style.display !== 'none' && !stopLocation ? 'stop' : 'destination', 'ride');
+    const nextInput = (stopInputRow.style.display !== 'none' && !stopLocation) ? stopInput : destInput;
+    nextInput.focus();
+    const q = nextInput.value.trim();
+    if (q.length >= 2) runSearch(q, nextInput === stopInput ? 'stop' : 'destination');
+    else showSearchHint('ride');
+    return;
+  }
+
+  if (mode === 'stop') {
+    stopLocation = { lat, lng: lon, label, address };
+    stopInput.value = label;
+    summaryStop.textContent = label;
     syncClearButtons();
     setActiveRow('destination', 'ride');
     destInput.focus();
@@ -2931,6 +3018,7 @@ function handlePlaceSelected(place, mode) {
     else showSearchHint('ride');
     return;
   }
+
   dropoffLocation = { lat, lng: lon, label, address };
   destInput.value = label;
   syncClearButtons();
@@ -2943,7 +3031,7 @@ function showSearchHint(page) {
   targetEl.innerHTML = `
     <div class="results-hint">
       <i class="fas fa-magnifying-glass-location"></i>
-      Keep typing — closest matches appear in real time within ${CONFIG.searchRadiusKm} km.
+      Type any place name, landmark or street — closest matches appear in real time.
     </div>`;
 }
 
@@ -2952,7 +3040,7 @@ function showLoadingResults(page) {
   targetEl.innerHTML = `<div class="loader-row"><span class="mini-spin"></span> Searching…</div>`;
 }
 
-const debouncedSearch = debounce((q, mode) => runSearch(q, mode), 220);
+const debouncedSearch = debounce((q, mode) => runSearch(q, mode), 260);
 
 async function runSearch(query, mode) {
   const trimmed = (query || '').trim();
@@ -2985,18 +3073,22 @@ async function runSearch(query, mode) {
   const anchor = getSearchAnchor();
 
   try {
-    const raw = await fetchRawPlaces(trimmed, anchor, searchAbort.signal);
+    const raw = await fuzzyFetchPlaces(trimmed, anchor, searchAbort.signal);
 
+    // Verify the input hasn't changed while we were searching
     let currentVal = '';
     if (page === 'errand') currentVal = errandPickupInput.value.trim();
     else if (page === 'delivery') currentVal = (mode === 'pickup' ? deliveryPickupInput.value : deliveryDestInput.value).trim();
-    else currentVal = (mode === 'pickup' ? pickupInput.value : destInput.value).trim();
+    else {
+      if (mode === 'pickup') currentVal = pickupInput.value.trim();
+      else if (mode === 'stop') currentVal = stopInput.value.trim();
+      else currentVal = destInput.value.trim();
+    }
 
     if (currentVal !== trimmed) return;
 
     const ranked = rankPlacesByDistance(raw, anchor);
     renderResults(ranked, mode);
-
   } catch (err) {
     if (err.name === 'AbortError') return;
     const tEl = getResultsTarget();
@@ -3015,18 +3107,26 @@ function openRidePage(mode) {
   searchPage = 'ride';
   searchField = mode || 'destination';
 
-  if (pickupLocation) pickupInput.value = pickupLocation.label || 'Current location';
+  if (pickupLocation) pickupInput.value = pickupLocation.label || '';
+  if (stopLocation) {
+    stopInput.value = stopLocation.label || '';
+    showStopRow(true);
+  }
   if (dropoffLocation) destInput.value = dropoffLocation.label || '';
-  else destInput.value = '';
+  else if (!stopLocation) destInput.value = destInput.value || '';
   syncClearButtons();
 
   ridePage.classList.add('open');
   setTimeout(() => {
     if (searchField === 'pickup') {
-      pickupInput.focus();
-      pickupInput.select();
+      pickupInput.focus(); pickupInput.select();
       const q = pickupInput.value.trim();
       if (q.length >= 2) runSearch(q, 'pickup');
+      else showSearchHint('ride');
+    } else if (searchField === 'stop') {
+      stopInput.focus();
+      const q = stopInput.value.trim();
+      if (q.length >= 2) runSearch(q, 'stop');
       else showSearchHint('ride');
     } else {
       destInput.focus();
@@ -3044,21 +3144,36 @@ function closeRidePage() {
 }
 rideBackBtn.addEventListener('click', closeRidePage);
 
+function showStopRow(show) {
+  if (show) {
+    stopInputRow.style.display = 'flex';
+    rideStopDivider.style.display = 'block';
+    rideAddStopRow.style.display = 'none';
+  } else {
+    stopInputRow.style.display = 'none';
+    rideStopDivider.style.display = 'none';
+    rideAddStopRow.style.display = 'block';
+  }
+}
+
 function setActiveRow(which, page) {
   if (page === 'delivery') {
     deliveryPickupRow.classList.toggle('focused', which === 'pickup');
     deliveryDestRow.classList.toggle('focused', which === 'destination');
   } else {
     pickupInputRow.classList.toggle('focused', which === 'pickup');
+    stopInputRow.classList.toggle('focused', which === 'stop');
     destInputRow.classList.toggle('focused', which === 'destination');
   }
   searchField = which;
 }
 
 pickupInput.addEventListener('focus', () => { searchPage = 'ride'; setActiveRow('pickup', 'ride'); });
-destInput.addEventListener('focus',   () => { searchPage = 'ride'; setActiveRow('destination', 'ride'); });
+stopInput.addEventListener('focus', () => { searchPage = 'ride'; setActiveRow('stop', 'ride'); });
+destInput.addEventListener('focus', () => { searchPage = 'ride'; setActiveRow('destination', 'ride'); });
 pickupInput.addEventListener('click', () => { searchPage = 'ride'; setActiveRow('pickup', 'ride'); });
-destInput.addEventListener('click',   () => { searchPage = 'ride'; setActiveRow('destination', 'ride'); });
+stopInput.addEventListener('click', () => { searchPage = 'ride'; setActiveRow('stop', 'ride'); });
+destInput.addEventListener('click', () => { searchPage = 'ride'; setActiveRow('destination', 'ride'); });
 
 pickupClearBtn.addEventListener('click', (e) => {
   e.stopPropagation();
@@ -3066,6 +3181,16 @@ pickupClearBtn.addEventListener('click', (e) => {
   syncClearButtons();
   setActiveRow('pickup', 'ride');
   pickupInput.focus();
+  showSearchHint('ride');
+});
+stopClearBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  stopInput.value = '';
+  stopLocation = null;
+  summaryStop.textContent = '—';
+  syncClearButtons();
+  setActiveRow('stop', 'ride');
+  stopInput.focus();
   showSearchHint('ride');
 });
 destClearBtn.addEventListener('click', (e) => {
@@ -3079,6 +3204,7 @@ destClearBtn.addEventListener('click', (e) => {
 
 function syncClearButtons() {
   pickupClearBtn.style.display = pickupInput.value.trim() ? 'flex' : 'none';
+  stopClearBtn.style.display   = stopInput.value.trim()   ? 'flex' : 'none';
   destClearBtn.style.display   = destInput.value.trim()   ? 'flex' : 'none';
   deliveryPickupClear.style.display = deliveryPickupInput.value.trim() ? 'flex' : 'none';
   deliveryDestClear.style.display   = deliveryDestInput.value.trim()   ? 'flex' : 'none';
@@ -3086,16 +3212,24 @@ function syncClearButtons() {
 }
 
 pickupInput.addEventListener('input', () => {
-  syncClearButtons();
-  searchPage = 'ride';
-  setActiveRow('pickup', 'ride');
+  syncClearButtons(); searchPage = 'ride'; setActiveRow('pickup', 'ride');
   debouncedSearch(pickupInput.value.trim(), 'pickup');
 });
+stopInput.addEventListener('input', () => {
+  syncClearButtons(); searchPage = 'ride'; setActiveRow('stop', 'ride');
+  debouncedSearch(stopInput.value.trim(), 'stop');
+});
 destInput.addEventListener('input', () => {
-  syncClearButtons();
-  searchPage = 'ride';
-  setActiveRow('destination', 'ride');
+  syncClearButtons(); searchPage = 'ride'; setActiveRow('destination', 'ride');
   debouncedSearch(destInput.value.trim(), 'destination');
+});
+
+// Add stop button on ride page
+rideAddStopBtn.addEventListener('click', () => {
+  showStopRow(true);
+  setActiveRow('stop', 'ride');
+  stopInput.focus();
+  showSearchHint('ride');
 });
 
 /* ============================================================
@@ -3103,18 +3237,14 @@ destInput.addEventListener('input', () => {
    ============================================================ */
 function openDeliveryPage() {
   searchPage = 'delivery';
-
-  if (deliveryPickupLocation) deliveryPickupInput.value = deliveryPickupLocation.label || 'Current location';
-  else if (pickupLocation)    deliveryPickupInput.value = pickupLocation.label || 'Current location';
-
+  if (deliveryPickupLocation) deliveryPickupInput.value = deliveryPickupLocation.label || '';
+  else if (pickupLocation)    deliveryPickupInput.value = pickupLocation.label || '';
   if (deliveryDropoffLocation) deliveryDestInput.value = deliveryDropoffLocation.label || '';
   else deliveryDestInput.value = '';
-
   syncClearButtons();
   deliveryResultsArea.style.display = 'none';
   deliveryFormArea.style.display = 'block';
   deliveryError.innerText = '';
-
   deliveryPage.classList.add('open');
   setTimeout(() => { if (map) map.invalidateSize(); }, 480);
 }
@@ -3131,23 +3261,18 @@ deliveryPickupInput.addEventListener('click', () => { searchPage = 'delivery'; s
 deliveryDestInput.addEventListener('click',   () => { searchPage = 'delivery'; setActiveRow('destination', 'delivery'); });
 
 deliveryPickupInput.addEventListener('input', () => {
-  syncClearButtons();
-  searchPage = 'delivery';
-  setActiveRow('pickup', 'delivery');
+  syncClearButtons(); searchPage = 'delivery'; setActiveRow('pickup', 'delivery');
   debouncedSearch(deliveryPickupInput.value.trim(), 'pickup');
 });
 deliveryDestInput.addEventListener('input', () => {
-  syncClearButtons();
-  searchPage = 'delivery';
-  setActiveRow('destination', 'delivery');
+  syncClearButtons(); searchPage = 'delivery'; setActiveRow('destination', 'delivery');
   debouncedSearch(deliveryDestInput.value.trim(), 'destination');
 });
 
 deliveryPickupClear.addEventListener('click', (e) => {
   e.stopPropagation();
   deliveryPickupInput.value = '';
-  syncClearButtons();
-  setActiveRow('pickup', 'delivery');
+  syncClearButtons(); setActiveRow('pickup', 'delivery');
   deliveryPickupInput.focus();
   deliveryResultsArea.style.display = 'none';
   deliveryFormArea.style.display = 'block';
@@ -3155,8 +3280,7 @@ deliveryPickupClear.addEventListener('click', (e) => {
 deliveryDestClear.addEventListener('click', (e) => {
   e.stopPropagation();
   deliveryDestInput.value = '';
-  syncClearButtons();
-  setActiveRow('destination', 'delivery');
+  syncClearButtons(); setActiveRow('destination', 'delivery');
   deliveryDestInput.focus();
   deliveryResultsArea.style.display = 'none';
   deliveryFormArea.style.display = 'block';
@@ -3167,12 +3291,10 @@ deliveryDestClear.addEventListener('click', (e) => {
    ============================================================ */
 function openPostErrandPage() {
   searchPage = 'errand';
-
   if (errandPickupLocation) errandPickupInput.value = errandPickupLocation.label || '';
   syncClearButtons();
   errandPickupResults.style.display = 'none';
   errandError.innerText = '';
-
   postErrandPage.classList.add('open');
   setTimeout(() => { if (map) map.invalidateSize(); }, 480);
 }
@@ -3185,13 +3307,10 @@ postErrandBackBtn.addEventListener('click', closePostErrandPage);
 
 errandPickupInput.addEventListener('focus', () => { searchPage = 'errand'; });
 errandPickupInput.addEventListener('click', () => { searchPage = 'errand'; });
-
 errandPickupInput.addEventListener('input', () => {
-  syncClearButtons();
-  searchPage = 'errand';
+  syncClearButtons(); searchPage = 'errand';
   debouncedSearch(errandPickupInput.value.trim(), 'pickup');
 });
-
 errandPickupClear.addEventListener('click', (e) => {
   e.stopPropagation();
   errandPickupInput.value = '';
@@ -3202,25 +3321,20 @@ errandPickupClear.addEventListener('click', (e) => {
 });
 
 errandUseCurrentBtn.addEventListener('click', () => {
-  if (!userLocation) {
-    showToast('Waiting for your location…');
-    locateUser({ center: false });
-    return;
-  }
-  errandPickupLocation = { lat: userLocation.lat, lng: userLocation.lng, label: 'Current location' };
-  errandPickupInput.value = 'Current location';
+  if (!userLocation) { showToast('Waiting for your location…'); locateUser({ center: false }); return; }
+  const label = mapBadgeText.textContent || 'Current location';
+  errandPickupLocation = { lat: userLocation.lat, lng: userLocation.lng, label };
+  errandPickupInput.value = label;
   errandPickupResults.style.display = 'none';
   syncClearButtons();
   showToast('Using current location');
 });
 
 wireUploadBox(errandUpload, errandImageUrl, errandError);
-
 submitErrandBtn.addEventListener('click', submitErrand);
 
 async function submitErrand() {
   errandError.innerText = '';
-
   const title = errandTitle.value.trim();
   const description = errandDescription.value.trim();
   const willingToPayRaw = errandWillingToPay.value;
@@ -3231,13 +3345,9 @@ async function submitErrand() {
   if (!description) { errandError.innerText = 'Please describe what needs to be done.'; return; }
   if (!errandPickupLocation) { errandError.innerText = 'Please choose a pickup location.'; return; }
   if (!willingToPayRaw || !isFinite(willingToPay) || willingToPay <= 0) {
-    errandError.innerText = 'Please enter how much you are willing to pay.';
-    return;
+    errandError.innerText = 'Please enter how much you are willing to pay.'; return;
   }
-  if (!currentUser || !customerData) {
-    errandError.innerText = 'Session expired. Please sign in again.';
-    return;
-  }
+  if (!currentUser || !customerData) { errandError.innerText = 'Session expired.'; return; }
 
   const originalHtml = submitErrandBtn.innerHTML;
   submitErrandBtn.disabled = true;
@@ -3253,8 +3363,7 @@ async function submitErrand() {
       customerName: customerData.fullName || `${customerData.firstName || ''} ${customerData.lastName || ''}`.trim() || 'Customer',
       customerPhone: customerData.phone || '',
       customerPhoto: customerData.profileUrl || '',
-      title,
-      description,
+      title, description,
       pickup: errandPickupLocation,
       imageUrl: imageUrl || '',
       willingToPay,
@@ -3281,9 +3390,8 @@ async function submitErrand() {
     errandImageUrl.value = '';
     syncClearButtons();
 
-    showToast('✅ Errand posted! Providers will start sending offers.');
+    showToast('✅ Errand posted!');
     closePostErrandPage();
-
   } catch (err) {
     console.error(err);
     errandError.innerText = 'Could not post errand: ' + (err.message || err);
@@ -3296,53 +3404,29 @@ async function submitErrand() {
 /* ============================================================
    POSTED ERRANDS PAGE
    ============================================================ */
-function openPostedErrandsPage() {
-  postedErrandsPage.classList.add('open');
-  loadPostedErrands();
-}
-
+function openPostedErrandsPage() { postedErrandsPage.classList.add('open'); loadPostedErrands(); }
 function closePostedErrandsPage() {
   postedErrandsPage.classList.remove('open');
-  if (errandsListenerUnsub) {
-    errandsListenerUnsub();
-    errandsListenerUnsub = null;
-  }
+  if (errandsListenerUnsub) { errandsListenerUnsub(); errandsListenerUnsub = null; }
 }
 postedErrandsBackBtn.addEventListener('click', closePostedErrandsPage);
 
 function loadPostedErrands() {
   if (!currentUser) return;
-
-  if (errandsListenerUnsub) {
-    errandsListenerUnsub();
-    errandsListenerUnsub = null;
-  }
-
+  if (errandsListenerUnsub) { errandsListenerUnsub(); errandsListenerUnsub = null; }
   const errandsRef = ref(database, 'errands');
-
   errandsListenerUnsub = onValue(errandsRef, (snap) => {
     const data = snap.val() || {};
     const mine = [];
     for (const id in data) {
       const e = data[id];
-      if (e && e.customerId === currentUser.uid) {
-        mine.push({ ...e, errandId: id });
-      }
+      if (e && e.customerId === currentUser.uid) mine.push({ ...e, errandId: id });
     }
     mine.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
     postedErrandsCache = {};
     mine.forEach(e => { postedErrandsCache[e.errandId] = e; });
-
     renderPostedErrands(mine);
     updateErrandsBadge(mine);
-  }, (err) => {
-    console.warn('Errands listener error:', err);
-    postedErrandsList.innerHTML = `
-      <div class="empty-state">
-        <i class="fas fa-triangle-exclamation"></i>
-        <h3>Could not load errands</h3>
-        <p>Check your connection and try again.</p>
-      </div>`;
   });
 }
 
@@ -3367,13 +3451,9 @@ function renderPostedErrands(errands) {
       </div>`;
     return;
   }
-
   let html = '';
-  errands.forEach(e => {
-    html += renderErrandCard(e, true);
-  });
+  errands.forEach(e => { html += renderErrandCard(e, true); });
   postedErrandsList.innerHTML = html;
-
   postedErrandsList.querySelectorAll('[data-open-errand]').forEach(btn => {
     btn.addEventListener('click', (ev) => {
       ev.stopPropagation();
@@ -3383,26 +3463,17 @@ function renderPostedErrands(errands) {
 }
 
 function renderErrandCard(e, withActions) {
-  const statusClass = ['pending', 'accepted', 'rejected', 'completed'].includes(e.status)
-    ? e.status : 'pending';
+  const statusClass = ['pending', 'accepted', 'rejected', 'completed'].includes(e.status) ? e.status : 'pending';
   const statusText = statusLabel(statusClass);
-
   const pickupLabel = e.pickup && e.pickup.label ? e.pickup.label : 'Pickup';
-  const photo = e.customerPhoto
-    ? `<img src="${escapeHtml(e.customerPhoto)}" alt="">`
-    : `<i class="fas fa-user"></i>`;
-
-  const imageBlock = e.imageUrl
-    ? `<div class="fb-image"><img src="${escapeHtml(e.imageUrl)}" alt="Errand"></div>`
-    : '';
-
-  const actions = withActions
-    ? `<div class="fb-card-footer">
-         <button data-open-errand="${escapeHtml(e.errandId)}">
-           <i class="fas fa-comments"></i> View Offers
-         </button>
-       </div>`
-    : '';
+  const photo = e.customerPhoto ? `<img src="${escapeHtml(e.customerPhoto)}" alt="">` : `<i class="fas fa-user"></i>`;
+  const imageBlock = e.imageUrl ? `<div class="fb-image"><img src="${escapeHtml(e.imageUrl)}" alt="Errand"></div>` : '';
+  const actions = withActions ? `
+    <div class="fb-card-footer">
+      <button data-open-errand="${escapeHtml(e.errandId)}">
+        <i class="fas fa-comments"></i> View Offers
+      </button>
+    </div>` : '';
 
   return `
     <article class="fb-card" data-errand="${escapeHtml(e.errandId)}">
@@ -3424,35 +3495,28 @@ function renderErrandCard(e, withActions) {
         </div>
       </div>
       <div class="fb-card-stats">
-        <span class="stat-pill"><i class="fas fa-clock"></i> ${escapeHtml(timeAgo(e.createdAt))}</span>
-        <span class="stat-pill"><i class="fas fa-comments"></i> Offers</span>
+        <span><i class="fas fa-clock"></i> ${escapeHtml(timeAgo(e.createdAt))}</span>
+        <span><i class="fas fa-comments"></i> Offers</span>
       </div>
       ${actions}
-    </article>
-  `;
+    </article>`;
 }
 
 /* ============================================================
-   ERRAND DETAILS + OFFERS
+   ERRAND DETAILS
    ============================================================ */
 function openErrandDetails(errandId) {
   const errand = postedErrandsCache[errandId];
   if (!errand) { showToast('Errand not found'); return; }
-
   errandDetailsTitle.textContent = errand.title || 'Errand';
   errandDetailsBody.innerHTML = '<div class="loader-row" style="padding:40px;"><span class="mini-spin"></span> Loading offers…</div>';
   errandDetailsPage.classList.add('open');
-
   if (errandOffersUnsub) { errandOffersUnsub(); errandOffersUnsub = null; }
-
   const offersRef = ref(database, `errands/${errandId}/offers`);
   errandOffersUnsub = onValue(offersRef, (snap) => {
     const data = snap.val() || {};
     const offers = Object.values(data).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
     renderErrandDetails(errand, offers);
-  }, (err) => {
-    console.warn('Offers listener error:', err);
-    errandDetailsBody.innerHTML = `<div class="empty-state"><i class="fas fa-triangle-exclamation"></i><h3>Could not load offers</h3></div>`;
   });
 }
 
@@ -3463,8 +3527,7 @@ function closeErrandDetailsPage() {
 errandDetailsBackBtn.addEventListener('click', closeErrandDetailsPage);
 
 function renderErrandDetails(errand, offers) {
-  const statusClass = ['pending', 'accepted', 'rejected', 'completed'].includes(errand.status)
-    ? errand.status : 'pending';
+  const statusClass = ['pending', 'accepted', 'rejected', 'completed'].includes(errand.status) ? errand.status : 'pending';
   const statusText = statusLabel(statusClass);
   const pickupLabel = errand.pickup && errand.pickup.label ? errand.pickup.label : 'Pickup';
 
@@ -3477,32 +3540,25 @@ function renderErrandDetails(errand, offers) {
         <span class="detail-head-stat"><i class="fas fa-money-bill-wave"></i> K ${escapeHtml(formatPrice(errand.willingToPay))}</span>
         <span class="detail-head-stat"><i class="fas fa-circle-info"></i> ${escapeHtml(statusText)}</span>
       </div>
-    </div>
-  `;
+    </div>`;
 
   let offersHtml = '';
   if (!offers.length) {
     offersHtml = `
       <div class="offers-empty">
-        <span class="mini-spin"></span>
         <strong>Waiting for offers…</strong>
         <p>Providers will appear here with their prices as soon as they bid on your errand.</p>
-      </div>
-    `;
+      </div>`;
   } else {
     offersHtml = offers.map(o => {
-      const avatar = o.providerPhoto
-        ? `<img src="${escapeHtml(o.providerPhoto)}" alt="">`
-        : `<i class="fas fa-user"></i>`;
-
+      const avatar = o.providerPhoto ? `<img src="${escapeHtml(o.providerPhoto)}" alt="">` : `<i class="fas fa-user"></i>`;
       const alreadyAccepted = errand.status === 'accepted';
       const isThisAccepted  = o.status === 'accepted';
       const isRejected      = o.status === 'rejected';
-
       let actionBtn = '';
       if (isThisAccepted) {
         actionBtn = `<button class="offer-accept-btn" data-open-chat="${escapeHtml(o.providerId)}" style="background:#12b76a;">
-          <i class="fas fa-comments"></i> Open Chat
+          <i class="fas fa-comments"></i> Chat
         </button>`;
       } else if (alreadyAccepted || isRejected) {
         actionBtn = `<button class="offer-accept-btn" disabled style="background:#aeaeb2;">
@@ -3513,7 +3569,6 @@ function renderErrandDetails(errand, offers) {
           <i class="fas fa-check"></i> Accept
         </button>`;
       }
-
       return `
         <div class="offer-card">
           <div class="offer-avatar">${avatar}</div>
@@ -3525,8 +3580,7 @@ function renderErrandDetails(errand, offers) {
               ${actionBtn}
             </div>
           </div>
-        </div>
-      `;
+        </div>`;
     }).join('');
   }
 
@@ -3535,35 +3589,25 @@ function renderErrandDetails(errand, offers) {
   errandDetailsBody.querySelectorAll('[data-accept-offer]').forEach(btn => {
     btn.addEventListener('click', () => acceptOffer(errand, btn.dataset.acceptOffer));
   });
-
   errandDetailsBody.querySelectorAll('[data-open-chat]').forEach(btn => {
     btn.addEventListener('click', () => openChat(errand, btn.dataset.openChat));
   });
 }
 
-/* ============================================================
-   ACCEPT OFFER + CHAT
-   ============================================================ */
 async function acceptOffer(errand, providerId) {
   if (!errand || !providerId) return;
   if (!confirm('Accept this offer? Other offers will be closed.')) return;
-
   const offer = (errand.offers && errand.offers[providerId]) || {};
-
   try {
     const updates = {};
     updates[`errands/${errand.errandId}/status`] = 'accepted';
     updates[`errands/${errand.errandId}/acceptedProviderId`] = providerId;
     updates[`errands/${errand.errandId}/acceptedAt`] = Date.now();
     updates[`errands/${errand.errandId}/offers/${providerId}/status`] = 'accepted';
-
     const offers = errand.offers || {};
     for (const oid in offers) {
-      if (oid !== providerId) {
-        updates[`errands/${errand.errandId}/offers/${oid}/status`] = 'rejected';
-      }
+      if (oid !== providerId) updates[`errands/${errand.errandId}/offers/${oid}/status`] = 'rejected';
     }
-
     await update(ref(database), updates);
 
     const agreedPrice = Math.round(offer.price || errand.willingToPay || 0);
@@ -3572,52 +3616,37 @@ async function acceptOffer(errand, providerId) {
       description: `Errand: ${errand.title || 'Task'}`,
       status: 'pending'
     });
-
-    showToast('✅ Offer accepted! Chat is opening…');
-
+    showToast('✅ Offer accepted!');
     errand.status = 'accepted';
     postedErrandsCache[errand.errandId] = errand;
-
     setTimeout(() => openChat(errand, providerId), 500);
-
   } catch (err) {
     console.error(err);
     showToast('Could not accept offer: ' + (err.message || err));
   }
 }
 
+/* ============================================================
+   CHAT
+   ============================================================ */
 function openChat(errand, providerId) {
   if (!errand || !providerId) return;
   if (!currentUser) return;
-
   activeChatErrandId = errand.errandId;
   activeChatProviderId = providerId;
-
   const offer = (errand.offers && errand.offers[providerId]) || {};
   const providerName = offer.providerName || 'Provider';
-
   chatTitle.textContent = providerName;
   chatSubtitle.textContent = errand.title || 'Errand chat';
-
   chatMessages.innerHTML = '<div class="chat-empty"><i class="fas fa-comments"></i>Say hi to your provider…</div>';
-
   chatPage.classList.add('open');
-  setTimeout(() => {
-    chatInput.focus();
-    scrollChatToBottom();
-  }, 480);
-
+  setTimeout(() => { chatInput.focus(); scrollChatToBottom(); }, 480);
   if (chatUnsub) { chatUnsub(); chatUnsub = null; }
   const messagesRef = ref(database, `errands/${errand.errandId}/chat`);
-
   chatUnsub = onValue(messagesRef, (snap) => {
     const data = snap.val() || {};
-    const msgs = Object.entries(data)
-      .map(([id, m]) => ({ ...m, id }))
-      .sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+    const msgs = Object.entries(data).map(([id, m]) => ({ ...m, id })).sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
     renderChatMessages(msgs);
-  }, (err) => {
-    console.warn('Chat listener error:', err);
   });
 }
 
@@ -3634,17 +3663,10 @@ function renderChatMessages(messages) {
     chatMessages.innerHTML = '<div class="chat-empty"><i class="fas fa-comments"></i>Say hi to your provider…</div>';
     return;
   }
-
   let html = '';
   messages.forEach(m => {
     const mine = m.senderId === currentUser.uid;
-    const cls = mine ? 'me' : 'them';
-    html += `
-      <div class="chat-msg ${cls}">
-        ${escapeHtml(m.text || '')}
-        <span class="chat-msg-meta">${escapeHtml(timeAgo(m.createdAt))}</span>
-      </div>
-    `;
+    html += `<div class="chat-msg ${mine ? 'me' : 'them'}">${escapeHtml(m.text || '')}<span class="chat-msg-meta">${escapeHtml(timeAgo(m.createdAt))}</span></div>`;
   });
   chatMessages.innerHTML = html;
   scrollChatToBottom();
@@ -3657,13 +3679,8 @@ function scrollChatToBottom() {
 
 async function sendChatMessage() {
   const text = chatInput.value.trim();
-  if (!text) return;
-  if (!activeChatErrandId) return;
-  if (!currentUser) return;
-
-  chatInput.value = '';
-  chatInput.style.height = 'auto';
-
+  if (!text || !activeChatErrandId || !currentUser) return;
+  chatInput.value = ''; chatInput.style.height = 'auto';
   try {
     const msgRef = push(ref(database, `errands/${activeChatErrandId}/chat`));
     await set(msgRef, {
@@ -3673,18 +3690,11 @@ async function sendChatMessage() {
       text,
       createdAt: Date.now()
     });
-  } catch (err) {
-    console.error(err);
-    showToast('Could not send message.');
-  }
+  } catch (err) { console.error(err); showToast('Could not send message.'); }
 }
-
 chatSendBtn.addEventListener('click', sendChatMessage);
 chatInput.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter' && !e.shiftKey) {
-    e.preventDefault();
-    sendChatMessage();
-  }
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChatMessage(); }
 });
 chatInput.addEventListener('input', () => {
   chatInput.style.height = 'auto';
@@ -3692,39 +3702,38 @@ chatInput.addEventListener('input', () => {
 });
 
 /* ============================================================
-   ROUTING
+   ROUTING (supports multi-waypoint)
    ============================================================ */
-async function fetchRoute(from, to) {
-  const url =
-    'https://router.project-osrm.org/route/v1/driving/' +
-    `${from.lng},${from.lat};${to.lng},${to.lat}` +
-    '?overview=full&geometries=geojson&steps=false';
+async function fetchRoute(points) {
+  // points = [{lat, lng}, ...]
+  const coordStr = points.map(p => `${p.lng},${p.lat}`).join(';');
+  const url = `https://router.project-osrm.org/route/v1/driving/${coordStr}?overview=full&geometries=geojson&steps=false`;
   const res = await fetch(url);
   if (!res.ok) throw new Error('Routing failed');
   const data = await res.json();
   if (!data.routes || data.routes.length === 0) throw new Error('No route found');
   const route = data.routes[0];
-  return {
-    distance: route.distance,
-    duration: route.duration,
-    geometry: route.geometry
-  };
+  return { distance: route.distance, duration: route.duration, geometry: route.geometry };
 }
 
-function drawRoute(geometry) {
-  if (!map) return;
-  if (!geometry || !geometry.coordinates || !geometry.coordinates.length) return;
+function drawRoute(geometry, opts) {
+  if (!map) return null;
+  if (!geometry || !geometry.coordinates || !geometry.coordinates.length) return null;
 
-  if (routeLayer) { map.removeLayer(routeLayer); routeLayer = null; }
+  const layer = L.layerGroup().addTo(map);
   const coords = geometry.coordinates.map(([lng, lat]) => [lat, lng]);
-  routeLayer = L.layerGroup().addTo(map);
-  L.polyline(coords, { color: '#ffffff', weight: 8, opacity: 0.95, lineJoin: 'round', lineCap: 'round' }).addTo(routeLayer);
-  L.polyline(coords, { color: '#0a0a0a', weight: 4.5, opacity: 1, lineJoin: 'round', lineCap: 'round' }).addTo(routeLayer);
-  if (coords.length > 1) {
-    map.fitBounds(L.latLngBounds(coords), {
-      paddingTopLeft: [30, 50], paddingBottomRight: [30, 30], maxZoom: 17, animate: true, duration: 0.9
-    });
-  }
+  L.polyline(coords, { color: '#ffffff', weight: opts?.weight || 8, opacity: 0.95, lineJoin: 'round', lineCap: 'round' }).addTo(layer);
+  L.polyline(coords, { color: opts?.color || '#0a0a0a', weight: opts?.weight2 || 4.5, opacity: 1, lineJoin: 'round', lineCap: 'round', dashArray: opts?.dash || null }).addTo(layer);
+  return { layer, coords };
+}
+
+function clearMainRoute() {
+  if (routeLayer && map) { try { map.removeLayer(routeLayer); } catch(e) {} }
+  routeLayer = null;
+}
+function clearProviderRoute() {
+  if (providerRouteLayer && map) { try { map.removeLayer(providerRouteLayer); } catch(e) {} }
+  providerRouteLayer = null;
 }
 
 /* ============================================================
@@ -3735,6 +3744,7 @@ async function buildRideTrip() {
   if (!map) initMap();
 
   setPickupMarker(pickupLocation.lat, pickupLocation.lng);
+  if (stopLocation) setStopMarker(stopLocation.lat, stopLocation.lng);
   setDropoffMarker(dropoffLocation.lat, dropoffLocation.lng);
 
   tripTitle.textContent = 'Your Ride';
@@ -3743,6 +3753,17 @@ async function buildRideTrip() {
   summaryPickup.textContent  = pickupLocation.label || 'Pickup';
   summaryDropoff.textContent = dropoffLocation.label || 'Drop-off';
 
+  if (stopLocation) {
+    stopRowBtn.style.display = 'flex';
+    stopDivider.style.display = 'block';
+    summaryStop.textContent = stopLocation.label || 'Stop';
+    addStopRow.style.display = 'none';
+  } else {
+    stopRowBtn.style.display = 'none';
+    stopDivider.style.display = 'none';
+    addStopRow.style.display = 'block';
+  }
+
   showPane('trip');
 
   fareTotal.textContent = '…';
@@ -3750,41 +3771,50 @@ async function buildRideTrip() {
   fareDuration.textContent = '…';
 
   try {
-    const route = await fetchRoute(pickupLocation, dropoffLocation);
+    const pts = [pickupLocation];
+    if (stopLocation) pts.push(stopLocation);
+    pts.push(dropoffLocation);
+
+    const route = await fetchRoute(pts);
     currentRoute = route;
-    drawRoute(route.geometry);
+    clearMainRoute();
+    const drawn = drawRoute(route.geometry);
+    if (drawn) routeLayer = drawn.layer;
+
+    if (drawn && drawn.coords.length > 1) {
+      map.fitBounds(L.latLngBounds(drawn.coords), { padding: [40, 60], maxZoom: 17, animate: true });
+    }
+
     const fare = computeRideFare(route.distance, route.duration);
     fareTotal.textContent    = formatPrice(fare.finalFare);
     fareDistance.textContent = formatDistance(route.distance);
     fareDuration.textContent = formatDuration(route.duration);
   } catch (err) {
     console.warn('Route fetch failed — using estimate:', err);
-
-    const straight = haversineMeters(
-      pickupLocation.lat, pickupLocation.lng,
-      dropoffLocation.lat, dropoffLocation.lng
-    );
-
-    if (straight > 0) {
-      const estDuration = (straight / 1000) / 30 * 3600;
-      const fare = computeRideFare(straight, estDuration);
-      currentRoute = { distance: straight, duration: estDuration, geometry: null };
+    // Sum straight-line distances
+    let total = 0;
+    for (let i = 0; i < ((stopLocation) ? 2 : 1); i++) {
+      const a = i === 0 ? pickupLocation : stopLocation;
+      const b = i === 0 ? (stopLocation || dropoffLocation) : dropoffLocation;
+      total += haversineMeters(a.lat, a.lng, b.lat, b.lng);
+    }
+    if (total > 0) {
+      const estDuration = (total / 1000) / 30 * 3600;
+      const fare = computeRideFare(total, estDuration);
+      currentRoute = { distance: total, duration: estDuration, geometry: null };
       fareTotal.textContent    = formatPrice(fare.finalFare);
-      fareDistance.textContent = formatDistance(straight);
+      fareDistance.textContent = formatDistance(total);
       fareDuration.textContent = formatDuration(estDuration);
-
-      drawRoute({
-        coordinates: [
-          [pickupLocation.lng, pickupLocation.lat],
-          [dropoffLocation.lng, dropoffLocation.lat]
-        ]
-      });
-      showToast('Could not load exact route — showing an estimate.');
-    } else {
-      fareTotal.textContent = '—';
-      fareDistance.textContent = '—';
-      fareDuration.textContent = '—';
-      showToast('Could not calculate route. Try again.');
+      const straightPts = [pickupLocation];
+      if (stopLocation) straightPts.push(stopLocation);
+      straightPts.push(dropoffLocation);
+      clearMainRoute();
+      const layer = L.layerGroup().addTo(map);
+      const coords = straightPts.map(p => [p.lat, p.lng]);
+      L.polyline(coords, { color: '#0a0a0a', weight: 3, opacity: 0.85, dashArray: '6 8' }).addTo(layer);
+      routeLayer = layer;
+      map.fitBounds(L.latLngBounds(coords), { padding: [40, 60], maxZoom: 16 });
+      showToast('Showing an estimate route.');
     }
   }
 }
@@ -3792,6 +3822,9 @@ async function buildRideTrip() {
 cancelTripBtn.addEventListener('click', () => {
   clearTripLayers();
   dropoffLocation = null;
+  stopLocation = null;
+  stopInput.value = '';
+  summaryStop.textContent = '—';
   deliveryDropoffLocation = null;
   deliveryVehicle = null;
   showPane('home');
@@ -3799,7 +3832,20 @@ cancelTripBtn.addEventListener('click', () => {
 });
 
 pickupRowBtn.addEventListener('click', () => openRidePage('pickup'));
+stopRowBtn.addEventListener('click', () => openRidePage('stop'));
 dropoffRowBtn.addEventListener('click', () => openRidePage('destination'));
+removeStopBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  stopLocation = null;
+  stopInput.value = '';
+  summaryStop.textContent = '—';
+  stopRowBtn.style.display = 'none';
+  stopDivider.style.display = 'none';
+  addStopRow.style.display = 'block';
+  buildRideTrip();
+});
+
+addStopBtn.addEventListener('click', () => openRidePage('stop'));
 
 confirmRideBtn.addEventListener('click', async () => {
   if (!currentRoute) { showToast('Could not calculate route. Try again.'); return; }
@@ -3816,7 +3862,7 @@ confirmRideBtn.addEventListener('click', async () => {
     const rideId = rideRef.key;
     activeRideId = rideId;
 
-    await set(rideRef, {
+    const rideData = {
       rideId,
       customerId: currentUser.uid,
       customerName: customerData?.fullName || 'Customer',
@@ -3829,7 +3875,10 @@ confirmRideBtn.addEventListener('click', async () => {
       fare,
       status: 'searching',
       createdAt: Date.now()
-    });
+    };
+    if (stopLocation) rideData.stop = stopLocation;
+
+    await set(rideRef, rideData);
 
     await saveTransaction({
       type: 'ride',
@@ -3842,12 +3891,7 @@ confirmRideBtn.addEventListener('click', async () => {
     activeSearchKind = 'ride';
     currentTripKind = 'ride';
     currentTripId = rideId;
-    currentTripMeta = {
-      icon: 'fa-car',
-      title: 'Searching for a driver',
-      vehicleLabel: 'Car',
-      providerType: 'driver'
-    };
+    currentTripMeta = { icon: 'fa-car', title: 'Searching for a driver', vehicleLabel: 'Car', providerType: 'driver' };
     showSearchingInPane('driver', currentTripMeta);
     startTripTracking('ride', rideId);
   } catch (err) {
@@ -3864,10 +3908,11 @@ confirmRideBtn.addEventListener('click', async () => {
    ============================================================ */
 requestRideBtn.addEventListener('click', () => {
   if (!pickupLocation) {
-    if (userLocation) pickupLocation = { lat: userLocation.lat, lng: userLocation.lng, label: 'Current location' };
+    if (userLocation) pickupLocation = { lat: userLocation.lat, lng: userLocation.lng, label: mapBadgeText.textContent || 'Current location' };
     else { showToast('Waiting for your location…'); locateUser({ center: true }); return; }
   }
   dropoffLocation = null;
+  stopLocation = null;
   currentRoute = null;
   clearTripLayers();
   openRidePage('destination');
@@ -3875,23 +3920,20 @@ requestRideBtn.addEventListener('click', () => {
 
 deliveryBtn.addEventListener('click', () => {
   if (!deliveryPickupLocation) {
-    if (userLocation) deliveryPickupLocation = { lat: userLocation.lat, lng: userLocation.lng, label: 'Current location' };
+    if (userLocation) deliveryPickupLocation = { lat: userLocation.lat, lng: userLocation.lng, label: mapBadgeText.textContent || 'Current location' };
     else if (pickupLocation) deliveryPickupLocation = { ...pickupLocation };
     else { showToast('Waiting for your location…'); locateUser({ center: true }); return; }
   }
   deliveryDropoffLocation = null;
   deliveryRoute = null;
   deliveryVehicle = null;
-  deliveryPickupInput.value = deliveryPickupLocation.label || 'Current location';
+  deliveryPickupInput.value = deliveryPickupLocation.label || '';
   deliveryDestInput.value = '';
   deliveryError.innerText = '';
   openDeliveryPage();
 });
 
-errandBtn.addEventListener('click', () => {
-  openPostErrandPage();
-});
-
+errandBtn.addEventListener('click', () => openPostErrandPage());
 locateBtn.addEventListener('click', () => locateUser({ center: true }));
 
 /* ============================================================
@@ -3914,9 +3956,9 @@ requestDeliveryBtn.addEventListener('click', async () => {
   const parcelDesc = delParcelDesc.value.trim();
 
   if (!senderName) { deliveryError.innerText = 'Please enter the sender name.'; return; }
-  if (!senderPhone || !isValidPhone(senderPhone)) { deliveryError.innerText = 'Enter a valid sender phone number.'; return; }
+  if (!senderPhone || !isValidPhone(senderPhone)) { deliveryError.innerText = 'Enter a valid sender phone.'; return; }
   if (!receiverName) { deliveryError.innerText = 'Please enter the receiver name.'; return; }
-  if (!receiverPhone || !isValidPhone(receiverPhone)) { deliveryError.innerText = 'Enter a valid receiver phone number.'; return; }
+  if (!receiverPhone || !isValidPhone(receiverPhone)) { deliveryError.innerText = 'Enter a valid receiver phone.'; return; }
   if (!parcelName) { deliveryError.innerText = 'Please enter the parcel name.'; return; }
   if (!parcelDesc) { deliveryError.innerText = 'Please describe the parcel.'; return; }
 
@@ -3924,7 +3966,7 @@ requestDeliveryBtn.addEventListener('click', async () => {
   requestDeliveryBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Calculating…';
 
   try {
-    const route = await fetchRoute(deliveryPickupLocation, deliveryDropoffLocation);
+    const route = await fetchRoute([deliveryPickupLocation, deliveryDropoffLocation]);
     deliveryRoute = route;
     const prices = {};
     Object.values(DELIVERY_VEHICLES).forEach((v) => {
@@ -3948,7 +3990,7 @@ requestDeliveryBtn.addEventListener('click', async () => {
     });
     renderVehicleSheet(prices);
     vehicleSheet.classList.add('open');
-    showToast('Could not load the exact route — showing an estimate.');
+    showToast('Showing an estimate route.');
   } finally {
     requestDeliveryBtn.disabled = false;
     requestDeliveryBtn.innerHTML = '<i class="fas fa-paper-plane"></i> REQUEST DELIVERY';
@@ -3974,8 +4016,7 @@ function renderVehicleSheet(prices) {
       <span class="vehicle-price">
         <strong>K ${escapeHtml(formatPrice(price))}</strong>
         <small>ESTIMATE</small>
-      </span>
-    `;
+      </span>`;
     btn.addEventListener('click', () => {
       deliveryVehicle = v;
       chooseDeliveryVehicle(price);
@@ -3988,14 +4029,6 @@ vehicleSheetCancel.addEventListener('click', () => vehicleSheet.classList.remove
 vehicleSheet.addEventListener('click', (e) => {
   if (e.target === vehicleSheet) vehicleSheet.classList.remove('open');
 });
-
-function providerTypeForVehicle(vehicleId) {
-  const v = String(vehicleId || '').toLowerCase();
-  if (v === 'motorbike') return 'rider';
-  if (v === 'cyclist')   return 'cyclist';
-  if (v === 'walker')    return 'walker';
-  return 'rider';
-}
 
 async function chooseDeliveryVehicle(price) {
   if (!deliveryVehicle || !deliveryRoute) return;
@@ -4047,22 +4080,24 @@ async function chooseDeliveryVehicle(price) {
 
   setTimeout(() => {
     if (!map) initMap();
+    clearTripLayers();
     setPickupMarker(deliveryPickupLocation.lat, deliveryPickupLocation.lng);
     setDropoffMarker(deliveryDropoffLocation.lat, deliveryDropoffLocation.lng);
 
     if (deliveryRoute.geometry) {
-      drawRoute(deliveryRoute.geometry);
+      const drawn = drawRoute(deliveryRoute.geometry);
+      if (drawn) routeLayer = drawn.layer;
     } else {
-      drawRoute({
-        coordinates: [
-          [deliveryPickupLocation.lng, deliveryPickupLocation.lat],
-          [deliveryDropoffLocation.lng, deliveryDropoffLocation.lat]
-        ]
-      });
+      const layer = L.layerGroup().addTo(map);
+      L.polyline(
+        [[deliveryPickupLocation.lat, deliveryPickupLocation.lng], [deliveryDropoffLocation.lat, deliveryDropoffLocation.lng]],
+        { color: '#0a0a0a', weight: 3, opacity: 0.85, dashArray: '6 8' }
+      ).addTo(layer);
+      routeLayer = layer;
       map.fitBounds(L.latLngBounds([
         [deliveryPickupLocation.lat, deliveryPickupLocation.lng],
         [deliveryDropoffLocation.lat, deliveryDropoffLocation.lng]
-      ]), { padding: [40, 40], maxZoom: 17 });
+      ]), { padding: [40, 60], maxZoom: 17 });
     }
 
     const labels = {
@@ -4086,8 +4121,6 @@ async function chooseDeliveryVehicle(price) {
 function showSearchingInPane(kind, meta) {
   activeSearchingState.style.display = 'flex';
   activeProviderState.style.display = 'none';
-  cancelSearchBtn.style.display = 'block';
-  cancelTripActiveBtn.style.display = 'block';
 
   if (kind === 'driver') {
     searchingIcon.className = 'fas fa-car';
@@ -4114,14 +4147,13 @@ function startTripTracking(kind, id) {
   if (activeTripListenerUnsub) { activeTripListenerUnsub(); activeTripListenerUnsub = null; }
   currentTripKind = kind;
   currentTripId = id;
-
   const path = kind === 'ride' ? `rides/${id}` : `deliveries/${id}`;
   activeTripListenerUnsub = onValue(ref(database, path), (snap) => {
     if (!snap.exists()) return;
     const trip = snap.val();
     currentTripData = trip;
     handleTripUpdate(trip);
-  }, (err) => { console.warn('Trip listener error:', err); });
+  });
 }
 
 async function handleTripUpdate(trip) {
@@ -4133,19 +4165,43 @@ async function handleTripUpdate(trip) {
     await loadAndShowProvider(trip.providerId, trip);
   }
 
+  // Update compact route info
+  updateCompactRoute(trip);
+
   if (status === 'accepted') {
     updateTripStatusUI('accepted');
+    showProviderToPickupRoute(trip);
   } else if (status === 'arrived') {
     showProviderInPane();
     updateTripStatusUI('arrived');
+    showProviderToPickupRoute(trip);
   } else if (status === 'in_progress') {
     showProviderInPane();
     updateTripStatusUI('in_progress');
-    showRouteToDestination(trip);
+    showPickupToDestinationRoute(trip);
   } else if (status === 'completed') {
     handleTripCompletion(trip);
   } else if (status === 'cancelled') {
     handleTripCancellation();
+  }
+}
+
+function updateCompactRoute(trip) {
+  const pickup = trip.pickup?.label || '—';
+  const dropoff = trip.dropoff?.label || '—';
+  const stop = trip.stop?.label || '';
+
+  crPickup.textContent = pickup;
+  crDropoff.textContent = dropoff;
+  tripFareValue.textContent = formatPrice(trip.fare);
+
+  if (stop) {
+    crStop.textContent = stop;
+    crStopRow.style.display = 'block';
+    crDot2.style.display = 'block';
+  } else {
+    crStopRow.style.display = 'none';
+    crDot2.style.display = 'none';
   }
 }
 
@@ -4166,11 +4222,8 @@ async function loadAndShowProvider(providerId, trip) {
   providerFoundRole.innerHTML = `<i class="fas fa-id-badge"></i> ${escapeHtml(role.charAt(0).toUpperCase() + role.slice(1))}`;
   providerFoundVehicle.innerHTML = `<i class="fas ${vehicleIcon(role)}"></i> ${escapeHtml(vehicleLabel)}`;
 
-  if (photo) {
-    providerFoundAvatar.innerHTML = `<img src="${escapeHtml(photo)}" alt="">`;
-  } else {
-    providerFoundAvatar.innerHTML = `<i class="fas fa-user"></i>`;
-  }
+  if (photo) providerFoundAvatar.innerHTML = `<img src="${escapeHtml(photo)}" alt="">`;
+  else providerFoundAvatar.innerHTML = `<i class="fas fa-user"></i>`;
 
   if (phone) {
     providerCallBtn.href = 'tel:' + phone;
@@ -4179,36 +4232,16 @@ async function loadAndShowProvider(providerId, trip) {
     providerCallBtn.style.display = 'none';
   }
 
-  const roleLower = String(role).toLowerCase();
-  let vehicleImgs = [];
-  if (roleLower === 'cyclist' || roleLower === 'bicycle') {
-    vehicleImgs = Array.isArray(p.bikeUrls) ? p.bikeUrls : [];
-  } else if (roleLower === 'walker' || roleLower === 'walking') {
-    vehicleImgs = [];
-  } else if (roleLower === 'motorbike' || roleLower === 'rider' || roleLower === 'motorcycle') {
-    vehicleImgs = Array.isArray(p.bikeUrls) ? p.bikeUrls : [];
-  } else {
-    vehicleImgs = Array.isArray(p.carUrls) ? p.carUrls : [];
-  }
-  if (!vehicleImgs.length) {
-    if (Array.isArray(p.carUrls) && p.carUrls.length) vehicleImgs = p.carUrls;
-    else if (Array.isArray(p.bikeUrls) && p.bikeUrls.length) vehicleImgs = p.bikeUrls;
-  }
-
-  const vehicleImg = vehicleImgs[0] || '';
-  if (vehicleImg) {
-    providerVehiclePreview.innerHTML = `<img src="${escapeHtml(vehicleImg)}" alt="Vehicle">`;
-    providerVehiclePreview.style.display = 'block';
-  } else {
-    providerVehiclePreview.style.display = 'none';
-  }
-
   if (activeProviderLocUnsub) { activeProviderLocUnsub(); activeProviderLocUnsub = null; }
   activeProviderLocUnsub = onValue(ref(database, `providers/${providerId}/location`), (s) => {
     if (!s.exists()) return;
     const loc = s.val();
     if (loc && isFinite(loc.lat) && isFinite(loc.lng)) {
       setProviderMarker(loc.lat, loc.lng, role);
+      // Redraw provider→pickup route as the provider moves
+      if (currentTripData && currentTripData.status === 'accepted') {
+        showProviderToPickupRouteFromLocation(loc, currentTripData.pickup);
+      }
     }
   });
 }
@@ -4216,57 +4249,151 @@ async function loadAndShowProvider(providerId, trip) {
 function updateTripStatusUI(state) {
   if (state === 'accepted') {
     tripStatusIcon.innerHTML = '<i class="fas fa-car"></i>';
-    tripStatusTitle.textContent = 'Your provider is on the way';
-    tripStatusSubtitle.textContent = 'They are heading to your pickup location.';
-    cancelTripActiveBtn.style.display = 'block';
+    tripStatusTitle.textContent = 'Driver on the way';
+    tripStatusSubtitle.textContent = 'Heading to your pickup point';
+    tripFareLabel.textContent = 'Fare';
   } else if (state === 'arrived') {
     tripStatusIcon.innerHTML = '<i class="fas fa-map-pin"></i>';
-    tripStatusTitle.textContent = 'Your provider has arrived';
-    tripStatusSubtitle.textContent = 'Meet them at the pickup point.';
-    cancelTripActiveBtn.style.display = 'block';
+    tripStatusTitle.textContent = 'Driver has arrived';
+    tripStatusSubtitle.textContent = 'Meet them at the pickup point';
+    tripFareLabel.textContent = 'Fare';
   } else if (state === 'in_progress') {
     tripStatusIcon.innerHTML = '<i class="fas fa-route"></i>';
     tripStatusTitle.textContent = 'Trip in progress';
-    tripStatusSubtitle.textContent = 'Heading to your destination.';
-    cancelTripActiveBtn.style.display = 'none';
+    tripStatusSubtitle.textContent = 'Heading to your destination';
+    tripFareLabel.textContent = 'Fare';
   }
 }
 
-async function showRouteToDestination(trip) {
+/* Draw BOTH routes: provider→pickup (dashed blue) + pickup→dropoff (solid black) */
+async function showProviderToPickupRoute(trip) {
   if (!map) return;
-  removeProviderMarker();
+  const pickup = trip.pickup;
+  if (!pickup) return;
 
-  const from = trip.pickup;
-  const to = trip.dropoff;
-  if (!from || !to) return;
-
-  if (routeLayer) { map.removeLayer(routeLayer); routeLayer = null; }
-  setPickupMarker(from.lat, from.lng);
-  setDropoffMarker(to.lat, to.lng);
+  // Draw the pickup→destination route (main, black)
+  clearMainRoute();
+  setPickupMarker(pickup.lat, pickup.lng);
+  if (trip.stop) setStopMarker(trip.stop.lat, trip.stop.lng);
+  setDropoffMarker(trip.dropoff.lat, trip.dropoff.lng);
 
   try {
-    const route = await fetchRoute(from, to);
-    drawRoute(route.geometry);
+    const pts = [pickup];
+    if (trip.stop) pts.push(trip.stop);
+    pts.push(trip.dropoff);
+    const route = await fetchRoute(pts);
+    const drawn = drawRoute(route.geometry, { color: '#0a0a0a' });
+    if (drawn) routeLayer = drawn.layer;
   } catch (e) {
-    drawRoute({ coordinates: [[from.lng, from.lat], [to.lng, to.lat]] });
-    map.fitBounds(L.latLngBounds([[from.lat, from.lng], [to.lat, to.lng]]), { padding: [40, 40] });
+    console.warn('Main route failed:', e);
+  }
+
+  // Draw the provider→pickup route (blue dashed) if provider location exists
+  try {
+    const provSnap = await get(ref(database, `providers/${trip.providerId}/location`));
+    if (provSnap.exists()) {
+      const provLoc = provSnap.val();
+      if (provLoc && isFinite(provLoc.lat) && isFinite(provLoc.lng)) {
+        await drawProviderToPickup(provLoc, pickup);
+      }
+    }
+  } catch (e) { console.warn('Provider route failed:', e); }
+}
+
+async function showProviderToPickupRouteFromLocation(providerLoc, pickup) {
+  if (!map || !providerLoc || !pickup) return;
+  await drawProviderToPickup(providerLoc, pickup);
+}
+
+async function drawProviderToPickup(providerLoc, pickup) {
+  clearProviderRoute();
+  try {
+    const route = await fetchRoute([{ lat: providerLoc.lat, lng: providerLoc.lng }, pickup]);
+    const coords = route.geometry.coordinates.map(([lng, lat]) => [lat, lng]);
+    const layer = L.layerGroup().addTo(map);
+    L.polyline(coords, { color: '#ffffff', weight: 8, opacity: 0.95, lineJoin: 'round', lineCap: 'round' }).addTo(layer);
+    L.polyline(coords, { color: '#2e90fa', weight: 4.5, opacity: 1, dashArray: '10 8', lineJoin: 'round', lineCap: 'round' }).addTo(layer);
+    providerRouteLayer = layer;
+  } catch (e) {
+    // fallback: straight line
+    const layer = L.layerGroup().addTo(map);
+    L.polyline(
+      [[providerLoc.lat, providerLoc.lng], [pickup.lat, pickup.lng]],
+      { color: '#2e90fa', weight: 3.5, opacity: 0.85, dashArray: '8 8' }
+    ).addTo(layer);
+    providerRouteLayer = layer;
+  }
+
+  // Fit bounds to include everything
+  try {
+    const allPts = [];
+    if (routeLayer) {
+      routeLayer.eachLayer(l => {
+        if (l.getLatLngs && l.getLatLngs().length) {
+          const latlngs = l.getLatLngs();
+          const arr = Array.isArray(latlngs[0]) ? latlngs[0] : latlngs;
+          arr.forEach(ll => allPts.push([ll.lat, ll.lng]));
+        }
+      });
+    }
+    if (providerRouteLayer) {
+      providerRouteLayer.eachLayer(l => {
+        if (l.getLatLngs && l.getLatLngs().length) {
+          const latlngs = l.getLatLngs();
+          const arr = Array.isArray(latlngs[0]) ? latlngs[0] : latlngs;
+          arr.forEach(ll => allPts.push([ll.lat, ll.lng]));
+        }
+      });
+    }
+    if (allPts.length > 1) {
+      map.fitBounds(L.latLngBounds(allPts), { paddingTopLeft: [30, 50], paddingBottomRight: [30, 30], maxZoom: 16, animate: true });
+    }
+  } catch (e) {}
+}
+
+async function showPickupToDestinationRoute(trip) {
+  if (!map) return;
+  removeProviderMarker();
+  clearProviderRoute();
+
+  const pickup = trip.pickup;
+  const dropoff = trip.dropoff;
+  if (!pickup || !dropoff) return;
+
+  clearMainRoute();
+  setPickupMarker(pickup.lat, pickup.lng);
+  if (trip.stop) setStopMarker(trip.stop.lat, trip.stop.lng);
+  setDropoffMarker(dropoff.lat, dropoff.lng);
+
+  try {
+    const pts = [pickup];
+    if (trip.stop) pts.push(trip.stop);
+    pts.push(dropoff);
+    const route = await fetchRoute(pts);
+    const drawn = drawRoute(route.geometry, { color: '#0a0a0a' });
+    if (drawn) {
+      routeLayer = drawn.layer;
+      if (drawn.coords.length > 1) {
+        map.fitBounds(L.latLngBounds(drawn.coords), { paddingTopLeft: [30, 50], paddingBottomRight: [30, 30], maxZoom: 17, animate: true });
+      }
+    }
+  } catch (e) {
+    console.warn('Route to destination failed:', e);
   }
 }
 
 async function handleTripCompletion(trip) {
   try { await completeTransactionByReference(currentTripId); } catch (e) { console.warn(e); }
-
   cleanupTripTracking();
   showToast('✅ Trip completed. Payment successful!');
-
   setTimeout(() => {
     clearTripLayers();
     showPane('home');
     if (userLocation && map) map.setView([userLocation.lat, userLocation.lng], 17, { animate: true });
-
-    pickupLocation = userLocation ? { lat: userLocation.lat, lng: userLocation.lng, label: 'Current location' } : null;
+    pickupLocation = userLocation ? { lat: userLocation.lat, lng: userLocation.lng, label: mapBadgeText.textContent || 'Current location' } : null;
     dropoffLocation = null;
-    deliveryPickupLocation = userLocation ? { lat: userLocation.lat, lng: userLocation.lng, label: 'Current location' } : null;
+    stopLocation = null;
+    deliveryPickupLocation = userLocation ? { lat: userLocation.lat, lng: userLocation.lng, label: mapBadgeText.textContent || 'Current location' } : null;
     deliveryDropoffLocation = null;
     deliveryVehicle = null;
     activeRideId = null;
@@ -4286,10 +4413,10 @@ function handleTripCancellation() {
     clearTripLayers();
     showPane('home');
     if (userLocation && map) map.setView([userLocation.lat, userLocation.lng], 17, { animate: true });
-
-    pickupLocation = userLocation ? { lat: userLocation.lat, lng: userLocation.lng, label: 'Current location' } : null;
+    pickupLocation = userLocation ? { lat: userLocation.lat, lng: userLocation.lng, label: mapBadgeText.textContent || 'Current location' } : null;
     dropoffLocation = null;
-    deliveryPickupLocation = userLocation ? { lat: userLocation.lat, lng: userLocation.lng, label: 'Current location' } : null;
+    stopLocation = null;
+    deliveryPickupLocation = userLocation ? { lat: userLocation.lat, lng: userLocation.lng, label: mapBadgeText.textContent || 'Current location' } : null;
     deliveryDropoffLocation = null;
     deliveryVehicle = null;
     activeRideId = null;
@@ -4311,10 +4438,7 @@ function cleanupTripTracking() {
 /* ============================================================
    CANCEL
    ============================================================ */
-cancelSearchBtn.addEventListener('click', async () => {
-  await cancelActiveTrip();
-});
-
+cancelSearchBtn.addEventListener('click', async () => { await cancelActiveTrip(); });
 cancelTripActiveBtn.addEventListener('click', async () => {
   if (!confirm('Cancel this trip?')) return;
   await cancelActiveTrip();
@@ -4324,31 +4448,27 @@ async function cancelActiveTrip() {
   try {
     if (currentTripKind === 'ride' && currentTripId) {
       await update(ref(database, `rides/${currentTripId}`), {
-        status: 'cancelled',
-        cancelledAt: Date.now(),
-        cancelledBy: 'customer'
+        status: 'cancelled', cancelledAt: Date.now(), cancelledBy: 'customer'
       });
       await cancelTransactionByReference(currentTripId, 'Ride cancelled');
     } else if (currentTripKind === 'delivery' && currentTripId) {
       await update(ref(database, `deliveries/${currentTripId}`), {
-        status: 'cancelled',
-        cancelledAt: Date.now(),
-        cancelledBy: 'customer'
+        status: 'cancelled', cancelledAt: Date.now(), cancelledBy: 'customer'
       });
       await cancelTransactionByReference(currentTripId, 'Delivery cancelled');
     }
   } catch (e) { console.warn(e); }
 
   cleanupTripTracking();
-
   showToast('Trip cancelled');
   setTimeout(() => {
     clearTripLayers();
     showPane('home');
     if (userLocation && map) map.setView([userLocation.lat, userLocation.lng], 17, { animate: true });
-    pickupLocation = userLocation ? { lat: userLocation.lat, lng: userLocation.lng, label: 'Current location' } : null;
+    pickupLocation = userLocation ? { lat: userLocation.lat, lng: userLocation.lng, label: mapBadgeText.textContent || 'Current location' } : null;
     dropoffLocation = null;
-    deliveryPickupLocation = userLocation ? { lat: userLocation.lat, lng: userLocation.lng, label: 'Current location' } : null;
+    stopLocation = null;
+    deliveryPickupLocation = userLocation ? { lat: userLocation.lat, lng: userLocation.lng, label: mapBadgeText.textContent || 'Current location' } : null;
     deliveryDropoffLocation = null;
     deliveryVehicle = null;
     activeRideId = null;
@@ -4372,8 +4492,7 @@ async function saveTransaction({ type, referenceId, amount, description, status 
       txId,
       customerId: currentUser.uid,
       customerName: customerData?.fullName || 'Customer',
-      type,
-      referenceId,
+      type, referenceId,
       amount: Math.round(amount || 0),
       description: description || '',
       status,
@@ -4396,9 +4515,7 @@ async function updateErrandTransaction(errandId, updates) {
         await update(ref(database, `transactions/${id}`), updates);
       }
     }
-  } catch (err) {
-    console.warn('Could not update errand transaction:', err);
-  }
+  } catch (err) { console.warn('Could not update errand transaction:', err); }
 }
 
 async function cancelTransactionByReference(referenceId, reason) {
@@ -4409,15 +4526,11 @@ async function cancelTransactionByReference(referenceId, reason) {
       const tx = data[id];
       if (tx && tx.referenceId === referenceId && tx.status !== 'completed') {
         await update(ref(database, `transactions/${id}`), {
-          status: 'cancelled',
-          cancelReason: reason || '',
-          updatedAt: Date.now()
+          status: 'cancelled', cancelReason: reason || '', updatedAt: Date.now()
         });
       }
     }
-  } catch (err) {
-    console.warn('Could not cancel transaction:', err);
-  }
+  } catch (err) { console.warn('Could not cancel transaction:', err); }
 }
 
 async function completeTransactionByReference(referenceId) {
@@ -4427,31 +4540,19 @@ async function completeTransactionByReference(referenceId) {
     for (const id in data) {
       const tx = data[id];
       if (tx && tx.referenceId === referenceId && tx.status !== 'completed' && tx.status !== 'cancelled') {
-        await update(ref(database, `transactions/${id}`), {
-          status: 'completed',
-          completedAt: Date.now()
-        });
+        await update(ref(database, `transactions/${id}`), { status: 'completed', completedAt: Date.now() });
       }
     }
-  } catch (err) {
-    console.warn('Could not complete transaction:', err);
-  }
+  } catch (err) { console.warn('Could not complete transaction:', err); }
 }
 
 /* ============================================================
-   HISTORY PAGE — EXPANDABLE CARDS
+   HISTORY PAGE
    ============================================================ */
-function openHistoryPage() {
-  historyPage.classList.add('open');
-  loadHistory();
-}
-
+function openHistoryPage() { historyPage.classList.add('open'); loadHistory(); }
 function closeHistoryPage() {
   historyPage.classList.remove('open');
-  if (historyListenerUnsub) {
-    historyListenerUnsub();
-    historyListenerUnsub = null;
-  }
+  if (historyListenerUnsub) { historyListenerUnsub(); historyListenerUnsub = null; }
 }
 historyBackBtn.addEventListener('click', closeHistoryPage);
 
@@ -4465,20 +4566,12 @@ historyTabs.addEventListener('click', (e) => {
 
 function loadHistory() {
   if (!currentUser) return;
-
-  if (historyListenerUnsub) {
-    historyListenerUnsub();
-    historyListenerUnsub = null;
-  }
-
+  if (historyListenerUnsub) { historyListenerUnsub(); historyListenerUnsub = null; }
   historyList.innerHTML = '<div class="loader-row" style="padding:60px 20px;"><span class="mini-spin"></span> Loading your history…</div>';
-
-  const ridesRef     = ref(database, 'rides');
-  const deliveriesRef= ref(database, 'deliveries');
-  const errandsRef   = ref(database, 'errands');
-
+  const ridesRef      = ref(database, 'rides');
+  const deliveriesRef = ref(database, 'deliveries');
+  const errandsRef    = ref(database, 'errands');
   const state = { rides: null, deliveries: null, errands: null };
-
   function tryRender() {
     if (state.rides === null || state.deliveries === null || state.errands === null) return;
     historyCache.rides = state.rides;
@@ -4486,9 +4579,7 @@ function loadHistory() {
     historyCache.errands = state.errands;
     renderHistory();
   }
-
   const unsubs = [];
-
   unsubs.push(onValue(ridesRef, (snap) => {
     const data = snap.val() || {};
     const arr = [];
@@ -4499,8 +4590,7 @@ function loadHistory() {
     arr.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
     state.rides = arr;
     tryRender();
-  }, (err) => { console.warn(err); state.rides = []; tryRender(); }));
-
+  }, () => { state.rides = []; tryRender(); }));
   unsubs.push(onValue(deliveriesRef, (snap) => {
     const data = snap.val() || {};
     const arr = [];
@@ -4511,8 +4601,7 @@ function loadHistory() {
     arr.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
     state.deliveries = arr;
     tryRender();
-  }, (err) => { console.warn(err); state.deliveries = []; tryRender(); }));
-
+  }, () => { state.deliveries = []; tryRender(); }));
   unsubs.push(onValue(errandsRef, (snap) => {
     const data = snap.val() || {};
     const arr = [];
@@ -4523,8 +4612,7 @@ function loadHistory() {
     arr.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
     state.errands = arr;
     tryRender();
-  }, (err) => { console.warn(err); state.errands = []; tryRender(); }));
-
+  }, () => { state.errands = []; tryRender(); }));
   historyListenerUnsub = () => { unsubs.forEach(u => u()); };
 }
 
@@ -4532,30 +4620,23 @@ function renderHistory() {
   const rides = historyCache.rides || [];
   const deliveries = historyCache.deliveries || [];
   const errands = historyCache.errands || [];
-
   const combined = [];
   rides.forEach(r => combined.push({ ...r, _type: 'ride', _id: r.rideId, _ts: r.createdAt || 0 }));
   deliveries.forEach(d => combined.push({ ...d, _type: 'delivery', _id: d.deliveryId, _ts: d.createdAt || 0 }));
   errands.forEach(e => combined.push({ ...e, _type: 'errand', _id: e.errandId, _ts: e.createdAt || 0 }));
-
   combined.sort((a, b) => b._ts - a._ts);
-
-  const filtered = historyFilter === 'all'
-    ? combined
-    : combined.filter(item => item._type === historyFilter);
+  const filtered = historyFilter === 'all' ? combined : combined.filter(item => item._type === historyFilter);
 
   if (!filtered.length) {
     historyList.innerHTML = `
       <div class="empty-state">
         <i class="fas fa-clock-rotate-left"></i>
         <h3>No history yet</h3>
-        <p>Your rides, deliveries, and errands will appear here once you've made a request.</p>
+        <p>Your rides, deliveries, and errands will appear here.</p>
       </div>`;
     return;
   }
 
-  const totalRides = rides.length;
-  const totalDeliveries = deliveries.length;
   const totalSpent = combined
     .filter(item => item.status === 'completed')
     .reduce((sum, item) => sum + (item._type === 'errand' ? (item.willingToPay || 0) : (item.fare || 0)), 0);
@@ -4564,28 +4645,21 @@ function renderHistory() {
     <div class="summary-strip">
       <div class="summary-tile">
         <small>Total trips</small>
-        <strong>${totalRides + totalDeliveries}</strong>
+        <strong>${rides.length + deliveries.length}</strong>
       </div>
       <div class="summary-tile dark">
         <small>Total spent</small>
         <strong>K ${escapeHtml(formatPrice(totalSpent))}</strong>
       </div>
-    </div>
-  `;
+    </div>`;
 
   let html = summaryHtml;
-  filtered.forEach(item => {
-    html += renderHistoryItem(item);
-  });
+  filtered.forEach(item => { html += renderHistoryItem(item); });
   historyList.innerHTML = html;
 
   historyList.querySelectorAll('.hist-card').forEach(card => {
     const summary = card.querySelector('.hist-summary');
-    if (summary) {
-      summary.addEventListener('click', () => {
-        card.classList.toggle('expanded');
-      });
-    }
+    if (summary) summary.addEventListener('click', () => card.classList.toggle('expanded'));
   });
 }
 
@@ -4601,7 +4675,6 @@ function historyStatusClass(status) {
   if (['pending', 'accepted', 'completed', 'cancelled', 'rejected', 'searching', 'in_progress', 'arrived'].includes(status)) return status;
   return 'pending';
 }
-
 function chip(status) {
   const s = historyStatusClass(status);
   return `<span class="chip ${s}">${escapeHtml(statusLabel(s))}</span>`;
@@ -4610,8 +4683,15 @@ function chip(status) {
 function renderHistoryRide(r) {
   const pickup = r.pickup?.label || 'Pickup';
   const dropoff = r.dropoff?.label || 'Drop-off';
+  const stop = r.stop?.label || '';
   const status = historyStatusClass(r.status);
   const fare = r.fare || 0;
+
+  const stopRow = stop ? `
+    <div class="rr-row">
+      <span class="rr-dot" style="background:#f79009;box-shadow:0 0 0 3px rgba(247,144,9,0.15);border-radius:3px;"></span>
+      <span class="rr-txt">${escapeHtml(stop)}</span>
+    </div>` : '';
 
   return `
     <div class="hist-card">
@@ -4632,14 +4712,9 @@ function renderHistoryRide(r) {
           <div class="hd-section">
             <div class="hd-label"><i class="fas fa-route"></i> Route</div>
             <div class="hd-route-block">
-              <div class="rr-row">
-                <span class="rr-dot"></span>
-                <span class="rr-txt">${escapeHtml(pickup)}</span>
-              </div>
-              <div class="rr-row">
-                <span class="rr-dot square"></span>
-                <span class="rr-txt">${escapeHtml(dropoff)}</span>
-              </div>
+              <div class="rr-row"><span class="rr-dot"></span><span class="rr-txt">${escapeHtml(pickup)}</span></div>
+              ${stopRow}
+              <div class="rr-row"><span class="rr-dot square"></span><span class="rr-txt">${escapeHtml(dropoff)}</span></div>
             </div>
           </div>
           <div class="hd-section">
@@ -4653,32 +4728,15 @@ function renderHistoryRide(r) {
             <div class="hd-label"><i class="fas fa-user"></i> Driver</div>
             <div class="hd-row"><span class="hd-key">Name</span><span class="hd-val">${escapeHtml(r.providerName || '—')}</span></div>
             <div class="hd-row"><span class="hd-key">Phone</span><span class="hd-val">${escapeHtml(r.providerPhone || '—')}</span></div>
-            <div class="hd-row"><span class="hd-key">Vehicle</span><span class="hd-val">${escapeHtml(r.vehicleLabel || '—')}</span></div>
           </div>
           <div class="hd-section">
             <div class="hd-label"><i class="fas fa-clock"></i> Timeline</div>
             <div class="hd-row"><span class="hd-key">Created</span><span class="hd-val">${escapeHtml(formatDateTime(r.createdAt))}</span></div>
-            ${r.acceptedAt ? `<div class="hd-row"><span class="hd-key">Accepted</span><span class="hd-val">${escapeHtml(formatDateTime(r.acceptedAt))}</span></div>` : ''}
-            ${r.arrivedAt ? `<div class="hd-row"><span class="hd-key">Arrived</span><span class="hd-val">${escapeHtml(formatDateTime(r.arrivedAt))}</span></div>` : ''}
-            ${r.startedAt ? `<div class="hd-row"><span class="hd-key">Started</span><span class="hd-val">${escapeHtml(formatDateTime(r.startedAt))}</span></div>` : ''}
             ${r.completedAt ? `<div class="hd-row"><span class="hd-key">Completed</span><span class="hd-val">${escapeHtml(formatDateTime(r.completedAt))}</span></div>` : ''}
-            ${r.cancelledAt ? `<div class="hd-row"><span class="hd-key">Cancelled</span><span class="hd-val">${escapeHtml(formatDateTime(r.cancelledAt))}</span></div>` : ''}
           </div>
-          <div class="hd-section">
-            <div class="hd-label"><i class="fas fa-id-badge"></i> Reference</div>
-            <div class="hd-row"><span class="hd-key">ID</span><span class="hd-val" style="font-family:monospace;font-size:0.72rem;">${escapeHtml(r.rideId || '—')}</span></div>
-          </div>
-          ${r.providerPhone && ['accepted','arrived','in_progress'].includes(r.status) ? `
-            <div class="hd-actions">
-              <a href="tel:${escapeHtml(r.providerPhone)}" class="ghost">
-                <i class="fas fa-phone"></i> Call driver
-              </a>
-            </div>
-          ` : ''}
         </div>
       </div>
-    </div>
-  `;
+    </div>`;
 }
 
 function renderHistoryDelivery(d) {
@@ -4706,14 +4764,8 @@ function renderHistoryDelivery(d) {
           <div class="hd-section">
             <div class="hd-label"><i class="fas fa-route"></i> Route</div>
             <div class="hd-route-block">
-              <div class="rr-row">
-                <span class="rr-dot"></span>
-                <span class="rr-txt">${escapeHtml(pickup)}</span>
-              </div>
-              <div class="rr-row">
-                <span class="rr-dot square"></span>
-                <span class="rr-txt">${escapeHtml(dropoff)}</span>
-              </div>
+              <div class="rr-row"><span class="rr-dot"></span><span class="rr-txt">${escapeHtml(pickup)}</span></div>
+              <div class="rr-row"><span class="rr-dot square"></span><span class="rr-txt">${escapeHtml(dropoff)}</span></div>
             </div>
           </div>
           <div class="hd-section">
@@ -4721,57 +4773,22 @@ function renderHistoryDelivery(d) {
             <div class="hd-row"><span class="hd-key">Status</span><span class="hd-val">${escapeHtml(statusLabel(status))}</span></div>
             <div class="hd-row"><span class="hd-key">Vehicle</span><span class="hd-val">${escapeHtml(d.vehicleLabel || '—')}</span></div>
             <div class="hd-row"><span class="hd-key">Distance</span><span class="hd-val">${escapeHtml(d.distance ? formatDistance(d.distance) : '—')}</span></div>
-            <div class="hd-row"><span class="hd-key">Duration</span><span class="hd-val">${escapeHtml(d.duration ? formatDuration(d.duration) : '—')}</span></div>
             <div class="hd-row"><span class="hd-key">Fare</span><span class="hd-val">K ${escapeHtml(formatPrice(fare))}</span></div>
-          </div>
-          <div class="hd-section">
-            <div class="hd-label"><i class="fas fa-user"></i> Sender</div>
-            <div class="hd-row"><span class="hd-key">Name</span><span class="hd-val">${escapeHtml(d.senderName || '—')}</span></div>
-            <div class="hd-row"><span class="hd-key">Phone</span><span class="hd-val">${escapeHtml(d.senderPhone || '—')}</span></div>
-          </div>
-          <div class="hd-section">
-            <div class="hd-label"><i class="fas fa-user-check"></i> Receiver</div>
-            <div class="hd-row"><span class="hd-key">Name</span><span class="hd-val">${escapeHtml(d.receiverName || '—')}</span></div>
-            <div class="hd-row"><span class="hd-key">Phone</span><span class="hd-val">${escapeHtml(d.receiverPhone || '—')}</span></div>
           </div>
           <div class="hd-section">
             <div class="hd-label"><i class="fas fa-box"></i> Parcel</div>
             <div class="hd-row"><span class="hd-key">Name</span><span class="hd-val">${escapeHtml(d.parcelName || '—')}</span></div>
             <div class="hd-row"><span class="hd-key">Description</span><span class="hd-val">${escapeHtml(d.parcelDesc || '—')}</span></div>
           </div>
-          <div class="hd-section">
-            <div class="hd-label"><i class="fas fa-user-tie"></i> Courier</div>
-            <div class="hd-row"><span class="hd-key">Name</span><span class="hd-val">${escapeHtml(d.providerName || '—')}</span></div>
-            <div class="hd-row"><span class="hd-key">Phone</span><span class="hd-val">${escapeHtml(d.providerPhone || '—')}</span></div>
-          </div>
-          <div class="hd-section">
-            <div class="hd-label"><i class="fas fa-clock"></i> Timeline</div>
-            <div class="hd-row"><span class="hd-key">Created</span><span class="hd-val">${escapeHtml(formatDateTime(d.createdAt))}</span></div>
-            ${d.completedAt ? `<div class="hd-row"><span class="hd-key">Completed</span><span class="hd-val">${escapeHtml(formatDateTime(d.completedAt))}</span></div>` : ''}
-            ${d.cancelledAt ? `<div class="hd-row"><span class="hd-key">Cancelled</span><span class="hd-val">${escapeHtml(formatDateTime(d.cancelledAt))}</span></div>` : ''}
-          </div>
-          <div class="hd-section">
-            <div class="hd-label"><i class="fas fa-id-badge"></i> Reference</div>
-            <div class="hd-row"><span class="hd-key">ID</span><span class="hd-val" style="font-family:monospace;font-size:0.72rem;">${escapeHtml(d.deliveryId || '—')}</span></div>
-          </div>
-          ${d.providerPhone && ['accepted','arrived','in_progress'].includes(d.status) ? `
-            <div class="hd-actions">
-              <a href="tel:${escapeHtml(d.providerPhone)}" class="ghost">
-                <i class="fas fa-phone"></i> Call courier
-              </a>
-            </div>
-          ` : ''}
         </div>
       </div>
-    </div>
-  `;
+    </div>`;
 }
 
 function renderHistoryErrand(e) {
   const pickup = e.pickup?.label || 'Pickup';
   const status = historyStatusClass(e.status);
   const budget = e.willingToPay || 0;
-
   const offers = e.offers ? Object.values(e.offers) : [];
   const acceptedOffer = offers.find(o => o.status === 'accepted') || null;
   const agreedPrice = acceptedOffer ? acceptedOffer.price : null;
@@ -4795,74 +4812,27 @@ function renderHistoryErrand(e) {
           <div class="hd-section">
             <div class="hd-label"><i class="fas fa-align-left"></i> Description</div>
             <div class="hd-route-block" style="padding:10px 12px;">
-              <div style="font-size:0.84rem;color:#0a0a0a;line-height:1.5;">${escapeHtml(e.description || '—')}</div>
+              <div style="font-size:0.82rem;line-height:1.5;">${escapeHtml(e.description || '—')}</div>
             </div>
           </div>
           <div class="hd-section">
             <div class="hd-label"><i class="fas fa-circle-info"></i> Errand info</div>
             <div class="hd-row"><span class="hd-key">Status</span><span class="hd-val">${escapeHtml(statusLabel(status))}</span></div>
-            <div class="hd-row"><span class="hd-key">Pickup</span><span class="hd-val">${escapeHtml(pickup)}</span></div>
             <div class="hd-row"><span class="hd-key">Budget</span><span class="hd-val">K ${escapeHtml(formatPrice(budget))}</span></div>
-            ${agreedPrice != null ? `<div class="hd-row"><span class="hd-key">Agreed price</span><span class="hd-val">K ${escapeHtml(formatPrice(agreedPrice))}</span></div>` : ''}
-            <div class="hd-row"><span class="hd-key">Offers received</span><span class="hd-val">${offers.length}</span></div>
-          </div>
-          ${acceptedOffer ? `
-            <div class="hd-section">
-              <div class="hd-label"><i class="fas fa-user-check"></i> Accepted provider</div>
-              <div class="hd-row"><span class="hd-key">Name</span><span class="hd-val">${escapeHtml(acceptedOffer.providerName || '—')}</span></div>
-              <div class="hd-row"><span class="hd-key">Role</span><span class="hd-val">${escapeHtml(acceptedOffer.providerRole || '—')}</span></div>
-              <div class="hd-row"><span class="hd-key">Message</span><span class="hd-val">${escapeHtml(acceptedOffer.message || '—')}</span></div>
-            </div>
-          ` : ''}
-          ${e.imageUrl ? `
-            <div class="hd-section">
-              <div class="hd-label"><i class="fas fa-image"></i> Attached image</div>
-              <div style="border-radius:10px;overflow:hidden;background:#0a0a0a;box-shadow:0 0 0 1px var(--line);">
-                <img src="${escapeHtml(e.imageUrl)}" alt="" style="width:100%;max-height:220px;object-fit:contain;display:block;">
-              </div>
-            </div>
-          ` : ''}
-          <div class="hd-section">
-            <div class="hd-label"><i class="fas fa-clock"></i> Timeline</div>
-            <div class="hd-row"><span class="hd-key">Posted</span><span class="hd-val">${escapeHtml(formatDateTime(e.createdAt))}</span></div>
-            ${e.acceptedAt ? `<div class="hd-row"><span class="hd-key">Accepted</span><span class="hd-val">${escapeHtml(formatDateTime(e.acceptedAt))}</span></div>` : ''}
-          </div>
-          <div class="hd-section">
-            <div class="hd-label"><i class="fas fa-id-badge"></i> Reference</div>
-            <div class="hd-row"><span class="hd-key">ID</span><span class="hd-val" style="font-family:monospace;font-size:0.72rem;">${escapeHtml(e.errandId || '—')}</span></div>
-          </div>
-          <div class="hd-actions">
-            <button class="ghost" data-open-errand="${escapeHtml(e.errandId)}">
-              <i class="fas fa-comments"></i> View offers
-            </button>
+            <div class="hd-row"><span class="hd-key">Offers</span><span class="hd-val">${offers.length}</span></div>
           </div>
         </div>
       </div>
-    </div>
-  `;
+    </div>`;
 }
-
-historyList.addEventListener('click', (e) => {
-  const btn = e.target.closest('[data-open-errand]');
-  if (!btn) return;
-  e.stopPropagation();
-  openErrandDetails(btn.dataset.openErrand);
-});
 
 /* ============================================================
    TRANSACTIONS PAGE
    ============================================================ */
-function openTransactionsPage() {
-  transactionsPage.classList.add('open');
-  loadTransactions();
-}
-
+function openTransactionsPage() { transactionsPage.classList.add('open'); loadTransactions(); }
 function closeTransactionsPage() {
   transactionsPage.classList.remove('open');
-  if (txListenerUnsub) {
-    txListenerUnsub();
-    txListenerUnsub = null;
-  }
+  if (txListenerUnsub) { txListenerUnsub(); txListenerUnsub = null; }
 }
 transactionsBackBtn.addEventListener('click', closeTransactionsPage);
 
@@ -4876,14 +4846,8 @@ txTabs.addEventListener('click', (e) => {
 
 function loadTransactions() {
   if (!currentUser) return;
-
-  if (txListenerUnsub) {
-    txListenerUnsub();
-    txListenerUnsub = null;
-  }
-
+  if (txListenerUnsub) { txListenerUnsub(); txListenerUnsub = null; }
   transactionsList.innerHTML = '<div class="loader-row" style="padding:60px 20px;"><span class="mini-spin"></span> Loading transactions…</div>';
-
   const txRef = ref(database, 'transactions');
   txListenerUnsub = onValue(txRef, (snap) => {
     const data = snap.val() || {};
@@ -4895,21 +4859,11 @@ function loadTransactions() {
     arr.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
     txCache = arr;
     renderTransactions();
-  }, (err) => {
-    console.warn('Transactions listener error:', err);
-    transactionsList.innerHTML = `
-      <div class="empty-state">
-        <i class="fas fa-triangle-exclamation"></i>
-        <h3>Could not load transactions</h3>
-      </div>`;
   });
 }
 
 function renderTransactions() {
-  const filtered = txFilter === 'all'
-    ? txCache
-    : txCache.filter(t => t.type === txFilter);
-
+  const filtered = txFilter === 'all' ? txCache : txCache.filter(t => t.type === txFilter);
   if (!filtered.length) {
     transactionsList.innerHTML = `
       <div class="empty-state">
@@ -4919,14 +4873,8 @@ function renderTransactions() {
       </div>`;
     return;
   }
-
-  const totalSpent = txCache
-    .filter(t => t.status === 'completed')
-    .reduce((sum, t) => sum + (t.amount || 0), 0);
-  const totalPending = txCache
-    .filter(t => t.status === 'pending')
-    .reduce((sum, t) => sum + (t.amount || 0), 0);
-
+  const totalSpent = txCache.filter(t => t.status === 'completed').reduce((sum, t) => sum + (t.amount || 0), 0);
+  const totalPending = txCache.filter(t => t.status === 'pending').reduce((sum, t) => sum + (t.amount || 0), 0);
   let html = `
     <div class="summary-strip">
       <div class="summary-tile">
@@ -4937,25 +4885,16 @@ function renderTransactions() {
         <small>Total paid</small>
         <strong>K ${escapeHtml(formatPrice(totalSpent))}</strong>
       </div>
-    </div>
-  `;
-
-  filtered.forEach(t => {
-    html += renderTransactionItem(t);
-  });
+    </div>`;
+  filtered.forEach(t => { html += renderTransactionItem(t); });
   transactionsList.innerHTML = html;
 }
 
 function renderTransactionItem(t) {
-  const icon = t.type === 'ride' ? 'fa-car-side'
-             : t.type === 'delivery' ? 'fa-box'
-             : 'fa-clipboard-list';
-  const label = t.type === 'ride' ? 'Ride'
-              : t.type === 'delivery' ? 'Delivery'
-              : 'Errand';
+  const icon = t.type === 'ride' ? 'fa-car-side' : t.type === 'delivery' ? 'fa-box' : 'fa-clipboard-list';
+  const label = t.type === 'ride' ? 'Ride' : t.type === 'delivery' ? 'Delivery' : 'Errand';
   const status = ['completed', 'pending', 'failed', 'cancelled'].includes(t.status) ? t.status : 'pending';
   const statusText = status.charAt(0).toUpperCase() + status.slice(1);
-
   return `
     <div class="tx-item">
       <div class="tx-ico out"><i class="fas ${icon}"></i></div>
@@ -4967,8 +4906,7 @@ function renderTransactionItem(t) {
         <strong>K ${escapeHtml(formatPrice(t.amount))}</strong>
         <span class="tx-status ${status}">${escapeHtml(statusText)}</span>
       </div>
-    </div>
-  `;
+    </div>`;
 }
 
 /* ============================================================
@@ -4997,28 +4935,21 @@ function applyCustomerProfile(customer) {
   const first = (customer.firstName || '').trim();
   const last  = (customer.lastName || '').trim();
   const full  = (customer.fullName || `${first} ${last}`).trim() || 'Customer';
-
   topbarName.textContent   = full;
   sidebarName.textContent  = full;
   sidebarPhone.textContent = customer.phone || '—';
-
   const hour = new Date().getHours();
   let greeting = 'Hello';
   if (hour < 12) greeting = 'Good morning';
   else if (hour < 17) greeting = 'Good afternoon';
   else greeting = 'Good evening';
-
   homeGreeting.textContent = `${greeting}, ${first || full} 👋`;
-
-  if (customer.profileUrl) {
-    sidebarAvatar.innerHTML = `<img src="${escapeHtml(customer.profileUrl)}" alt="Profile">`;
-  } else {
-    sidebarAvatar.innerHTML = `<i class="fas fa-user"></i>`;
-  }
+  if (customer.profileUrl) sidebarAvatar.innerHTML = `<img src="${escapeHtml(customer.profileUrl)}" alt="Profile">`;
+  else sidebarAvatar.innerHTML = `<i class="fas fa-user"></i>`;
 }
 
 /* ============================================================
-   SESSION RESTORE — reattach to active trip after refresh
+   SESSION RESTORE
    ============================================================ */
 async function checkForActiveTrip() {
   if (!currentUser) return;
@@ -5027,10 +4958,8 @@ async function checkForActiveTrip() {
       get(ref(database, 'rides')),
       get(ref(database, 'deliveries'))
     ]);
-
     const rides = ridesSnap.val() || {};
     const delivs = delivsSnap.val() || {};
-
     const ACTIVE = ['searching', 'accepted', 'arrived', 'in_progress'];
 
     for (const id in rides) {
@@ -5042,6 +4971,7 @@ async function checkForActiveTrip() {
         currentTripId = id;
         currentTripData = r;
         if (r.pickup) setPickupMarker(r.pickup.lat, r.pickup.lng);
+        if (r.stop) setStopMarker(r.stop.lat, r.stop.lng);
         if (r.dropoff && r.status !== 'searching') setDropoffMarker(r.dropoff.lat, r.dropoff.lng);
 
         if (r.status === 'searching') {
@@ -5050,12 +4980,14 @@ async function checkForActiveTrip() {
         } else {
           showSearchingInPane('driver', currentTripMeta);
           showProviderInPane();
+          updateCompactRoute(r);
           if (r.providerId) {
             currentProviderId = r.providerId;
             await loadAndShowProvider(r.providerId, r);
           }
           updateTripStatusUI(r.status);
-          if (r.status === 'in_progress') showRouteToDestination(r);
+          if (r.status === 'accepted' || r.status === 'arrived') showProviderToPickupRoute(r);
+          else if (r.status === 'in_progress') showPickupToDestinationRoute(r);
         }
         startTripTracking('ride', id);
         return;
@@ -5086,12 +5018,14 @@ async function checkForActiveTrip() {
         } else {
           showSearchingInPane('delivery', meta);
           showProviderInPane();
+          updateCompactRoute(d);
           if (d.providerId) {
             currentProviderId = d.providerId;
             await loadAndShowProvider(d.providerId, d);
           }
           updateTripStatusUI(d.status);
-          if (d.status === 'in_progress') showRouteToDestination(d);
+          if (d.status === 'accepted' || d.status === 'arrived') showProviderToPickupRoute(d);
+          else if (d.status === 'in_progress') showPickupToDestinationRoute(d);
         }
         startTripTracking('delivery', id);
         return;
@@ -5114,28 +5048,21 @@ onAuthStateChanged(auth, async (user) => {
 
     const customer = await checkCustomerRecord(user.uid);
     if (!customer) { await signOut(auth); window.location.href = 'index.html'; return; }
-
-    if (customer.banned === true) {
-      showBanned(customer.banReason || '');
-      hideLoading();
-      return;
-    }
+    if (customer.banned === true) { showBanned(customer.banReason || ''); hideLoading(); return; }
 
     customerData = customer;
     applyCustomerProfile(customer);
     appRoot.classList.remove('hidden');
-
     startConfigListeners();
 
     requestAnimationFrame(async () => {
       initMap();
       if (map) map.invalidateSize();
       locateUser({ center: true, silent: false });
-      setTimeout(() => { checkForActiveTrip(); }, 600);
+      setTimeout(() => { checkForActiveTrip(); }, 700);
     });
 
     loadErrandsForBadge();
-
     hideLoading();
     bootDone = true;
   } catch (err) {
