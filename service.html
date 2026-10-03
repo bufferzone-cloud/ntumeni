@@ -117,7 +117,7 @@ input, textarea, select { font-family: inherit; }
 .leaflet-control-attribution a { color: #6e6e73 !important; }
 
 /* ==========================================================
-   DETAIL PANEL — hidden by default, only when there's a request
+   DETAIL PANEL — hidden by default, only when there's a trip
    ========================================================== */
 #detailPanel {
   flex: 0 0 0;
@@ -197,53 +197,82 @@ body.has-panel #detailPanel {
 #sidebarBtn { top: 14px; left: 14px; }
 
 /* ==========================================================
-   ONLINE / OFFLINE FLOATING TOGGLE (below sidebar button)
+   ONLINE / OFFLINE SLIDE TOGGLE (bottom center)
    ========================================================== */
-#onlineToggle {
+#onlineSlideWrap {
   position: fixed;
-  top: 68px;
-  left: 14px;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
   z-index: 600;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0 14px;
-  height: 46px;
-  border-radius: 14px;
-  background: #ffffff;
-  color: var(--text-primary);
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.6px;
-  text-transform: uppercase;
-  box-shadow: 0 4px 18px rgba(0,0,0,0.16), 0 0 0 1px rgba(0,0,0,0.05);
-  transition: transform 0.3s var(--spring), background 0.25s, color 0.25s, box-shadow 0.25s;
-  white-space: nowrap;
+  width: min(340px, calc(100vw - 28px));
+  transition: opacity 0.3s var(--ease-out),
+              transform 0.42s var(--panel-ease),
+              visibility 0.3s;
 }
-#onlineToggle:active { transform: scale(0.95); }
-#onlineToggle .ot-dot {
-  width: 10px; height: 10px; border-radius: 50%;
-  background: var(--text-tertiary);
-  transition: background 0.25s, box-shadow 0.25s;
-  flex-shrink: 0;
+body.has-panel #onlineSlideWrap {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateX(-50%) translateY(18px);
 }
-#onlineToggle.online {
-  background: #0a0a0a;
+
+.online-slide {
+  position: relative;
+  width: 100%;
+  height: 62px;
+  border-radius: 999px;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+  box-shadow: 0 14px 30px -12px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.06) inset;
+  transition: background 0.4s var(--ease-smooth), opacity 0.25s;
+}
+.online-slide.offline {
+  background: linear-gradient(135deg, #12b76a 0%, #067647 52%, #062e1d 100%);
+}
+.online-slide.online {
+  background: linear-gradient(135deg, #f04438 0%, #b42318 52%, #4d0f0a 100%);
+}
+.online-slide.busy { opacity: 0.62; pointer-events: none; }
+
+.online-slide .os-fill {
+  position: absolute; top: 0; left: 0; bottom: 0;
+  width: 58px;
+  background: rgba(255,255,255,0.16);
+  border-radius: 999px;
+  pointer-events: none;
+  transition: width 0.06s linear;
+}
+.online-slide .os-label {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  padding-left: 42px;
+  font-size: 0.76rem; font-weight: 800;
+  letter-spacing: 1.4px; text-transform: uppercase;
   color: #ffffff;
-  box-shadow:
-    0 8px 22px -6px rgba(18,183,106,0.45),
-    0 0 0 1px rgba(255,255,255,0.06) inset;
+  pointer-events: none;
+  text-shadow: 0 1px 5px rgba(0,0,0,0.35);
+  transition: opacity 0.1s linear;
 }
-#onlineToggle.online .ot-dot {
-  background: var(--success);
-  box-shadow: 0 0 0 4px rgba(18,183,106,0.28);
-  animation: onlinePulse 1.8s var(--ease-smooth) infinite;
+.online-slide .os-label i { margin-right: 8px; font-size: 0.82rem; }
+.online-slide .os-handle {
+  position: absolute; top: 5px; left: 5px;
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  background: #ffffff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem;
+  cursor: grab;
+  box-shadow: 0 8px 18px -5px rgba(0,0,0,0.45);
+  transition: transform 0.24s var(--spring), color 0.3s;
+  touch-action: none;
+  z-index: 2;
 }
-@keyframes onlinePulse {
-  0%, 100% { box-shadow: 0 0 0 4px rgba(18,183,106,0.28); }
-  50%      { box-shadow: 0 0 0 8px rgba(18,183,106,0.05); }
-}
-#onlineToggle.busy { opacity: 0.6; pointer-events: none; }
+.online-slide.offline .os-handle { color: #067647; }
+.online-slide.online  .os-handle { color: #b42318; }
+.online-slide .os-handle.dragging { transition: none; }
 
 /* ==========================================================
    FLOAT BALANCE PILL (top-right)
@@ -294,20 +323,20 @@ body.has-panel #detailPanel {
 .float-balance-pill.is-warn { background: #b54708; }
 
 /* ==========================================================
-   MAP CONTROLS (bottom-right of map area)
+   MAP CONTROLS (above the online slider)
    ========================================================== */
 #mapControls {
   position: fixed;
   right: 14px;
-  top: calc(100vh - 62px);
+  bottom: 96px;
   z-index: 600;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  transition: top 0.4s var(--panel-ease);
+  transition: bottom 0.42s var(--panel-ease);
 }
 body.has-panel #mapControls {
-  top: calc(var(--panel-h) + 100vh - var(--panel-h) - 62px);
+  bottom: calc(var(--panel-h) + 16px);
 }
 #mapControls .float-btn { position: static; }
 #navigateFloatBtn { background: #0a0a0a; color: #fff; }
@@ -480,7 +509,7 @@ body.has-panel #mapControls {
 .dp-btn-row { display: flex; gap: 10px; margin-top: 6px; }
 .dp-btn-row .dp-btn { margin-top: 0; }
 
-/* Slide-to-action */
+/* Slide-to-action (trip stages) */
 .slide-btn {
   position: relative;
   width: 100%;
@@ -529,6 +558,100 @@ body.has-panel #mapControls {
 }
 .slide-btn .slide-handle.dragging { transition: none; }
 .slide-btn.is-busy { opacity: 0.7; pointer-events: none; }
+
+/* ==========================================================
+   REQUEST POPUP (incoming ride / delivery)
+   ========================================================== */
+#requestModal {
+  z-index: 5500;
+  padding: 18px;
+  align-items: center;
+  justify-content: center;
+}
+.req-modal {
+  width: 100%;
+  max-width: 520px;
+  height: 86vh;
+  max-height: 780px;
+  background: #ffffff;
+  border-radius: 22px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 26px 68px rgba(0,0,0,0.45);
+  animation: modalIn 0.42s var(--spring);
+}
+.req-map-wrap {
+  position: relative;
+  flex: 0 0 44%;
+  min-height: 190px;
+  background: #e8eaed;
+  border-bottom: 1px solid var(--line);
+}
+#reqMap { position: absolute; inset: 0; z-index: 1; }
+.req-map-badge {
+  position: absolute;
+  top: 12px; left: 12px;
+  z-index: 500;
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(10,10,10,0.90);
+  color: #ffffff;
+  font-size: 0.64rem; font-weight: 800;
+  letter-spacing: 1.1px; text-transform: uppercase;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 6px 18px -6px rgba(0,0,0,0.6);
+}
+.req-map-badge .rb-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--success);
+  animation: onlinePulse 1.2s var(--ease-smooth) infinite;
+}
+@keyframes onlinePulse {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(18,183,106,0.35); }
+  50%      { box-shadow: 0 0 0 8px rgba(18,183,106,0.03); }
+}
+
+.req-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px 18px 18px;
+}
+.req-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+.req-actions button {
+  flex: 1;
+  height: 56px;
+  border-radius: 16px;
+  font-size: 0.86rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: transform 0.28s var(--spring), opacity 0.25s;
+}
+.req-actions button:active { transform: scale(0.97); }
+.req-actions button:disabled { opacity: 0.6; pointer-events: none; }
+.req-actions .req-reject {
+  background: var(--danger-soft);
+  color: #b42318;
+  box-shadow: 0 0 0 1.5px rgba(217,45,32,0.28) inset;
+}
+.req-actions .req-accept {
+  background: linear-gradient(135deg, #12b76a 0%, #067647 55%, #063d29 100%);
+  color: #ffffff;
+  box-shadow: 0 12px 26px -10px rgba(18,183,106,0.75);
+}
 
 /* ==========================================================
    SIDEBAR
@@ -1448,7 +1571,7 @@ body.has-panel #mapControls {
    ========================================================== */
 #toast {
   position: fixed; left: 50%;
-  bottom: 90px;
+  bottom: 96px;
   z-index: 6000;
   transform: translate(-50%, 24px);
   background: #0a0a0a; color: #fff;
@@ -1469,8 +1592,11 @@ body.has-panel #toast {
    RESPONSIVE
    ========================================================== */
 @media (max-width: 380px) {
-  #onlineToggle { font-size: 0.66rem; padding: 0 11px; height: 44px; }
   .float-balance-pill .fb-txt small { display: none; }
+  .online-slide { height: 58px; }
+  .online-slide .os-handle { width: 48px; height: 48px; }
+  .online-slide .os-label { font-size: 0.66rem; letter-spacing: 1px; padding-left: 38px; }
+  .req-modal { height: 90vh; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -1497,7 +1623,7 @@ body.has-panel #toast {
 <!-- FULL MAP -->
 <div id="map"></div>
 
-<!-- DETAIL PANEL (hidden unless there is a request/trip) -->
+<!-- DETAIL PANEL (hidden unless there is an active trip) -->
 <section id="detailPanel">
   <div class="dp-inner" id="dpInner"></div>
 </section>
@@ -1505,12 +1631,6 @@ body.has-panel #toast {
 <!-- SIDEBAR TOGGLE -->
 <button class="float-btn" id="sidebarBtn" aria-label="Open menu">
   <i class="fas fa-bars"></i>
-</button>
-
-<!-- ONLINE / OFFLINE FLOATING TOGGLE (below sidebar button) -->
-<button id="onlineToggle" aria-label="Toggle online status">
-  <span class="ot-dot"></span>
-  <span id="onlineToggleLabel">Offline</span>
 </button>
 
 <!-- FLOAT BALANCE PILL -->
@@ -1522,7 +1642,7 @@ body.has-panel #toast {
   </span>
 </button>
 
-<!-- MAP CONTROLS (bottom-right of map area) -->
+<!-- MAP CONTROLS -->
 <div id="mapControls">
   <button class="float-btn" id="locateBtn" aria-label="Recenter">
     <i class="fas fa-crosshairs"></i>
@@ -1530,6 +1650,15 @@ body.has-panel #toast {
   <button class="float-btn hidden" id="navigateFloatBtn" aria-label="Navigate">
     <i class="fas fa-diamond-turn-right"></i>
   </button>
+</div>
+
+<!-- ONLINE / OFFLINE SLIDE TOGGLE (bottom center) -->
+<div id="onlineSlideWrap">
+  <div class="online-slide offline" id="onlineSlide">
+    <div class="os-fill" id="osFill"></div>
+    <span class="os-label" id="osLabel"><i class="fas fa-power-off"></i> Slide to go online</span>
+    <div class="os-handle" id="osHandle"><i class="fas fa-chevron-right"></i></div>
+  </div>
 </div>
 
 <div id="toast"></div>
@@ -1810,6 +1939,17 @@ body.has-panel #toast {
   </div>
 </div>
 
+<!-- INCOMING REQUEST POPUP -->
+<div class="modal-overlay" id="requestModal">
+  <div class="req-modal">
+    <div class="req-map-wrap">
+      <div id="reqMap"></div>
+      <div class="req-map-badge"><span class="rb-dot"></span> Incoming request</div>
+    </div>
+    <div class="req-body" id="reqBody"></div>
+  </div>
+</div>
+
 <script type="module">
 import { initializeApp } from "firebase/app";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
@@ -1881,9 +2021,6 @@ const logoutBtn       = $('logoutBtn');
 const floatBalancePill  = $('floatBalancePill');
 const floatBalanceValue = $('floatBalanceValue');
 
-const onlineToggle       = $('onlineToggle');
-const onlineToggleLabel  = $('onlineToggleLabel');
-
 const detailPanel = $('detailPanel');
 const dpInner     = $('dpInner');
 
@@ -1949,6 +2086,11 @@ let modalUserMarker = null;
 let modalTargetMarker = null;
 let modalRouteLayer = null;
 let currentModalTarget = null;
+
+/* Request popup map */
+let reqMap = null;
+let reqRouteLayer = null;
+let reqMarkers = [];
 
 let errandsCache = {};
 let errandsUnsub = null;
@@ -2088,6 +2230,84 @@ function statusLabel(status) {
   if (!status) return 'Pending';
   return status.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
 }
+
+/* ============================================================
+   RINGTONE (Web Audio) — loops until accepted / rejected
+   ============================================================ */
+let ringCtx = null;
+let ringTimer = null;
+let ringVibrateTimer = null;
+
+function ensureAudio() {
+  try {
+    if (!ringCtx) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      ringCtx = new AC();
+    }
+    if (ringCtx.state === 'suspended') {
+      ringCtx.resume().catch(() => {});
+    }
+    return ringCtx;
+  } catch (e) {
+    return null;
+  }
+}
+
+function playRingBurst() {
+  const ctx = ensureAudio();
+  if (!ctx) return;
+  try {
+    const now = ctx.currentTime + 0.02;
+    const pattern = [
+      { start: 0.00, dur: 0.30 },
+      { start: 0.40, dur: 0.30 },
+      { start: 0.80, dur: 0.30 }
+    ];
+    pattern.forEach(p => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(1040, now + p.start);
+      osc.frequency.setValueAtTime(880, now + p.start + p.dur * 0.5);
+      const t0 = now + p.start;
+      const t1 = t0 + p.dur;
+      gain.gain.setValueAtTime(0.0001, t0);
+      gain.gain.exponentialRampToValueAtTime(0.22, t0 + 0.025);
+      gain.gain.setValueAtTime(0.22, t1 - 0.07);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t1);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(t0);
+      osc.stop(t1 + 0.03);
+    });
+  } catch (e) { /* ignore */ }
+}
+
+function startRingtone() {
+  stopRingtone();
+  ensureAudio();
+  playRingBurst();
+  ringTimer = setInterval(playRingBurst, 1500);
+  if (navigator.vibrate) {
+    try { navigator.vibrate([500, 200, 500, 300]); } catch (e) {}
+    ringVibrateTimer = setInterval(() => {
+      try { navigator.vibrate([500, 200, 500, 300]); } catch (e) {}
+    }, 1500);
+  }
+}
+
+function stopRingtone() {
+  if (ringTimer) { clearInterval(ringTimer); ringTimer = null; }
+  if (ringVibrateTimer) { clearInterval(ringVibrateTimer); ringVibrateTimer = null; }
+  if (navigator.vibrate) { try { navigator.vibrate(0); } catch (e) {} }
+}
+
+/* Unlock audio on first user gesture */
+document.addEventListener('pointerdown', function unlockAudio() {
+  ensureAudio();
+  document.removeEventListener('pointerdown', unlockAudio);
+}, { once: true });
 
 /* ============================================================
    EXTERNAL NAVIGATION
@@ -2445,15 +2665,108 @@ function getActiveNavTarget() {
 }
 
 /* ============================================================
-   ONLINE TOGGLE
+   ONLINE / OFFLINE SLIDE TOGGLE
    ============================================================ */
+let osDragging = false;
+let osStartX = 0;
+let osMaxX = 0;
+let osBusy = false;
+
+function osBaseWidth() {
+  const handle = $('osHandle');
+  return handle ? handle.offsetWidth + 6 : 58;
+}
+
+function wireOnlineSlider() {
+  const btn = $('onlineSlide');
+  const handle = $('osHandle');
+  const fill = $('osFill');
+  const label = $('osLabel');
+  if (!btn || !handle || !fill || !label) return;
+
+  // initialise the fill width to match the handle size
+  fill.style.width = osBaseWidth() + 'px';
+
+  handle.addEventListener('pointerdown', (e) => {
+    if (osBusy) return;
+    osDragging = true;
+    osStartX = e.clientX;
+    const rect = btn.getBoundingClientRect();
+    osMaxX = Math.max(20, rect.width - handle.offsetWidth - 10);
+    handle.classList.add('dragging');
+    try { handle.setPointerCapture(e.pointerId); } catch (err) {}
+  });
+
+  handle.addEventListener('pointermove', (e) => {
+    if (!osDragging) return;
+    const dx = Math.max(0, Math.min(osMaxX, e.clientX - osStartX));
+    handle.style.transform = `translateX(${dx}px)`;
+    fill.style.width = (osBaseWidth() + dx) + 'px';
+    label.style.opacity = String(Math.max(0, 1 - (dx / osMaxX) * 1.15));
+    if (dx >= osMaxX * 0.86) {
+      osDragging = false;
+      handle.classList.remove('dragging');
+      triggerOnlineToggle();
+    }
+  });
+
+  const release = () => {
+    if (!osDragging) return;
+    osDragging = false;
+    handle.classList.remove('dragging');
+    handle.style.transform = '';
+    fill.style.width = osBaseWidth() + 'px';
+    label.style.opacity = '';
+  };
+  handle.addEventListener('pointerup', release);
+  handle.addEventListener('pointercancel', release);
+}
+
+async function triggerOnlineToggle() {
+  const btn = $('onlineSlide');
+  const handle = $('osHandle');
+  const fill = $('osFill');
+  const label = $('osLabel');
+  if (!btn || osBusy) return;
+
+  // unlock audio while we still have a user gesture
+  ensureAudio();
+
+  osBusy = true;
+  btn.classList.add('busy');
+  handle.style.transform = `translateX(${osMaxX}px)`;
+  fill.style.width = (osBaseWidth() + osMaxX) + 'px';
+  label.style.opacity = '0';
+
+  try {
+    await toggleOnline();
+  } catch (e) {
+    console.warn('Toggle online failed:', e);
+  }
+
+  setTimeout(() => {
+    handle.style.transform = '';
+    fill.style.width = osBaseWidth() + 'px';
+    label.style.opacity = '';
+    btn.classList.remove('busy');
+    osBusy = false;
+    setOnlineUI();
+  }, 280);
+}
+
 function setOnlineUI() {
+  const btn = $('onlineSlide');
+  const label = $('osLabel');
+  if (!btn || !label) return;
+
   if (isOnline) {
-    onlineToggle.classList.add('online');
-    onlineToggleLabel.textContent = 'Online';
+    btn.classList.remove('offline');
+    btn.classList.add('online');
+    label.innerHTML = '<i class="fas fa-power-off"></i> Slide to go offline';
   } else {
-    onlineToggle.classList.remove('online');
-    onlineToggleLabel.textContent = 'Offline';
+    btn.classList.remove('online');
+    btn.classList.add('offline');
+    label.innerHTML = '<i class="fas fa-power-off"></i> Slide to go online';
   }
 }
 
@@ -2492,7 +2805,6 @@ async function toggleOnline() {
     return;
   }
 
-  onlineToggle.classList.add('busy');
   isOnline = !isOnline;
 
   try {
@@ -2502,7 +2814,6 @@ async function toggleOnline() {
     });
   } catch (err) { console.warn('Could not persist online state:', err); }
 
-  onlineToggle.classList.remove('busy');
   setOnlineUI();
 
   if (isOnline) {
@@ -2515,8 +2826,6 @@ async function toggleOnline() {
     stopLocationPing();
   }
 }
-
-onlineToggle.addEventListener('click', toggleOnline);
 
 /* ============================================================
    REQUEST LISTENERS
@@ -2580,6 +2889,19 @@ function isWithinRadius(request, anchor) {
 }
 
 function evaluateQueue() {
+  /* If the request we're ringing about disappeared, dismiss the popup */
+  if (activeStage === 'incoming' && activeTrip) {
+    const stillThere = activeTrip.kind === 'ride'
+      ? incomingRides[activeTrip.id]
+      : incomingDeliveries[activeTrip.id];
+    if (!stillThere) {
+      activeTrip = null;
+      activeStage = null;
+      closeRequestModal();
+      renderDetailPanel();
+    }
+  }
+
   if (!isOnline) return;
   if (activeStage) return;
   if (!providerRecord || providerRecord.status !== 'approved') return;
@@ -2612,13 +2934,11 @@ function evaluateQueue() {
 
 /* ============================================================
    DETAIL PANEL — LAYOUT + RENDER
-   The panel is only visible when there is a request or active trip.
    ============================================================ */
 function setPanelVisible(visible) {
   const currentlyVisible = document.body.classList.contains('has-panel');
   if (currentlyVisible === visible) return;
   document.body.classList.toggle('has-panel', visible);
-  // Leaflet needs a size invalidation after layout change
   setTimeout(() => { if (map) map.invalidateSize(); }, 120);
   setTimeout(() => { if (map) map.invalidateSize(); }, 460);
 }
@@ -2628,8 +2948,10 @@ function renderDetailPanel() {
   const isTripActive = activeTrip && activeStage && activeStage !== 'incoming';
 
   if (isIncoming) {
-    setPanelVisible(true);
-    renderIncomingRequest();
+    /* The incoming request is presented as a popup instead of the panel */
+    setPanelVisible(false);
+    dpInner.innerHTML = '';
+    updateFloatingNavButton();
     return;
   }
   if (isTripActive) {
@@ -2637,29 +2959,25 @@ function renderDetailPanel() {
     renderActiveTrip();
     return;
   }
-  // No request → hide panel, show full map
   setPanelVisible(false);
   dpInner.innerHTML = '';
   updateFloatingNavButton();
 }
 
-function renderWaitingState() {
-  // Not used anymore — the panel is hidden when idle. Kept for compatibility.
-}
-
 /* ============================================================
-   INCOMING REQUEST PANEL
+   INCOMING REQUEST POPUP
    ============================================================ */
-function renderIncomingRequest() {
+function openRequestModal() {
   if (!activeTrip) return;
   const { kind, data } = activeTrip;
-  const customerName  = data.customerName  || (kind === 'delivery' ? data.senderName : '') || 'Customer';
+
+  const customerName  = data.customerName  || (kind === 'delivery' ? data.senderName  : '') || 'Customer';
   const customerPhone = data.customerPhone || (kind === 'delivery' ? data.senderPhone : '') || '—';
   const customerPhoto = data.customerPhoto || data.senderPhoto || '';
 
+  const fare = Number(data.fare || 0);
   const dist = data.distance || 0;
   const dur  = data.duration || 0;
-  const fare = Number(data.fare || 0);
 
   let commissionK = 0;
   if (kind === 'ride')          commissionK = commissionFor('ride', fare);
@@ -2669,8 +2987,24 @@ function renderIncomingRequest() {
     ? `<img src="${escapeHtml(customerPhoto)}" alt="">`
     : `<i class="fas fa-user"></i>`;
 
-  dpInner.innerHTML = `
-    <div class="dp-tag"><i class="fas fa-bolt"></i> ${kind === 'ride' ? 'New ride request' : 'New delivery request'}</div>
+  const parcelLine = (kind === 'delivery' && data.parcelName)
+    ? `<div class="dp-route" style="margin-top:0;">
+         <div class="rr-row">
+           <span class="rr-dot" style="background:#b54708;box-shadow:0 0 0 3.5px rgba(181,71,8,0.13);"></span>
+           <div class="rr-txt">
+             <small>Parcel</small>
+             <strong>${escapeHtml(data.parcelName)}</strong>
+           </div>
+         </div>
+       </div>`
+    : '';
+
+  const reqBody = $('reqBody');
+  reqBody.innerHTML = `
+    <div class="dp-tag">
+      <i class="fas fa-bolt"></i>
+      ${kind === 'ride' ? 'New ride request' : 'New delivery request'}
+    </div>
 
     <div class="dp-customer">
       <div class="dc-avatar">${avatarHtml}</div>
@@ -2702,6 +3036,8 @@ function renderIncomingRequest() {
       </div>
     </div>
 
+    ${parcelLine}
+
     <div class="dp-stats">
       <div class="dp-stat"><small>Distance</small><strong>${escapeHtml(dist ? formatDistance(dist) : '—')}</strong></div>
       <div class="dp-stat"><small>Time</small><strong>${escapeHtml(dur ? formatDuration(dur) : '—')}</strong></div>
@@ -2711,26 +3047,126 @@ function renderIncomingRequest() {
     ${commissionK > 0 ? `
       <div class="dp-commission">
         <i class="fas fa-percent"></i>
-        <span>K ${commissionK} commission deducted from float on completion</span>
+        <span>K ${commissionK} commission will be deducted from your float on completion</span>
       </div>
     ` : ''}
 
-    <div class="slide-btn accept" id="slideBtn">
-      <div class="slide-fill" id="slideFill"></div>
-      <span class="slide-label" id="slideLabel"><i class="fas fa-arrow-right"></i> Slide to accept</span>
-      <div class="slide-handle" id="slideHandle">
-        <i class="fas fa-chevron-right"></i>
-      </div>
+    <div class="req-actions">
+      <button type="button" class="req-reject" id="reqRejectBtn">
+        <i class="fas fa-xmark"></i> Reject
+      </button>
+      <button type="button" class="req-accept" id="reqAcceptBtn">
+        <i class="fas fa-check"></i> Accept
+      </button>
     </div>
-
-    <button class="dp-btn ghost" id="dpDeclineBtn">
-      <i class="fas fa-xmark"></i> DECLINE
-    </button>
   `;
 
-  wireSlideButton();
-  const declineBtn = $('dpDeclineBtn');
-  if (declineBtn) declineBtn.addEventListener('click', declineCurrentRequest);
+  $('reqAcceptBtn').addEventListener('click', onReqAcceptClick);
+  $('reqRejectBtn').addEventListener('click', onReqRejectClick);
+
+  $('requestModal').classList.add('open');
+  startRingtone();
+
+  setTimeout(() => { buildReqMap(data); }, 340);
+}
+
+function closeRequestModal() {
+  stopRingtone();
+  const modal = $('requestModal');
+  if (modal) modal.classList.remove('open');
+  if (reqRouteLayer && reqMap) {
+    try { reqMap.removeLayer(reqRouteLayer); } catch (e) {}
+  }
+  reqRouteLayer = null;
+}
+
+async function buildReqMap(data) {
+  const pickup  = data && data.pickup;
+  const dropoff = data && data.dropoff;
+  if (!pickup || !isFinite(pickup.lat) || !isFinite(pickup.lng)) return;
+  if (!dropoff || !isFinite(dropoff.lat) || !isFinite(dropoff.lng)) return;
+
+  if (!reqMap) {
+    reqMap = L.map('reqMap', {
+      zoomControl: false,
+      attributionControl: false,
+      preferCanvas: true,
+      maxZoom: 19,
+      minZoom: 3
+    }).setView([pickup.lat, pickup.lng], MODAL_ZOOM);
+    L.tileLayer(OSM_TILE_URL, { subdomains: 'abc', maxZoom: 19, crossOrigin: true }).addTo(reqMap);
+  }
+  reqMap.invalidateSize();
+
+  if (reqRouteLayer) { try { reqMap.removeLayer(reqRouteLayer); } catch (e) {} reqRouteLayer = null; }
+  reqMarkers.forEach(m => { try { reqMap.removeLayer(m); } catch (e) {} });
+  reqMarkers = [];
+
+  const pickupIcon = L.divIcon({
+    className: '', html: '<div class="mk-pickup"></div>',
+    iconSize: [20,20], iconAnchor: [10,20]
+  });
+  const destIcon = L.divIcon({
+    className: '', html: '<div class="mk-dest"></div>',
+    iconSize: [20,20], iconAnchor: [10,20]
+  });
+
+  reqMarkers.push(L.marker([pickup.lat, pickup.lng], { icon: pickupIcon }).addTo(reqMap));
+  reqMarkers.push(L.marker([dropoff.lat, dropoff.lng], { icon: destIcon }).addTo(reqMap));
+
+  try {
+    const url =
+      `https://router.project-osrm.org/route/v1/driving/` +
+      `${pickup.lng},${pickup.lat};${dropoff.lng},${dropoff.lat}` +
+      `?overview=full&geometries=geojson&steps=false`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('Routing failed');
+    const json = await res.json();
+    if (!json.routes || !json.routes[0]) throw new Error('No route');
+
+    const coords = json.routes[0].geometry.coordinates.map(([lng, lat]) => [lat, lng]);
+    reqRouteLayer = L.layerGroup().addTo(reqMap);
+    L.polyline(coords, { color: '#ffffff', weight: 8, opacity: 0.95, lineJoin: 'round', lineCap: 'round' }).addTo(reqRouteLayer);
+    L.polyline(coords, { color: '#0a0a0a', weight: 4.5, opacity: 1, lineJoin: 'round', lineCap: 'round' }).addTo(reqRouteLayer);
+    reqMap.fitBounds(L.latLngBounds(coords), { padding: [36, 36], maxZoom: 17 });
+  } catch (err) {
+    console.warn('Request popup route failed:', err);
+    reqMap.fitBounds(
+      L.latLngBounds([[pickup.lat, pickup.lng], [dropoff.lat, dropoff.lng]]),
+      { padding: [36, 36], maxZoom: 16 }
+    );
+  }
+}
+
+async function onReqAcceptClick() {
+  const btn = $('reqAcceptBtn');
+  if (!btn || btn.disabled) return;
+  const rejectBtn = $('reqRejectBtn');
+
+  btn.disabled = true;
+  if (rejectBtn) rejectBtn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Accepting…';
+
+  // Stop ringing immediately — the provider has decided
+  stopRingtone();
+
+  try {
+    await handleAccept();
+  } catch (err) {
+    console.error(err);
+    showToast('Action failed: ' + (err.message || err));
+    btn.disabled = false;
+    if (rejectBtn) rejectBtn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-check"></i> Accept';
+    // Resume ringing since the accept failed
+    startRingtone();
+  }
+}
+
+function onReqRejectClick() {
+  const btn = $('reqRejectBtn');
+  if (btn) btn.disabled = true;
+  declineCurrentRequest();
 }
 
 function declineCurrentRequest() {
@@ -2739,9 +3175,17 @@ function declineCurrentRequest() {
   declinedKeys[key] = true;
   activeTrip = null;
   activeStage = null;
+  closeRequestModal();
   renderDetailPanel();
   showToast('Request declined');
   setTimeout(evaluateQueue, 400);
+}
+
+function showIncomingRequest(kind, id, data) {
+  if (activeStage) return;
+  activeTrip = { kind, id, data };
+  activeStage = 'incoming';
+  openRequestModal();
 }
 
 /* ============================================================
@@ -2888,7 +3332,7 @@ function updateFloatingNavButton() {
 }
 
 /* ============================================================
-   SLIDE-TO-ACTION
+   SLIDE-TO-ACTION (trip stages)
    ============================================================ */
 let slideDragging = false;
 let slideStartX = 0;
@@ -2959,8 +3403,7 @@ function setSlideBusy(text) {
 async function triggerSlideAction() {
   if (!activeTrip || !activeStage) return;
   try {
-    if (activeStage === 'incoming')      await handleAccept();
-    else if (activeStage === 'accepted') await handleArrive();
+    if (activeStage === 'accepted') await handleArrive();
     else if (activeStage === 'arrived')  await handleStartTrip();
     else if (activeStage === 'in_progress') await handleEndTrip();
   } catch (err) {
@@ -2974,17 +3417,9 @@ async function triggerSlideAction() {
 /* ============================================================
    TRIP ACTIONS
    ============================================================ */
-function showIncomingRequest(kind, id, data) {
-  if (activeStage) return;
-  activeTrip = { kind, id, data };
-  activeStage = 'incoming';
-  renderDetailPanel();
-}
-
 async function handleAccept() {
   if (!activeTrip) return;
   const { kind, id, data } = activeTrip;
-  setSlideBusy('<i class="fas fa-spinner fa-spin"></i> Accepting…');
 
   const role = providerRecord?.role || 'driver';
   const providerName  = providerRecord?.fullName || providerRecord?.name || userRecord?.name || 'Provider';
@@ -3010,6 +3445,7 @@ async function handleAccept() {
   activeStage = 'accepted';
   activeTrip.data = { ...data, ...updates };
 
+  closeRequestModal();
   renderDetailPanel();
 
   const from = userLocation || DEFAULT_LOCATION;
@@ -3266,6 +3702,8 @@ onAuthStateChanged(auth, async (user) => {
     applyUserUI();
     initMap();
 
+    wireOnlineSlider();
+
     loadSettings();
     listenFloatRules();
     listenFloatBalance(user.uid);
@@ -3386,7 +3824,7 @@ function renderAccountApplySection() {
         <div class="st-ico"><i class="fas fa-circle-check"></i></div>
         <div class="st-body">
           <strong>You're approved!</strong>
-          <p>You're an approved <b>${escapeHtml(roleLabel(role))}</b>. Toggle <b>Online</b> to start receiving requests.</p>
+          <p>You're an approved <b>${escapeHtml(roleLabel(role))}</b>. Slide the bottom button to <b>go online</b> and start receiving requests.</p>
         </div>
       </div>`;
     return;
@@ -4597,7 +5035,7 @@ $('settingsEditProfile').addEventListener('click', () => {
   setTimeout(openAccountPage, 200);
 });
 $('settingsSupport').addEventListener('click', () => showToast('Support: support@ntumeni.com'));
-$('settingsAbout').addEventListener('click', () => showToast('NTUMENI Service Provider · v1.3'));
+$('settingsAbout').addEventListener('click', () => showToast('NTUMENI Service Provider · v1.4'));
 $('settingsLogout').addEventListener('click', doLogout);
 logoutBtn.addEventListener('click', doLogout);
 
@@ -4607,6 +5045,8 @@ async function doLogout() {
       await update(ref(database, `providers/${currentUser.uid}`), { online: false });
     }
   } catch (e) {}
+  stopRingtone();
+  closeRequestModal();
   stopLocationPing();
   detachRequestListeners();
   detachTripWatcher();
@@ -4641,11 +5081,13 @@ window.addEventListener('orientationchange', () => {
   setTimeout(() => {
     if (map) map.invalidateSize();
     if (modalMap) modalMap.invalidateSize();
+    if (reqMap) reqMap.invalidateSize();
   }, 320);
 });
 window.addEventListener('resize', () => {
   if (map) map.invalidateSize();
   if (modalMap) modalMap.invalidateSize();
+  if (reqMap) reqMap.invalidateSize();
 });
 
 setTimeout(() => hideLoading(), 12000);
