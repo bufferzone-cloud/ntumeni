@@ -334,7 +334,6 @@ input, textarea { font-family: inherit; }
   font-size: 0.78rem; font-weight: 700;
   display: inline-flex; align-items: center; justify-content: center;
   gap: 7px;
-  transition: background 0.22s;
 }
 .add-stop-btn:active { background: var(--warn-soft); }
 
@@ -380,18 +379,14 @@ input, textarea { font-family: inherit; }
 .confirm-btn:active { transform: scale(0.978); }
 .confirm-btn:disabled { opacity: 0.5; pointer-events: none; }
 
-/* ACTIVE PANE — compact, no scrolling */
-#paneActive {
-  overflow: hidden;
-  padding: 0;
-}
+/* ACTIVE PANE */
+#paneActive { overflow: hidden; padding: 0; }
 .active-compact {
   display: flex; flex-direction: column;
   flex: 1; min-height: 0;
   gap: 8px;
 }
 
-/* Searching */
 .searching-wrap {
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
@@ -442,7 +437,6 @@ input, textarea { font-family: inherit; }
 }
 .pane-cancel-btn:active { transform: scale(0.97); }
 
-/* Provider found — compact, no scroll */
 .provider-active {
   display: flex; flex-direction: column;
   flex: 1; min-height: 0;
@@ -488,7 +482,6 @@ input, textarea { font-family: inherit; }
 }
 .pf-call:active { transform: scale(0.92); }
 
-/* Route line (compact) */
 .compact-route {
   display: flex; align-items: center; gap: 10px;
   padding: 9px 12px;
@@ -532,7 +525,6 @@ input, textarea { font-family: inherit; }
   margin-bottom: 2px;
 }
 
-/* Status strip */
 .compact-status {
   display: flex; align-items: center; gap: 12px;
   padding: 12px 14px;
@@ -1527,12 +1519,123 @@ input, textarea { font-family: inherit; }
 .tx-status.failed    { background: var(--danger-soft);  color: #b42318; }
 .tx-status.cancelled { background: #f4f4f5;             color: #52525b; }
 
+/* ==========================================================
+   RATING MODAL
+   ========================================================== */
+#ratingModal {
+  z-index: 6500;
+  padding: 18px;
+}
+.rating-modal {
+  background: #ffffff;
+  border-radius: 22px;
+  width: 100%;
+  max-width: 400px;
+  padding: 26px 22px 20px;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.4);
+  animation: modalIn 0.42s var(--spring);
+  text-align: center;
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.94) translateY(16px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+.rating-head { margin-bottom: 16px; }
+.rating-avatar {
+  width: 68px; height: 68px; border-radius: 50%;
+  background: var(--fill-gray);
+  overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 14px;
+  box-shadow: 0 0 0 3px #fff, 0 0 0 5px rgba(0,0,0,0.06);
+}
+.rating-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.rating-avatar i { font-size: 1.6rem; color: var(--text-tertiary); }
+.rating-head h3 {
+  font-size: 1.15rem; font-weight: 800;
+  letter-spacing: -0.35px; margin-bottom: 4px;
+}
+.rating-head p {
+  font-size: 0.82rem; color: var(--text-secondary);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.rating-stars {
+  display: flex; justify-content: center; gap: 4px;
+  margin-bottom: 6px;
+}
+.rating-stars button {
+  width: 46px; height: 46px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.7rem;
+  color: #d8d8dc;
+  transition: color 0.2s, transform 0.2s var(--spring);
+}
+.rating-stars button.active { color: #f7b955; }
+.rating-stars button:active { transform: scale(0.9); }
+.rating-label {
+  font-size: 0.78rem; font-weight: 700;
+  color: var(--text-secondary);
+  margin-bottom: 14px;
+  min-height: 18px;
+  letter-spacing: 0.3px;
+}
+.rating-comment-wrap { margin-bottom: 16px; }
+.rating-comment-wrap textarea {
+  width: 100%;
+  min-height: 70px;
+  padding: 11px 14px;
+  border-radius: 12px;
+  border: 1.5px solid transparent;
+  background: var(--fill-gray);
+  font-size: 0.86rem;
+  outline: none;
+  resize: none;
+  line-height: 1.45;
+  font-family: inherit;
+}
+.rating-comment-wrap textarea:focus {
+  background: #fff;
+  border-color: #0a0a0a;
+}
+.rating-actions {
+  display: flex; gap: 10px;
+}
+.rating-actions button {
+  flex: 1;
+  padding: 13px;
+  border-radius: 12px;
+  font-size: 0.88rem; font-weight: 700;
+}
+.rating-skip {
+  background: var(--fill-gray);
+  color: var(--text-primary);
+}
+.rating-submit {
+  background: #0a0a0a;
+  color: #fff;
+  transition: transform 0.28s var(--spring), opacity 0.22s;
+}
+.rating-submit:disabled { opacity: 0.4; pointer-events: none; }
+.rating-submit:active:not(:disabled) { transform: scale(0.97); }
+
+/* Modal overlay */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 5000;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: none; align-items: center; justify-content: center;
+  padding: 18px;
+}
+.modal-overlay.open { display: flex; }
+
 @media (max-width: 380px) {
   .btn-ride { padding: 20px 16px; }
   .btn-ride .ride-ico { width: 42px; height: 42px; }
   .fare-top .fare-amount { font-size: 1.6rem; }
   .compact-status { padding: 10px 12px; }
   .compact-status .cs-fare strong { font-size: 1rem; }
+  .rating-stars button { width: 40px; height: 40px; font-size: 1.5rem; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -1698,11 +1801,10 @@ input, textarea { font-family: inherit; }
         </button>
       </div>
 
-      <!-- ACTIVE PANE — compact -->
+      <!-- ACTIVE PANE -->
       <div class="action-pane" id="paneActive">
         <div class="active-compact">
 
-          <!-- Searching -->
           <div id="activeSearchingState" class="searching-wrap">
             <div class="pane-radar">
               <div class="radar-ring"></div>
@@ -1719,7 +1821,6 @@ input, textarea { font-family: inherit; }
             <button class="pane-cancel-btn" id="cancelSearchBtn">Cancel</button>
           </div>
 
-          <!-- Provider active — compact, no scroll -->
           <div id="activeProviderState" style="display:none; flex-direction:column; flex:1; min-height:0; gap:8px;">
 
             <div class="pf-row">
@@ -2115,6 +2216,37 @@ input, textarea { font-family: inherit; }
   </div>
 </div>
 
+<!-- RATING MODAL -->
+<div class="modal-overlay" id="ratingModal">
+  <div class="rating-modal">
+    <div class="rating-head">
+      <div class="rating-avatar" id="ratingAvatar">
+        <i class="fas fa-user"></i>
+      </div>
+      <h3>How was your trip?</h3>
+      <p id="ratingSubtitle">Rate your provider</p>
+    </div>
+
+    <div class="rating-stars" id="ratingStars">
+      <button type="button" data-star="1" aria-label="1 star"><i class="fas fa-star"></i></button>
+      <button type="button" data-star="2" aria-label="2 stars"><i class="fas fa-star"></i></button>
+      <button type="button" data-star="3" aria-label="3 stars"><i class="fas fa-star"></i></button>
+      <button type="button" data-star="4" aria-label="4 stars"><i class="fas fa-star"></i></button>
+      <button type="button" data-star="5" aria-label="5 stars"><i class="fas fa-star"></i></button>
+    </div>
+    <div class="rating-label" id="ratingLabel">Tap a star to rate</div>
+
+    <div class="rating-comment-wrap">
+      <textarea id="ratingComment" maxlength="240" placeholder="Add a comment (optional)"></textarea>
+    </div>
+
+    <div class="rating-actions">
+      <button type="button" class="rating-skip" id="ratingSkipBtn">Skip</button>
+      <button type="button" class="rating-submit" id="ratingSubmitBtn" disabled>Submit</button>
+    </div>
+  </div>
+</div>
+
 <div id="toast"></div>
 
 <script type="module">
@@ -2323,6 +2455,14 @@ const tripFareValue         = $('tripFareValue');
 const tripFareLabel         = $('tripFareLabel');
 const cancelTripActiveBtn   = $('cancelTripActiveBtn');
 
+const ratingModal     = $('ratingModal');
+const ratingAvatar    = $('ratingAvatar');
+const ratingSubtitle  = $('ratingSubtitle');
+const ratingLabel     = $('ratingLabel');
+const ratingComment   = $('ratingComment');
+const ratingSkipBtn   = $('ratingSkipBtn');
+const ratingSubmitBtn = $('ratingSubmitBtn');
+
 const toastEl = $('toast');
 
 /* ============================================================
@@ -2387,7 +2527,28 @@ let txFilter = 'all';
 let historyListenerUnsub = null;
 let txListenerUnsub = null;
 
+/* Silently detected user city — used to restrict searches, never shown in UI */
+let userCity = null;
+let userCountry = null;
+
+/* Rating state */
+let ratingTripKind = null;
+let ratingTripId = null;
+let ratingProviderId = null;
+let ratingProviderName = null;
+let ratingProviderPhoto = null;
+let currentRatingValue = 0;
+
 const DEFAULT_LOCATION = { lat: -15.4167, lng: 28.2833 };
+
+const RATING_LABELS = {
+  0: 'Tap a star to rate',
+  1: 'Poor',
+  2: 'Fair',
+  3: 'Good',
+  4: 'Very good',
+  5: 'Excellent!'
+};
 
 /* ============================================================
    PANES
@@ -2396,7 +2557,6 @@ function showPane(which) {
   paneHome.classList.remove('active');
   paneTrip.classList.remove('active');
   paneActive.classList.remove('active');
-
   if (which === 'home')        paneHome.classList.add('active');
   else if (which === 'trip')   paneTrip.classList.add('active');
   else if (which === 'active') paneActive.classList.add('active');
@@ -2459,6 +2619,10 @@ function escapeHtml(str) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
+}
+
+function escapeRegex(str) {
+  return String(str).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 function isValidPhone(raw) {
@@ -2721,16 +2885,24 @@ async function reverseGeocode(lat, lng) {
     const data = await res.json();
     if (!data || !data.display_name) return null;
     const addr = data.address || {};
-    const primary = addr.road || addr.pedestrian || addr.footway || addr.neighbourhood || addr.suburb || '';
-    const secondary = addr.suburb || addr.neighbourhood || addr.city || addr.town || addr.village || '';
-    let label = '';
-    if (primary && secondary && primary !== secondary) label = `${primary}, ${secondary}`;
-    else label = primary || secondary || (data.display_name.split(',')[0] || 'Current location');
-    return {
-      lat, lng,
-      label: label.trim(),
-      address: data.display_name
-    };
+
+    // Silently store city/country for search restriction — never rendered in the UI
+    const detectedCity =
+      addr.city || addr.town || addr.village || addr.municipality || addr.county || '';
+    const detectedCountry = addr.country || '';
+    if (detectedCity) userCity = detectedCity;
+    if (detectedCountry) userCountry = detectedCountry;
+
+    // Build label without the city name — just road or suburb
+    const primary = addr.road || addr.pedestrian || addr.footway || addr.neighbourhood || '';
+    const suburb = addr.suburb || addr.neighbourhood || '';
+    let label;
+    if (primary && suburb && primary.toLowerCase() !== suburb.toLowerCase()) {
+      label = primary;
+    } else {
+      label = primary || suburb || 'My current location';
+    }
+    return { lat, lng, label: label.trim(), address: data.display_name };
   } catch (e) {
     console.warn('Reverse geocode failed:', e);
     return null;
@@ -2759,7 +2931,7 @@ function locateUser({ center = true, silent = false } = {}) {
       userLocation = { lat: latitude, lng: longitude };
       setUserMarker(latitude, longitude);
       if (center && map) map.setView([latitude, longitude], 18);
-      // Reverse geocode to get a real place name
+      // Reverse geocode for a real place name (no city in label)
       const place = await reverseGeocode(latitude, longitude);
       const label = place ? place.label : 'My current location';
       mapBadgeText.textContent = label;
@@ -2823,7 +2995,7 @@ async function doLogout() {
 }
 
 /* ============================================================
-   FUZZY SEARCH (Nominatim with multiple fallbacks)
+   FUZZY SEARCH with SILENT CITY RESTRICTION
    ============================================================ */
 function getSearchAnchor() {
   if (searchPage === 'errand') return userLocation || DEFAULT_LOCATION;
@@ -2840,12 +3012,24 @@ function getSearchAnchor() {
     : (pickupLocation || stopLocation || userLocation || DEFAULT_LOCATION);
 }
 
+function queryHasCity(query) {
+  if (!userCity) return true;
+  const re = new RegExp('\\b' + escapeRegex(userCity) + '\\b', 'i');
+  return re.test(query);
+}
+
 function buildNominatimUrl(query, anchor, useViewbox) {
+  let q = query;
+  // Silently append the user's detected city to keep all results local.
+  if (userCity && !queryHasCity(query)) {
+    q = query + ', ' + userCity;
+    if (userCountry) q += ', ' + userCountry;
+  }
   const params = new URLSearchParams({
     format: 'json',
     addressdetails: '1',
     limit: String(SEARCH_MAX_RAW_RESULTS),
-    q: query,
+    q: q,
     dedupe: '1'
   });
   if (useViewbox && anchor) {
@@ -2867,31 +3051,33 @@ async function fetchNominatim(url, signal) {
   try { return await res.json(); } catch (e) { return []; }
 }
 
-/* Fuzzy search: tries the exact query first, then variants. */
 async function fuzzyFetchPlaces(query, anchor, signal) {
   const trimmed = query.trim();
   if (!trimmed) return [];
 
-  // Attempt 1: original query with location viewbox bias
+  // Attempt 1: original query (city auto-appended in buildNominatimUrl)
   let raw = await fetchNominatim(buildNominatimUrl(trimmed, anchor, true), signal).catch(() => []);
   if (raw && raw.length) return raw;
 
-  // Attempt 2: append country hint if user is in Zambia (matches local places better)
-  if (!/zambia/i.test(trimmed)) {
-    raw = await fetchNominatim(buildNominatimUrl(trimmed + ', Zambia', anchor, true), signal).catch(() => []);
-    if (raw && raw.length) return raw;
-  }
-
-  // Attempt 3: try individual significant words
+  // Attempt 2: individual significant words
   const words = trimmed.split(/\s+/).filter(w => w.length >= 3).sort((a, b) => b.length - a.length);
   for (const w of words.slice(0, 2)) {
     raw = await fetchNominatim(buildNominatimUrl(w, anchor, true), signal).catch(() => []);
     if (raw && raw.length) return raw;
   }
 
-  // Attempt 4: no viewbox bias — search everywhere
+  // Attempt 3: without viewbox bias — still with city restriction
   raw = await fetchNominatim(buildNominatimUrl(trimmed, anchor, false), signal).catch(() => []);
   return raw || [];
+}
+
+/* Filter to keep only places whose detected city matches the user's. */
+function isInUserCity(p) {
+  if (!userCity) return true;
+  const addr = p.address || {};
+  const pCity = addr.city || addr.town || addr.village || addr.municipality || addr.county || '';
+  if (!pCity) return true; // can't verify — allow through
+  return pCity.toLowerCase() === userCity.toLowerCase();
 }
 
 function rankPlacesByDistance(rawPlaces, anchor) {
@@ -2900,6 +3086,7 @@ function rankPlacesByDistance(rawPlaces, anchor) {
     const lat = parseFloat(p.lat);
     const lon = parseFloat(p.lon);
     if (!isFinite(lat) || !isFinite(lon)) continue;
+    if (!isInUserCity(p)) continue;
     const distMeters = haversineMeters(anchor.lat, anchor.lng, lat, lon);
     enriched.push({ raw: p, lat, lon, distanceMeters: distMeters });
   }
@@ -2919,7 +3106,7 @@ function renderResults(rankedPlaces, mode) {
     targetEl.innerHTML = `
       <div class="results-hint">
         <i class="fas fa-circle-question"></i>
-        No places found. Try a different spelling or a nearby landmark.
+        No places found nearby. Try a different spelling or a nearby landmark.
       </div>`;
     return;
   }
@@ -2997,11 +3184,12 @@ function handlePlaceSelected(place, mode) {
     pickupLocation = { lat, lng: lon, label, address };
     pickupInput.value = label;
     syncClearButtons();
-    setActiveRow(stopInputRow.style.display !== 'none' && !stopLocation ? 'stop' : 'destination', 'ride');
-    const nextInput = (stopInputRow.style.display !== 'none' && !stopLocation) ? stopInput : destInput;
+    const nextField = (stopInputRow.style.display !== 'none' && !stopLocation) ? 'stop' : 'destination';
+    setActiveRow(nextField, 'ride');
+    const nextInput = nextField === 'stop' ? stopInput : destInput;
     nextInput.focus();
     const q = nextInput.value.trim();
-    if (q.length >= 2) runSearch(q, nextInput === stopInput ? 'stop' : 'destination');
+    if (q.length >= 2) runSearch(q, nextField);
     else showSearchHint('ride');
     return;
   }
@@ -3075,7 +3263,6 @@ async function runSearch(query, mode) {
   try {
     const raw = await fuzzyFetchPlaces(trimmed, anchor, searchAbort.signal);
 
-    // Verify the input hasn't changed while we were searching
     let currentVal = '';
     if (page === 'errand') currentVal = errandPickupInput.value.trim();
     else if (page === 'delivery') currentVal = (mode === 'pickup' ? deliveryPickupInput.value : deliveryDestInput.value).trim();
@@ -3113,7 +3300,6 @@ function openRidePage(mode) {
     showStopRow(true);
   }
   if (dropoffLocation) destInput.value = dropoffLocation.label || '';
-  else if (!stopLocation) destInput.value = destInput.value || '';
   syncClearButtons();
 
   ridePage.classList.add('open');
@@ -3224,7 +3410,6 @@ destInput.addEventListener('input', () => {
   debouncedSearch(destInput.value.trim(), 'destination');
 });
 
-// Add stop button on ride page
 rideAddStopBtn.addEventListener('click', () => {
   showStopRow(true);
   setActiveRow('stop', 'ride');
@@ -3705,7 +3890,6 @@ chatInput.addEventListener('input', () => {
    ROUTING (supports multi-waypoint)
    ============================================================ */
 async function fetchRoute(points) {
-  // points = [{lat, lng}, ...]
   const coordStr = points.map(p => `${p.lng},${p.lat}`).join(';');
   const url = `https://router.project-osrm.org/route/v1/driving/${coordStr}?overview=full&geometries=geojson&steps=false`;
   const res = await fetch(url);
@@ -3719,7 +3903,6 @@ async function fetchRoute(points) {
 function drawRoute(geometry, opts) {
   if (!map) return null;
   if (!geometry || !geometry.coordinates || !geometry.coordinates.length) return null;
-
   const layer = L.layerGroup().addTo(map);
   const coords = geometry.coordinates.map(([lng, lat]) => [lat, lng]);
   L.polyline(coords, { color: '#ffffff', weight: opts?.weight || 8, opacity: 0.95, lineJoin: 'round', lineCap: 'round' }).addTo(layer);
@@ -3791,7 +3974,6 @@ async function buildRideTrip() {
     fareDuration.textContent = formatDuration(route.duration);
   } catch (err) {
     console.warn('Route fetch failed — using estimate:', err);
-    // Sum straight-line distances
     let total = 0;
     for (let i = 0; i < ((stopLocation) ? 2 : 1); i++) {
       const a = i === 0 ? pickupLocation : stopLocation;
@@ -4165,7 +4347,6 @@ async function handleTripUpdate(trip) {
     await loadAndShowProvider(trip.providerId, trip);
   }
 
-  // Update compact route info
   updateCompactRoute(trip);
 
   if (status === 'accepted') {
@@ -4238,9 +4419,8 @@ async function loadAndShowProvider(providerId, trip) {
     const loc = s.val();
     if (loc && isFinite(loc.lat) && isFinite(loc.lng)) {
       setProviderMarker(loc.lat, loc.lng, role);
-      // Redraw provider→pickup route as the provider moves
       if (currentTripData && currentTripData.status === 'accepted') {
-        showProviderToPickupRouteFromLocation(loc, currentTripData.pickup);
+        drawProviderToPickup(loc, currentTripData.pickup);
       }
     }
   });
@@ -4265,13 +4445,11 @@ function updateTripStatusUI(state) {
   }
 }
 
-/* Draw BOTH routes: provider→pickup (dashed blue) + pickup→dropoff (solid black) */
 async function showProviderToPickupRoute(trip) {
   if (!map) return;
   const pickup = trip.pickup;
   if (!pickup) return;
 
-  // Draw the pickup→destination route (main, black)
   clearMainRoute();
   setPickupMarker(pickup.lat, pickup.lng);
   if (trip.stop) setStopMarker(trip.stop.lat, trip.stop.lng);
@@ -4288,7 +4466,6 @@ async function showProviderToPickupRoute(trip) {
     console.warn('Main route failed:', e);
   }
 
-  // Draw the provider→pickup route (blue dashed) if provider location exists
   try {
     const provSnap = await get(ref(database, `providers/${trip.providerId}/location`));
     if (provSnap.exists()) {
@@ -4300,12 +4477,8 @@ async function showProviderToPickupRoute(trip) {
   } catch (e) { console.warn('Provider route failed:', e); }
 }
 
-async function showProviderToPickupRouteFromLocation(providerLoc, pickup) {
-  if (!map || !providerLoc || !pickup) return;
-  await drawProviderToPickup(providerLoc, pickup);
-}
-
 async function drawProviderToPickup(providerLoc, pickup) {
+  if (!map || !providerLoc || !pickup) return;
   clearProviderRoute();
   try {
     const route = await fetchRoute([{ lat: providerLoc.lat, lng: providerLoc.lng }, pickup]);
@@ -4315,7 +4488,6 @@ async function drawProviderToPickup(providerLoc, pickup) {
     L.polyline(coords, { color: '#2e90fa', weight: 4.5, opacity: 1, dashArray: '10 8', lineJoin: 'round', lineCap: 'round' }).addTo(layer);
     providerRouteLayer = layer;
   } catch (e) {
-    // fallback: straight line
     const layer = L.layerGroup().addTo(map);
     L.polyline(
       [[providerLoc.lat, providerLoc.lng], [pickup.lat, pickup.lng]],
@@ -4324,7 +4496,6 @@ async function drawProviderToPickup(providerLoc, pickup) {
     providerRouteLayer = layer;
   }
 
-  // Fit bounds to include everything
   try {
     const allPts = [];
     if (routeLayer) {
@@ -4382,14 +4553,131 @@ async function showPickupToDestinationRoute(trip) {
   }
 }
 
+/* ============================================================
+   RATING MODAL
+   ============================================================ */
+function updateStarDisplay(value) {
+  const buttons = document.querySelectorAll('#ratingStars button');
+  buttons.forEach((b, idx) => {
+    b.classList.toggle('active', idx < value);
+  });
+  ratingLabel.textContent = RATING_LABELS[value] || '';
+}
+
+function showRatingModal(trip, kind, id, providerId, providerName, providerPhoto) {
+  if (!providerId) return;
+
+  ratingTripKind = kind;
+  ratingTripId = id;
+  ratingProviderId = providerId;
+  ratingProviderName = providerName || 'Provider';
+  ratingProviderPhoto = providerPhoto || '';
+  currentRatingValue = 0;
+
+  if (ratingProviderPhoto) {
+    ratingAvatar.innerHTML = `<img src="${escapeHtml(ratingProviderPhoto)}" alt="">`;
+  } else {
+    ratingAvatar.innerHTML = `<i class="fas fa-user"></i>`;
+  }
+  ratingSubtitle.textContent = `Rate ${ratingProviderName}`;
+  ratingComment.value = '';
+  updateStarDisplay(0);
+  ratingSubmitBtn.disabled = true;
+  ratingSubmitBtn.textContent = 'Submit';
+
+  ratingModal.classList.add('open');
+}
+
+function closeRatingModal() {
+  ratingModal.classList.remove('open');
+  ratingTripKind = null;
+  ratingTripId = null;
+  ratingProviderId = null;
+  ratingProviderName = null;
+  ratingProviderPhoto = null;
+  currentRatingValue = 0;
+}
+
+async function submitRating() {
+  if (!currentRatingValue || currentRatingValue < 1) return;
+  if (!ratingProviderId || !ratingTripId) { closeRatingModal(); return; }
+
+  const comment = ratingComment.value.trim();
+  const btn = ratingSubmitBtn;
+  btn.disabled = true;
+  btn.textContent = 'Submitting…';
+
+  try {
+    const ratingRef = ref(database, `providers/${ratingProviderId}/ratings/${ratingTripId}`);
+    await set(ratingRef, {
+      rating: currentRatingValue,
+      comment: comment || '',
+      customerId: currentUser.uid,
+      customerName: customerData?.fullName || 'Customer',
+      tripType: ratingTripKind,
+      tripId: ratingTripId,
+      createdAt: Date.now()
+    });
+
+    // Recalculate aggregate rating for the provider
+    const snap = await get(ref(database, `providers/${ratingProviderId}/ratings`));
+    const ratings = snap.val() || {};
+    const vals = Object.values(ratings).map(r => Number(r.rating)).filter(v => isFinite(v) && v > 0);
+    const avg = vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : 0;
+    await update(ref(database, `providers/${ratingProviderId}`), {
+      ratingAverage: Math.round(avg * 10) / 10,
+      ratingCount: vals.length
+    });
+
+    // Also store the rating on the trip itself
+    const tripPath = ratingTripKind === 'ride' ? `rides/${ratingTripId}` : `deliveries/${ratingTripId}`;
+    await update(ref(database, tripPath), {
+      customerRating: currentRatingValue,
+      customerRatingComment: comment || '',
+      ratedAt: Date.now()
+    }).catch(() => {});
+
+    showToast('Thanks for your feedback!');
+    closeRatingModal();
+  } catch (err) {
+    console.error(err);
+    showToast('Could not submit rating.');
+    btn.disabled = false;
+    btn.textContent = 'Submit';
+  }
+}
+
+document.querySelectorAll('#ratingStars button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const v = parseInt(btn.dataset.star, 10);
+    currentRatingValue = v;
+    updateStarDisplay(v);
+    ratingSubmitBtn.disabled = false;
+  });
+});
+ratingSkipBtn.addEventListener('click', closeRatingModal);
+ratingSubmitBtn.addEventListener('click', submitRating);
+
+/* ============================================================
+   TRIP COMPLETION — with rating prompt
+   ============================================================ */
 async function handleTripCompletion(trip) {
   try { await completeTransactionByReference(currentTripId); } catch (e) { console.warn(e); }
+
+  const completedKind = currentTripKind;
+  const completedId = currentTripId;
+  const providerId = trip.providerId || currentProviderId;
+  const providerName = trip.providerName || '';
+  const providerPhoto = trip.providerPhoto || '';
+
   cleanupTripTracking();
-  showToast('✅ Trip completed. Payment successful!');
+  showToast('✅ Trip completed!');
+
   setTimeout(() => {
     clearTripLayers();
     showPane('home');
     if (userLocation && map) map.setView([userLocation.lat, userLocation.lng], 17, { animate: true });
+
     pickupLocation = userLocation ? { lat: userLocation.lat, lng: userLocation.lng, label: mapBadgeText.textContent || 'Current location' } : null;
     dropoffLocation = null;
     stopLocation = null;
@@ -4403,7 +4691,12 @@ async function handleTripCompletion(trip) {
     currentTripId = null;
     currentTripData = null;
     currentProviderId = null;
-  }, 1200);
+
+    // Show rating modal shortly after the trip has settled
+    setTimeout(() => {
+      showRatingModal(trip, completedKind, completedId, providerId, providerName, providerPhoto);
+    }, 400);
+  }, 900);
 }
 
 function handleTripCancellation() {
@@ -4679,6 +4972,15 @@ function chip(status) {
   const s = historyStatusClass(status);
   return `<span class="chip ${s}">${escapeHtml(statusLabel(s))}</span>`;
 }
+function starsHtml(rating) {
+  const r = Math.round(Number(rating) || 0);
+  let s = '<span style="color:#f7b955;letter-spacing:1px;">';
+  for (let i = 1; i <= 5; i++) {
+    s += i <= r ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>';
+  }
+  s += '</span>';
+  return s;
+}
 
 function renderHistoryRide(r) {
   const pickup = r.pickup?.label || 'Pickup';
@@ -4729,6 +5031,13 @@ function renderHistoryRide(r) {
             <div class="hd-row"><span class="hd-key">Name</span><span class="hd-val">${escapeHtml(r.providerName || '—')}</span></div>
             <div class="hd-row"><span class="hd-key">Phone</span><span class="hd-val">${escapeHtml(r.providerPhone || '—')}</span></div>
           </div>
+          ${r.customerRating ? `
+            <div class="hd-section">
+              <div class="hd-label"><i class="fas fa-star"></i> Your rating</div>
+              <div class="hd-row"><span class="hd-key">Stars</span><span class="hd-val">${starsHtml(r.customerRating)}</span></div>
+              ${r.customerRatingComment ? `<div class="hd-row"><span class="hd-key">Comment</span><span class="hd-val">${escapeHtml(r.customerRatingComment)}</span></div>` : ''}
+            </div>
+          ` : ''}
           <div class="hd-section">
             <div class="hd-label"><i class="fas fa-clock"></i> Timeline</div>
             <div class="hd-row"><span class="hd-key">Created</span><span class="hd-val">${escapeHtml(formatDateTime(r.createdAt))}</span></div>
@@ -4780,6 +5089,13 @@ function renderHistoryDelivery(d) {
             <div class="hd-row"><span class="hd-key">Name</span><span class="hd-val">${escapeHtml(d.parcelName || '—')}</span></div>
             <div class="hd-row"><span class="hd-key">Description</span><span class="hd-val">${escapeHtml(d.parcelDesc || '—')}</span></div>
           </div>
+          ${d.customerRating ? `
+            <div class="hd-section">
+              <div class="hd-label"><i class="fas fa-star"></i> Your rating</div>
+              <div class="hd-row"><span class="hd-key">Stars</span><span class="hd-val">${starsHtml(d.customerRating)}</span></div>
+              ${d.customerRatingComment ? `<div class="hd-row"><span class="hd-key">Comment</span><span class="hd-val">${escapeHtml(d.customerRatingComment)}</span></div>` : ''}
+            </div>
+          ` : ''}
         </div>
       </div>
     </div>`;
@@ -5091,7 +5407,8 @@ function loadErrandsForBadge() {
    ============================================================ */
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
-    if (vehicleSheet.classList.contains('open')) vehicleSheet.classList.remove('open');
+    if (ratingModal.classList.contains('open')) closeRatingModal();
+    else if (vehicleSheet.classList.contains('open')) vehicleSheet.classList.remove('open');
     else if (chatPage.classList.contains('open')) closeChatPage();
     else if (errandDetailsPage.classList.contains('open')) closeErrandDetailsPage();
     else if (postedErrandsPage.classList.contains('open')) closePostedErrandsPage();
