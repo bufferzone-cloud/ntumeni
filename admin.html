@@ -273,9 +273,20 @@ a{color:inherit;text-decoration:none}
 .li-body{flex:1;min-width:0}
 .li-title{font-size:.88rem;font-weight:700;color:var(--tp);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .li-sub{font-size:.74rem;color:var(--ts);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.li-right{text-align:right;flex-shrink:0}
+.li-right{text-align:right;flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:5px}
 .li-right strong{display:block;font-size:.9rem;font-weight:800;letter-spacing:-.2px}
 .li-right small{display:block;font-size:.65rem;color:var(--tt);margin-top:2px}
+.li-actions{display:flex;gap:4px;flex-shrink:0;margin-left:4px}
+.li-del-btn{
+  width:32px;height:32px;border-radius:8px;
+  background:var(--danger-s);color:var(--danger);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.75rem;
+  transition:background .2s,color .2s,transform .2s;
+}
+.li-del-btn:hover{background:var(--danger);color:#fff}
+.li-del-btn:active{transform:scale(.9)}
+
 .status-chip{
   display:inline-flex;align-items:center;gap:5px;
   font-size:.62rem;font-weight:800;letter-spacing:.5px;text-transform:uppercase;
@@ -391,7 +402,7 @@ a{color:inherit;text-decoration:none}
 .drawer-overlay.open{opacity:1;visibility:visible}
 .drawer{
   position:fixed;top:0;right:0;bottom:0;z-index:2000;
-  width:520px;max-width:92vw;background:#fff;
+  width:560px;max-width:94vw;background:#fff;
   display:flex;flex-direction:column;
   transform:translateX(100%);
   transition:transform .46s var(--panel-ease);
@@ -439,6 +450,32 @@ a{color:inherit;text-decoration:none}
 }
 .detail-box.link strong{color:var(--info);cursor:pointer;text-decoration:underline}
 .detail-box.link strong:hover{opacity:.75}
+
+/* Stars */
+.stars-row{display:inline-flex;align-items:center;gap:2px;color:#f7b955;font-size:.85rem;letter-spacing:1px}
+.stars-row .far{color:#d8d8dc}
+
+/* Rating boxes */
+.rating-box{
+  background:#fffaeb;border:1px solid rgba(247,144,9,0.22);
+  border-radius:10px;padding:11px 13px;
+}
+.rating-box .rb-head{
+  font-size:.62rem;font-weight:800;letter-spacing:.9px;text-transform:uppercase;
+  color:#b54708;margin-bottom:5px;
+  display:flex;align-items:center;gap:6px;
+}
+.rating-box .rb-stars{font-size:.95rem;color:#f7b955;letter-spacing:1.5px;margin-bottom:4px}
+.rating-box .rb-stars .far{color:#d8d8dc}
+.rating-box .rb-comment{
+  font-size:.78rem;color:#7a3408;line-height:1.5;
+  font-style:italic;word-break:break-word;
+}
+.rating-box.empty-rating{
+  background:var(--fg);border-color:var(--line);
+}
+.rating-box.empty-rating .rb-head{color:var(--tt)}
+.rating-box.empty-rating .rb-comment{color:var(--ts);font-style:normal}
 
 /* Image thumbnails */
 .img-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px}
@@ -526,6 +563,27 @@ a{color:inherit;text-decoration:none}
 .offer-line .ol-right{text-align:right;flex-shrink:0}
 .offer-line .ol-right strong{display:block;font-size:.9rem;font-weight:800}
 .offer-line .ol-right small{display:block;font-size:.6rem;color:var(--tt);margin-top:2px}
+
+/* Route legend chips in drawers */
+.route-legend{
+  display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;
+}
+.route-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:6px 10px;border-radius:99px;
+  background:var(--fg);font-size:.72rem;font-weight:700;color:var(--ts);
+  max-width:100%;
+}
+.route-pill .pill-dot{
+  width:9px;height:9px;border-radius:50%;flex-shrink:0;
+}
+.route-pill .pill-dot.pickup{background:#0a0a0a;border-radius:50%}
+.route-pill .pill-dot.stop{background:var(--warn);border-radius:3px}
+.route-pill .pill-dot.dest{background:#175cd3;border-radius:3px}
+.route-pill span{
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  max-width:200px;
+}
 
 /* Mobile */
 .sidebar-backdrop{
@@ -1059,7 +1117,7 @@ a{color:inherit;text-decoration:none}
             <div><h2>Platform Info</h2><p>System details</p></div>
           </div>
           <div class="detail-grid">
-            <div class="detail-box"><small>App version</small><strong>Admin v1.1</strong></div>
+            <div class="detail-box"><small>App version</small><strong>Admin v1.2</strong></div>
             <div class="detail-box"><small>Database</small><strong>Firebase RTDB</strong></div>
             <div class="detail-box"><small>Map provider</small><strong>OpenStreetMap</strong></div>
             <div class="detail-box"><small>Signed in as</small><strong id="settingsAdminEmail">—</strong></div>
@@ -1135,7 +1193,6 @@ const DEFAULT_SETTINGS = {
   ]
 };
 
-/* ---- NEW: Float Rules ---- */
 const DEFAULT_FLOAT_RULES = {
   rideCommissionPercent: 5,
   deliveryCommissionPercent: 5,
@@ -1179,6 +1236,9 @@ let dashMarkers = [];
 let rideMarkers = [];
 let delivMarkers = [];
 let depositDraft = [];
+
+/* Detail drawer map instance */
+let detailMapInst = null;
 
 const $ = id => document.getElementById(id);
 
@@ -1238,6 +1298,16 @@ function roleChip(role){
   return `<span class="status-chip ${esc(r)}">${esc(label)}</span>`;
 }
 
+function starsHtml(rating){
+  const r = Math.round(Number(rating) || 0);
+  let s = '<span class="stars-row">';
+  for (let i = 1; i <= 5; i++) {
+    s += i <= r ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>';
+  }
+  s += '</span>';
+  return s;
+}
+
 function openLightbox(url){
   if (!url) return;
   $('lightboxImg').src = url;
@@ -1247,7 +1317,7 @@ $('lightboxClose').addEventListener('click', ()=>$('lightbox').classList.remove(
 $('lightbox').addEventListener('click', e=>{ if (e.target.id === 'lightbox') $('lightbox').classList.remove('open'); });
 
 /* ============================================================
-   LOGIN — EMAIL + PASSWORD
+   LOGIN
    ============================================================ */
 $('loginForm').addEventListener('submit', async e=>{
   e.preventDefault();
@@ -1265,7 +1335,6 @@ $('loginForm').addEventListener('submit', async e=>{
 
   try {
     await signInWithEmailAndPassword(auth, email, pwd);
-    // onAuthStateChanged will handle the rest
   } catch (err){
     let msg = 'Invalid email or password.';
     if (err.code === 'auth/too-many-requests') msg = 'Too many attempts. Please try again later.';
@@ -1346,6 +1415,7 @@ function switchView(view){
   $('viewTitle').textContent = meta.title;
   $('viewSub').textContent = meta.sub;
   closeSidebar();
+  closeDrawer();
 
   if (view === 'dashboard')  renderDashboard();
   if (view === 'rides')      renderRides();
@@ -1370,7 +1440,6 @@ document.querySelectorAll('.nav-btn').forEach(btn=>{
   btn.addEventListener('click', ()=>switchView(btn.dataset.view));
 });
 
-/* Mobile sidebar */
 function openSidebar(){ $('sidebar').classList.add('open'); $('sidebarBackdrop').classList.add('open'); }
 function closeSidebar(){ $('sidebar').classList.remove('open'); $('sidebarBackdrop').classList.remove('open'); }
 $('menuBtn').addEventListener('click', openSidebar);
@@ -1436,7 +1505,6 @@ function bootDataListeners(){
     renderDashboard();
   }));
 
-  // Keep floatRules live so preview updates when saved from another tab
   unsubs.push(onValue(ref(database, 'system/floatRules'), snap=>{
     if (snap.exists()){
       const r = snap.val() || {};
@@ -1508,12 +1576,52 @@ function pickupIcon(){
     iconSize:[16,16], iconAnchor:[8,8]
   });
 }
+function stopIcon(){
+  return L.divIcon({
+    className:'',
+    html:`<div style="width:16px;height:16px;background:#f79009;border:3px solid #fff;border-radius:3px;box-shadow:0 2px 8px rgba(0,0,0,0.4);"></div>`,
+    iconSize:[16,16], iconAnchor:[8,8]
+  });
+}
 function dropoffIcon(){
   return L.divIcon({
     className:'',
     html:`<div style="width:18px;height:18px;background:#175cd3;border:3px solid #fff;border-radius:50% 50% 50% 0;transform:rotate(-45deg);box-shadow:0 2px 8px rgba(0,0,0,0.4);"></div>`,
     iconSize:[18,18], iconAnchor:[9,18]
   });
+}
+
+/* Destroy the drawer's map instance cleanly */
+function destroyDetailMap(){
+  if (detailMapInst){
+    try { detailMapInst.remove(); } catch(e){}
+    detailMapInst = null;
+  }
+}
+
+/* Draw a route through waypoints on a given map instance */
+async function drawRouteOnMap(mapInst, waypoints){
+  if (!mapInst || !waypoints || waypoints.length < 2) return;
+  const valid = waypoints.filter(w => w && isFinite(w.lat) && isFinite(w.lng));
+  if (valid.length < 2) return;
+
+  const coordStr = valid.map(w => `${w.lng},${w.lat}`).join(';');
+  try {
+    const url = `https://router.project-osrm.org/route/v1/driving/${coordStr}?overview=full&geometries=geojson&steps=false`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('Routing failed');
+    const data = await res.json();
+    if (!data.routes || !data.routes[0]) throw new Error('No route');
+    const coords = data.routes[0].geometry.coordinates.map(([lng, lat]) => [lat, lng]);
+    L.polyline(coords, { color:'#ffffff', weight:8, opacity:.95, lineJoin:'round', lineCap:'round' }).addTo(mapInst);
+    L.polyline(coords, { color:'#0a0a0a', weight:4.5, opacity:1, lineJoin:'round', lineCap:'round' }).addTo(mapInst);
+    mapInst.fitBounds(L.latLngBounds(coords), { padding:[30,30], maxZoom:16 });
+  } catch (err){
+    console.warn('Route drawing failed:', err);
+    const coords = valid.map(w => [w.lat, w.lng]);
+    L.polyline(coords, { color:'#0a0a0a', weight:3, opacity:.85, dashArray:'6 8', lineCap:'round' }).addTo(mapInst);
+    mapInst.fitBounds(L.latLngBounds(coords), { padding:[30,30], maxZoom:15 });
+  }
 }
 
 /* ============================================================
@@ -1604,7 +1712,6 @@ function renderDashboard(){
     </div>
   `;
 
-  // Recent activity
   const events = [];
   rides.forEach(r=>events.push({ ts:r.createdAt||0, kind:'Ride', text:`${r.customerName||'Customer'} · ${r.pickup?.label||'Pickup'} → ${r.dropoff?.label||'Drop-off'}`, amount:r.fare, status:r.status, id:r.rideId, type:'ride' }));
   delivs.forEach(d=>events.push({ ts:d.createdAt||0, kind:'Delivery', text:`${d.parcelName||'Parcel'} · ${d.vehicleLabel||''}`, amount:d.fare, status:d.status, id:d.deliveryId, type:'delivery' }));
@@ -1658,6 +1765,12 @@ function renderDashboardMarkers(){
       dashMarkers.push(m);
       bounds.push([r.pickup.lat, r.pickup.lng]);
     }
+    if (r.stop && isFinite(r.stop.lat) && isFinite(r.stop.lng)){
+      const m = L.marker([r.stop.lat, r.stop.lng], { icon: stopIcon() })
+        .bindPopup(`<b>Ride stop</b><br>${esc(r.stop.label||'Stop')}`).addTo(dashMap);
+      dashMarkers.push(m);
+      bounds.push([r.stop.lat, r.stop.lng]);
+    }
     if (r.dropoff && isFinite(r.dropoff.lat) && isFinite(r.dropoff.lng)){
       const m = L.marker([r.dropoff.lat, r.dropoff.lng], { icon: dropoffIcon() })
         .bindPopup(`<b>Ride destination</b><br>${esc(r.dropoff.label||'Drop-off')}`).addTo(dashMap);
@@ -1672,6 +1785,12 @@ function renderDashboardMarkers(){
         .bindPopup(`<b>Delivery pickup</b><br>${esc(d.pickup.label||'')}`).addTo(dashMap);
       dashMarkers.push(m);
       bounds.push([d.pickup.lat, d.pickup.lng]);
+    }
+    if (d.stop && isFinite(d.stop.lat) && isFinite(d.stop.lng)){
+      const m = L.marker([d.stop.lat, d.stop.lng], { icon: stopIcon() })
+        .bindPopup(`<b>Delivery stop</b><br>${esc(d.stop.label||'Stop')}`).addTo(dashMap);
+      dashMarkers.push(m);
+      bounds.push([d.stop.lat, d.stop.lng]);
     }
     if (d.dropoff && isFinite(d.dropoff.lat) && isFinite(d.dropoff.lng)){
       const m = L.marker([d.dropoff.lat, d.dropoff.lng], { icon: dropoffIcon() })
@@ -1711,22 +1830,35 @@ function renderRides(){
     $('ridesList').innerHTML = filtered.map(r=>{
       const pickup = r.pickup?.label || 'Pickup';
       const drop = r.dropoff?.label || 'Drop-off';
+      const stopTag = r.stop ? ' · stop' : '';
       return `
         <div class="list-item" data-ride="${esc(r.rideId)}">
           <div class="li-avatar"><i class="fas fa-car-side"></i></div>
           <div class="li-body">
             <div class="li-title">${esc(r.customerName || 'Customer')}</div>
-            <div class="li-sub">${esc(pickup)} → ${esc(drop)}</div>
+            <div class="li-sub">${esc(pickup)} → ${esc(drop)}${stopTag}</div>
           </div>
           <div class="li-right">
             <strong>K ${esc(fmtPrice(r.fare))}</strong>
-            <div style="margin-top:3px;">${statusChip(r.status)}</div>
+            <div>${statusChip(r.status)}</div>
+          </div>
+          <div class="li-actions">
+            <button class="li-del-btn" data-ride-del="${esc(r.rideId)}" title="Delete ride"><i class="fas fa-trash"></i></button>
           </div>
         </div>
       `;
     }).join('');
     $('ridesList').querySelectorAll('[data-ride]').forEach(el=>{
-      el.addEventListener('click', ()=>openRideDetail(el.dataset.ride));
+      el.addEventListener('click', (e)=>{
+        if (e.target.closest('[data-ride-del]')) return;
+        openRideDetail(el.dataset.ride);
+      });
+    });
+    $('ridesList').querySelectorAll('[data-ride-del]').forEach(btn=>{
+      btn.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        deleteRide(btn.dataset.rideDel);
+      });
     });
   }
 
@@ -1747,6 +1879,12 @@ function renderRideMarkers(){
       rideMarkers.push(m);
       bounds.push([r.pickup.lat, r.pickup.lng]);
     }
+    if (r.stop && isFinite(r.stop.lat) && isFinite(r.stop.lng)){
+      const m = L.marker([r.stop.lat, r.stop.lng], { icon: stopIcon() })
+        .bindPopup(`<b>Stop</b><br>${esc(r.stop.label||'')}`).addTo(ridesMap);
+      rideMarkers.push(m);
+      bounds.push([r.stop.lat, r.stop.lng]);
+    }
     if (r.dropoff && isFinite(r.dropoff.lat) && isFinite(r.dropoff.lng)){
       const m = L.marker([r.dropoff.lat, r.dropoff.lng], { icon: dropoffIcon() })
         .bindPopup(`<b>Destination</b><br>${esc(r.dropoff.label||'')}`).addTo(ridesMap);
@@ -1758,14 +1896,78 @@ function renderRideMarkers(){
   else if (bounds.length === 1) ridesMap.setView(bounds[0], 14);
 }
 
-function openRideDetail(id){
+async function openRideDetail(id){
   const r = state.rides[id];
   if (!r) { toast('Ride not found'); return; }
+  destroyDetailMap();
   $('drawerTitle').textContent = 'Ride details';
   $('drawerSub').textContent = r.customerName || 'Customer';
 
   const rules = state.floatRules;
   const commissionAmount = r.fare ? Math.round(r.fare * (rules.rideCommissionPercent||0) / 100) : 0;
+
+  // Route waypoints
+  const waypoints = [];
+  if (r.pickup && isFinite(r.pickup.lat) && isFinite(r.pickup.lng)) waypoints.push(r.pickup);
+  if (r.stop && isFinite(r.stop.lat) && isFinite(r.stop.lng)) waypoints.push(r.stop);
+  if (r.dropoff && isFinite(r.dropoff.lat) && isFinite(r.dropoff.lng)) waypoints.push(r.dropoff);
+
+  // Rating blocks
+  const customerRatingBlock = (r.customerRating || r.customerRatingComment) ? `
+    <div class="rating-box">
+      <div class="rb-head"><i class="fas fa-user"></i> Customer rated provider</div>
+      <div class="rb-stars">${starsHtml(r.customerRating)}</div>
+      ${r.customerRatingComment ? `<div class="rb-comment">"${esc(r.customerRatingComment)}"</div>` : ''}
+      <div style="font-size:.65rem;color:#7a3408;margin-top:5px;">${esc(fmtDateTime(r.ratedAt))}</div>
+    </div>
+  ` : `
+    <div class="rating-box empty-rating">
+      <div class="rb-head"><i class="fas fa-user"></i> Customer rated provider</div>
+      <div class="rb-comment">No rating submitted</div>
+    </div>
+  `;
+
+  const providerRatingBlock = (r.providerRating || r.providerRatingComment) ? `
+    <div class="rating-box">
+      <div class="rb-head"><i class="fas fa-briefcase"></i> Provider rated customer</div>
+      <div class="rb-stars">${starsHtml(r.providerRating)}</div>
+      ${r.providerRatingComment ? `<div class="rb-comment">"${esc(r.providerRatingComment)}"</div>` : ''}
+      <div style="font-size:.65rem;color:#7a3408;margin-top:5px;">${esc(fmtDateTime(r.providerRatedAt))}</div>
+    </div>
+  ` : `
+    <div class="rating-box empty-rating">
+      <div class="rb-head"><i class="fas fa-briefcase"></i> Provider rated customer</div>
+      <div class="rb-comment">No rating submitted</div>
+    </div>
+  `;
+
+  // Route legend
+  let routeLegend = '';
+  if (waypoints.length >= 2){
+    const parts = [];
+    parts.push(`<span class="route-pill"><span class="pill-dot pickup"></span> <span>${esc(r.pickup?.label||'Pickup')}</span></span>`);
+    if (r.stop) parts.push(`<span class="route-pill"><span class="pill-dot stop"></span> <span>${esc(r.stop.label||'Stop')}</span></span>`);
+    parts.push(`<span class="route-pill"><span class="pill-dot dest"></span> <span>${esc(r.dropoff?.label||'Drop-off')}</span></span>`);
+    routeLegend = `<div class="route-legend">${parts.join('')}</div>`;
+  }
+
+  // Provider section
+  const providerBlock = r.providerId ? `
+    <div class="detail-section">
+      <h3><i class="fas fa-briefcase"></i> Provider</h3>
+      <div class="detail-grid">
+        <div class="detail-box full"><small>Name</small><strong>${esc(r.providerName||'—')}</strong></div>
+        <div class="detail-box full"><small>Phone</small><strong>${esc(r.providerPhone||'—')}</strong></div>
+        <div class="detail-box"><small>Role</small><strong>${esc(r.providerRole||'—')}</strong></div>
+        <div class="detail-box"><small>Vehicle</small><strong>${esc(r.vehicleLabel||'—')}</strong></div>
+      </div>
+    </div>
+  ` : `
+    <div class="detail-section">
+      <h3><i class="fas fa-briefcase"></i> Provider</h3>
+      <div class="detail-box full"><strong style="font-weight:500;color:var(--ts);">No provider was assigned to this ride.</strong></div>
+    </div>
+  `;
 
   $('drawerBody').innerHTML = `
     <div class="detail-section">
@@ -1795,40 +1997,81 @@ function openRideDetail(id){
       </div>
     </div>
 
+    ${providerBlock}
+
     <div class="detail-section">
-      <h3><i class="fas fa-route"></i> Route</h3>
+      <h3><i class="fas fa-route"></i> Route${r.stop ? ' · includes stop' : ''}</h3>
+      ${routeLegend}
       <div class="detail-grid">
         <div class="detail-box full"><small>Pickup</small><strong>${esc(r.pickup?.label||'—')}</strong></div>
+        ${r.stop ? `<div class="detail-box full"><small>Stop</small><strong>${esc(r.stop.label||'—')}</strong></div>` : ''}
         <div class="detail-box full"><small>Drop-off</small><strong>${esc(r.dropoff?.label||'—')}</strong></div>
       </div>
     </div>
 
-    ${(r.pickup || r.dropoff) ? `<div class="map-wrap" id="detailMap" style="height:260px;"></div>` : ''}
+    <div class="detail-section">
+      <h3><i class="fas fa-star"></i> Ratings</h3>
+      <div style="display:grid;grid-template-columns:1fr;gap:10px;">
+        ${customerRatingBlock}
+        ${providerRatingBlock}
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <h3><i class="fas fa-clock"></i> Timeline</h3>
+      <div class="detail-grid">
+        ${r.acceptedAt ? `<div class="detail-box"><small>Accepted</small><strong>${esc(fmtDateTime(r.acceptedAt))}</strong></div>` : ''}
+        ${r.arrivedAt ? `<div class="detail-box"><small>Arrived</small><strong>${esc(fmtDateTime(r.arrivedAt))}</strong></div>` : ''}
+        ${r.startedAt ? `<div class="detail-box"><small>Started</small><strong>${esc(fmtDateTime(r.startedAt))}</strong></div>` : ''}
+        ${r.completedAt ? `<div class="detail-box"><small>Completed</small><strong>${esc(fmtDateTime(r.completedAt))}</strong></div>` : ''}
+        ${r.cancelledAt ? `<div class="detail-box"><small>Cancelled</small><strong>${esc(fmtDateTime(r.cancelledAt))}</strong></div>` : ''}
+        <div class="detail-box full"><small>Reference</small><strong style="font-family:monospace;font-size:.72rem;">${esc(id)}</strong></div>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <h3><i class="fas fa-map-location-dot"></i> Route map</h3>
+      <div class="map-wrap" id="detailMap" style="height:300px;"></div>
+    </div>
   `;
 
-  $('drawerFoot').innerHTML = `
-    ${['searching','accepted','in_progress'].includes(r.status) ? `
-      <button class="btn btn-danger" id="rideCancelBtn"><i class="fas fa-ban"></i> Cancel ride</button>
-    ` : ''}
-    <button class="btn btn-ghost" id="rideCloseBtn">Close</button>
-  `;
+  const foot = [];
+  if (['searching','accepted','in_progress'].includes(r.status)){
+    foot.push(`<button class="btn btn-danger" id="rideCancelBtn"><i class="fas fa-ban"></i> Cancel ride</button>`);
+  }
+  foot.push(`<button class="btn btn-danger" id="rideDeleteBtn"><i class="fas fa-trash"></i> Delete ride</button>`);
+  foot.push(`<button class="btn btn-ghost" id="rideCloseBtn">Close</button>`);
+  $('drawerFoot').innerHTML = foot.join('');
 
   openDrawer();
 
-  if (r.pickup || r.dropoff){
-    setTimeout(()=>{
-      const dm = createMap('detailMap', r.pickup ? [r.pickup.lat,r.pickup.lng] : [r.dropoff.lat,r.dropoff.lng], 13);
-      if (dm){
-        const pts = [];
-        if (r.pickup) { L.marker([r.pickup.lat, r.pickup.lng], { icon: pickupIcon() }).addTo(dm).bindPopup('Pickup'); pts.push([r.pickup.lat,r.pickup.lng]); }
-        if (r.dropoff){ L.marker([r.dropoff.lat, r.dropoff.lng], { icon: dropoffIcon() }).addTo(dm).bindPopup('Drop-off'); pts.push([r.dropoff.lat,r.dropoff.lng]); }
-        if (pts.length > 1) dm.fitBounds(pts, { padding:[30,30] });
-      }
-    }, 200);
-  }
+  // Draw the map
+  setTimeout(async ()=>{
+    if (!waypoints.length) return;
+    detailMapInst = createMap('detailMap', [waypoints[0].lat, waypoints[0].lng], 13);
+    if (!detailMapInst) return;
+
+    // Add markers
+    if (r.pickup && isFinite(r.pickup.lat) && isFinite(r.pickup.lng)){
+      L.marker([r.pickup.lat, r.pickup.lng], { icon: pickupIcon() }).addTo(detailMapInst).bindPopup('Pickup: ' + esc(r.pickup.label||''));
+    }
+    if (r.stop && isFinite(r.stop.lat) && isFinite(r.stop.lng)){
+      L.marker([r.stop.lat, r.stop.lng], { icon: stopIcon() }).addTo(detailMapInst).bindPopup('Stop: ' + esc(r.stop.label||''));
+    }
+    if (r.dropoff && isFinite(r.dropoff.lat) && isFinite(r.dropoff.lng)){
+      L.marker([r.dropoff.lat, r.dropoff.lng], { icon: dropoffIcon() }).addTo(detailMapInst).bindPopup('Drop-off: ' + esc(r.dropoff.label||''));
+    }
+
+    // Draw route through waypoints
+    if (waypoints.length >= 2){
+      await drawRouteOnMap(detailMapInst, waypoints);
+    }
+    detailMapInst.invalidateSize();
+  }, 260);
 
   const cancelBtn = $('rideCancelBtn');
   if (cancelBtn) cancelBtn.addEventListener('click', ()=>cancelRide(id));
+  $('rideDeleteBtn').addEventListener('click', ()=>deleteRide(id, true));
   $('rideCloseBtn').addEventListener('click', closeDrawer);
 }
 
@@ -1846,6 +2089,24 @@ async function cancelRide(id){
     closeDrawer();
   } catch (err){
     toast('Could not cancel: ' + err.message);
+  }
+}
+
+async function deleteRide(id, fromDrawer){
+  if (!confirm('Permanently DELETE this ride record? This cannot be undone.')) return;
+  try {
+    await remove(ref(database, `rides/${id}`));
+    // Also delete associated transactions
+    for (const txId in state.transactions){
+      const tx = state.transactions[txId];
+      if (tx.referenceId === id){
+        try { await remove(ref(database, `transactions/${txId}`)); } catch(e){}
+      }
+    }
+    toast('Ride deleted');
+    if (fromDrawer) closeDrawer();
+  } catch (err){
+    toast('Could not delete: ' + err.message);
   }
 }
 
@@ -1872,22 +2133,35 @@ function renderDeliveries(){
     $('deliveriesList').innerHTML = filtered.map(d=>{
       const pickup = d.pickup?.label || 'Pickup';
       const drop = d.dropoff?.label || 'Drop-off';
+      const stopTag = d.stop ? ' · stop' : '';
       return `
         <div class="list-item" data-delivery="${esc(d.deliveryId)}">
           <div class="li-avatar"><i class="fas fa-box"></i></div>
           <div class="li-body">
             <div class="li-title">${esc(d.parcelName || 'Parcel')}</div>
-            <div class="li-sub">${esc(pickup)} → ${esc(drop)}</div>
+            <div class="li-sub">${esc(pickup)} → ${esc(drop)}${stopTag}</div>
           </div>
           <div class="li-right">
             <strong>K ${esc(fmtPrice(d.fare))}</strong>
-            <div style="margin-top:3px;">${statusChip(d.status)}</div>
+            <div>${statusChip(d.status)}</div>
+          </div>
+          <div class="li-actions">
+            <button class="li-del-btn" data-delivery-del="${esc(d.deliveryId)}" title="Delete delivery"><i class="fas fa-trash"></i></button>
           </div>
         </div>
       `;
     }).join('');
     $('deliveriesList').querySelectorAll('[data-delivery]').forEach(el=>{
-      el.addEventListener('click', ()=>openDeliveryDetail(el.dataset.delivery));
+      el.addEventListener('click', (e)=>{
+        if (e.target.closest('[data-delivery-del]')) return;
+        openDeliveryDetail(el.dataset.delivery);
+      });
+    });
+    $('deliveriesList').querySelectorAll('[data-delivery-del]').forEach(btn=>{
+      btn.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        deleteDelivery(btn.dataset.deliveryDel);
+      });
     });
   }
 
@@ -1908,6 +2182,12 @@ function renderDeliveryMarkers(){
       delivMarkers.push(m);
       bounds.push([d.pickup.lat, d.pickup.lng]);
     }
+    if (d.stop && isFinite(d.stop.lat) && isFinite(d.stop.lng)){
+      const m = L.marker([d.stop.lat, d.stop.lng], { icon: stopIcon() })
+        .bindPopup(`<b>Stop</b><br>${esc(d.stop.label||'')}`).addTo(delivsMap);
+      delivMarkers.push(m);
+      bounds.push([d.stop.lat, d.stop.lng]);
+    }
     if (d.dropoff && isFinite(d.dropoff.lat) && isFinite(d.dropoff.lng)){
       const m = L.marker([d.dropoff.lat, d.dropoff.lng], { icon: dropoffIcon() })
         .bindPopup(`<b>Destination</b><br>${esc(d.dropoff.label||'')}`).addTo(delivsMap);
@@ -1922,11 +2202,71 @@ function renderDeliveryMarkers(){
 function openDeliveryDetail(id){
   const d = state.deliveries[id];
   if (!d) { toast('Delivery not found'); return; }
+  destroyDetailMap();
   $('drawerTitle').textContent = 'Delivery details';
   $('drawerSub').textContent = d.parcelName || 'Parcel';
 
   const rules = state.floatRules;
   const commissionAmount = d.fare ? Math.round(d.fare * (rules.deliveryCommissionPercent||0) / 100) : 0;
+
+  const waypoints = [];
+  if (d.pickup && isFinite(d.pickup.lat) && isFinite(d.pickup.lng)) waypoints.push(d.pickup);
+  if (d.stop && isFinite(d.stop.lat) && isFinite(d.stop.lng)) waypoints.push(d.stop);
+  if (d.dropoff && isFinite(d.dropoff.lat) && isFinite(d.dropoff.lng)) waypoints.push(d.dropoff);
+
+  const customerRatingBlock = (d.customerRating || d.customerRatingComment) ? `
+    <div class="rating-box">
+      <div class="rb-head"><i class="fas fa-user"></i> Customer rated provider</div>
+      <div class="rb-stars">${starsHtml(d.customerRating)}</div>
+      ${d.customerRatingComment ? `<div class="rb-comment">"${esc(d.customerRatingComment)}"</div>` : ''}
+      <div style="font-size:.65rem;color:#7a3408;margin-top:5px;">${esc(fmtDateTime(d.ratedAt))}</div>
+    </div>
+  ` : `
+    <div class="rating-box empty-rating">
+      <div class="rb-head"><i class="fas fa-user"></i> Customer rated provider</div>
+      <div class="rb-comment">No rating submitted</div>
+    </div>
+  `;
+
+  const providerRatingBlock = (d.providerRating || d.providerRatingComment) ? `
+    <div class="rating-box">
+      <div class="rb-head"><i class="fas fa-briefcase"></i> Provider rated customer</div>
+      <div class="rb-stars">${starsHtml(d.providerRating)}</div>
+      ${d.providerRatingComment ? `<div class="rb-comment">"${esc(d.providerRatingComment)}"</div>` : ''}
+      <div style="font-size:.65rem;color:#7a3408;margin-top:5px;">${esc(fmtDateTime(d.providerRatedAt))}</div>
+    </div>
+  ` : `
+    <div class="rating-box empty-rating">
+      <div class="rb-head"><i class="fas fa-briefcase"></i> Provider rated customer</div>
+      <div class="rb-comment">No rating submitted</div>
+    </div>
+  `;
+
+  let routeLegend = '';
+  if (waypoints.length >= 2){
+    const parts = [];
+    parts.push(`<span class="route-pill"><span class="pill-dot pickup"></span> <span>${esc(d.pickup?.label||'Pickup')}</span></span>`);
+    if (d.stop) parts.push(`<span class="route-pill"><span class="pill-dot stop"></span> <span>${esc(d.stop.label||'Stop')}</span></span>`);
+    parts.push(`<span class="route-pill"><span class="pill-dot dest"></span> <span>${esc(d.dropoff?.label||'Drop-off')}</span></span>`);
+    routeLegend = `<div class="route-legend">${parts.join('')}</div>`;
+  }
+
+  const providerBlock = d.providerId ? `
+    <div class="detail-section">
+      <h3><i class="fas fa-briefcase"></i> Provider</h3>
+      <div class="detail-grid">
+        <div class="detail-box full"><small>Name</small><strong>${esc(d.providerName||'—')}</strong></div>
+        <div class="detail-box full"><small>Phone</small><strong>${esc(d.providerPhone||'—')}</strong></div>
+        <div class="detail-box"><small>Role</small><strong>${esc(d.providerRole||'—')}</strong></div>
+        <div class="detail-box"><small>Vehicle</small><strong>${esc(d.vehicleLabel||'—')}</strong></div>
+      </div>
+    </div>
+  ` : `
+    <div class="detail-section">
+      <h3><i class="fas fa-briefcase"></i> Provider</h3>
+      <div class="detail-box full"><strong style="font-weight:500;color:var(--ts);">No provider was assigned to this delivery.</strong></div>
+    </div>
+  `;
 
   $('drawerBody').innerHTML = `
     <div class="detail-section">
@@ -1972,40 +2312,78 @@ function openDeliveryDetail(id){
       </div>
     </div>
 
+    ${providerBlock}
+
     <div class="detail-section">
-      <h3><i class="fas fa-route"></i> Route</h3>
+      <h3><i class="fas fa-route"></i> Route${d.stop ? ' · includes stop' : ''}</h3>
+      ${routeLegend}
       <div class="detail-grid">
         <div class="detail-box full"><small>Pickup</small><strong>${esc(d.pickup?.label||'—')}</strong></div>
+        ${d.stop ? `<div class="detail-box full"><small>Stop</small><strong>${esc(d.stop.label||'—')}</strong></div>` : ''}
         <div class="detail-box full"><small>Drop-off</small><strong>${esc(d.dropoff?.label||'—')}</strong></div>
       </div>
     </div>
 
-    ${(d.pickup || d.dropoff) ? `<div class="map-wrap" id="detailMap" style="height:260px;"></div>` : ''}
+    <div class="detail-section">
+      <h3><i class="fas fa-star"></i> Ratings</h3>
+      <div style="display:grid;grid-template-columns:1fr;gap:10px;">
+        ${customerRatingBlock}
+        ${providerRatingBlock}
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <h3><i class="fas fa-clock"></i> Timeline</h3>
+      <div class="detail-grid">
+        ${d.acceptedAt ? `<div class="detail-box"><small>Accepted</small><strong>${esc(fmtDateTime(d.acceptedAt))}</strong></div>` : ''}
+        ${d.arrivedAt ? `<div class="detail-box"><small>Arrived</small><strong>${esc(fmtDateTime(d.arrivedAt))}</strong></div>` : ''}
+        ${d.startedAt ? `<div class="detail-box"><small>Started</small><strong>${esc(fmtDateTime(d.startedAt))}</strong></div>` : ''}
+        ${d.completedAt ? `<div class="detail-box"><small>Completed</small><strong>${esc(fmtDateTime(d.completedAt))}</strong></div>` : ''}
+        ${d.cancelledAt ? `<div class="detail-box"><small>Cancelled</small><strong>${esc(fmtDateTime(d.cancelledAt))}</strong></div>` : ''}
+        <div class="detail-box full"><small>Reference</small><strong style="font-family:monospace;font-size:.72rem;">${esc(id)}</strong></div>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <h3><i class="fas fa-map-location-dot"></i> Route map</h3>
+      <div class="map-wrap" id="detailMap" style="height:300px;"></div>
+    </div>
   `;
 
-  $('drawerFoot').innerHTML = `
-    ${['searching','accepted','in_progress'].includes(d.status) ? `
-      <button class="btn btn-danger" id="delivCancelBtn"><i class="fas fa-ban"></i> Cancel delivery</button>
-    ` : ''}
-    <button class="btn btn-ghost" id="delivCloseBtn">Close</button>
-  `;
+  const foot = [];
+  if (['searching','accepted','in_progress'].includes(d.status)){
+    foot.push(`<button class="btn btn-danger" id="delivCancelBtn"><i class="fas fa-ban"></i> Cancel delivery</button>`);
+  }
+  foot.push(`<button class="btn btn-danger" id="delivDeleteBtn"><i class="fas fa-trash"></i> Delete delivery</button>`);
+  foot.push(`<button class="btn btn-ghost" id="delivCloseBtn">Close</button>`);
+  $('drawerFoot').innerHTML = foot.join('');
 
   openDrawer();
 
-  if (d.pickup || d.dropoff){
-    setTimeout(()=>{
-      const dm = createMap('detailMap', d.pickup ? [d.pickup.lat,d.pickup.lng] : [d.dropoff.lat,d.dropoff.lng], 13);
-      if (dm){
-        const pts = [];
-        if (d.pickup) { L.marker([d.pickup.lat, d.pickup.lng], { icon: pickupIcon() }).addTo(dm).bindPopup('Pickup'); pts.push([d.pickup.lat,d.pickup.lng]); }
-        if (d.dropoff){ L.marker([d.dropoff.lat, d.dropoff.lng], { icon: dropoffIcon() }).addTo(dm).bindPopup('Drop-off'); pts.push([d.dropoff.lat,d.dropoff.lng]); }
-        if (pts.length > 1) dm.fitBounds(pts, { padding:[30,30] });
-      }
-    }, 200);
-  }
+  setTimeout(async ()=>{
+    if (!waypoints.length) return;
+    detailMapInst = createMap('detailMap', [waypoints[0].lat, waypoints[0].lng], 13);
+    if (!detailMapInst) return;
+
+    if (d.pickup && isFinite(d.pickup.lat) && isFinite(d.pickup.lng)){
+      L.marker([d.pickup.lat, d.pickup.lng], { icon: pickupIcon() }).addTo(detailMapInst).bindPopup('Pickup: ' + esc(d.pickup.label||''));
+    }
+    if (d.stop && isFinite(d.stop.lat) && isFinite(d.stop.lng)){
+      L.marker([d.stop.lat, d.stop.lng], { icon: stopIcon() }).addTo(detailMapInst).bindPopup('Stop: ' + esc(d.stop.label||''));
+    }
+    if (d.dropoff && isFinite(d.dropoff.lat) && isFinite(d.dropoff.lng)){
+      L.marker([d.dropoff.lat, d.dropoff.lng], { icon: dropoffIcon() }).addTo(detailMapInst).bindPopup('Drop-off: ' + esc(d.dropoff.label||''));
+    }
+
+    if (waypoints.length >= 2){
+      await drawRouteOnMap(detailMapInst, waypoints);
+    }
+    detailMapInst.invalidateSize();
+  }, 260);
 
   const cancelBtn = $('delivCancelBtn');
   if (cancelBtn) cancelBtn.addEventListener('click', ()=>cancelDelivery(id));
+  $('delivDeleteBtn').addEventListener('click', ()=>deleteDelivery(id, true));
   $('delivCloseBtn').addEventListener('click', closeDrawer);
 }
 
@@ -2023,6 +2401,23 @@ async function cancelDelivery(id){
     closeDrawer();
   } catch (err){
     toast('Could not cancel: ' + err.message);
+  }
+}
+
+async function deleteDelivery(id, fromDrawer){
+  if (!confirm('Permanently DELETE this delivery record? This cannot be undone.')) return;
+  try {
+    await remove(ref(database, `deliveries/${id}`));
+    for (const txId in state.transactions){
+      const tx = state.transactions[txId];
+      if (tx.referenceId === id){
+        try { await remove(ref(database, `transactions/${txId}`)); } catch(e){}
+      }
+    }
+    toast('Delivery deleted');
+    if (fromDrawer) closeDrawer();
+  } catch (err){
+    toast('Could not delete: ' + err.message);
   }
 }
 
@@ -2057,13 +2452,25 @@ function renderErrands(){
           </div>
           <div class="li-right">
             <strong>K ${esc(fmtPrice(e.willingToPay))}</strong>
-            <div style="margin-top:3px;">${statusChip(e.status)}</div>
+            <div>${statusChip(e.status)}</div>
+          </div>
+          <div class="li-actions">
+            <button class="li-del-btn" data-errand-del="${esc(e.errandId)}" title="Delete errand"><i class="fas fa-trash"></i></button>
           </div>
         </div>
       `;
     }).join('');
     $('errandsList').querySelectorAll('[data-errand]').forEach(el=>{
-      el.addEventListener('click', ()=>openErrandDetail(el.dataset.errand));
+      el.addEventListener('click', (e)=>{
+        if (e.target.closest('[data-errand-del]')) return;
+        openErrandDetail(el.dataset.errand);
+      });
+    });
+    $('errandsList').querySelectorAll('[data-errand-del]').forEach(btn=>{
+      btn.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        deleteErrand(btn.dataset.errandDel);
+      });
     });
   }
 }
@@ -2071,11 +2478,26 @@ function renderErrands(){
 function openErrandDetail(id){
   const e = state.errands[id];
   if (!e) { toast('Errand not found'); return; }
+  destroyDetailMap();
   $('drawerTitle').textContent = e.title || 'Errand';
   $('drawerSub').textContent = e.customerName || 'Customer';
 
   const offers = e.offers ? Object.values(e.offers) : [];
   const rules = state.floatRules;
+
+  // Errand rating block (customer may have rated the accepting provider)
+  const errandRatingBlock = (e.customerRating || e.customerRatingComment) ? `
+    <div class="rating-box">
+      <div class="rb-head"><i class="fas fa-star"></i> Customer rating</div>
+      <div class="rb-stars">${starsHtml(e.customerRating)}</div>
+      ${e.customerRatingComment ? `<div class="rb-comment">"${esc(e.customerRatingComment)}"</div>` : ''}
+    </div>
+  ` : `
+    <div class="rating-box empty-rating">
+      <div class="rb-head"><i class="fas fa-star"></i> Customer rating</div>
+      <div class="rb-comment">No rating submitted</div>
+    </div>
+  `;
 
   $('drawerBody').innerHTML = `
     <div class="detail-section">
@@ -2122,6 +2544,13 @@ function openErrandDetail(id){
     </div>
 
     <div class="detail-section">
+      <h3><i class="fas fa-star"></i> Ratings</h3>
+      <div style="display:grid;grid-template-columns:1fr;gap:10px;">
+        ${errandRatingBlock}
+      </div>
+    </div>
+
+    <div class="detail-section">
       <h3><i class="fas fa-hand-holding-dollar"></i> Offers (${offers.length})</h3>
       ${offers.length ? offers.map(o=>`
         <div class="offer-line">
@@ -2138,12 +2567,22 @@ function openErrandDetail(id){
         </div>
       `).join('') : `<div style="text-align:center;padding:20px;color:var(--ts);font-size:.82rem;">No offers yet.</div>`}
     </div>
+
+    ${e.pickup && isFinite(e.pickup.lat) && isFinite(e.pickup.lng) ? `
+      <div class="detail-section">
+        <h3><i class="fas fa-map-location-dot"></i> Location map</h3>
+        <div class="map-wrap" id="detailMap" style="height:280px;"></div>
+      </div>
+    ` : ''}
   `;
 
-  $('drawerFoot').innerHTML = `
-    ${e.status === 'pending' ? `<button class="btn btn-danger" id="errandCancelBtn"><i class="fas fa-ban"></i> Cancel errand</button>` : ''}
-    <button class="btn btn-ghost" id="errandCloseBtn">Close</button>
-  `;
+  const foot = [];
+  if (e.status === 'pending'){
+    foot.push(`<button class="btn btn-danger" id="errandCancelBtn"><i class="fas fa-ban"></i> Cancel errand</button>`);
+  }
+  foot.push(`<button class="btn btn-danger" id="errandDeleteBtn"><i class="fas fa-trash"></i> Delete errand</button>`);
+  foot.push(`<button class="btn btn-ghost" id="errandCloseBtn">Close</button>`);
+  $('drawerFoot').innerHTML = foot.join('');
 
   openDrawer();
 
@@ -2151,8 +2590,19 @@ function openErrandDetail(id){
     el.addEventListener('click', ()=>openLightbox(el.dataset.lightbox));
   });
 
+  if (e.pickup && isFinite(e.pickup.lat) && isFinite(e.pickup.lng)){
+    setTimeout(()=>{
+      detailMapInst = createMap('detailMap', [e.pickup.lat, e.pickup.lng], 15);
+      if (detailMapInst){
+        L.marker([e.pickup.lat, e.pickup.lng], { icon: pickupIcon() }).addTo(detailMapInst).bindPopup('Pickup: ' + esc(e.pickup.label||''));
+        detailMapInst.invalidateSize();
+      }
+    }, 260);
+  }
+
   const cancelBtn = $('errandCancelBtn');
   if (cancelBtn) cancelBtn.addEventListener('click', ()=>cancelErrand(id));
+  $('errandDeleteBtn').addEventListener('click', ()=>deleteErrand(id, true));
   $('errandCloseBtn').addEventListener('click', closeDrawer);
 }
 
@@ -2170,6 +2620,23 @@ async function cancelErrand(id){
     closeDrawer();
   } catch (err){
     toast('Could not cancel: ' + err.message);
+  }
+}
+
+async function deleteErrand(id, fromDrawer){
+  if (!confirm('Permanently DELETE this errand? This cannot be undone.')) return;
+  try {
+    await remove(ref(database, `errands/${id}`));
+    for (const txId in state.transactions){
+      const tx = state.transactions[txId];
+      if (tx.referenceId === id){
+        try { await remove(ref(database, `transactions/${txId}`)); } catch(e){}
+      }
+    }
+    toast('Errand deleted');
+    if (fromDrawer) closeDrawer();
+  } catch (err){
+    toast('Could not delete: ' + err.message);
   }
 }
 
@@ -2213,20 +2680,33 @@ function renderProviders(){
         </div>
         <div class="li-right">
           <strong>K ${esc(fmtPrice(p.floatBalance||0))}</strong>
-          <div style="margin-top:3px;">${statusChip(st)}</div>
+          <div>${statusChip(st)}</div>
+        </div>
+        <div class="li-actions">
+          <button class="li-del-btn" data-provider-del="${esc(p._id)}" title="Delete provider"><i class="fas fa-trash"></i></button>
         </div>
       </div>
     `;
   }).join('');
 
   $('providersList').querySelectorAll('[data-provider]').forEach(el=>{
-    el.addEventListener('click', ()=>openProviderDetail(el.dataset.provider));
+    el.addEventListener('click', (e)=>{
+      if (e.target.closest('[data-provider-del]')) return;
+      openProviderDetail(el.dataset.provider);
+    });
+  });
+  $('providersList').querySelectorAll('[data-provider-del]').forEach(btn=>{
+    btn.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      deleteProvider(btn.dataset.providerDel);
+    });
   });
 }
 
 function openProviderDetail(id){
   const p = state.providers[id];
   if (!p) { toast('Provider not found'); return; }
+  destroyDetailMap();
   const name = p.fullName || `${p.firstName||''} ${p.lastName||''}`.trim() || 'Provider';
   $('drawerTitle').textContent = name;
   $('drawerSub').textContent = (p.email||'') + ' · ' + (p.phone||'');
@@ -2253,6 +2733,19 @@ function openProviderDetail(id){
     ? `<span class="status-chip approved">Yes</span>`
     : `<span class="status-chip rejected">No</span>`;
 
+  // Ratings summary
+  const ratingAvg = p.ratingAverage;
+  const ratingCount = p.ratingCount || 0;
+  const ratingsBlock = ratingAvg != null ? `
+    <div class="detail-section">
+      <h3><i class="fas fa-star"></i> Provider rating</h3>
+      <div class="detail-grid">
+        <div class="detail-box"><small>Average</small><strong>${starsHtml(ratingAvg)} <span style="font-weight:700;margin-left:4px;">${esc(String(ratingAvg))}</span></strong></div>
+        <div class="detail-box"><small>Total ratings</small><strong>${esc(String(ratingCount))}</strong></div>
+      </div>
+    </div>
+  ` : '';
+
   $('drawerBody').innerHTML = `
     <div class="detail-section">
       <h3><i class="fas fa-circle-info"></i> Account</h3>
@@ -2263,6 +2756,8 @@ function openProviderDetail(id){
         <div class="detail-box"><small>Joined</small><strong>${esc(fmtDateTime(p.createdAt))}</strong></div>
       </div>
     </div>
+
+    ${ratingsBlock}
 
     <div class="detail-section">
       <h3><i class="fas fa-percent"></i> Float rule eligibility</h3>
@@ -2314,8 +2809,9 @@ function openProviderDetail(id){
   if (isBanned){
     foot.push(`<button class="btn btn-ghost" id="provUnbanBtn"><i class="fas fa-unlock"></i> Unban</button>`);
   } else {
-    foot.push(`<button class="btn btn-danger" id="provBanBtn"><i class="fas fa-ban"></i> Ban provider</button>`);
+    foot.push(`<button class="btn btn-danger" id="provBanBtn"><i class="fas fa-ban"></i> Ban</button>`);
   }
+  foot.push(`<button class="btn btn-danger" id="provDeleteBtn"><i class="fas fa-trash"></i> Delete</button>`);
   foot.push(`<button class="btn btn-ghost" id="provCloseBtn">Close</button>`);
   $('drawerFoot').innerHTML = foot.join('');
 
@@ -2333,6 +2829,7 @@ function openProviderDetail(id){
   if (banBtn) banBtn.addEventListener('click', ()=>banProvider(id, true));
   const unbanBtn = $('provUnbanBtn');
   if (unbanBtn) unbanBtn.addEventListener('click', ()=>banProvider(id, false));
+  $('provDeleteBtn').addEventListener('click', ()=>deleteProvider(id, true));
   $('provCloseBtn').addEventListener('click', closeDrawer);
 
   const adjBtn = $('floatAdjustBtn');
@@ -2382,6 +2879,17 @@ async function banProvider(id, banned){
   }
 }
 
+async function deleteProvider(id, fromDrawer){
+  if (!confirm('Permanently DELETE this provider and all their records? This cannot be undone.')) return;
+  try {
+    await remove(ref(database, `providers/${id}`));
+    toast('Provider deleted');
+    if (fromDrawer) closeDrawer();
+  } catch (err){
+    toast('Could not delete: ' + err.message);
+  }
+}
+
 /* ============================================================
    CUSTOMERS
    ============================================================ */
@@ -2421,18 +2929,31 @@ function renderCustomers(){
         <div class="li-right">
           <div>${statusChip(isBanned ? 'banned' : 'active')}</div>
         </div>
+        <div class="li-actions">
+          <button class="li-del-btn" data-customer-del="${esc(c._id)}" title="Delete customer"><i class="fas fa-trash"></i></button>
+        </div>
       </div>
     `;
   }).join('');
 
   $('customersList').querySelectorAll('[data-customer]').forEach(el=>{
-    el.addEventListener('click', ()=>openCustomerDetail(el.dataset.customer));
+    el.addEventListener('click', (e)=>{
+      if (e.target.closest('[data-customer-del]')) return;
+      openCustomerDetail(el.dataset.customer);
+    });
+  });
+  $('customersList').querySelectorAll('[data-customer-del]').forEach(btn=>{
+    btn.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      deleteCustomer(btn.dataset.customerDel);
+    });
   });
 }
 
 function openCustomerDetail(id){
   const c = state.customers[id];
   if (!c) { toast('Customer not found'); return; }
+  destroyDetailMap();
   const name = c.fullName || `${c.firstName||''} ${c.lastName||''}`.trim() || 'Customer';
   $('drawerTitle').textContent = name;
   $('drawerSub').textContent = c.phone || '';
@@ -2445,6 +2966,19 @@ function openCustomerDetail(id){
   const txs = Object.values(state.transactions).filter(t=>t.customerId === id && t.status === 'completed');
   const totalSpent = txs.reduce((s,t)=>s+(t.amount||0),0);
 
+  // Ratings from providers
+  const ratingAvg = c.ratingAverage;
+  const ratingCount = c.ratingCount || 0;
+  const ratingsBlock = ratingAvg != null ? `
+    <div class="detail-section">
+      <h3><i class="fas fa-star"></i> Customer rating (from providers)</h3>
+      <div class="detail-grid">
+        <div class="detail-box"><small>Average</small><strong>${starsHtml(ratingAvg)} <span style="font-weight:700;margin-left:4px;">${esc(String(ratingAvg))}</span></strong></div>
+        <div class="detail-box"><small>Total ratings</small><strong>${esc(String(ratingCount))}</strong></div>
+      </div>
+    </div>
+  ` : '';
+
   $('drawerBody').innerHTML = `
     <div class="detail-section">
       <h3><i class="fas fa-circle-info"></i> Account</h3>
@@ -2453,6 +2987,8 @@ function openCustomerDetail(id){
         <div class="detail-box"><small>Joined</small><strong>${esc(fmtDateTime(c.createdAt))}</strong></div>
       </div>
     </div>
+
+    ${ratingsBlock}
 
     <div class="detail-section">
       <h3><i class="fas fa-user"></i> Contact</h3>
@@ -2487,8 +3023,9 @@ function openCustomerDetail(id){
   if (isBanned){
     foot.push(`<button class="btn btn-ghost" id="custUnbanBtn"><i class="fas fa-unlock"></i> Unban</button>`);
   } else {
-    foot.push(`<button class="btn btn-danger" id="custBanBtn"><i class="fas fa-ban"></i> Ban customer</button>`);
+    foot.push(`<button class="btn btn-danger" id="custBanBtn"><i class="fas fa-ban"></i> Ban</button>`);
   }
+  foot.push(`<button class="btn btn-danger" id="custDeleteBtn"><i class="fas fa-trash"></i> Delete</button>`);
   foot.push(`<button class="btn btn-ghost" id="custCloseBtn">Close</button>`);
   $('drawerFoot').innerHTML = foot.join('');
 
@@ -2502,6 +3039,7 @@ function openCustomerDetail(id){
   if (banBtn) banBtn.addEventListener('click', ()=>banCustomer(id, true));
   const unbanBtn = $('custUnbanBtn');
   if (unbanBtn) unbanBtn.addEventListener('click', ()=>banCustomer(id, false));
+  $('custDeleteBtn').addEventListener('click', ()=>deleteCustomer(id, true));
   $('custCloseBtn').addEventListener('click', closeDrawer);
 }
 
@@ -2521,6 +3059,17 @@ async function banCustomer(id, banned){
     closeDrawer();
   } catch (err){
     toast('Could not update: ' + err.message);
+  }
+}
+
+async function deleteCustomer(id, fromDrawer){
+  if (!confirm('Permanently DELETE this customer account? This cannot be undone.')) return;
+  try {
+    await remove(ref(database, `customers/${id}`));
+    toast('Customer deleted');
+    if (fromDrawer) closeDrawer();
+  } catch (err){
+    toast('Could not delete: ' + err.message);
   }
 }
 
@@ -2557,19 +3106,32 @@ function renderFloatRequests(){
       </div>
       <div class="li-right">
         <strong>K ${esc(fmtPrice(f.amount))}</strong>
-        <div style="margin-top:3px;">${statusChip(f.status)}</div>
+        <div>${statusChip(f.status)}</div>
+      </div>
+      <div class="li-actions">
+        <button class="li-del-btn" data-float-del="${esc(f._id)}" title="Delete request"><i class="fas fa-trash"></i></button>
       </div>
     </div>
   `).join('');
 
   $('floatList').querySelectorAll('[data-float]').forEach(el=>{
-    el.addEventListener('click', ()=>openFloatDetail(el.dataset.float));
+    el.addEventListener('click', (e)=>{
+      if (e.target.closest('[data-float-del]')) return;
+      openFloatDetail(el.dataset.float);
+    });
+  });
+  $('floatList').querySelectorAll('[data-float-del]').forEach(btn=>{
+    btn.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      deleteFloatRequest(btn.dataset.floatDel);
+    });
   });
 }
 
 function openFloatDetail(id){
   const f = state.floatRequests[id];
   if (!f) { toast('Request not found'); return; }
+  destroyDetailMap();
   $('drawerTitle').textContent = 'Float request';
   $('drawerSub').textContent = f.providerName || 'Provider';
 
@@ -2610,6 +3172,7 @@ function openFloatDetail(id){
     foot.push(`<button class="btn btn-success" id="floatApproveBtn"><i class="fas fa-check"></i> Approve &amp; credit</button>`);
     foot.push(`<button class="btn btn-danger" id="floatRejectBtn"><i class="fas fa-xmark"></i> Reject</button>`);
   }
+  foot.push(`<button class="btn btn-danger" id="floatDeleteBtn"><i class="fas fa-trash"></i> Delete</button>`);
   foot.push(`<button class="btn btn-ghost" id="floatCloseBtn">Close</button>`);
   $('drawerFoot').innerHTML = foot.join('');
 
@@ -2623,6 +3186,7 @@ function openFloatDetail(id){
   if (approveBtn) approveBtn.addEventListener('click', ()=>approveFloat(id));
   const rejectBtn = $('floatRejectBtn');
   if (rejectBtn) rejectBtn.addEventListener('click', ()=>rejectFloat(id));
+  $('floatDeleteBtn').addEventListener('click', ()=>deleteFloatRequest(id, true));
   $('floatCloseBtn').addEventListener('click', closeDrawer);
 }
 
@@ -2661,6 +3225,17 @@ async function rejectFloat(id){
     closeDrawer();
   } catch (err){
     toast('Could not reject: ' + err.message);
+  }
+}
+
+async function deleteFloatRequest(id, fromDrawer){
+  if (!confirm('Permanently DELETE this float request? This cannot be undone.')) return;
+  try {
+    await remove(ref(database, `floatRequests/${id}`));
+    toast('Float request deleted');
+    if (fromDrawer) closeDrawer();
+  } catch (err){
+    toast('Could not delete: ' + err.message);
   }
 }
 
@@ -2730,11 +3305,31 @@ function renderTransactions(){
         </div>
         <div class="li-right">
           <strong>K ${esc(fmtPrice(t.amount))}</strong>
-          <div style="margin-top:3px;">${statusChip(t.status)}</div>
+          <div>${statusChip(t.status)}</div>
+        </div>
+        <div class="li-actions">
+          <button class="li-del-btn" data-tx-del="${esc(t._id)}" title="Delete transaction"><i class="fas fa-trash"></i></button>
         </div>
       </div>
     `;
   }).join('');
+
+  $('txList').querySelectorAll('[data-tx-del]').forEach(btn=>{
+    btn.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      deleteTransaction(btn.dataset.txDel);
+    });
+  });
+}
+
+async function deleteTransaction(id){
+  if (!confirm('Permanently DELETE this transaction record?')) return;
+  try {
+    await remove(ref(database, `transactions/${id}`));
+    toast('Transaction deleted');
+  } catch (err){
+    toast('Could not delete: ' + err.message);
+  }
 }
 
 /* ============================================================
@@ -2871,7 +3466,6 @@ function renderFloatRulesPreview(r){
   `;
 }
 
-// Live preview as admin edits
 ['ruleRidePercent','ruleDeliveryPercent','ruleErrandFee','ruleMinOnline','ruleMinRide','ruleMinDelivery','ruleMinErrand']
   .forEach(id => {
     const el = $(id);
@@ -3008,7 +3602,12 @@ $('saveDepositBtn').addEventListener('click', async ()=>{
    DRAWER
    ============================================================ */
 function openDrawer(){ $('drawer').classList.add('open'); $('drawerOverlay').classList.add('open'); }
-function closeDrawer(){ $('drawer').classList.remove('open'); $('drawerOverlay').classList.remove('open'); }
+function closeDrawer(){
+  $('drawer').classList.remove('open');
+  $('drawerOverlay').classList.remove('open');
+  // Destroy drawer map after the close animation
+  setTimeout(destroyDetailMap, 480);
+}
 $('drawerClose').addEventListener('click', closeDrawer);
 $('drawerOverlay').addEventListener('click', closeDrawer);
 
@@ -3032,6 +3631,7 @@ window.addEventListener('resize', ()=>{
   if (dashMap) dashMap.invalidateSize();
   if (ridesMap) ridesMap.invalidateSize();
   if (delivsMap) delivsMap.invalidateSize();
+  if (detailMapInst) detailMapInst.invalidateSize();
 });
 </script>
 </body>
