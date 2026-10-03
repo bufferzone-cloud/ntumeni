@@ -6,7 +6,6 @@
     <title>NTUMENI | Secure Access</title>
     <link rel="icon" href="logo.png">
     <meta name="theme-color" content="#0a0a0a">
-    <link rel="apple-touch-icon" href="logo.png">
 
     <!-- ==========================================================
          PWA
@@ -18,6 +17,8 @@
     <meta name="apple-mobile-web-app-title" content="NTUMENI">
     <meta name="application-name" content="NTUMENI">
     <meta name="format-detection" content="telephone=no">
+
+    <link rel="apple-touch-icon" href="logo.png">
     <link rel="apple-touch-icon" sizes="152x152" href="logo.png">
     <link rel="apple-touch-icon" sizes="180x180" href="logo.png">
     <link rel="apple-touch-icon" sizes="192x192" href="logo.png">
@@ -35,6 +36,7 @@
             }
         }
     </script>
+
     <style>
         /* ==========================================================
            DESIGN TOKENS — MONOCHROME
@@ -1018,7 +1020,7 @@
         .terms-decline-btn:hover { background: #f5f5f7; }
 
         /* ==========================================================
-           PWA INSTALL BUTTON
+           PWA FLOATING INSTALL BUTTON
            ========================================================== */
         .pwa-install-btn {
             position: fixed;
@@ -1071,6 +1073,177 @@
         }
 
         /* ==========================================================
+           PWA INSTALL POPUP + GUIDE
+           ========================================================== */
+        .pwa-guide-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 600;
+            background: rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s var(--ease-out), visibility 0.3s var(--ease-out);
+        }
+
+        .pwa-guide-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .pwa-guide-modal {
+            background: #ffffff;
+            border-radius: 22px;
+            width: 100%;
+            max-width: 430px;
+            overflow: hidden;
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35);
+            transform: scale(0.92) translateY(20px);
+            transition: transform 0.4s var(--spring);
+        }
+
+        .pwa-guide-overlay.open .pwa-guide-modal {
+            transform: scale(1) translateY(0);
+        }
+
+        .pwa-guide-header {
+            padding: 22px 22px 16px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .pwa-guide-header h3 {
+            font-size: 1.08rem;
+            font-weight: 800;
+            letter-spacing: -0.4px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pwa-guide-header h3 i { color: #0a0a0a; }
+
+        .pwa-guide-close {
+            background: var(--fill-gray);
+            border: none;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            flex-shrink: 0;
+            transition: all 0.25s var(--ease-smooth);
+        }
+
+        .pwa-guide-close:hover {
+            background: #0a0a0a;
+            color: #ffffff;
+            transform: rotate(90deg);
+        }
+
+        .pwa-guide-body {
+            padding: 18px 22px 8px;
+            font-size: 0.92rem;
+            line-height: 1.6;
+            color: var(--text-primary);
+        }
+
+        .pwa-guide-body p { margin-bottom: 0.85rem; }
+
+        .pwa-guide-body ol {
+            padding-left: 1.3rem;
+            margin-bottom: 0.9rem;
+        }
+
+        .pwa-guide-body li {
+            margin-bottom: 0.55rem;
+            padding-left: 4px;
+        }
+
+        .pwa-guide-body li i {
+            color: #0a0a0a;
+            margin: 0 2px;
+        }
+
+        .pwa-guide-note {
+            font-size: 0.82rem !important;
+            color: var(--text-secondary);
+            background: var(--accent-soft);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            padding: 10px 12px;
+            border-radius: 11px;
+            margin-bottom: 1rem !important;
+        }
+
+        .pwa-guide-footer {
+            padding: 14px 22px 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .pwa-guide-later {
+            background: transparent;
+            color: var(--text-secondary);
+            border: none;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 0.88rem;
+            padding: 11px 18px;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: color 0.25s var(--ease-smooth), background 0.25s var(--ease-smooth);
+        }
+
+        .pwa-guide-later:hover {
+            color: var(--text-primary);
+            background: var(--fill-gray);
+        }
+
+        .pwa-guide-ok {
+            background: #0a0a0a;
+            color: #ffffff;
+            border: none;
+            font-family: inherit;
+            font-weight: 700;
+            font-size: 0.88rem;
+            padding: 11px 26px;
+            border-radius: 999px;
+            cursor: pointer;
+            box-shadow: 0 6px 16px -6px rgba(0, 0, 0, 0.45);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.35s var(--spring), box-shadow 0.3s var(--ease-smooth);
+        }
+
+        .pwa-guide-ok:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px -6px rgba(0, 0, 0, 0.5);
+        }
+
+        .pwa-guide-ok:active { transform: scale(0.96); }
+
+        body.panel-open .pwa-guide-overlay {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        /* ==========================================================
            SPINNER
            ========================================================== */
         .fa-spin, .fa-spinner { animation: spin 0.9s linear infinite; }
@@ -1096,6 +1269,13 @@
             .terms-modal-body { padding: 16px 20px 20px; font-size: 0.86rem; }
             .terms-modal-footer { padding: 12px 18px 16px; }
             .terms-accept-btn, .terms-decline-btn { padding: 10px 20px; font-size: 0.85rem; }
+        }
+
+        @media (max-width: 480px) {
+            .pwa-guide-modal { max-width: 100%; }
+            .pwa-guide-header { padding: 18px 18px 14px; }
+            .pwa-guide-body { padding: 16px 18px 6px; font-size: 0.88rem; }
+            .pwa-guide-footer { padding: 12px 18px 18px; }
         }
 
         @media (max-width: 400px) {
@@ -1442,7 +1622,7 @@
 </div>
 
 <!-- ==========================================================
-     PWA INSTALL BUTTON
+     PWA FLOATING INSTALL BUTTON
      ========================================================== -->
 <button type="button" class="pwa-install-btn" id="pwaInstallBtn" aria-label="Install NTUMENI app">
     <i class="fas fa-download"></i>
@@ -1450,92 +1630,279 @@
 </button>
 
 <!-- ==========================================================
-     PWA — SERVICE WORKER + INSTALL PROMPT
+     PWA — SERVICE WORKER + INSTALL POPUP
      ========================================================== -->
 <script>
-    (function () {
-        'use strict';
+(function () {
+    'use strict';
 
-        var isStandalone =
-            window.matchMedia('(display-mode: standalone)').matches ||
-            window.matchMedia('(display-mode: fullscreen)').matches ||
-            window.matchMedia('(display-mode: minimal-ui)').matches ||
-            window.navigator.standalone === true;
+    /* ---------- Detect install state & platform ---------- */
+    var isStandalone =
+        window.matchMedia('(display-mode: standalone)').matches ||
+        window.matchMedia('(display-mode: fullscreen)').matches ||
+        window.matchMedia('(display-mode: minimal-ui)').matches ||
+        window.navigator.standalone === true;
 
-        /* ---------- Service worker registration ---------- */
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function () {
-                navigator.serviceWorker.register('sw.js', { scope: './' })
-                    .then(function (reg) {
-                        /* Check for updates every time the app is opened */
-                        reg.update().catch(function () {});
+    var ua        = navigator.userAgent || '';
+    var isIOS     = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
+    var isSafari  = /^((?!chrome|android|crios|fxios|edgios).)*safari/i.test(ua);
+    var isAndroid = /android/i.test(ua);
 
-                        reg.addEventListener('updatefound', function () {
-                            var newWorker = reg.installing;
-                            if (!newWorker) return;
-                            newWorker.addEventListener('statechange', function () {
-                                if (newWorker.state === 'installed' &&
-                                    navigator.serviceWorker.controller) {
-                                    /* New version available — activate it silently */
-                                    newWorker.postMessage({ type: 'SKIP_WAITING' });
-                                }
-                            });
+    var DISMISS_KEY = 'ntumeni_install_dismissed_until';
+
+    /* ---------- Service worker registration ---------- */
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function () {
+            navigator.serviceWorker.register('sw.js', { scope: './' })
+                .then(function (reg) {
+                    reg.update().catch(function () {});
+
+                    reg.addEventListener('updatefound', function () {
+                        var newWorker = reg.installing;
+                        if (!newWorker) return;
+                        newWorker.addEventListener('statechange', function () {
+                            if (newWorker.state === 'installed' &&
+                                navigator.serviceWorker.controller) {
+                                newWorker.postMessage({ type: 'SKIP_WAITING' });
+                            }
                         });
-                    })
-                    .catch(function (err) {
-                        console.warn('[NTUMENI] Service worker registration failed:', err);
                     });
-
-                /* Reload once when a new SW takes control */
-                var refreshed = false;
-                navigator.serviceWorker.addEventListener('controllerchange', function () {
-                    if (refreshed) return;
-                    refreshed = true;
-                    window.location.reload();
+                })
+                .catch(function (err) {
+                    console.warn('[NTUMENI] SW registration failed:', err);
                 });
+
+            var refreshed = false;
+            navigator.serviceWorker.addEventListener('controllerchange', function () {
+                if (refreshed) return;
+                refreshed = true;
+                window.location.reload();
             });
+        });
+    }
+
+    /* ---------- If already installed, bail out ---------- */
+    if (isStandalone) {
+        var existingBtn = document.getElementById('pwaInstallBtn');
+        if (existingBtn) existingBtn.remove();
+        return;
+    }
+
+    /* ---------- Elements ---------- */
+    var installBtn    = document.getElementById('pwaInstallBtn');
+    var deferredPrompt = null;
+
+    /* ---------- Show the small floating button after load ---------- */
+    if (installBtn) {
+        setTimeout(function () {
+            installBtn.classList.add('show');
+        }, 1500);
+
+        installBtn.addEventListener('click', function () {
+            handleInstallClick();
+        });
+    }
+
+    /* ---------- Native install prompt (Android / Chrome / Edge) ---------- */
+    window.addEventListener('beforeinstallprompt', function (e) {
+        e.preventDefault();
+        deferredPrompt = e;
+        if (installBtn) installBtn.classList.add('show');
+    });
+
+    /* ---------- Auto pop the modal on first visit ---------- */
+    var dismissedUntil = parseInt(localStorage.getItem(DISMISS_KEY) || '0', 10);
+    var isDismissed    = Date.now() < dismissedUntil;
+
+    if (!isDismissed) {
+        setTimeout(function () {
+            showInstallPopup();
+        }, 2500);
+    }
+
+    /* ---------- Handle a click on the floating button ---------- */
+    function handleInstallClick() {
+        if (deferredPrompt) {
+            if (installBtn) installBtn.classList.remove('show');
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then(function (choice) {
+                if (choice && choice.outcome === 'accepted') {
+                    console.log('[NTUMENI] App installed.');
+                }
+                deferredPrompt = null;
+            }).catch(function () {
+                deferredPrompt = null;
+            });
+            return;
+        }
+        showInstallPopup();
+    }
+
+    /* ---------- The install popup ---------- */
+    function showInstallPopup() {
+        if (document.querySelector('.pwa-guide-overlay')) return;
+
+        var overlay = document.createElement('div');
+        overlay.className = 'pwa-guide-overlay';
+
+        var bodyHtml, okLabel, okIcon;
+
+        if (isIOS && isSafari) {
+            bodyHtml =
+                '<p>Install <strong>NTUMENI</strong> on your iPhone or iPad for a full-screen, app-like experience:</p>' +
+                '<ol>' +
+                    '<li>Tap the <strong>Share</strong> button <i class="fas fa-arrow-up-from-bracket"></i> at the bottom of Safari.</li>' +
+                    '<li>Scroll and tap <strong>Add to Home Screen</strong> <i class="fas fa-plus-square"></i>.</li>' +
+                    '<li>Tap <strong>Add</strong> in the top-right corner.</li>' +
+                '</ol>' +
+                '<p class="pwa-guide-note">' +
+                    'Once added, NTUMENI opens full-screen like a native app — no browser bars.' +
+                '</p>';
+            okLabel = 'Got it';
+            okIcon  = 'fa-check';
+        } else if (isIOS) {
+            bodyHtml =
+                '<p>To install <strong>NTUMENI</strong> on your iPhone or iPad:</p>' +
+                '<ol>' +
+                    '<li>Open this page in <strong>Safari</strong>.</li>' +
+                    '<li>Tap <strong>Share</strong> <i class="fas fa-arrow-up-from-bracket"></i>.</li>' +
+                    '<li>Tap <strong>Add to Home Screen</strong> <i class="fas fa-plus-square"></i>.</li>' +
+                '</ol>' +
+                '<p class="pwa-guide-note">' +
+                    'Only Safari can install web apps on iOS.' +
+                '</p>';
+            okLabel = 'Got it';
+            okIcon  = 'fa-check';
+        } else if (deferredPrompt) {
+            bodyHtml =
+                '<p>Install <strong>NTUMENI</strong> on your phone for a faster, full-screen experience:</p>' +
+                '<ul style="padding-left:1.3rem;margin-bottom:0.9rem;">' +
+                    '<li>Instant access from your home screen</li>' +
+                    '<li>Works offline for cached pages</li>' +
+                    '<li>No browser bars — clean full-screen UI</li>' +
+                '</ul>' +
+                '<p class="pwa-guide-note">' +
+                    'You can uninstall it anytime from your phone settings.' +
+                '</p>';
+            okLabel = 'Install now';
+            okIcon  = 'fa-download';
+        } else if (isAndroid) {
+            bodyHtml =
+                '<p>To install <strong>NTUMENI</strong> on your Android phone:</p>' +
+                '<ol>' +
+                    '<li>Tap the <strong>⋮ menu</strong> in your browser.</li>' +
+                    '<li>Choose <strong>Install app</strong> or <strong>Add to Home Screen</strong>.</li>' +
+                    '<li>Confirm the install.</li>' +
+                '</ol>' +
+                '<p class="pwa-guide-note">' +
+                    'Once installed, NTUMENI opens like a native app.' +
+                '</p>';
+            okLabel = 'Got it';
+            okIcon  = 'fa-check';
+        } else {
+            bodyHtml =
+                '<p>Install <strong>NTUMENI</strong> on this device for the best experience:</p>' +
+                '<ol>' +
+                    '<li>Open your browser menu.</li>' +
+                    '<li>Choose <strong>Install app</strong> or <strong>Add to Home Screen</strong>.</li>' +
+                '</ol>' +
+                '<p class="pwa-guide-note">' +
+                    'You can uninstall it anytime from your device settings.' +
+                '</p>';
+            okLabel = 'Got it';
+            okIcon  = 'fa-check';
         }
 
-        /* ---------- Install button ---------- */
-        var installBtn = document.getElementById('pwaInstallBtn');
-        var deferredPrompt = null;
+        overlay.innerHTML =
+            '<div class="pwa-guide-modal" role="dialog" aria-modal="true" aria-labelledby="pwaGuideTitle">' +
+                '<div class="pwa-guide-header">' +
+                    '<h3 id="pwaGuideTitle"><i class="fas fa-mobile-alt"></i> Install NTUMENI</h3>' +
+                    '<button class="pwa-guide-close" aria-label="Close">' +
+                        '<i class="fas fa-times"></i>' +
+                    '</button>' +
+                '</div>' +
+                '<div class="pwa-guide-body">' + bodyHtml + '</div>' +
+                '<div class="pwa-guide-footer">' +
+                    '<button class="pwa-guide-later">Maybe later</button>' +
+                    '<button class="pwa-guide-ok">' +
+                        '<i class="fas ' + okIcon + '"></i> ' + okLabel +
+                    '</button>' +
+                '</div>' +
+            '</div>';
 
-        if (installBtn && !isStandalone) {
-            window.addEventListener('beforeinstallprompt', function (e) {
-                e.preventDefault();
-                deferredPrompt = e;
-                installBtn.classList.add('show');
-            });
+        document.body.appendChild(overlay);
 
-            installBtn.addEventListener('click', function () {
-                if (!deferredPrompt) {
-                    installBtn.classList.remove('show');
-                    return;
-                }
-                installBtn.classList.remove('show');
+        function close() {
+            overlay.classList.remove('open');
+            setTimeout(function () {
+                if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+            }, 320);
+        }
+
+        function dismissForAWeek() {
+            var until = Date.now() + 7 * 24 * 60 * 60 * 1000;
+            localStorage.setItem(DISMISS_KEY, String(until));
+        }
+
+        overlay.querySelector('.pwa-guide-close').addEventListener('click', function () {
+            dismissForAWeek();
+            close();
+        });
+
+        overlay.querySelector('.pwa-guide-later').addEventListener('click', function () {
+            dismissForAWeek();
+            close();
+        });
+
+        overlay.querySelector('.pwa-guide-ok').addEventListener('click', function () {
+            if (deferredPrompt) {
+                close();
+                if (installBtn) installBtn.classList.remove('show');
                 deferredPrompt.prompt();
-
                 deferredPrompt.userChoice.then(function (choice) {
                     if (choice && choice.outcome === 'accepted') {
                         console.log('[NTUMENI] App installed.');
+                        localStorage.removeItem(DISMISS_KEY);
                     }
                     deferredPrompt = null;
                 }).catch(function () {
                     deferredPrompt = null;
                 });
-            });
+                return;
+            }
+            dismissForAWeek();
+            close();
+        });
 
-            window.addEventListener('appinstalled', function () {
-                deferredPrompt = null;
-                installBtn.classList.remove('show');
-                installBtn.remove();
-            });
-        } else if (installBtn) {
-            installBtn.remove();
+        overlay.addEventListener('click', function (e) {
+            if (e.target === overlay) {
+                dismissForAWeek();
+                close();
+            }
+        });
+
+        requestAnimationFrame(function () {
+            overlay.classList.add('open');
+        });
+    }
+
+    /* ---------- Hide button once installed ---------- */
+    window.addEventListener('appinstalled', function () {
+        deferredPrompt = null;
+        localStorage.removeItem(DISMISS_KEY);
+        if (installBtn) {
+            installBtn.classList.remove('show');
+            setTimeout(function () {
+                if (installBtn.parentNode) installBtn.remove();
+            }, 400);
         }
-    })();
+    });
+})();
 </script>
 
+<!-- ==========================================================
+     FIREBASE + CLOUDINARY APP LOGIC
+     ========================================================== -->
 <script type="module">
     import { initializeApp } from "firebase/app";
     import {
@@ -1586,7 +1953,6 @@
         return String(raw || '').replace(/\D/g, '');
     }
 
-    /* Customers have no email — we derive a stable internal auth email from the phone. */
     function customerAuthEmail(phone) {
         return 'c' + normalisePhone(phone) + '@customer.ntumeni.app';
     }
@@ -1634,7 +2000,6 @@
         });
     }
 
-    /* ---- Shared upload-box wiring ---- */
     function wireUploadBox(boxId, hiddenId, errEl, opts) {
         const box = document.getElementById(boxId);
         const hid = document.getElementById(hiddenId);
@@ -1998,7 +2363,6 @@
                 createdAt: Date.now()
             });
 
-            /* Sign out — user must explicitly log in afterwards */
             await signOut(auth);
 
             custSignupSuccess.style.display = 'block';
@@ -2051,7 +2415,6 @@
             const cred = await signInWithEmailAndPassword(auth, customerAuthEmail(phone), pwd);
             const user = cred.user;
 
-            /* Make sure a customer record exists */
             const snap = await get(ref(database, `customers/${user.uid}`));
             if (!snap.exists()) {
                 await signOut(auth);
@@ -2208,7 +2571,6 @@
                 createdAt: Date.now()
             });
 
-            /* Cache for the service page */
             localStorage.setItem('providerUid', user.uid);
             localStorage.setItem('providerEmail', email);
             localStorage.setItem('providerName', `${fName} ${lName}`);
@@ -2216,7 +2578,6 @@
             provSignupSuccess.style.display = 'block';
             provSignupSuccess.innerText = '✅ Account created! Taking you to your provider dashboard…';
 
-            /* Redirect straight to service.html — no approval needed */
             setTimeout(() => {
                 window.location.href = 'service.html';
             }, 700);
@@ -2260,7 +2621,6 @@
 
             const snap = await get(ref(database, `providers/${user.uid}`));
 
-            /* Banned check only — no approval status check */
             if (snap.exists()) {
                 const provider = snap.val();
                 if (provider.banned === true) {
@@ -2275,7 +2635,6 @@
                 localStorage.setItem('providerEmail', email);
                 localStorage.setItem('providerName', provider.fullName || provider.firstName || '');
             } else {
-                /* No provider record yet — let them set one up on the service page */
                 localStorage.setItem('providerUid', user.uid);
                 localStorage.setItem('providerEmail', email);
                 localStorage.setItem('providerName', '');
@@ -2299,7 +2658,6 @@
     /* ============================================================
        MISC
        ============================================================ */
-    /* Prevent iOS double-tap zoom on the landing halves */
     document.addEventListener('dblclick', (e) => {
         if (e.target.closest('.split-half')) e.preventDefault();
     }, { passive: false });
