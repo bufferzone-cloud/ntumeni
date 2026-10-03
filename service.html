@@ -129,7 +129,7 @@ input, textarea, select { font-family: inherit; }
 }
 body.has-panel #detailPanel {
   flex: 0 0 auto;
-  max-height: 62vh;
+  max-height: 68vh;
   overflow: hidden;
   box-shadow: 0 -8px 24px rgba(0,0,0,0.06);
   border-top: 1px solid var(--line);
@@ -477,24 +477,26 @@ body.has-panel #mapControls {
 .dp-c-stat.price small { color: rgba(255,255,255,0.55); }
 .dp-c-stat.price strong { color: #fff; }
 
+/* Actions row: Navigate | Details | Cancel */
 .dp-c-actions {
   display: flex;
   gap: 8px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 .dp-c-btn {
   flex: 1;
   height: 48px;
   border-radius: 12px;
-  font-size: 0.78rem;
+  font-size: 0.74rem;
   font-weight: 800;
-  letter-spacing: 1px;
+  letter-spacing: 0.7px;
   text-transform: uppercase;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 7px;
+  gap: 6px;
   transition: transform 0.28s var(--spring), background 0.22s;
+  min-width: 0;
 }
 .dp-c-btn:active { transform: scale(0.97); }
 .dp-c-btn.primary {
@@ -509,7 +511,105 @@ body.has-panel #mapControls {
   background: var(--fill-gray);
   color: var(--text-primary);
 }
-.dp-c-btn i { font-size: 0.85rem; }
+.dp-c-btn.details {
+  background: var(--info-soft);
+  color: #175cd3;
+  box-shadow: 0 0 0 1.5px rgba(46,144,250,0.28) inset;
+  position: relative;
+}
+.dp-c-btn.details.open {
+  background: #175cd3;
+  color: #ffffff;
+  box-shadow: none;
+}
+.dp-c-btn.details .d-caret {
+  font-size: 0.7rem;
+  transition: transform 0.3s var(--ease-out);
+  margin-left: 2px;
+}
+.dp-c-btn.details.open .d-caret {
+  transform: rotate(180deg);
+}
+.dp-c-btn i { font-size: 0.82rem; }
+
+/* Details dropdown panel */
+.dp-c-details {
+  max-height: 0;
+  overflow: hidden;
+  background: var(--fill-gray);
+  border-radius: 12px;
+  margin-bottom: 8px;
+  transition: max-height 0.4s var(--ease-out), opacity 0.3s, margin 0.3s;
+  opacity: 0;
+}
+.dp-c-details.open {
+  max-height: 560px;
+  opacity: 1;
+  margin-bottom: 10px;
+}
+.dp-c-details-inner {
+  padding: 10px 12px;
+}
+.dd-section + .dd-section {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed rgba(0,0,0,0.08);
+}
+.dd-label {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 0.6rem; font-weight: 800;
+  letter-spacing: 1.1px; text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 6px;
+}
+.dd-label i { font-size: 0.68rem; }
+.dd-row {
+  display: flex; align-items: center; gap: 10px;
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 9px 11px;
+  box-shadow: 0 0 0 1px var(--line);
+}
+.dd-row + .dd-row { margin-top: 6px; }
+.dd-row-txt {
+  flex: 1; min-width: 0;
+}
+.dd-row-txt small {
+  display: block;
+  font-size: 0.55rem; font-weight: 800;
+  letter-spacing: 0.9px; text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 2px;
+}
+.dd-row-txt strong {
+  display: block;
+  font-size: 0.84rem; font-weight: 700;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  color: var(--text-primary);
+}
+.dd-row-txt .dd-multiline {
+  font-size: 0.8rem; font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow: visible;
+}
+.dd-call-btn {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: var(--success); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.92rem; flex-shrink: 0;
+  text-decoration: none;
+  box-shadow: 0 5px 12px -4px rgba(18,183,106,0.5);
+  transition: transform 0.24s var(--spring);
+}
+.dd-call-btn:active { transform: scale(0.9); }
+.dd-call-btn.disabled {
+  background: #d8d8dc;
+  box-shadow: none;
+  pointer-events: none;
+}
 
 /* Slide-to-action (trip stages) */
 .slide-btn {
@@ -1441,7 +1541,7 @@ body.has-panel #mapControls {
   border-top: 1px solid transparent;
 }
 .hist-card.expanded .hist-details {
-  max-height: 720px;
+  max-height: 900px;
   border-top-color: var(--line);
 }
 .hist-details-inner {
@@ -1508,7 +1608,8 @@ body.has-panel #mapControls {
 .hist-details .hd-actions {
   display: flex; gap: 8px; margin-top: 10px;
 }
-.hist-details .hd-actions button {
+.hist-details .hd-actions button,
+.hist-details .hd-actions a {
   flex: 1;
   padding: 10px 14px;
   border-radius: 10px;
@@ -1516,10 +1617,13 @@ body.has-panel #mapControls {
   font-size: 0.8rem; font-weight: 700;
   display: inline-flex; align-items: center; justify-content: center;
   gap: 7px;
+  text-decoration: none;
   transition: transform 0.28s var(--spring);
 }
-.hist-details .hd-actions button:active { transform: scale(0.97); }
-.hist-details .hd-actions button.ghost {
+.hist-details .hd-actions button:active,
+.hist-details .hd-actions a:active { transform: scale(0.97); }
+.hist-details .hd-actions button.ghost,
+.hist-details .hd-actions a.ghost {
   background: var(--fill-gray); color: var(--text-primary);
 }
 
@@ -1807,7 +1911,7 @@ body.has-panel #mapControls {
   pointer-events: none;
 }
 body.has-panel #toast {
-  bottom: 62vh;
+  bottom: 68vh;
 }
 #toast.show { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
 
@@ -1820,7 +1924,8 @@ body.has-panel #toast {
   .online-slide .os-handle { width: 52px; height: 52px; }
   .online-slide .os-label { font-size: 0.72rem; letter-spacing: 1.2px; padding-left: 42px; }
   .req-modal { height: 90vh; }
-  .dp-c-btn { font-size: 0.72rem; }
+  .dp-c-btn { font-size: 0.66rem; gap: 4px; }
+  .dp-c-btn i { font-size: 0.72rem; }
   .rating-stars button { width: 40px; height: 40px; font-size: 1.5rem; }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -2335,6 +2440,9 @@ let tripLocationUnsub = null;
 
 let isAcceptingRequest = false;
 
+/* Details dropdown state */
+let detailsOpen = false;
+
 let locationPingInterval = null;
 let locationWatchId = null;
 
@@ -2737,7 +2845,6 @@ function clearTripLayers() {
   if (destMarker && map) { try { map.removeLayer(destMarker); } catch(e){} destMarker = null; }
 }
 
-/* Draw a multi-waypoint route via OSRM */
 async function drawRouteThroughWaypoints(waypoints, profile, padding) {
   if (!map || !waypoints || waypoints.length < 2) return;
   clearMainRoute();
@@ -2761,7 +2868,6 @@ async function drawRouteThroughWaypoints(waypoints, profile, padding) {
     }
   } catch (err) {
     console.warn('Route fetch failed:', err);
-    // Fallback: straight lines between each waypoint
     const coords = waypoints.map(w => [w.lat, w.lng]);
     mainRouteLayer = L.layerGroup().addTo(map);
     L.polyline(coords, {
@@ -2772,7 +2878,6 @@ async function drawRouteThroughWaypoints(waypoints, profile, padding) {
   }
 }
 
-/* Legacy single-leg helper, used for provider→pickup */
 async function drawMainRoute(from, to, profile = 'driving', padding = [60, 60]) {
   return drawRouteThroughWaypoints([from, to], profile, padding);
 }
@@ -3392,7 +3497,6 @@ async function buildReqMap(data) {
   }
   reqMarkers.push(L.marker([dropoff.lat, dropoff.lng], { icon: destIcon }).addTo(reqMap));
 
-  // Build waypoints list
   const wps = [`${pickup.lng},${pickup.lat}`];
   if (stop && isFinite(stop.lat) && isFinite(stop.lng)) wps.push(`${stop.lng},${stop.lat}`);
   wps.push(`${dropoff.lng},${dropoff.lat}`);
@@ -3468,13 +3572,15 @@ function showIncomingRequest(kind, id, data) {
 }
 
 /* ============================================================
-   COMPACT ACTIVE TRIP PANEL — with stop support
+   COMPACT ACTIVE TRIP PANEL — with details dropdown
    ============================================================ */
 function renderActiveTrip() {
   if (!activeTrip) return;
   const { kind, data } = activeTrip;
-  const customerName  = data.customerName  || (kind === 'delivery' ? data.senderName : '') || 'Customer';
-  const customerPhone = data.customerPhone || (kind === 'delivery' ? data.senderPhone : '') || '—';
+  const isDelivery = (kind === 'delivery');
+
+  const customerName  = data.customerName  || (isDelivery ? data.senderName : '') || 'Customer';
+  const customerPhone = data.customerPhone || (isDelivery ? data.senderPhone : '') || '—';
   const customerPhoto = data.customerPhoto || data.senderPhoto || '';
 
   const fare = Number(data.fare || 0);
@@ -3503,7 +3609,6 @@ function renderActiveTrip() {
   } else if (activeStage === 'in_progress') {
     tagIcon = 'fa-route';
     tagText = 'In progress';
-    // If there is an intermediate stop, navigate to the stop first
     navTarget = data.stop ? data.stop : data.dropoff;
     slideStageClass = 'end';
     slideStageLabel = '<i class="fas fa-flag-checkered"></i> Slide to end';
@@ -3517,6 +3622,14 @@ function renderActiveTrip() {
        </button>`
     : '';
 
+  // Details button: only shown for deliveries
+  const detailsBtnHtml = isDelivery
+    ? `<button type="button" class="dp-c-btn details ${detailsOpen ? 'open' : ''}" id="dpDetailsBtn" aria-expanded="${detailsOpen ? 'true' : 'false'}">
+         <i class="fas fa-circle-info"></i> Details
+         <i class="fas fa-chevron-down d-caret"></i>
+       </button>`
+    : '';
+
   const stopRowHtml = data.stop
     ? `<div class="rr-row">
          <span class="rr-dot stop"></span>
@@ -3526,6 +3639,87 @@ function renderActiveTrip() {
          </div>
        </div>`
     : '';
+
+  // Details panel content (deliveries only)
+  let detailsPanelHtml = '';
+  if (isDelivery) {
+    const senderName = data.senderName || '—';
+    const senderPhone = data.senderPhone || '';
+    const receiverName = data.receiverName || '—';
+    const receiverPhone = data.receiverPhone || '';
+    const parcelName = data.parcelName || '—';
+    const parcelDesc = data.parcelDesc || '—';
+
+    const safePhone = (raw) => String(raw || '').replace(/[^\d+]/g, '');
+
+    const callBtn = (phone) => {
+      const p = safePhone(phone);
+      if (!p) {
+        return `<span class="dd-call-btn disabled" aria-label="No phone"><i class="fas fa-phone-slash"></i></span>`;
+      }
+      return `<a class="dd-call-btn" href="tel:${escapeHtml(phone)}" aria-label="Call">
+        <i class="fas fa-phone"></i>
+      </a>`;
+    };
+
+    detailsPanelHtml = `
+      <div class="dp-c-details ${detailsOpen ? 'open' : ''}" id="dpDetailsPanel">
+        <div class="dp-c-details-inner">
+
+          <div class="dd-section">
+            <div class="dd-label"><i class="fas fa-user"></i> Sender</div>
+            <div class="dd-row">
+              <div class="dd-row-txt">
+                <small>Name</small>
+                <strong>${escapeHtml(senderName)}</strong>
+              </div>
+              ${callBtn(senderPhone)}
+            </div>
+            <div class="dd-row">
+              <div class="dd-row-txt">
+                <small>Phone</small>
+                <strong>${escapeHtml(senderPhone || '—')}</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="dd-section">
+            <div class="dd-label"><i class="fas fa-user-check"></i> Receiver</div>
+            <div class="dd-row">
+              <div class="dd-row-txt">
+                <small>Name</small>
+                <strong>${escapeHtml(receiverName)}</strong>
+              </div>
+              ${callBtn(receiverPhone)}
+            </div>
+            <div class="dd-row">
+              <div class="dd-row-txt">
+                <small>Phone</small>
+                <strong>${escapeHtml(receiverPhone || '—')}</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="dd-section">
+            <div class="dd-label"><i class="fas fa-box"></i> Parcel</div>
+            <div class="dd-row">
+              <div class="dd-row-txt">
+                <small>Name</small>
+                <strong>${escapeHtml(parcelName)}</strong>
+              </div>
+            </div>
+            <div class="dd-row">
+              <div class="dd-row-txt">
+                <small>Description</small>
+                <span class="dd-multiline">${escapeHtml(parcelDesc)}</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    `;
+  }
 
   dpInner.innerHTML = `
     <div class="dp-c-head">
@@ -3581,10 +3775,13 @@ function renderActiveTrip() {
 
     <div class="dp-c-actions">
       ${navBtnHtml}
+      ${detailsBtnHtml}
       <button type="button" class="dp-c-btn ghost" id="dpCancelTripBtn">
         <i class="fas fa-xmark"></i> Cancel
       </button>
     </div>
+
+    ${detailsPanelHtml}
 
     <div class="slide-btn ${slideStageClass}" id="slideBtn">
       <div class="slide-fill" id="slideFill"></div>
@@ -3597,12 +3794,27 @@ function renderActiveTrip() {
 
   wireSlideButton();
 
+  // Navigate button
   const navBtn = $('dpNavigateBtn');
   if (navBtn && navTarget) {
     navBtn.addEventListener('click', () => {
       openExternalNav(navTarget.lat, navTarget.lng, navTarget.label);
     });
   }
+
+  // Details button (deliveries only)
+  const detailsBtn = $('dpDetailsBtn');
+  const detailsPanel = $('dpDetailsPanel');
+  if (detailsBtn && detailsPanel) {
+    detailsBtn.addEventListener('click', () => {
+      detailsOpen = !detailsOpen;
+      detailsBtn.classList.toggle('open', detailsOpen);
+      detailsBtn.setAttribute('aria-expanded', detailsOpen ? 'true' : 'false');
+      detailsPanel.classList.toggle('open', detailsOpen);
+    });
+  }
+
+  // Cancel button
   const cancelBtn = $('dpCancelTripBtn');
   if (cancelBtn) cancelBtn.addEventListener('click', cancelActiveTrip);
 
@@ -3756,7 +3968,6 @@ async function submitRating() {
   btn.textContent = 'Submitting…';
 
   try {
-    // Save rating under customer's record
     const ratingRef = ref(database, `customers/${ratingCustomerId}/ratings/${ratingTripId}`);
     await set(ratingRef, {
       rating: currentRatingValue,
@@ -3768,7 +3979,6 @@ async function submitRating() {
       createdAt: Date.now()
     });
 
-    // Recalculate aggregate
     const snap = await get(ref(database, `customers/${ratingCustomerId}/ratings`));
     const ratings = snap.val() || {};
     const vals = Object.values(ratings).map(r => Number(r.rating)).filter(v => isFinite(v) && v > 0);
@@ -3778,7 +3988,6 @@ async function submitRating() {
       ratingCount: vals.length
     }).catch(() => {});
 
-    // Also store on the trip itself
     const tripPath = ratingTripKind === 'ride' ? `rides/${ratingTripId}` : `deliveries/${ratingTripId}`;
     await update(ref(database, tripPath), {
       providerRating: currentRatingValue,
@@ -3849,6 +4058,7 @@ async function handleAccept() {
     }
 
     activeStage = 'accepted';
+    detailsOpen = false;
 
     closeRequestModal();
     renderDetailPanel();
@@ -3909,7 +4119,6 @@ async function handleStartTrip() {
       setStopMarker(stop.lat, stop.lng);
     }
     setDestMarker(dropoff.lat, dropoff.lng);
-    // Draw route pickup → [stop] → dropoff
     const wps = [{ lat: pickup.lat, lng: pickup.lng }];
     if (stop && isFinite(stop.lat) && isFinite(stop.lng)) wps.push({ lat: stop.lat, lng: stop.lng });
     wps.push({ lat: dropoff.lat, lng: dropoff.lng });
@@ -3965,7 +4174,6 @@ async function handleEndTrip() {
     }
   } catch (err) { console.warn('Could not update transaction:', err); }
 
-  // Snapshot the customer info before we clear the state
   const completedKind = kind;
   const completedId = id;
   const customerId = data.customerId;
@@ -3979,6 +4187,7 @@ async function handleEndTrip() {
 
   activeTrip = null;
   activeStage = null;
+  detailsOpen = false;
   detachTripWatcher();
   renderDetailPanel();
 
@@ -3989,7 +4198,6 @@ async function handleEndTrip() {
     pingLocationOnce();
     evaluateQueue();
 
-    // Show rating modal for the customer
     setTimeout(() => {
       openRatingModal(
         data,
@@ -4029,6 +4237,7 @@ async function cancelActiveTrip() {
   clearTripLayers();
   activeTrip = null;
   activeStage = null;
+  detailsOpen = false;
   renderDetailPanel();
   showToast('Trip cancelled');
   setTimeout(evaluateQueue, 400);
@@ -4051,6 +4260,7 @@ function attachTripWatcher(kind, id) {
       clearTripLayers();
       activeTrip = null;
       activeStage = null;
+      detailsOpen = false;
       renderDetailPanel();
       setTimeout(evaluateQueue, 400);
       return;
@@ -4059,6 +4269,7 @@ function attachTripWatcher(kind, id) {
       detachTripWatcher();
       activeTrip = null;
       activeStage = null;
+      detailsOpen = false;
       renderDetailPanel();
     }
   });
@@ -4107,6 +4318,7 @@ async function resumeActiveTrip() {
 
     activeTrip = found;
     activeStage = found.data.status;
+    detailsOpen = false;
 
     if (!isOnline) {
       isOnline = true;
@@ -5281,6 +5493,25 @@ function renderTripCard(t) {
     <div class="rr-row"><span class="rr-dot stop"></span><span class="rr-txt">${escapeHtml(stop)}</span></div>
   ` : '';
 
+  // Sender / receiver / parcel block for deliveries
+  const deliveryBlock = (!isRide) ? `
+    <div class="hd-section">
+      <div class="hd-label"><i class="fas fa-user"></i> Sender</div>
+      <div class="hd-row"><span class="hd-key">Name</span><span class="hd-val">${escapeHtml(t.senderName || '—')}</span></div>
+      <div class="hd-row"><span class="hd-key">Phone</span><span class="hd-val">${escapeHtml(t.senderPhone || '—')}</span></div>
+    </div>
+    <div class="hd-section">
+      <div class="hd-label"><i class="fas fa-user-check"></i> Receiver</div>
+      <div class="hd-row"><span class="hd-key">Name</span><span class="hd-val">${escapeHtml(t.receiverName || '—')}</span></div>
+      <div class="hd-row"><span class="hd-key">Phone</span><span class="hd-val">${escapeHtml(t.receiverPhone || '—')}</span></div>
+    </div>
+    <div class="hd-section">
+      <div class="hd-label"><i class="fas fa-box"></i> Parcel</div>
+      <div class="hd-row"><span class="hd-key">Name</span><span class="hd-val">${escapeHtml(t.parcelName || '—')}</span></div>
+      <div class="hd-row"><span class="hd-key">Description</span><span class="hd-val" style="text-align:right;">${escapeHtml(t.parcelDesc || '—')}</span></div>
+    </div>
+  ` : '';
+
   const ratingSection = t.providerRating ? `
     <div class="hd-section">
       <div class="hd-label"><i class="fas fa-star"></i> Your rating of customer</div>
@@ -5323,6 +5554,7 @@ function renderTripCard(t) {
             <div class="hd-row"><span class="hd-key">Fare</span><span class="hd-val">K ${escapeHtml(formatPrice(fare))}</span></div>
             <div class="hd-row"><span class="hd-key">Commission</span><span class="hd-val">K ${escapeHtml(formatPrice(deductions))}</span></div>
           </div>
+          ${deliveryBlock}
           ${ratingSection}
           <div class="hd-section">
             <div class="hd-label"><i class="fas fa-clock"></i> Timeline</div>
@@ -5574,7 +5806,7 @@ $('settingsEditProfile').addEventListener('click', () => {
   setTimeout(openAccountPage, 200);
 });
 $('settingsSupport').addEventListener('click', () => showToast('Support: support@ntumeni.com'));
-$('settingsAbout').addEventListener('click', () => showToast('NTUMENI Service Provider · v1.6'));
+$('settingsAbout').addEventListener('click', () => showToast('NTUMENI Service Provider · v1.7'));
 $('settingsLogout').addEventListener('click', doLogout);
 logoutBtn.addEventListener('click', doLogout);
 
