@@ -97,7 +97,7 @@ input, textarea, select { font-family: inherit; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* ==========================================================
-   MAP — full by default, shrinks when panel slides up
+   MAP
    ========================================================== */
 #map {
   flex: 1 1 auto;
@@ -117,7 +117,7 @@ input, textarea, select { font-family: inherit; }
 .leaflet-control-attribution a { color: #6e6e73 !important; }
 
 /* ==========================================================
-   DETAIL PANEL — hidden by default, only when there's a trip
+   DETAIL PANEL — bottom half with slide-to-action
    ========================================================== */
 #detailPanel {
   flex: 0 0 0;
@@ -197,7 +197,7 @@ body.has-panel #detailPanel {
 #sidebarBtn { top: 14px; left: 14px; }
 
 /* ==========================================================
-   ONLINE / OFFLINE SLIDE TOGGLE (bottom center)
+   ONLINE / OFFLINE SLIDE TOGGLE (bottom center, bigger)
    ========================================================== */
 #onlineSlideWrap {
   position: fixed;
@@ -205,7 +205,7 @@ body.has-panel #detailPanel {
   bottom: 18px;
   transform: translateX(-50%);
   z-index: 600;
-  width: min(340px, calc(100vw - 28px));
+  width: min(360px, calc(100vw - 24px));
   transition: opacity 0.3s var(--ease-out),
               transform 0.42s var(--panel-ease),
               visibility 0.3s;
@@ -220,7 +220,7 @@ body.has-panel #onlineSlideWrap {
 .online-slide {
   position: relative;
   width: 100%;
-  height: 62px;
+  height: 68px;
   border-radius: 999px;
   overflow: hidden;
   user-select: none;
@@ -239,7 +239,7 @@ body.has-panel #onlineSlideWrap {
 
 .online-slide .os-fill {
   position: absolute; top: 0; left: 0; bottom: 0;
-  width: 58px;
+  width: 64px;
   background: rgba(255,255,255,0.16);
   border-radius: 999px;
   pointer-events: none;
@@ -248,22 +248,22 @@ body.has-panel #onlineSlideWrap {
 .online-slide .os-label {
   position: absolute; inset: 0;
   display: flex; align-items: center; justify-content: center;
-  padding-left: 42px;
-  font-size: 0.76rem; font-weight: 800;
-  letter-spacing: 1.4px; text-transform: uppercase;
+  padding-left: 46px;
+  font-size: 0.82rem; font-weight: 800;
+  letter-spacing: 1.5px; text-transform: uppercase;
   color: #ffffff;
   pointer-events: none;
   text-shadow: 0 1px 5px rgba(0,0,0,0.35);
   transition: opacity 0.1s linear;
 }
-.online-slide .os-label i { margin-right: 8px; font-size: 0.82rem; }
+.online-slide .os-label i { margin-right: 9px; font-size: 0.9rem; }
 .online-slide .os-handle {
-  position: absolute; top: 5px; left: 5px;
-  width: 52px; height: 52px;
+  position: absolute; top: 6px; left: 6px;
+  width: 56px; height: 56px;
   border-radius: 50%;
   background: #ffffff;
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   cursor: grab;
   box-shadow: 0 8px 18px -5px rgba(0,0,0,0.45);
   transition: transform 0.24s var(--spring), color 0.3s;
@@ -328,7 +328,7 @@ body.has-panel #onlineSlideWrap {
 #mapControls {
   position: fixed;
   right: 14px;
-  bottom: 96px;
+  bottom: 104px;
   z-index: 600;
   display: flex;
   flex-direction: column;
@@ -351,22 +351,15 @@ body.has-panel #mapControls {
   padding: 5px 11px; border-radius: 999px;
   background: #0a0a0a; color: #fff;
   margin-bottom: 12px;
-  animation: tagPulse 1.4s var(--ease-smooth) infinite;
 }
 .dp-tag.info {
   background: var(--info-soft); color: #175cd3;
-  animation: none;
-}
-@keyframes tagPulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(10,10,10,0.4); }
-  50%      { box-shadow: 0 0 0 8px rgba(10,10,10,0); }
 }
 
 .dp-title {
   font-size: 1.1rem; font-weight: 800;
   letter-spacing: -0.35px;
   margin-bottom: 4px;
-  display: flex; align-items: center; gap: 10px;
 }
 .dp-sub {
   font-size: 0.82rem; color: var(--text-secondary);
@@ -513,7 +506,7 @@ body.has-panel #mapControls {
 .slide-btn {
   position: relative;
   width: 100%;
-  height: 60px;
+  height: 66px;
   border-radius: 999px;
   background: linear-gradient(135deg, #0f5132 0%, #0a0a0a 100%);
   color: #ffffff;
@@ -528,7 +521,7 @@ body.has-panel #mapControls {
 .slide-btn.end    { background: linear-gradient(135deg, #d92d20 0%, #0a0a0a 100%); }
 .slide-btn .slide-fill {
   position: absolute; top: 0; left: 0; bottom: 0;
-  width: 60px;
+  width: 66px;
   background: rgba(255,255,255,0.12);
   border-radius: 999px;
   pointer-events: none;
@@ -537,19 +530,19 @@ body.has-panel #mapControls {
 .slide-btn .slide-label {
   position: absolute; inset: 0;
   display: flex; align-items: center; justify-content: center;
-  font-size: 0.84rem; font-weight: 800;
-  letter-spacing: 1.3px; text-transform: uppercase;
+  font-size: 0.88rem; font-weight: 800;
+  letter-spacing: 1.4px; text-transform: uppercase;
   pointer-events: none;
-  padding-left: 40px;
+  padding-left: 44px;
 }
 .slide-btn .slide-label i { margin-right: 8px; }
 .slide-btn .slide-handle {
   position: absolute; top: 5px; left: 5px;
-  width: 50px; height: 50px;
+  width: 56px; height: 56px;
   border-radius: 50%;
   background: #ffffff; color: #0a0a0a;
   display: flex; align-items: center; justify-content: center;
-  font-size: 1rem;
+  font-size: 1.05rem;
   cursor: grab;
   box-shadow: 0 6px 16px -4px rgba(0,0,0,0.4);
   transition: transform 0.22s var(--spring);
@@ -1571,7 +1564,7 @@ body.has-panel #mapControls {
    ========================================================== */
 #toast {
   position: fixed; left: 50%;
-  bottom: 96px;
+  bottom: 102px;
   z-index: 6000;
   transform: translate(-50%, 24px);
   background: #0a0a0a; color: #fff;
@@ -1593,9 +1586,9 @@ body.has-panel #toast {
    ========================================================== */
 @media (max-width: 380px) {
   .float-balance-pill .fb-txt small { display: none; }
-  .online-slide { height: 58px; }
-  .online-slide .os-handle { width: 48px; height: 48px; }
-  .online-slide .os-label { font-size: 0.66rem; letter-spacing: 1px; padding-left: 38px; }
+  .online-slide { height: 64px; }
+  .online-slide .os-handle { width: 52px; height: 52px; }
+  .online-slide .os-label { font-size: 0.72rem; letter-spacing: 1.2px; padding-left: 42px; }
   .req-modal { height: 90vh; }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -1652,7 +1645,7 @@ body.has-panel #toast {
   </button>
 </div>
 
-<!-- ONLINE / OFFLINE SLIDE TOGGLE (bottom center) -->
+<!-- ONLINE / OFFLINE SLIDE TOGGLE (bottom center, bigger) -->
 <div id="onlineSlideWrap">
   <div class="online-slide offline" id="onlineSlide">
     <div class="os-fill" id="osFill"></div>
@@ -2117,7 +2110,18 @@ let activeTrip = null;
 let tripUnsub = null;
 let tripLocationUnsub = null;
 
+/* ------------------------------------------------------------
+   Bug-fix flag: while we're running handleAccept(), we must
+   NOT let evaluateQueue() clear activeTrip. Otherwise the
+   Firebase listener fires (because the ride status changes from
+   "searching" → "accepted") and nulls out activeTrip before
+   handleAccept() finishes writing to it → "Cannot set property
+   of null" error, and the ringtone restarts.
+   ------------------------------------------------------------ */
+let isAcceptingRequest = false;
+
 let locationPingInterval = null;
+let locationWatchId = null;
 
 const DEFAULT_LOCATION = { lat: -15.4167, lng: 28.2833 };
 
@@ -2551,6 +2555,9 @@ async function drawMainRoute(from, to, profile = 'driving', padding = [60, 60]) 
   }
 }
 
+/* ============================================================
+   GEOLOCATION — exact position + explicit permission request
+   ============================================================ */
 function locateUser({ center = true, silent = false } = {}) {
   if (!navigator.geolocation) {
     if (!silent) showToast('Geolocation not supported.');
@@ -2559,26 +2566,49 @@ function locateUser({ center = true, silent = false } = {}) {
     if (center && map) map.setView([DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lng], PROVIDER_ZOOM);
     return;
   }
+
+  // Explicitly query permission state first so the browser
+  // shows the permission prompt if the user hasn't decided yet.
+  if (navigator.permissions && navigator.permissions.query) {
+    navigator.permissions.query({ name: 'geolocation' })
+      .then((status) => {
+        if (status.state === 'denied' && !silent) {
+          showToast('Location permission denied. Enable it to get exact position.');
+        }
+      })
+      .catch(() => {});
+  }
+
   navigator.geolocation.getCurrentPosition(
     (pos) => {
       const { latitude, longitude } = pos.coords;
       userLocation = { lat: latitude, lng: longitude };
       setUserMarker(latitude, longitude);
       if (center && map) map.setView([latitude, longitude], PROVIDER_ZOOM, { animate: true });
+
+      // Persist once to Firebase so the customer sees us
+      if (currentUser) {
+        update(ref(database, `providers/${currentUser.uid}`), {
+          location: { lat: latitude, lng: longitude, updatedAt: Date.now() }
+        }).catch(() => {});
+      }
     },
     (err) => {
       console.warn('Geolocation error:', err);
       userLocation = { ...DEFAULT_LOCATION };
       setUserMarker(DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lng);
-      if (!silent) showToast('Location denied — using approximate.');
+      if (!silent) {
+        if (err.code === 1) showToast('Location denied — enable permission for exact position.');
+        else showToast('Could not get exact location — using approximate.');
+      }
       if (center && map) map.setView([DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lng], PROVIDER_ZOOM);
     },
-    { enableHighAccuracy: true, timeout: 12000, maximumAge: 30000 }
+    { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
   );
 }
 
 /* ============================================================
-   LOCATION PING
+   LOCATION PING (goes online → start; offline → stop)
    ============================================================ */
 function pingLocationOnce() {
   if (!currentUser || !navigator.geolocation) return;
@@ -2590,18 +2620,42 @@ function pingLocationOnce() {
       }).catch(() => {});
     },
     () => {},
-    { enableHighAccuracy: false, timeout: 8000, maximumAge: 30000 }
+    { enableHighAccuracy: true, timeout: 10000, maximumAge: 5000 }
   );
 }
+
 function startLocationPing() {
   stopLocationPing();
   pingLocationOnce();
   locationPingInterval = setInterval(pingLocationOnce, 15000);
+  if (navigator.geolocation && navigator.geolocation.watchPosition) {
+    try {
+      locationWatchId = navigator.geolocation.watchPosition(
+        (pos) => {
+          const { latitude, longitude } = pos.coords;
+          userLocation = { lat: latitude, lng: longitude };
+          setUserMarker(latitude, longitude);
+          if (currentUser) {
+            update(ref(database, `providers/${currentUser.uid}`), {
+              location: { lat: latitude, lng: longitude, updatedAt: Date.now() }
+            }).catch(() => {});
+          }
+        },
+        () => {},
+        { enableHighAccuracy: true, timeout: 20000, maximumAge: 5000 }
+      );
+    } catch (e) {}
+  }
 }
+
 function stopLocationPing() {
   if (locationPingInterval) {
     clearInterval(locationPingInterval);
     locationPingInterval = null;
+  }
+  if (locationWatchId != null && navigator.geolocation) {
+    try { navigator.geolocation.clearWatch(locationWatchId); } catch (e) {}
+    locationWatchId = null;
   }
 }
 
@@ -2674,7 +2728,7 @@ let osBusy = false;
 
 function osBaseWidth() {
   const handle = $('osHandle');
-  return handle ? handle.offsetWidth + 6 : 58;
+  return handle ? handle.offsetWidth + 6 : 62;
 }
 
 function wireOnlineSlider() {
@@ -2684,7 +2738,6 @@ function wireOnlineSlider() {
   const label = $('osLabel');
   if (!btn || !handle || !fill || !label) return;
 
-  // initialise the fill width to match the handle size
   fill.style.width = osBaseWidth() + 'px';
 
   handle.addEventListener('pointerdown', (e) => {
@@ -2692,7 +2745,7 @@ function wireOnlineSlider() {
     osDragging = true;
     osStartX = e.clientX;
     const rect = btn.getBoundingClientRect();
-    osMaxX = Math.max(20, rect.width - handle.offsetWidth - 10);
+    osMaxX = Math.max(20, rect.width - handle.offsetWidth - 12);
     handle.classList.add('dragging');
     try { handle.setPointerCapture(e.pointerId); } catch (err) {}
   });
@@ -2729,7 +2782,6 @@ async function triggerOnlineToggle() {
   const label = $('osLabel');
   if (!btn || osBusy) return;
 
-  // unlock audio while we still have a user gesture
   ensureAudio();
 
   osBusy = true;
@@ -2819,6 +2871,8 @@ async function toggleOnline() {
   if (isOnline) {
     showToast('You are online — listening for requests');
     attachRequestListeners();
+    // Ensure exact position when going online
+    locateUser({ center: true, silent: false });
     startLocationPing();
   } else {
     showToast('You are now offline');
@@ -2889,6 +2943,15 @@ function isWithinRadius(request, anchor) {
 }
 
 function evaluateQueue() {
+  /* --------------------------------------------------------------
+     CRITICAL FIX: While we are in the middle of accepting a request,
+     DO NOT clear activeTrip — the Firebase listener for `rides/...`
+     will fire when status changes from "searching" → "accepted",
+     and if we clear activeTrip here, handleAccept() will then try
+     to write to a null activeTrip → "Cannot set property of null".
+     -------------------------------------------------------------- */
+  if (isAcceptingRequest) return;
+
   /* If the request we're ringing about disappeared, dismiss the popup */
   if (activeStage === 'incoming' && activeTrip) {
     const stillThere = activeTrip.kind === 'ride'
@@ -3138,7 +3201,7 @@ async function buildReqMap(data) {
   }
 }
 
-async function onReqAcceptClick() {
+function onReqAcceptClick() {
   const btn = $('reqAcceptBtn');
   if (!btn || btn.disabled) return;
   const rejectBtn = $('reqRejectBtn');
@@ -3147,20 +3210,22 @@ async function onReqAcceptClick() {
   if (rejectBtn) rejectBtn.disabled = true;
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Accepting…';
 
-  // Stop ringing immediately — the provider has decided
+  // Stop ringing immediately
   stopRingtone();
 
-  try {
-    await handleAccept();
-  } catch (err) {
+  // Fire the accept flow. handleAccept() will close the modal on success.
+  // On error, the caller re-enables the buttons and restarts the ring.
+  handleAccept().catch((err) => {
     console.error(err);
     showToast('Action failed: ' + (err.message || err));
-    btn.disabled = false;
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-check"></i> Accept';
+    }
     if (rejectBtn) rejectBtn.disabled = false;
-    btn.innerHTML = '<i class="fas fa-check"></i> Accept';
-    // Resume ringing since the accept failed
-    startRingtone();
-  }
+    // Only restart ring if the request is still pending
+    if (activeTrip && activeStage === 'incoming') startRingtone();
+  });
 }
 
 function onReqRejectClick() {
@@ -3175,7 +3240,7 @@ function declineCurrentRequest() {
   declinedKeys[key] = true;
   activeTrip = null;
   activeStage = null;
-  closeRequestModal();
+  closeRequestModal();     // also stops the ringtone
   renderDetailPanel();
   showToast('Request declined');
   setTimeout(evaluateQueue, 400);
@@ -3189,7 +3254,7 @@ function showIncomingRequest(kind, id, data) {
 }
 
 /* ============================================================
-   ACTIVE TRIP PANEL
+   ACTIVE TRIP PANEL  — bottom half slide buttons
    ============================================================ */
 function renderActiveTrip() {
   if (!activeTrip) return;
@@ -3213,7 +3278,7 @@ function renderActiveTrip() {
     tagText = 'Heading to pickup';
     tagIcon = 'fa-car';
     titleText = 'Head to the pickup point';
-    subText = 'Drive to the customer and mark arrived when you get there.';
+    subText = 'Drive to the customer and slide to mark arrived when you get there.';
     navTarget = data.pickup;
     slideStageClass = 'arrive';
     slideStageLabel = '<i class="fas fa-location-dot"></i> Slide to arrive';
@@ -3221,7 +3286,7 @@ function renderActiveTrip() {
     tagText = 'At pickup';
     tagIcon = 'fa-map-pin';
     titleText = 'Waiting at pickup';
-    subText = 'Meet the customer, then start the trip.';
+    subText = 'Meet the customer, then slide to start the trip.';
     navTarget = data.pickup;
     slideStageClass = 'start';
     slideStageLabel = '<i class="fas fa-play"></i> Slide to start';
@@ -3229,7 +3294,7 @@ function renderActiveTrip() {
     tagText = 'In progress';
     tagIcon = 'fa-route';
     titleText = 'Heading to drop-off';
-    subText = 'Complete the trip when you arrive.';
+    subText = 'Slide to end the trip when you arrive.';
     navTarget = data.dropoff;
     slideStageClass = 'end';
     slideStageLabel = '<i class="fas fa-flag-checkered"></i> Slide to end';
@@ -3348,7 +3413,7 @@ function wireSlideButton() {
 
   slideIsBusy = false;
   handle.style.transform = '';
-  fill.style.width = '60px';
+  fill.style.width = '66px';
   label.style.opacity = '';
   handle.classList.remove('dragging');
 
@@ -3366,7 +3431,7 @@ function wireSlideButton() {
     if (!slideDragging) return;
     const dx = Math.max(0, Math.min(slideMaxX, e.clientX - slideStartX));
     handle.style.transform = `translateX(${dx}px)`;
-    fill.style.width = (60 + dx) + 'px';
+    fill.style.width = (66 + dx) + 'px';
     label.style.opacity = String(Math.max(0, 1 - dx / slideMaxX * 1.1));
     if (dx >= slideMaxX * 0.88) {
       slideDragging = false;
@@ -3380,7 +3445,7 @@ function wireSlideButton() {
     slideDragging = false;
     handle.classList.remove('dragging');
     handle.style.transform = '';
-    fill.style.width = '60px';
+    fill.style.width = '66px';
     label.style.opacity = '';
   };
   handle.addEventListener('pointerup', release);
@@ -3397,7 +3462,7 @@ function setSlideBusy(text) {
   slideIsBusy = true;
   if (label) label.innerHTML = text;
   if (handle) handle.style.transform = '';
-  if (fill) fill.style.width = '60px';
+  if (fill) fill.style.width = '66px';
 }
 
 async function triggerSlideAction() {
@@ -3419,44 +3484,63 @@ async function triggerSlideAction() {
    ============================================================ */
 async function handleAccept() {
   if (!activeTrip) return;
-  const { kind, id, data } = activeTrip;
+  if (isAcceptingRequest) return;
 
-  const role = providerRecord?.role || 'driver';
-  const providerName  = providerRecord?.fullName || providerRecord?.name || userRecord?.name || 'Provider';
-  const providerPhone = providerRecord?.phone || userRecord?.phone || '';
-  const providerPhoto = providerRecord?.profileUrl || userRecord?.profileUrl || '';
+  // Snapshot the trip locally so we can't lose it during the await.
+  const tripSnapshot = activeTrip;
+  const { kind, id, data } = tripSnapshot;
 
-  const updates = {
-    status: 'accepted',
-    providerId: currentUser.uid,
-    providerName,
-    providerPhone,
-    providerPhoto,
-    providerRole: role,
-    acceptedAt: Date.now(),
-    vehicleLabel: kind === 'ride'
-      ? vehicleLabelFor(role)
-      : (data.vehicleLabel || vehicleLabelFor(role))
-  };
+  isAcceptingRequest = true;
 
-  const path = kind === 'ride' ? `rides/${id}` : `deliveries/${id}`;
-  await update(ref(database, path), updates);
+  try {
+    const role = providerRecord?.role || 'driver';
+    const providerName  = providerRecord?.fullName || providerRecord?.name || userRecord?.name || 'Provider';
+    const providerPhone = providerRecord?.phone || userRecord?.phone || '';
+    const providerPhoto = providerRecord?.profileUrl || userRecord?.profileUrl || '';
 
-  activeStage = 'accepted';
-  activeTrip.data = { ...data, ...updates };
+    const updates = {
+      status: 'accepted',
+      providerId: currentUser.uid,
+      providerName,
+      providerPhone,
+      providerPhoto,
+      providerRole: role,
+      acceptedAt: Date.now(),
+      vehicleLabel: kind === 'ride'
+        ? vehicleLabelFor(role)
+        : (data.vehicleLabel || vehicleLabelFor(role))
+    };
 
-  closeRequestModal();
-  renderDetailPanel();
+    const path = kind === 'ride' ? `rides/${id}` : `deliveries/${id}`;
+    await update(ref(database, path), updates);
 
-  const from = userLocation || DEFAULT_LOCATION;
-  const pickup = data.pickup;
-  if (pickup && isFinite(pickup.lat) && isFinite(pickup.lng)) {
-    setPickupMarker(pickup.lat, pickup.lng);
-    await drawMainRoute(from, { lat: pickup.lat, lng: pickup.lng }, osrmProfileForRole(role));
+    // activeTrip is still here because evaluateQueue() bails out
+    // early whenever isAcceptingRequest is true.
+    if (activeTrip) {
+      activeTrip.data = { ...data, ...updates };
+    } else {
+      // Extremely defensive — restore if something unexpected happened.
+      activeTrip = tripSnapshot;
+      activeTrip.data = { ...data, ...updates };
+    }
+
+    activeStage = 'accepted';
+
+    closeRequestModal();       // also stops the ringtone
+    renderDetailPanel();
+
+    const from = userLocation || DEFAULT_LOCATION;
+    const pickup = data.pickup;
+    if (pickup && isFinite(pickup.lat) && isFinite(pickup.lng)) {
+      setPickupMarker(pickup.lat, pickup.lng);
+      await drawMainRoute(from, { lat: pickup.lat, lng: pickup.lng }, osrmProfileForRole(role));
+    }
+
+    attachTripWatcher(kind, id);
+    showToast('Trip accepted — heading to pickup');
+  } finally {
+    isAcceptingRequest = false;
   }
-
-  attachTripWatcher(kind, id);
-  showToast('Trip accepted — heading to pickup');
 }
 
 async function handleArrive() {
@@ -5026,7 +5110,7 @@ function openSettingsPage() {
 }
 
 $('settingsRefreshLocation').addEventListener('click', () => {
-  locateUser({ center: true });
+  locateUser({ center: true, silent: false });
   pingLocationOnce();
   showToast('Refreshing location…');
 });
