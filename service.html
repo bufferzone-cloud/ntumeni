@@ -116,7 +116,7 @@ input, textarea, select { font-family: inherit; }
 .leaflet-control-attribution a { color: #6e6e73 !important; }
 
 /* ==========================================================
-   DETAIL PANEL — content-sized, no scrolling needed
+   DETAIL PANEL
    ========================================================== */
 #detailPanel {
   flex: 0 0 0;
@@ -168,6 +168,13 @@ body.has-panel #detailPanel {
   box-shadow: 0 3px 10px rgba(0,0,0,0.42);
   box-sizing: border-box;
 }
+.mk-stop {
+  width: 20px; height: 20px;
+  background: var(--warn); border: 3.5px solid #ffffff;
+  border-radius: 6px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.42);
+  box-sizing: border-box;
+}
 .mk-dest {
   width: 20px; height: 20px;
   background: #175cd3; border: 3.5px solid #ffffff;
@@ -195,7 +202,7 @@ body.has-panel #detailPanel {
 #sidebarBtn { top: 14px; left: 14px; }
 
 /* ==========================================================
-   ONLINE / OFFLINE SLIDE TOGGLE (bottom center)
+   ONLINE / OFFLINE SLIDE TOGGLE
    ========================================================== */
 #onlineSlideWrap {
   position: fixed;
@@ -418,6 +425,11 @@ body.has-panel #mapControls {
   background: #0a0a0a;
   box-shadow: 0 0 0 3px rgba(10,10,10,0.13);
   flex-shrink: 0;
+}
+.dp-c-route .rr-dot.stop {
+  border-radius: 3px;
+  background: var(--warn);
+  box-shadow: 0 0 0 3px rgba(247,144,9,0.15);
 }
 .dp-c-route .rr-dot.square {
   border-radius: 3px;
@@ -699,6 +711,11 @@ body.has-panel #mapControls {
   background: #0a0a0a;
   box-shadow: 0 0 0 3px rgba(10,10,10,0.13);
   flex-shrink: 0;
+}
+.dp-route .rr-dot.stop {
+  border-radius: 3px;
+  background: var(--warn);
+  box-shadow: 0 0 0 3px rgba(247,144,9,0.15);
 }
 .dp-route .rr-dot.square {
   border-radius: 3px;
@@ -1473,6 +1490,11 @@ body.has-panel #mapControls {
   background: #0a0a0a; flex-shrink: 0;
   box-shadow: 0 0 0 3px rgba(10,10,10,0.13);
 }
+.hist-details .hd-route-block .rr-dot.stop {
+  border-radius: 3px;
+  background: var(--warn);
+  box-shadow: 0 0 0 3px rgba(247,144,9,0.15);
+}
 .hist-details .hd-route-block .rr-dot.square {
   border-radius: 3px;
   background: #175cd3;
@@ -1516,6 +1538,14 @@ body.has-panel #mapControls {
 .chip.rejected  { background: var(--danger-soft);  color: #b42318; }
 .chip.searching { background: var(--info-soft);    color: #175cd3; }
 .chip.approved  { background: var(--success-soft); color: #027a48; }
+
+/* Stars display */
+.stars-row {
+  display: inline-flex; align-items: center; gap: 2px;
+  color: #f7b955; font-size: 0.82rem;
+  letter-spacing: 1px;
+}
+.stars-row .far { color: #d8d8dc; }
 
 /* ==========================================================
    BUY FLOAT
@@ -1668,6 +1698,98 @@ body.has-panel #mapControls {
 .modal-foot .legend .l-dot.target { background: #175cd3; }
 
 /* ==========================================================
+   RATING MODAL
+   ========================================================== */
+#ratingModal { z-index: 6500; padding: 18px; }
+.rating-modal {
+  background: #ffffff;
+  border-radius: 22px;
+  width: 100%;
+  max-width: 400px;
+  padding: 26px 22px 20px;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.4);
+  animation: modalIn 0.42s var(--spring);
+  text-align: center;
+}
+.rating-head { margin-bottom: 16px; }
+.rating-avatar {
+  width: 68px; height: 68px; border-radius: 50%;
+  background: var(--fill-gray);
+  overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 14px;
+  box-shadow: 0 0 0 3px #fff, 0 0 0 5px rgba(0,0,0,0.06);
+}
+.rating-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.rating-avatar i { font-size: 1.6rem; color: var(--text-tertiary); }
+.rating-head h3 {
+  font-size: 1.15rem; font-weight: 800;
+  letter-spacing: -0.35px; margin-bottom: 4px;
+}
+.rating-head p {
+  font-size: 0.82rem; color: var(--text-secondary);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.rating-stars {
+  display: flex; justify-content: center; gap: 4px;
+  margin-bottom: 6px;
+}
+.rating-stars button {
+  width: 46px; height: 46px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.7rem;
+  color: #d8d8dc;
+  transition: color 0.2s, transform 0.2s var(--spring);
+}
+.rating-stars button.active { color: #f7b955; }
+.rating-stars button:active { transform: scale(0.9); }
+.rating-label {
+  font-size: 0.78rem; font-weight: 700;
+  color: var(--text-secondary);
+  margin-bottom: 14px;
+  min-height: 18px;
+  letter-spacing: 0.3px;
+}
+.rating-comment-wrap { margin-bottom: 16px; }
+.rating-comment-wrap textarea {
+  width: 100%;
+  min-height: 70px;
+  padding: 11px 14px;
+  border-radius: 12px;
+  border: 1.5px solid transparent;
+  background: var(--fill-gray);
+  font-size: 0.86rem;
+  outline: none;
+  resize: none;
+  line-height: 1.45;
+  font-family: inherit;
+}
+.rating-comment-wrap textarea:focus {
+  background: #fff;
+  border-color: #0a0a0a;
+}
+.rating-actions {
+  display: flex; gap: 10px;
+}
+.rating-actions button {
+  flex: 1;
+  padding: 13px;
+  border-radius: 12px;
+  font-size: 0.88rem; font-weight: 700;
+}
+.rating-skip {
+  background: var(--fill-gray);
+  color: var(--text-primary);
+}
+.rating-submit {
+  background: #0a0a0a;
+  color: #fff;
+  transition: transform 0.28s var(--spring), opacity 0.22s;
+}
+.rating-submit:disabled { opacity: 0.4; pointer-events: none; }
+.rating-submit:active:not(:disabled) { transform: scale(0.97); }
+
+/* ==========================================================
    TOAST
    ========================================================== */
 #toast {
@@ -1699,6 +1821,7 @@ body.has-panel #toast {
   .online-slide .os-label { font-size: 0.72rem; letter-spacing: 1.2px; padding-left: 42px; }
   .req-modal { height: 90vh; }
   .dp-c-btn { font-size: 0.72rem; }
+  .rating-stars button { width: 40px; height: 40px; font-size: 1.5rem; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -2009,6 +2132,37 @@ body.has-panel #toast {
   </div>
 </div>
 
+<!-- RATING MODAL -->
+<div class="modal-overlay" id="ratingModal">
+  <div class="rating-modal">
+    <div class="rating-head">
+      <div class="rating-avatar" id="ratingAvatar">
+        <i class="fas fa-user"></i>
+      </div>
+      <h3>Rate your customer</h3>
+      <p id="ratingSubtitle">How was the trip?</p>
+    </div>
+
+    <div class="rating-stars" id="ratingStars">
+      <button type="button" data-star="1" aria-label="1 star"><i class="fas fa-star"></i></button>
+      <button type="button" data-star="2" aria-label="2 stars"><i class="fas fa-star"></i></button>
+      <button type="button" data-star="3" aria-label="3 stars"><i class="fas fa-star"></i></button>
+      <button type="button" data-star="4" aria-label="4 stars"><i class="fas fa-star"></i></button>
+      <button type="button" data-star="5" aria-label="5 stars"><i class="fas fa-star"></i></button>
+    </div>
+    <div class="rating-label" id="ratingLabel">Tap a star to rate</div>
+
+    <div class="rating-comment-wrap">
+      <textarea id="ratingComment" maxlength="240" placeholder="Add a comment (optional)"></textarea>
+    </div>
+
+    <div class="rating-actions">
+      <button type="button" class="rating-skip" id="ratingSkipBtn">Skip</button>
+      <button type="button" class="rating-submit" id="ratingSubmitBtn" disabled>Submit</button>
+    </div>
+  </div>
+</div>
+
 <script type="module">
 import { initializeApp } from "firebase/app";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
@@ -2033,9 +2187,6 @@ const app      = initializeApp(firebaseConfig);
 const auth     = getAuth(app);
 const database = getDatabase(app);
 
-/* ============================================================
-   CLOUDINARY
-   ============================================================ */
 const CLOUD_NAME = 'dd3lcymrk';
 const UPLOAD_PRESET = 'h3eyhc2o';
 
@@ -2058,6 +2209,15 @@ const DEFAULT_FLOAT_RULES = {
 };
 
 const ACTIVE_TRIP_STATUSES = ['accepted', 'arrived', 'in_progress'];
+
+const RATING_LABELS = {
+  0: 'Tap a star to rate',
+  1: 'Poor',
+  2: 'Fair',
+  3: 'Good',
+  4: 'Very good',
+  5: 'Excellent!'
+};
 
 /* ============================================================
    DOM
@@ -2114,6 +2274,15 @@ const mapModalRecenter= $('mapModalRecenter');
 const mapModalTitle   = $('mapModalTitle');
 const toastEl = $('toast');
 
+/* Rating modal DOM */
+const ratingModal     = $('ratingModal');
+const ratingAvatar    = $('ratingAvatar');
+const ratingSubtitle  = $('ratingSubtitle');
+const ratingLabel     = $('ratingLabel');
+const ratingComment   = $('ratingComment');
+const ratingSkipBtn   = $('ratingSkipBtn');
+const ratingSubmitBtn = $('ratingSubmitBtn');
+
 /* ============================================================
    STATE
    ============================================================ */
@@ -2126,6 +2295,7 @@ let map = null;
 let userMarker = null;
 let mainRouteLayer = null;
 let pickupMarker = null;
+let stopMarker = null;
 let destMarker = null;
 
 let modalMap = null;
@@ -2167,6 +2337,14 @@ let isAcceptingRequest = false;
 
 let locationPingInterval = null;
 let locationWatchId = null;
+
+/* Rating state */
+let ratingTripKind = null;
+let ratingTripId = null;
+let ratingCustomerId = null;
+let ratingCustomerName = null;
+let ratingCustomerPhoto = null;
+let currentRatingValue = 0;
 
 const DEFAULT_LOCATION = { lat: -15.4167, lng: 28.2833 };
 
@@ -2278,6 +2456,17 @@ function vehicleLabelFor(role) {
 function statusLabel(status) {
   if (!status) return 'Pending';
   return status.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+}
+
+function starsHtml(rating, size) {
+  const r = Math.round(Number(rating) || 0);
+  const sz = size || '0.82rem';
+  let s = `<span class="stars-row" style="font-size:${sz}">`;
+  for (let i = 1; i <= 5; i++) {
+    s += i <= r ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>';
+  }
+  s += '</span>';
+  return s;
 }
 
 /* ============================================================
@@ -2514,6 +2703,16 @@ function setPickupMarker(lat, lng) {
   else pickupMarker = L.marker([lat, lng], { icon, zIndexOffset: 1000 }).addTo(map);
 }
 
+function setStopMarker(lat, lng) {
+  if (!map) return;
+  const icon = L.divIcon({
+    className: '', html: '<div class="mk-stop"></div>',
+    iconSize: [20,20], iconAnchor: [10,10]
+  });
+  if (stopMarker) stopMarker.setLatLng([lat, lng]);
+  else stopMarker = L.marker([lat, lng], { icon, zIndexOffset: 1050 }).addTo(map);
+}
+
 function setDestMarker(lat, lng) {
   if (!map) return;
   const icon = L.divIcon({
@@ -2534,17 +2733,18 @@ function clearMainRoute() {
 function clearTripLayers() {
   clearMainRoute();
   if (pickupMarker && map) { try { map.removeLayer(pickupMarker); } catch(e){} pickupMarker = null; }
+  if (stopMarker && map) { try { map.removeLayer(stopMarker); } catch(e){} stopMarker = null; }
   if (destMarker && map) { try { map.removeLayer(destMarker); } catch(e){} destMarker = null; }
 }
 
-async function drawMainRoute(from, to, profile = 'driving', padding = [60, 60]) {
-  if (!map || !from || !to) return;
+/* Draw a multi-waypoint route via OSRM */
+async function drawRouteThroughWaypoints(waypoints, profile, padding) {
+  if (!map || !waypoints || waypoints.length < 2) return;
   clearMainRoute();
+
+  const coordStr = waypoints.map(w => `${w.lng},${w.lat}`).join(';');
   try {
-    const url =
-      `https://router.project-osrm.org/route/v1/${profile}/` +
-      `${from.lng},${from.lat};${to.lng},${to.lat}` +
-      `?overview=full&geometries=geojson&steps=false`;
+    const url = `https://router.project-osrm.org/route/v1/${profile}/${coordStr}?overview=full&geometries=geojson&steps=false`;
     const res = await fetch(url);
     if (!res.ok) throw new Error('Routing failed');
     const data = await res.json();
@@ -2556,20 +2756,25 @@ async function drawMainRoute(from, to, profile = 'driving', padding = [60, 60]) 
     L.polyline(coords, { color:'#0a0a0a', weight: 4.5, opacity: 1, lineJoin:'round', lineCap:'round' }).addTo(mainRouteLayer);
 
     if (coords.length > 1) {
-      map.fitBounds(L.latLngBounds(coords), { padding, maxZoom: 17, animate: true });
+      const pad = padding || [60, 60];
+      map.fitBounds(L.latLngBounds(coords), { padding: pad, maxZoom: 17, animate: true });
     }
   } catch (err) {
     console.warn('Route fetch failed:', err);
-    if (from && to) {
-      const straight = [[from.lat, from.lng], [to.lat, to.lng]];
-      mainRouteLayer = L.layerGroup().addTo(map);
-      L.polyline(straight, {
-        color: '#0a0a0a', weight: 3, opacity: 0.85,
-        dashArray: '6 8', lineCap: 'round'
-      }).addTo(mainRouteLayer);
-      map.fitBounds(L.latLngBounds(straight), { padding, maxZoom: 16 });
-    }
+    // Fallback: straight lines between each waypoint
+    const coords = waypoints.map(w => [w.lat, w.lng]);
+    mainRouteLayer = L.layerGroup().addTo(map);
+    L.polyline(coords, {
+      color: '#0a0a0a', weight: 3, opacity: 0.85,
+      dashArray: '6 8', lineCap: 'round'
+    }).addTo(mainRouteLayer);
+    map.fitBounds(L.latLngBounds(coords), { padding: padding || [60, 60], maxZoom: 16 });
   }
+}
+
+/* Legacy single-leg helper, used for provider→pickup */
+async function drawMainRoute(from, to, profile = 'driving', padding = [60, 60]) {
+  return drawRouteThroughWaypoints([from, to], profile, padding);
 }
 
 /* ============================================================
@@ -3051,6 +3256,13 @@ function openRequestModal() {
     ? `<img src="${escapeHtml(customerPhoto)}" alt="">`
     : `<i class="fas fa-user"></i>`;
 
+  const stopRowHtml = data.stop
+    ? `<div class="rr-row">
+         <span class="rr-dot stop"></span>
+         <div class="rr-txt"><small>Stop</small><strong>${escapeHtml(data.stop.label || 'Stop')}</strong></div>
+       </div>`
+    : '';
+
   const parcelLine = (kind === 'delivery' && data.parcelName)
     ? `<div class="dp-route" style="margin-top:0;">
          <div class="rr-row">
@@ -3088,6 +3300,7 @@ function openRequestModal() {
         <span class="rr-dot"></span>
         <div class="rr-txt"><small>Pickup</small><strong>${escapeHtml(data.pickup?.label || '—')}</strong></div>
       </div>
+      ${stopRowHtml}
       <div class="rr-row">
         <span class="rr-dot square"></span>
         <div class="rr-txt"><small>Drop-off</small><strong>${escapeHtml(data.dropoff?.label || '—')}</strong></div>
@@ -3139,6 +3352,7 @@ function closeRequestModal() {
 
 async function buildReqMap(data) {
   const pickup  = data && data.pickup;
+  const stop    = data && data.stop;
   const dropoff = data && data.dropoff;
   if (!pickup || !isFinite(pickup.lat) || !isFinite(pickup.lng)) return;
   if (!dropoff || !isFinite(dropoff.lat) || !isFinite(dropoff.lng)) return;
@@ -3163,19 +3377,29 @@ async function buildReqMap(data) {
     className: '', html: '<div class="mk-pickup"></div>',
     iconSize: [20,20], iconAnchor: [10,20]
   });
+  const stopIcon = L.divIcon({
+    className: '', html: '<div class="mk-stop"></div>',
+    iconSize: [20,20], iconAnchor: [10,10]
+  });
   const destIcon = L.divIcon({
     className: '', html: '<div class="mk-dest"></div>',
     iconSize: [20,20], iconAnchor: [10,20]
   });
 
   reqMarkers.push(L.marker([pickup.lat, pickup.lng], { icon: pickupIcon }).addTo(reqMap));
+  if (stop && isFinite(stop.lat) && isFinite(stop.lng)) {
+    reqMarkers.push(L.marker([stop.lat, stop.lng], { icon: stopIcon }).addTo(reqMap));
+  }
   reqMarkers.push(L.marker([dropoff.lat, dropoff.lng], { icon: destIcon }).addTo(reqMap));
 
+  // Build waypoints list
+  const wps = [`${pickup.lng},${pickup.lat}`];
+  if (stop && isFinite(stop.lat) && isFinite(stop.lng)) wps.push(`${stop.lng},${stop.lat}`);
+  wps.push(`${dropoff.lng},${dropoff.lat}`);
+  const coordStr = wps.join(';');
+
   try {
-    const url =
-      `https://router.project-osrm.org/route/v1/driving/` +
-      `${pickup.lng},${pickup.lat};${dropoff.lng},${dropoff.lat}` +
-      `?overview=full&geometries=geojson&steps=false`;
+    const url = `https://router.project-osrm.org/route/v1/driving/${coordStr}?overview=full&geometries=geojson&steps=false`;
     const res = await fetch(url);
     if (!res.ok) throw new Error('Routing failed');
     const json = await res.json();
@@ -3188,10 +3412,10 @@ async function buildReqMap(data) {
     reqMap.fitBounds(L.latLngBounds(coords), { padding: [36, 36], maxZoom: 17 });
   } catch (err) {
     console.warn('Request popup route failed:', err);
-    reqMap.fitBounds(
-      L.latLngBounds([[pickup.lat, pickup.lng], [dropoff.lat, dropoff.lng]]),
-      { padding: [36, 36], maxZoom: 16 }
-    );
+    const pts = [[pickup.lat, pickup.lng]];
+    if (stop && isFinite(stop.lat) && isFinite(stop.lng)) pts.push([stop.lat, stop.lng]);
+    pts.push([dropoff.lat, dropoff.lng]);
+    reqMap.fitBounds(L.latLngBounds(pts), { padding: [36, 36], maxZoom: 16 });
   }
 }
 
@@ -3244,7 +3468,7 @@ function showIncomingRequest(kind, id, data) {
 }
 
 /* ============================================================
-   COMPACT ACTIVE TRIP PANEL
+   COMPACT ACTIVE TRIP PANEL — with stop support
    ============================================================ */
 function renderActiveTrip() {
   if (!activeTrip) return;
@@ -3279,18 +3503,28 @@ function renderActiveTrip() {
   } else if (activeStage === 'in_progress') {
     tagIcon = 'fa-route';
     tagText = 'In progress';
-    navTarget = data.dropoff;
+    // If there is an intermediate stop, navigate to the stop first
+    navTarget = data.stop ? data.stop : data.dropoff;
     slideStageClass = 'end';
     slideStageLabel = '<i class="fas fa-flag-checkered"></i> Slide to end';
   } else {
     return;
   }
 
-  // Build the actions row: Navigate + Cancel on same line
   const navBtnHtml = navTarget
     ? `<button type="button" class="dp-c-btn primary nav" id="dpNavigateBtn">
-         <i class="fas fa-diamond-turn-right"></i> Navigate
+         <i class="fas fa-diamond-turn-right"></i> Navigate${data.stop && activeStage === 'in_progress' ? ' to stop' : ''}
        </button>`
+    : '';
+
+  const stopRowHtml = data.stop
+    ? `<div class="rr-row">
+         <span class="rr-dot stop"></span>
+         <div class="rr-txt">
+           <small>Stop</small>
+           ${escapeHtml(data.stop.label || 'Stop')}
+         </div>
+       </div>`
     : '';
 
   dpInner.innerHTML = `
@@ -3320,6 +3554,7 @@ function renderActiveTrip() {
           ${escapeHtml(data.pickup?.label || '—')}
         </div>
       </div>
+      ${stopRowHtml}
       <div class="rr-row">
         <span class="rr-dot square"></span>
         <div class="rr-txt">
@@ -3467,6 +3702,112 @@ async function triggerSlideAction() {
 }
 
 /* ============================================================
+   RATING MODAL LOGIC
+   ============================================================ */
+function updateStarDisplay(value) {
+  const buttons = document.querySelectorAll('#ratingStars button');
+  buttons.forEach((b, idx) => {
+    b.classList.toggle('active', idx < value);
+  });
+  ratingLabel.textContent = RATING_LABELS[value] || '';
+}
+
+function openRatingModal(trip, kind, id, customerId, customerName, customerPhoto) {
+  if (!customerId) return;
+
+  ratingTripKind = kind;
+  ratingTripId = id;
+  ratingCustomerId = customerId;
+  ratingCustomerName = customerName || 'Customer';
+  ratingCustomerPhoto = customerPhoto || '';
+  currentRatingValue = 0;
+
+  if (ratingCustomerPhoto) {
+    ratingAvatar.innerHTML = `<img src="${escapeHtml(ratingCustomerPhoto)}" alt="">`;
+  } else {
+    ratingAvatar.innerHTML = `<i class="fas fa-user"></i>`;
+  }
+  ratingSubtitle.textContent = `How was your trip with ${ratingCustomerName}?`;
+  ratingComment.value = '';
+  updateStarDisplay(0);
+  ratingSubmitBtn.disabled = true;
+  ratingSubmitBtn.textContent = 'Submit';
+
+  ratingModal.classList.add('open');
+}
+
+function closeRatingModal() {
+  ratingModal.classList.remove('open');
+  ratingTripKind = null;
+  ratingTripId = null;
+  ratingCustomerId = null;
+  ratingCustomerName = null;
+  ratingCustomerPhoto = null;
+  currentRatingValue = 0;
+}
+
+async function submitRating() {
+  if (!currentRatingValue || currentRatingValue < 1) return;
+  if (!ratingCustomerId || !ratingTripId) { closeRatingModal(); return; }
+
+  const comment = ratingComment.value.trim();
+  const btn = ratingSubmitBtn;
+  btn.disabled = true;
+  btn.textContent = 'Submitting…';
+
+  try {
+    // Save rating under customer's record
+    const ratingRef = ref(database, `customers/${ratingCustomerId}/ratings/${ratingTripId}`);
+    await set(ratingRef, {
+      rating: currentRatingValue,
+      comment: comment || '',
+      providerId: currentUser.uid,
+      providerName: (providerRecord && (providerRecord.fullName || providerRecord.name)) || userRecord.name || 'Provider',
+      tripType: ratingTripKind,
+      tripId: ratingTripId,
+      createdAt: Date.now()
+    });
+
+    // Recalculate aggregate
+    const snap = await get(ref(database, `customers/${ratingCustomerId}/ratings`));
+    const ratings = snap.val() || {};
+    const vals = Object.values(ratings).map(r => Number(r.rating)).filter(v => isFinite(v) && v > 0);
+    const avg = vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : 0;
+    await update(ref(database, `customers/${ratingCustomerId}`), {
+      ratingAverage: Math.round(avg * 10) / 10,
+      ratingCount: vals.length
+    }).catch(() => {});
+
+    // Also store on the trip itself
+    const tripPath = ratingTripKind === 'ride' ? `rides/${ratingTripId}` : `deliveries/${ratingTripId}`;
+    await update(ref(database, tripPath), {
+      providerRating: currentRatingValue,
+      providerRatingComment: comment || '',
+      providerRatedAt: Date.now()
+    }).catch(() => {});
+
+    showToast('Thanks for your feedback!');
+    closeRatingModal();
+  } catch (err) {
+    console.error(err);
+    showToast('Could not submit rating.');
+    btn.disabled = false;
+    btn.textContent = 'Submit';
+  }
+}
+
+document.querySelectorAll('#ratingStars button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const v = parseInt(btn.dataset.star, 10);
+    currentRatingValue = v;
+    updateStarDisplay(v);
+    ratingSubmitBtn.disabled = false;
+  });
+});
+ratingSkipBtn.addEventListener('click', closeRatingModal);
+ratingSubmitBtn.addEventListener('click', submitRating);
+
+/* ============================================================
    TRIP ACTIONS
    ============================================================ */
 async function handleAccept() {
@@ -3516,6 +3857,9 @@ async function handleAccept() {
     const pickup = data.pickup;
     if (pickup && isFinite(pickup.lat) && isFinite(pickup.lng)) {
       setPickupMarker(pickup.lat, pickup.lng);
+      if (data.stop && isFinite(data.stop.lat) && isFinite(data.stop.lng)) {
+        setStopMarker(data.stop.lat, data.stop.lng);
+      }
       await drawMainRoute(from, { lat: pickup.lat, lng: pickup.lng }, osrmProfileForRole(role));
     }
 
@@ -3557,15 +3901,19 @@ async function handleStartTrip() {
   renderDetailPanel();
 
   const pickup = activeTrip.data?.pickup;
+  const stop = activeTrip.data?.stop;
   const dropoff = activeTrip.data?.dropoff;
-  if (pickup && dropoff && isFinite(pickup.lat) && isFinite(pickup.lng) && isFinite(dropoff.lat) && isFinite(dropoff.lng)) {
+  if (pickup && dropoff) {
     setPickupMarker(pickup.lat, pickup.lng);
+    if (stop && isFinite(stop.lat) && isFinite(stop.lng)) {
+      setStopMarker(stop.lat, stop.lng);
+    }
     setDestMarker(dropoff.lat, dropoff.lng);
-    await drawMainRoute(
-      { lat: pickup.lat, lng: pickup.lng },
-      { lat: dropoff.lat, lng: dropoff.lng },
-      osrmProfileForRole(providerRecord?.role || 'driver')
-    );
+    // Draw route pickup → [stop] → dropoff
+    const wps = [{ lat: pickup.lat, lng: pickup.lng }];
+    if (stop && isFinite(stop.lat) && isFinite(stop.lng)) wps.push({ lat: stop.lat, lng: stop.lng });
+    wps.push({ lat: dropoff.lat, lng: dropoff.lng });
+    await drawRouteThroughWaypoints(wps, osrmProfileForRole(providerRecord?.role || 'driver'));
   }
 
   showToast('Trip started');
@@ -3617,6 +3965,13 @@ async function handleEndTrip() {
     }
   } catch (err) { console.warn('Could not update transaction:', err); }
 
+  // Snapshot the customer info before we clear the state
+  const completedKind = kind;
+  const completedId = id;
+  const customerId = data.customerId;
+  const customerName = data.customerName || (kind === 'delivery' ? data.senderName : '') || 'Customer';
+  const customerPhoto = data.customerPhoto || data.senderPhoto || '';
+
   clearTripLayers();
   showToast(deduction > 0
     ? `Trip completed — K ${deduction} commission deducted`
@@ -3633,6 +3988,18 @@ async function handleEndTrip() {
     }
     pingLocationOnce();
     evaluateQueue();
+
+    // Show rating modal for the customer
+    setTimeout(() => {
+      openRatingModal(
+        data,
+        completedKind,
+        completedId,
+        customerId,
+        customerName,
+        customerPhoto
+      );
+    }, 400);
   }, 400);
 }
 
@@ -3702,7 +4069,7 @@ function detachTripWatcher() {
 }
 
 /* ============================================================
-   RESUME ACTIVE TRIP (on refresh/close-and-open)
+   RESUME ACTIVE TRIP
    ============================================================ */
 async function resumeActiveTrip() {
   if (!currentUser || !providerRecord) return;
@@ -3738,11 +4105,9 @@ async function resumeActiveTrip() {
 
     if (!found) return;
 
-    // Restore state
     activeTrip = found;
     activeStage = found.data.status;
 
-    // Make sure the provider is online so we don't miss anything
     if (!isOnline) {
       isOnline = true;
       setOnlineUI();
@@ -3756,17 +4121,19 @@ async function resumeActiveTrip() {
       } catch (e) {}
     }
 
-    // Draw markers
     const pickup = found.data.pickup;
+    const stop = found.data.stop;
     const dropoff = found.data.dropoff;
     if (pickup && isFinite(pickup.lat) && isFinite(pickup.lng)) {
       setPickupMarker(pickup.lat, pickup.lng);
+    }
+    if (stop && isFinite(stop.lat) && isFinite(stop.lng)) {
+      setStopMarker(stop.lat, stop.lng);
     }
     if (activeStage === 'in_progress' && dropoff && isFinite(dropoff.lat) && isFinite(dropoff.lng)) {
       setDestMarker(dropoff.lat, dropoff.lng);
     }
 
-    // Draw route
     const role = providerRecord.role || 'driver';
     const profile = osrmProfileForRole(role);
 
@@ -3775,14 +4142,12 @@ async function resumeActiveTrip() {
         await drawMainRoute(userLocation, { lat: pickup.lat, lng: pickup.lng }, profile);
       }
     } else if (activeStage === 'in_progress' && pickup && dropoff) {
-      await drawMainRoute(
-        { lat: pickup.lat, lng: pickup.lng },
-        { lat: dropoff.lat, lng: dropoff.lng },
-        profile
-      );
+      const wps = [{ lat: pickup.lat, lng: pickup.lng }];
+      if (stop && isFinite(stop.lat) && isFinite(stop.lng)) wps.push({ lat: stop.lat, lng: stop.lng });
+      wps.push({ lat: dropoff.lat, lng: dropoff.lng });
+      await drawRouteThroughWaypoints(wps, profile);
     }
 
-    // Show the panel
     renderDetailPanel();
     attachTripWatcher(found.kind, found.id);
 
@@ -3888,7 +4253,6 @@ onAuthStateChanged(auth, async (user) => {
 
     hideLoading();
 
-    // After boot, check for an active trip to resume
     setTimeout(() => resumeActiveTrip(), 700);
 
   } catch (err) {
@@ -4899,6 +5263,7 @@ function renderTripCard(t) {
   const isRide = t._type === 'ride';
   const title = isRide ? 'Ride' : `Delivery · ${escapeHtml(t.parcelName || 'Parcel')}`;
   const pickup = t.pickup?.label || 'Pickup';
+  const stop = t.stop?.label || '';
   const dropoff = t.dropoff?.label || 'Drop-off';
   const fare = t.fare || 0;
   const deductions = isRide ? commissionFor('ride', fare) : commissionFor('delivery', fare);
@@ -4911,6 +5276,18 @@ function renderTripCard(t) {
     ? `<button data-nav-lat="${t.dropoff.lat}" data-nav-lng="${t.dropoff.lng}" data-nav-label="${escapeHtml(dropoff)}" class="ghost">
          <i class="fas fa-diamond-turn-right"></i> Drop-off
        </button>` : '';
+
+  const stopRowHtml = stop ? `
+    <div class="rr-row"><span class="rr-dot stop"></span><span class="rr-txt">${escapeHtml(stop)}</span></div>
+  ` : '';
+
+  const ratingSection = t.providerRating ? `
+    <div class="hd-section">
+      <div class="hd-label"><i class="fas fa-star"></i> Your rating of customer</div>
+      <div class="hd-row"><span class="hd-key">Stars</span><span class="hd-val">${starsHtml(t.providerRating)}</span></div>
+      ${t.providerRatingComment ? `<div class="hd-row"><span class="hd-key">Comment</span><span class="hd-val">${escapeHtml(t.providerRatingComment)}</span></div>` : ''}
+    </div>
+  ` : '';
 
   return `
     <div class="hist-card">
@@ -4934,6 +5311,7 @@ function renderTripCard(t) {
             <div class="hd-label"><i class="fas fa-route"></i> Route</div>
             <div class="hd-route-block">
               <div class="rr-row"><span class="rr-dot"></span><span class="rr-txt">${escapeHtml(pickup)}</span></div>
+              ${stopRowHtml}
               <div class="rr-row"><span class="rr-dot square"></span><span class="rr-txt">${escapeHtml(dropoff)}</span></div>
             </div>
           </div>
@@ -4945,6 +5323,7 @@ function renderTripCard(t) {
             <div class="hd-row"><span class="hd-key">Fare</span><span class="hd-val">K ${escapeHtml(formatPrice(fare))}</span></div>
             <div class="hd-row"><span class="hd-key">Commission</span><span class="hd-val">K ${escapeHtml(formatPrice(deductions))}</span></div>
           </div>
+          ${ratingSection}
           <div class="hd-section">
             <div class="hd-label"><i class="fas fa-clock"></i> Timeline</div>
             <div class="hd-row"><span class="hd-key">Created</span><span class="hd-val">${escapeHtml(formatDateTime(t.createdAt))}</span></div>
@@ -5195,7 +5574,7 @@ $('settingsEditProfile').addEventListener('click', () => {
   setTimeout(openAccountPage, 200);
 });
 $('settingsSupport').addEventListener('click', () => showToast('Support: support@ntumeni.com'));
-$('settingsAbout').addEventListener('click', () => showToast('NTUMENI Service Provider · v1.5'));
+$('settingsAbout').addEventListener('click', () => showToast('NTUMENI Service Provider · v1.6'));
 $('settingsLogout').addEventListener('click', doLogout);
 logoutBtn.addEventListener('click', doLogout);
 
@@ -5207,6 +5586,7 @@ async function doLogout() {
   } catch (e) {}
   stopRingtone();
   closeRequestModal();
+  closeRatingModal();
   stopLocationPing();
   detachRequestListeners();
   detachTripWatcher();
@@ -5225,7 +5605,8 @@ async function doLogout() {
    ============================================================ */
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
-    if (mapModal.classList.contains('open')) mapModal.classList.remove('open');
+    if (ratingModal.classList.contains('open')) closeRatingModal();
+    else if (mapModal.classList.contains('open')) mapModal.classList.remove('open');
     else if (applyPage.classList.contains('open')) closePage('applyPage');
     else if (errandDetailPage.classList.contains('open')) closePage('errandDetailPage');
     else if (errandsPage.classList.contains('open')) closePage('errandsPage');
