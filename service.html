@@ -249,6 +249,12 @@ body.has-panel #onlineSlideWrap {
   pointer-events: none;
   transform: translateX(-50%) translateY(18px);
 }
+body.has-floating-card #onlineSlideWrap {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateX(-50%) translateY(18px);
+}
 
 .online-slide {
   position: relative;
@@ -1085,6 +1091,7 @@ body.has-panel #mapControls {
   visibility: hidden;
 }
 .page.open { transform: translateY(0); visibility: visible; }
+#chatPage { z-index: 3100; }
 
 .page-head {
   flex: 0 0 auto;
@@ -1119,6 +1126,198 @@ body.has-panel #mapControls {
   flex-shrink: 0;
 }
 .icon-btn:active { transform: scale(0.92); }
+
+/* ==========================================================
+   CHAT PAGE
+   ========================================================== */
+.chat-body {
+  flex: 1; min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px 16px 12px;
+  background: #f7f8fa;
+}
+.chat-messages {
+  display: flex; flex-direction: column;
+  gap: 8px;
+  max-width: 620px;
+  margin: 0 auto;
+}
+.chat-msg {
+  max-width: 78%;
+  padding: 10px 14px;
+  border-radius: 18px;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+.chat-msg.them {
+  background: #ffffff;
+  align-self: flex-start;
+  border-bottom-left-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.chat-msg.me {
+  background: #0a0a0a;
+  color: #ffffff;
+  align-self: flex-end;
+  border-bottom-right-radius: 6px;
+}
+.chat-msg-meta {
+  font-size: 0.62rem;
+  font-weight: 700;
+  opacity: 0.55;
+  margin-top: 4px;
+  display: block;
+}
+.chat-empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-secondary);
+  font-size: 0.86rem;
+}
+.chat-empty i {
+  display: block;
+  font-size: 2.4rem;
+  color: #d8d8dc;
+  margin-bottom: 14px;
+}
+.chat-input-row {
+  flex: 0 0 auto;
+  display: flex; align-items: flex-end; gap: 10px;
+  padding: 12px 16px 16px;
+  background: #ffffff;
+  border-top: 1px solid var(--line);
+}
+.chat-input-row textarea {
+  flex: 1;
+  min-height: 44px;
+  max-height: 120px;
+  padding: 11px 14px;
+  border-radius: 22px;
+  border: 1.5px solid transparent;
+  background: var(--fill-gray);
+  outline: none;
+  font-size: 0.9rem;
+  resize: none;
+  line-height: 1.4;
+}
+.chat-input-row textarea:focus {
+  background: #fff;
+  border-color: #0a0a0a;
+}
+.chat-send-btn {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: #0a0a0a; color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; flex-shrink: 0;
+  transition: transform 0.28s var(--spring);
+}
+.chat-send-btn:active { transform: scale(0.92); }
+
+/* ==========================================================
+   FLOATING CUSTOMER CARD (provider side)
+   ========================================================== */
+.floating-customer-card {
+  position: fixed;
+  left: 12px; right: 12px;
+  bottom: 18px;
+  z-index: 700;
+  background: #0a0a0a;
+  color: #ffffff;
+  border-radius: 18px;
+  padding: 14px 16px;
+  box-shadow:
+    0 20px 44px -16px rgba(0,0,0,0.65),
+    0 0 0 1px rgba(255,255,255,0.06) inset;
+  display: none;
+  animation: floatCardIn 0.5s var(--spring);
+}
+.floating-customer-card.open { display: block; }
+@keyframes floatCardIn {
+  from { opacity: 0; transform: translateY(40px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.floating-customer-card .fcc-row {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 12px;
+}
+.floating-customer-card .fcc-avatar {
+  width: 46px; height: 46px; border-radius: 50%;
+  background: rgba(255,255,255,0.14);
+  overflow: hidden; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.05rem;
+  color: rgba(255,255,255,0.7);
+}
+.floating-customer-card .fcc-avatar img {
+  width: 100%; height: 100%; object-fit: cover;
+}
+.floating-customer-card .fcc-info { flex: 1; min-width: 0; }
+.floating-customer-card .fcc-info small {
+  display: block;
+  font-size: 0.58rem; font-weight: 800;
+  letter-spacing: 1.1px; text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 3px;
+}
+.floating-customer-card .fcc-info strong {
+  display: block;
+  font-size: 0.94rem; font-weight: 800;
+  letter-spacing: -0.25px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.floating-customer-card .fcc-call {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: linear-gradient(135deg, #12b76a 0%, #067647 100%);
+  color: #ffffff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; flex-shrink: 0;
+  text-decoration: none;
+  box-shadow: 0 8px 18px -6px rgba(18,183,106,0.7);
+  transition: transform 0.28s var(--spring);
+}
+.floating-customer-card .fcc-call:active { transform: scale(0.92); }
+.floating-customer-card .fcc-title {
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.65);
+  margin-bottom: 12px;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.floating-customer-card .fcc-actions {
+  display: flex;
+  gap: 8px;
+}
+.floating-customer-card .fcc-actions button {
+  flex: 1;
+  padding: 12px 12px;
+  border-radius: 12px;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: transform 0.28s var(--spring);
+}
+.floating-customer-card .fcc-actions button:active { transform: scale(0.97); }
+.floating-customer-card .fcc-chat {
+  background: rgba(255,255,255,0.14);
+  color: #ffffff;
+}
+.floating-customer-card .fcc-view {
+  background: linear-gradient(135deg, #175cd3 0%, #0a3a8c 100%);
+  color: #ffffff;
+  box-shadow: 0 10px 24px -10px rgba(23,92,211,0.75);
+}
 
 /* ==========================================================
    SHARED UI
@@ -2263,6 +2462,27 @@ body.has-panel #toast {
   </div>
 </div>
 
+<!-- FLOATING CUSTOMER CARD (accepted errand) -->
+<div class="floating-customer-card" id="floatingCustomerCard">
+  <div class="fcc-row">
+    <div class="fcc-avatar" id="fccAvatar">
+      <i class="fas fa-user"></i>
+    </div>
+    <div class="fcc-info">
+      <small>Your customer</small>
+      <strong id="fccName">Customer</strong>
+    </div>
+    <a class="fcc-call" id="fccCall" href="#" style="display:none">
+      <i class="fas fa-phone"></i>
+    </a>
+  </div>
+  <div class="fcc-title" id="fccTitle">Errand title</div>
+  <div class="fcc-actions">
+    <button class="fcc-chat" id="fccChat"><i class="fas fa-comments"></i> Chat</button>
+    <button class="fcc-view" id="fccView"><i class="fas fa-clipboard-list"></i> View</button>
+  </div>
+</div>
+
 <div id="toast"></div>
 
 <!-- SIDEBAR -->
@@ -2365,6 +2585,26 @@ body.has-panel #toast {
   </div>
   <div class="page-body">
     <div class="page-scroll" id="errandDetailBody"></div>
+  </div>
+</div>
+
+<!-- CHAT PAGE -->
+<div class="page" id="chatPage">
+  <div class="page-head">
+    <button class="icon-btn" id="chatBackBtn" aria-label="Back"><i class="fas fa-arrow-left"></i></button>
+    <div style="flex:1;">
+      <h2 id="chatTitle">Chat</h2>
+      <div class="page-head-sub" id="chatSubtitle">Customer</div>
+    </div>
+  </div>
+  <div class="chat-body">
+    <div class="chat-messages" id="chatMessages"></div>
+  </div>
+  <div class="chat-input-row">
+    <textarea id="chatInput" placeholder="Type a message…" rows="1"></textarea>
+    <button class="chat-send-btn" id="chatSendBtn" aria-label="Send">
+      <i class="fas fa-paper-plane"></i>
+    </button>
   </div>
 </div>
 
@@ -2710,6 +2950,23 @@ const arrivalPhone    = $('arrivalPhone');
 const arrivalCallBtn  = $('arrivalCallBtn');
 const arrivalOkBtn    = $('arrivalOkBtn');
 
+/* Floating customer card + chat */
+const floatingCustomerCard = $('floatingCustomerCard');
+const fccAvatar = $('fccAvatar');
+const fccName   = $('fccName');
+const fccCall   = $('fccCall');
+const fccTitle  = $('fccTitle');
+const fccChat   = $('fccChat');
+const fccView   = $('fccView');
+
+const chatPage     = $('chatPage');
+const chatBackBtn  = $('chatBackBtn');
+const chatTitle    = $('chatTitle');
+const chatSubtitle = $('chatSubtitle');
+const chatMessages = $('chatMessages');
+const chatInput    = $('chatInput');
+const chatSendBtn  = $('chatSendBtn');
+
 /* ============================================================
    STATE
    ============================================================ */
@@ -2779,6 +3036,13 @@ let currentRatingValue = 0;
 
 let claimsUnsub = null;
 let claimsCache = [];
+
+/* Floating customer card state */
+let acceptedErrandUnsub = null;
+let floatingErrandId = null;
+let floatingErrandData = null;
+let activeChatErrandId = null;
+let chatUnsub = null;
 
 const DEFAULT_LOCATION = { lat: -15.4167, lng: 28.2833 };
 
@@ -4950,6 +5214,163 @@ async function resumeActiveTrip() {
 }
 
 /* ============================================================
+   FLOATING CUSTOMER CARD + CHAT (for accepted errands)
+   ============================================================ */
+function startAcceptedErrandListener() {
+  if (!currentUser) return;
+  if (acceptedErrandUnsub) { acceptedErrandUnsub(); acceptedErrandUnsub = null; }
+  acceptedErrandUnsub = onValue(ref(database, 'errands'), (snap) => {
+    const data = snap.val() || {};
+    let found = null;
+    for (const id in data) {
+      const e = data[id];
+      if (!e) continue;
+      if (e.acceptedProviderId !== currentUser.uid) continue;
+      if (e.status === 'completed' || e.status === 'cancelled') continue;
+      if (e.status === 'accepted' || e.status === 'in_progress') {
+        found = { ...e, errandId: id };
+        break;
+      }
+    }
+    if (found) {
+      showFloatingCustomerCard(found);
+    } else {
+      hideFloatingCustomerCard();
+    }
+  }, (err) => { console.warn('Accepted errand listener error:', err); });
+}
+
+function stopAcceptedErrandListener() {
+  if (acceptedErrandUnsub) { acceptedErrandUnsub(); acceptedErrandUnsub = null; }
+  hideFloatingCustomerCard();
+}
+
+function showFloatingCustomerCard(errand) {
+  floatingErrandId = errand.errandId;
+  floatingErrandData = errand;
+
+  const name  = errand.customerName || 'Customer';
+  const photo = errand.customerPhoto || '';
+  const phone = errand.customerPhone || '';
+
+  fccName.textContent = name;
+  if (photo) {
+    fccAvatar.innerHTML = `<img src="${escapeHtml(photo)}" alt="">`;
+  } else {
+    fccAvatar.innerHTML = `<i class="fas fa-user"></i>`;
+  }
+
+  if (phone) {
+    fccCall.href = 'tel:' + phone;
+    fccCall.style.display = 'flex';
+  } else {
+    fccCall.style.display = 'none';
+  }
+
+  fccTitle.textContent = errand.title || 'Errand';
+
+  floatingCustomerCard.classList.add('open');
+  document.body.classList.add('has-floating-card');
+  setTimeout(() => { if (map) map.invalidateSize(); }, 150);
+}
+
+function hideFloatingCustomerCard() {
+  floatingCustomerCard.classList.remove('open');
+  document.body.classList.remove('has-floating-card');
+  floatingErrandId = null;
+  floatingErrandData = null;
+  if (chatUnsub) { chatUnsub(); chatUnsub = null; }
+  closePage('chatPage');
+  setTimeout(() => { if (map) map.invalidateSize(); }, 150);
+}
+
+/* Chat with the customer for the accepted errand */
+function openChatWithCustomer() {
+  if (!floatingErrandData || !currentUser) return;
+  const errand = floatingErrandData;
+  activeChatErrandId = errand.errandId;
+
+  chatTitle.textContent = errand.customerName || 'Customer';
+  chatSubtitle.textContent = errand.title || 'Errand chat';
+  chatMessages.innerHTML = '<div class="chat-empty"><i class="fas fa-comments"></i>Start chatting with the customer…</div>';
+  openPage('chatPage');
+  setTimeout(() => { chatInput.focus(); scrollChatToBottom(); }, 480);
+
+  if (chatUnsub) { chatUnsub(); chatUnsub = null; }
+  chatUnsub = onValue(ref(database, `errands/${errand.errandId}/chat`), (snap) => {
+    const data = snap.val() || {};
+    const msgs = Object.entries(data).map(([id, m]) => ({ ...m, id }))
+      .sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+    renderChatMessages(msgs);
+  });
+}
+
+function closeChatPage() {
+  closePage('chatPage');
+  if (chatUnsub) { chatUnsub(); chatUnsub = null; }
+  activeChatErrandId = null;
+}
+
+function renderChatMessages(messages) {
+  if (!messages.length) {
+    chatMessages.innerHTML = '<div class="chat-empty"><i class="fas fa-comments"></i>Start chatting with the customer…</div>';
+    return;
+  }
+  let html = '';
+  messages.forEach(m => {
+    const mine = m.senderId === currentUser.uid;
+    html += `<div class="chat-msg ${mine ? 'me' : 'them'}">${escapeHtml(m.text || '')}<span class="chat-msg-meta">${escapeHtml(timeAgo(m.createdAt))}</span></div>`;
+  });
+  chatMessages.innerHTML = html;
+  scrollChatToBottom();
+}
+
+function scrollChatToBottom() {
+  const body = chatMessages.parentElement;
+  if (body) body.scrollTop = body.scrollHeight;
+}
+
+async function sendChatMessage() {
+  const text = chatInput.value.trim();
+  if (!text || !activeChatErrandId || !currentUser) return;
+  chatInput.value = '';
+  chatInput.style.height = 'auto';
+  try {
+    const msgRef = push(ref(database, `errands/${activeChatErrandId}/chat`));
+    await set(msgRef, {
+      senderId: currentUser.uid,
+      senderName: (providerRecord && (providerRecord.fullName || providerRecord.name)) || userRecord?.name || 'Provider',
+      senderRole: 'provider',
+      text,
+      createdAt: Date.now()
+    });
+  } catch (err) {
+    console.error(err);
+    showToast('Could not send message.');
+  }
+}
+
+/* Wire up floating card + chat */
+fccChat.addEventListener('click', openChatWithCustomer);
+fccView.addEventListener('click', () => {
+  if (!floatingErrandId) return;
+  closePage('chatPage');
+  openErrandsPage();
+});
+chatBackBtn.addEventListener('click', closeChatPage);
+chatSendBtn.addEventListener('click', sendChatMessage);
+chatInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendChatMessage();
+  }
+});
+chatInput.addEventListener('input', () => {
+  chatInput.style.height = 'auto';
+  chatInput.style.height = Math.min(120, chatInput.scrollHeight) + 'px';
+});
+
+/* ============================================================
    ACCOUNT PAGE
    ============================================================ */
 function openAccountPage() {
@@ -5022,6 +5443,7 @@ onAuthStateChanged(auth, async (user) => {
     listenFloatRules();
     listenFloatBalance(user.uid);
     listenClaims(user.uid);
+    startAcceptedErrandListener();
 
     if (providerRecord && providerRecord.online === true &&
         providerRecord.status === 'approved' && providerRecord.role) {
@@ -6597,6 +7019,7 @@ async function doLogout() {
   stopLocationPing();
   detachRequestListeners();
   detachTripWatcher();
+  stopAcceptedErrandListener();
   if (providerLiveUnsub) { providerLiveUnsub(); providerLiveUnsub = null; }
   if (floatRulesUnsub) { floatRulesUnsub(); floatRulesUnsub = null; }
   if (settingsUnsub) { settingsUnsub(); settingsUnsub = null; }
@@ -6616,6 +7039,7 @@ document.addEventListener('keydown', (e) => {
     if (ratingModal.classList.contains('open')) closeRatingModal();
     else if (arrivalModal.classList.contains('open')) closeArrivalModal();
     else if (mapModal.classList.contains('open')) mapModal.classList.remove('open');
+    else if (chatPage.classList.contains('open')) closeChatPage();
     else if (applyPage.classList.contains('open')) closePage('applyPage');
     else if (errandDetailPage.classList.contains('open')) closePage('errandDetailPage');
     else if (errandsPage.classList.contains('open')) closePage('errandsPage');
