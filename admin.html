@@ -141,6 +141,9 @@ a{color:inherit;text-decoration:none}
 .nav-btn.bufferzone i{color:#a78bfa}
 .nav-btn.bufferzone.active{background:#7c3aed;color:#fff}
 .nav-btn.bufferzone.active i{color:#fff}
+.nav-btn.claims i{color:#34d399}
+.nav-btn.claims.active{background:#12b76a;color:#fff}
+.nav-btn.claims.active i{color:#fff}
 .nav-badge{
   position:absolute;right:12px;top:50%;transform:translateY(-50%);
   background:var(--danger);color:#fff;
@@ -148,8 +151,10 @@ a{color:inherit;text-decoration:none}
   min-width:18px;text-align:center;
 }
 .nav-badge.zero{display:none}
+.nav-badge.green{background:#12b76a}
 .nav-btn.active .nav-badge{background:#0a0a0a;color:#fff}
 .nav-btn.bufferzone.active .nav-badge{background:#fff;color:#7c3aed}
+.nav-btn.claims.active .nav-badge{background:#fff;color:#12b76a}
 
 .sidebar-foot{
   padding:12px 10px 16px;border-top:1px solid rgba(255,255,255,0.08);flex-shrink:0;
@@ -228,19 +233,23 @@ a{color:inherit;text-decoration:none}
 .metric:hover{transform:translateY(-2px);box-shadow:0 0 0 1px rgba(0,0,0,0.12),0 8px 20px -8px rgba(0,0,0,0.18)}
 .metric.dark{background:#0a0a0a;color:#fff}
 .metric.bz{background:linear-gradient(135deg,#7c3aed 0%,#5b21b6 100%);color:#fff}
+.metric.green{background:linear-gradient(135deg,#12b76a 0%,#067647 100%);color:#fff}
 .metric .m-label{
   font-size:.62rem;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;
   color:var(--tt);margin-bottom:8px;display:flex;align-items:center;gap:7px;
 }
 .metric.dark .m-label{color:rgba(255,255,255,0.55)}
 .metric.bz .m-label{color:rgba(255,255,255,0.7)}
+.metric.green .m-label{color:rgba(255,255,255,0.75)}
 .metric .m-value{font-size:1.85rem;font-weight:800;letter-spacing:-1px;line-height:1}
 .metric .m-value small{font-size:.9rem;font-weight:700;opacity:.55;margin-right:3px}
 .metric.dark .m-value{color:#fff}
 .metric.bz .m-value{color:#fff}
+.metric.green .m-value{color:#fff}
 .metric .m-sub{font-size:.7rem;color:var(--ts);margin-top:6px}
 .metric.dark .m-sub{color:rgba(255,255,255,0.55)}
 .metric.bz .m-sub{color:rgba(255,255,255,0.75)}
+.metric.green .m-sub{color:rgba(255,255,255,0.8)}
 .metric .m-ico{
   position:absolute;right:14px;top:14px;
   width:34px;height:34px;border-radius:10px;
@@ -249,6 +258,7 @@ a{color:inherit;text-decoration:none}
 }
 .metric.dark .m-ico{background:rgba(255,255,255,0.12);color:#fff}
 .metric.bz .m-ico{background:rgba(255,255,255,0.18);color:#fff}
+.metric.green .m-ico{background:rgba(255,255,255,0.18);color:#fff}
 
 .tabs{display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:14px;padding-bottom:2px}
 .tabs::-webkit-scrollbar{display:none}
@@ -319,6 +329,8 @@ a{color:inherit;text-decoration:none}
 .status-chip.economy   {background:var(--success-s);color:#027a48}
 .status-chip.standard  {background:var(--info-s);color:#175cd3}
 .status-chip.premium   {background:var(--bz-s);color:#5b21b6}
+.status-chip.unclaimed {background:#f4f4f5;color:#52525b}
+.status-chip.paid      {background:var(--success-s);color:#027a48}
 
 .empty{
   text-align:center;padding:60px 24px;color:var(--ts);
@@ -346,6 +358,8 @@ a{color:inherit;text-decoration:none}
 .btn-warn:hover{background:#d97a08}
 .btn-bz{background:linear-gradient(135deg,#7c3aed 0%,#5b21b6 100%);color:#fff;box-shadow:0 8px 20px -8px rgba(124,58,237,0.6)}
 .btn-bz:hover{background:linear-gradient(135deg,#6d28d9 0%,#4c1d95 100%)}
+.btn-green{background:linear-gradient(135deg,#12b76a 0%,#067647 100%);color:#fff;box-shadow:0 8px 20px -8px rgba(18,183,106,0.5)}
+.btn-green:hover{background:linear-gradient(135deg,#0ea35c 0%,#05603b 100%)}
 .btn-lg{padding:14px 22px;font-size:.92rem;border-radius:12px}
 .btn-sm{padding:7px 12px;font-size:.74rem}
 .btn:disabled{opacity:.5;cursor:not-allowed}
@@ -384,6 +398,16 @@ a{color:inherit;text-decoration:none}
 .info-banner.bz .ib-ico{background:rgba(124,58,237,0.16);color:#5b21b6}
 .info-banner.bz .ib-body strong{color:#5b21b6}
 .info-banner.bz .ib-body p{color:#4c1d95}
+
+.info-banner.green{background:var(--success-s);border-color:rgba(18,183,106,0.22)}
+.info-banner.green .ib-ico{background:rgba(18,183,106,0.16);color:#027a48}
+.info-banner.green .ib-body strong{color:#027a48}
+.info-banner.green .ib-body p{color:#05603b}
+
+.info-banner.warn{background:var(--warn-s);border-color:rgba(247,144,9,0.22)}
+.info-banner.warn .ib-ico{background:rgba(247,144,9,0.16);color:#b54708}
+.info-banner.warn .ib-body strong{color:#b54708}
+.info-banner.warn .ib-body p{color:#7a3408}
 
 .rule-summary{
   display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
@@ -552,6 +576,42 @@ a{color:inherit;text-decoration:none}
 .promo-hero-code .phc-sub{
   font-size:.78rem;color:var(--ts);margin-top:6px;
 }
+
+/* ===== PROMO INFO BADGE (for ride/delivery detail drawers) ===== */
+.promo-info-box{
+  background:linear-gradient(135deg,#ecfdf3 0%,#d1fadf 100%);
+  border:1px solid rgba(18,183,106,0.28);
+  border-radius:12px;padding:14px 16px;margin-bottom:14px;
+}
+.promo-info-box .pib-head{
+  display:flex;align-items:center;gap:8px;
+  font-size:.66rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;
+  color:#027a48;margin-bottom:10px;
+}
+.promo-info-box .pib-head .pib-code{
+  font-family:'SF Mono',ui-monospace,monospace;
+  background:#027a48;color:#fff;
+  padding:2px 8px;border-radius:6px;font-size:.66rem;letter-spacing:1px;
+  margin-left:auto;
+}
+.promo-info-box .pib-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:8px;
+}
+.promo-info-box .pib-box{
+  background:rgba(255,255,255,0.7);border-radius:8px;padding:8px 10px;
+}
+.promo-info-box .pib-box small{
+  display:block;font-size:.58rem;font-weight:800;letter-spacing:.8px;
+  text-transform:uppercase;color:#047857;margin-bottom:3px;
+}
+.promo-info-box .pib-box strong{
+  display:block;font-size:.88rem;font-weight:800;color:#027a48;
+}
+.promo-info-box .pib-box.highlight{
+  background:#027a48;
+}
+.promo-info-box .pib-box.highlight small{color:rgba(255,255,255,0.75)}
+.promo-info-box .pib-box.highlight strong{color:#fff}
 
 .stars-row{display:inline-flex;align-items:center;gap:2px;color:#f7b955;font-size:.85rem;letter-spacing:1px}
 .stars-row .far{color:#d8d8dc}
@@ -867,6 +927,75 @@ a{color:inherit;text-decoration:none}
 }
 .bz-summary-strip .bss-item.bz strong{color:#c4b5fd}
 
+/* ========== CLAIMS SPECIFIC ========== */
+.claims-hero{
+  background:linear-gradient(135deg,#12b76a 0%,#05603b 100%);
+  color:#fff;border-radius:20px;padding:26px 24px;
+  margin-bottom:18px;
+  box-shadow:0 16px 40px -16px rgba(18,183,106,0.55);
+  position:relative;overflow:hidden;
+}
+.claims-hero::after{
+  content:'';position:absolute;right:-60px;top:-60px;
+  width:220px;height:220px;border-radius:50%;
+  background:rgba(255,255,255,0.06);
+}
+.claims-hero .ch-logo{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:6px 12px;border-radius:99px;
+  background:rgba(255,255,255,0.15);
+  font-size:.68rem;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;
+  margin-bottom:14px;
+}
+.claims-hero h2{font-size:1.5rem;font-weight:800;letter-spacing:-.5px;margin-bottom:6px;position:relative}
+.claims-hero p{font-size:.86rem;color:rgba(255,255,255,0.8);line-height:1.55;max-width:600px;position:relative}
+.claims-hero .ch-split{
+  display:flex;gap:16px;margin-top:16px;position:relative;flex-wrap:wrap;
+}
+.claims-hero .ch-split .split-box{
+  background:rgba(255,255,255,0.12);
+  border-radius:12px;padding:12px 16px;
+  flex:1;min-width:140px;
+}
+.claims-hero .ch-split .split-box small{
+  display:block;font-size:.6rem;font-weight:800;letter-spacing:1.1px;
+  text-transform:uppercase;color:rgba(255,255,255,0.7);margin-bottom:4px;
+}
+.claims-hero .ch-split .split-box strong{
+  display:block;font-size:1.35rem;font-weight:800;letter-spacing:-.5px;
+}
+
+.claim-chip-code{
+  display:inline-flex;align-items:center;gap:5px;
+  font-family:'SF Mono',ui-monospace,'Monaco','Courier New',monospace;
+  font-size:.7rem;font-weight:800;letter-spacing:1px;
+  background:var(--success-s);color:#027a48;
+  padding:2px 8px;border-radius:6px;
+}
+
+.claim-hero-code{
+  text-align:center;padding:18px 14px;
+  background:linear-gradient(135deg,#ecfdf3 0%,#d1fadf 100%);
+  border:1px solid rgba(18,183,106,0.28);
+  border-radius:12px;margin-bottom:14px;
+}
+.claim-hero-code .chc-amount{
+  font-size:2rem;font-weight:800;letter-spacing:-1px;color:#027a48;
+  line-height:1;
+}
+.claim-hero-code .chc-amount small{font-size:1rem;opacity:.7;margin-right:4px}
+.claim-hero-code .chc-sub{
+  font-size:.78rem;color:#047857;margin-top:8px;font-weight:600;
+}
+.claim-hero-code .chc-code{
+  display:inline-block;
+  font-family:'SF Mono',ui-monospace,'Monaco','Courier New',monospace;
+  background:#027a48;color:#fff;
+  padding:3px 10px;border-radius:6px;
+  font-size:.72rem;font-weight:800;letter-spacing:1.4px;
+  margin-top:10px;
+}
+
 .sidebar-backdrop{
   position:fixed;inset:0;z-index:790;background:rgba(0,0,0,0.42);
   backdrop-filter:blur(3px);opacity:0;visibility:hidden;
@@ -884,6 +1013,8 @@ a{color:inherit;text-decoration:none}
   .bz-period-card .bzp-body{grid-template-columns:1fr}
   .bz-hero .bz-split{flex-direction:column}
   .bz-hero .bz-split .split-box{width:100%}
+  .claims-hero .ch-split{flex-direction:column}
+  .claims-hero .ch-split .split-box{width:100%}
 }
 @media(max-width:600px){
   .metrics-grid{grid-template-columns:1fr 1fr}
@@ -893,6 +1024,7 @@ a{color:inherit;text-decoration:none}
   .bz-tx-table th,.bz-tx-table td{padding:8px 6px;font-size:.74rem}
   .tier-picker{grid-template-columns:1fr 1fr}
   .tier-option.premium{grid-column:1/-1}
+  .promo-info-box .pib-grid{grid-template-columns:1fr}
 }
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.001ms !important;transition-duration:.001ms !important}
@@ -975,6 +1107,10 @@ a{color:inherit;text-decoration:none}
       <button class="nav-btn" data-view="float">
         <i class="fas fa-wallet"></i> Float Requests
         <span class="nav-badge zero" id="badgeFloat">0</span>
+      </button>
+      <button class="nav-btn claims" data-view="claims">
+        <i class="fas fa-hand-holding-dollar"></i> Claims
+        <span class="nav-badge green zero" id="badgeClaims">0</span>
       </button>
       <button class="nav-btn" data-view="transactions">
         <i class="fas fa-receipt"></i> Transactions
@@ -1067,6 +1203,8 @@ a{color:inherit;text-decoration:none}
             <button class="tab" data-filter="in_progress">In Progress</button>
             <button class="tab" data-filter="completed">Completed</button>
             <button class="tab" data-filter="cancelled">Cancelled</button>
+            <span class="tabs-sep"></span>
+            <button class="tab" data-filter="withPromo">With promo</button>
           </div>
           <div id="ridesList"><div class="loader"><span class="spinner"></span> Loading rides…</div></div>
         </div>
@@ -1091,6 +1229,8 @@ a{color:inherit;text-decoration:none}
             <button class="tab" data-filter="in_progress">In Progress</button>
             <button class="tab" data-filter="completed">Completed</button>
             <button class="tab" data-filter="cancelled">Cancelled</button>
+            <span class="tabs-sep"></span>
+            <button class="tab" data-filter="withPromo">With promo</button>
           </div>
           <div id="deliveriesList"><div class="loader"><span class="spinner"></span> Loading deliveries…</div></div>
         </div>
@@ -1249,6 +1389,44 @@ a{color:inherit;text-decoration:none}
         </div>
       </section>
 
+      <!-- CLAIMS -->
+      <section class="view" id="view-claims">
+
+        <div class="claims-hero">
+          <div class="ch-logo"><i class="fas fa-hand-holding-dollar"></i> Provider Claims</div>
+          <h2>Discount Reimbursements</h2>
+          <p>When a provider completes a promo-discounted ride or delivery, they give the customer a discount they don't collect from the customer. Providers claim that discount amount back from NTUMENI. Review each claim below and mark it as paid once you've reimbursed the provider.</p>
+          <div class="ch-split">
+            <div class="split-box">
+              <small>Awaiting review</small>
+              <strong>K <span id="claimsPendingAmount">0</span></strong>
+            </div>
+            <div class="split-box">
+              <small>Total paid out</small>
+              <strong>K <span id="claimsPaidAmount">0</span></strong>
+            </div>
+            <div class="split-box">
+              <small>Unclaimed (not submitted)</small>
+              <strong>K <span id="claimsUnclaimedAmount">0</span></strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div><h2>All Claims</h2><p id="claimsCount">—</p></div>
+          </div>
+          <div class="tabs" id="claimsTabs">
+            <button class="tab active" data-filter="all">All</button>
+            <button class="tab" data-filter="pending">Pending</button>
+            <button class="tab" data-filter="unclaimed">Unclaimed</button>
+            <button class="tab" data-filter="paid">Paid</button>
+          </div>
+          <div id="claimsList"><div class="loader"><span class="spinner"></span> Loading claims…</div></div>
+        </div>
+
+      </section>
+
       <!-- TRANSACTIONS -->
       <section class="view" id="view-transactions">
         <div class="metrics-grid" id="txMetrics"></div>
@@ -1263,6 +1441,8 @@ a{color:inherit;text-decoration:none}
             <button class="tab" data-filter="errand">Errands</button>
             <button class="tab" data-filter="completed">Completed</button>
             <button class="tab" data-filter="pending">Pending</button>
+            <span class="tabs-sep"></span>
+            <button class="tab" data-filter="withPromo">With promo</button>
           </div>
           <div id="txList"><div class="loader"><span class="spinner"></span> Loading transactions…</div></div>
         </div>
@@ -1602,7 +1782,7 @@ a{color:inherit;text-decoration:none}
             <div><h2>Platform Info</h2><p>System details</p></div>
           </div>
           <div class="detail-grid">
-            <div class="detail-box"><small>App version</small><strong>Admin v1.5</strong></div>
+            <div class="detail-box"><small>App version</small><strong>Admin v1.6</strong></div>
             <div class="detail-box"><small>Database</small><strong>Firebase RTDB</strong></div>
             <div class="detail-box"><small>Map provider</small><strong>OpenStreetMap</strong></div>
             <div class="detail-box"><small>Signed in as</small><strong id="settingsAdminEmail">—</strong></div>
@@ -1701,13 +1881,14 @@ const CHAUFFEUR_TIERS = [
 ];
 const TIER_IDS = CHAUFFEUR_TIERS.map(t => t.id);
 
-/* Roles considered "chauffeur" (backwards compatible with legacy 'driver' value) */
 const CHAUFFEUR_ROLES = ['driver', 'chauffeur'];
 
-/* Promo types + scope */
 const PROMO_TYPES = ['percent', 'fixed', 'free'];
 const PROMO_SCOPES = ['all', 'ride', 'delivery', 'errand'];
 const PROMO_SCOPE_LABELS = { all:'All services', ride:'Rides only', delivery:'Deliveries only', errand:'Errands only' };
+
+/* Claim statuses */
+const CLAIM_STATUSES = ['unclaimed', 'pending', 'paid'];
 
 /* ============================================================
    STATE
@@ -1722,6 +1903,7 @@ let state = {
   floatRequests: {},
   transactions: {},
   promoCodes: {},
+  claims: [],  // aggregated from providers/*/claims
   pricing: JSON.parse(JSON.stringify(DEFAULT_PRICING)),
   settings: JSON.parse(JSON.stringify(DEFAULT_SETTINGS)),
   floatRules: JSON.parse(JSON.stringify(DEFAULT_FLOAT_RULES))
@@ -1733,6 +1915,7 @@ let activeFilters = {
   providers: 'all',
   customers: 'all',
   float: 'all',
+  claims: 'all',
   transactions: 'all',
   promotions: 'all'
 };
@@ -1894,13 +2077,87 @@ function promoTypeChip(p){
   return `<span class="promo-type-chip ${esc(t)}">${esc(promoValueLabel(p))}</span>`;
 }
 
+/* ---- Promo info block for detail drawers ---- */
+function buildPromoInfoBox(data){
+  if (!data) return '';
+  const discount = Number(data.discountAmount || 0);
+  if (!discount || discount <= 0) return '';
+
+  const originalFare = Number(data.originalFare || 0) || (Number(data.fare || 0) + discount);
+  const fare = Number(data.fare || 0);
+  const code = String(data.promoCode || '').toUpperCase();
+
+  return `
+    <div class="promo-info-box">
+      <div class="pib-head">
+        <i class="fas fa-tag"></i>
+        <span>Promo applied</span>
+        ${code ? `<span class="pib-code">${esc(code)}</span>` : ''}
+      </div>
+      <div class="pib-grid">
+        <div class="pib-box">
+          <small>Original fare</small>
+          <strong>K ${esc(fmtPrice(originalFare))}</strong>
+        </div>
+        <div class="pib-box">
+          <small>Discount</small>
+          <strong>− K ${esc(fmtPrice(discount))}</strong>
+        </div>
+        <div class="pib-box">
+          <small>Customer paid</small>
+          <strong>K ${esc(fmtPrice(fare))}</strong>
+        </div>
+        <div class="pib-box highlight">
+          <small>Claimable from admin</small>
+          <strong>K ${esc(fmtPrice(discount))}</strong>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+/* ============================================================
+   CLAIMS AGGREGATION
+   ============================================================ */
+function aggregateClaims(){
+  const list = [];
+  Object.entries(state.providers).forEach(([uid, p]) => {
+    const cs = (p && p.claims) || {};
+    Object.entries(cs).forEach(([cid, c]) => {
+      if (!c) return;
+      const name = p.fullName || `${p.firstName||''} ${p.lastName||''}`.trim() || p.name || 'Provider';
+      list.push({
+        ...c,
+        _id: cid,
+        _providerId: uid,
+        _providerName: name,
+        _providerPhone: p.phone || '',
+        _providerPhoto: p.profileUrl || ''
+      });
+    });
+  });
+  list.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+  state.claims = list;
+}
+
+function claimTotals(){
+  let pending = 0, paid = 0, unclaimed = 0;
+  state.claims.forEach(c => {
+    const amt = Number(c.discount || 0);
+    if (c.status === 'pending')   pending += amt;
+    else if (c.status === 'paid') paid += amt;
+    else if (c.status === 'unclaimed') unclaimed += amt;
+  });
+  return { pending, paid, unclaimed };
+}
+
 /* ============================================================
    WEEK HELPERS (Monday start)
    ============================================================ */
 function getWeekStart(dateOrTs){
   const d = new Date(dateOrTs);
   d.setHours(0,0,0,0);
-  const day = d.getDay(); // 0=Sun, 1=Mon
+  const day = d.getDay();
   const diff = day === 0 ? -6 : 1 - day;
   d.setDate(d.getDate() + diff);
   return d;
@@ -2000,6 +2257,7 @@ const VIEW_META = {
   customers:   { title:'Customers',            sub:'Manage customer accounts' },
   promotions:  { title:'Promo Codes',          sub:'Discounts, vouchers and free rides' },
   float:       { title:'Float Requests',       sub:'Approve provider top-ups' },
+  claims:      { title:'Provider Claims',      sub:'Process discount reimbursements' },
   transactions:{ title:'Transactions',         sub:'All payment records' },
   bufferzone:  { title:'BUFFERZONE',           sub:'20% revenue share statement' },
   pricing:     { title:'Pricing & Fares',      sub:'Configure fare formulas' },
@@ -2028,6 +2286,7 @@ function switchView(view){
   if (view === 'customers')  renderCustomers();
   if (view === 'promotions') renderPromotions();
   if (view === 'float')      renderFloatRequests();
+  if (view === 'claims')     renderClaims();
   if (view === 'transactions')renderTransactions();
   if (view === 'bufferzone') renderBufferzone();
   if (view === 'pricing')    fillPricingForm();
@@ -2063,8 +2322,10 @@ function bootDataListeners(){
 
   unsubs.push(onValue(ref(database, 'providers'), snap=>{
     state.providers = snap.val() || {};
+    aggregateClaims();
     updateBadges();
     if ($('view-providers').classList.contains('active')) renderProviders();
+    if ($('view-claims').classList.contains('active')) renderClaims();
     renderDashboard();
   }));
 
@@ -2137,6 +2398,7 @@ function updateBadges(){
   const pendingErrands = Object.values(state.errands).filter(e=>e.status === 'pending').length;
   const pendingFloat = Object.values(state.floatRequests).filter(f=>f.status === 'pending').length;
   const activePromos = Object.values(state.promoCodes).filter(promoIsActive).length;
+  const pendingClaims = state.claims.filter(c => c.status === 'pending').length;
 
   setBadge('badgeProviders', pendingProviders);
   setBadge('badgeRides', activeRides);
@@ -2144,6 +2406,7 @@ function updateBadges(){
   setBadge('badgeErrands', pendingErrands);
   setBadge('badgeFloat', pendingFloat);
   setBadge('badgePromos', activePromos);
+  setBadge('badgeClaims', pendingClaims);
 }
 
 function setBadge(id, n){
@@ -2256,6 +2519,7 @@ function renderDashboard(){
   const pendingProviders = providers.filter(p=>p.status === 'pending').length;
   const pendingErrands = errands.filter(e=>e.status === 'pending').length;
   const pendingFloat = floats.filter(f=>f.status === 'pending').length;
+  const pendingClaims = state.claims.filter(c => c.status === 'pending').length;
 
   const chauffeurs = providers.filter(p => isChauffeurRole(p.role));
   const tierCounts = {
@@ -2273,6 +2537,7 @@ function renderDashboard(){
   const totalRevenue = txs.filter(t=>t.status === 'completed').reduce((s,t)=>s+(t.amount||0),0);
 
   const rules = state.floatRules;
+  const claimT = claimTotals();
 
   $('dashboardMetrics').innerHTML = `
     <div class="metric dark">
@@ -2341,6 +2606,12 @@ function renderDashboard(){
       <div class="m-sub">Awaiting approval</div>
       <div class="m-ico"><i class="fas fa-wallet"></i></div>
     </div>
+    <div class="metric green">
+      <div class="m-label">Claims pending</div>
+      <div class="m-value">${pendingClaims}</div>
+      <div class="m-sub">K ${esc(fmtPrice(claimT.pending))} to reimburse</div>
+      <div class="m-ico"><i class="fas fa-hand-holding-dollar"></i></div>
+    </div>
     <div class="metric">
       <div class="m-label">Commission</div>
       <div class="m-value">${esc(String(rules.rideCommissionPercent))}<small>%</small></div>
@@ -2356,10 +2627,10 @@ function renderDashboard(){
   `;
 
   const events = [];
-  rides.forEach(r=>events.push({ ts:r.createdAt||0, kind:'Ride', text:`${r.customerName||'Customer'} · ${r.pickup?.label||'Pickup'} → ${r.dropoff?.label||'Drop-off'}`, amount:r.fare, status:r.status, id:r.rideId, type:'ride' }));
-  delivs.forEach(d=>events.push({ ts:d.createdAt||0, kind:'Delivery', text:`${d.parcelName||'Parcel'} · ${d.vehicleLabel||''}`, amount:d.fare, status:d.status, id:d.deliveryId, type:'delivery' }));
-  errands.forEach(e=>events.push({ ts:e.createdAt||0, kind:'Errand', text:`${e.customerName||'Customer'} · ${e.title||'Task'}`, amount:e.willingToPay, status:e.status, id:e.errandId, type:'errand' }));
-  floats.forEach(f=>events.push({ ts:f.createdAt||0, kind:'Float', text:`${f.providerName||'Provider'} · top-up`, amount:f.amount, status:f.status, id:f.id, type:'float' }));
+  rides.forEach(r=>events.push({ ts:r.createdAt||0, kind:'Ride', text:`${r.customerName||'Customer'} · ${r.pickup?.label||'Pickup'} → ${r.dropoff?.label||'Drop-off'}`, amount:r.fare, status:r.status, id:r.rideId, type:'ride', hasPromo: Number(r.discountAmount||0) > 0 }));
+  delivs.forEach(d=>events.push({ ts:d.createdAt||0, kind:'Delivery', text:`${d.parcelName||'Parcel'} · ${d.vehicleLabel||''}`, amount:d.fare, status:d.status, id:d.deliveryId, type:'delivery', hasPromo: Number(d.discountAmount||0) > 0 }));
+  errands.forEach(e=>events.push({ ts:e.createdAt||0, kind:'Errand', text:`${e.customerName||'Customer'} · ${e.title||'Task'}`, amount:e.willingToPay, status:e.status, id:e.errandId, type:'errand', hasPromo: false }));
+  floats.forEach(f=>events.push({ ts:f.createdAt||0, kind:'Float', text:`${f.providerName||'Provider'} · top-up`, amount:f.amount, status:f.status, id:f.id, type:'float', hasPromo: false }));
 
   events.sort((a,b)=>b.ts-a.ts);
 
@@ -2371,7 +2642,10 @@ function renderDashboard(){
       <div class="list-item" data-activity-type="${esc(ev.type)}" data-activity-id="${esc(ev.id)}">
         <div class="li-avatar"><i class="fas ${ev.type==='ride'?'fa-car-side':ev.type==='delivery'?'fa-box':ev.type==='errand'?'fa-clipboard-list':'fa-wallet'}"></i></div>
         <div class="li-body">
-          <div class="li-title">${esc(ev.kind)} · ${esc(ev.text)}</div>
+          <div class="li-title">
+            ${esc(ev.kind)} · ${esc(ev.text)}
+            ${ev.hasPromo ? '<span class="claim-chip-code"><i class="fas fa-tag"></i> PROMO</span>' : ''}
+          </div>
           <div class="li-sub">${esc(timeAgo(ev.ts))}</div>
         </div>
         <div class="li-right">
@@ -2464,7 +2738,12 @@ document.querySelectorAll('#ridesTabs .tab').forEach(t=>{
 
 function renderRides(){
   const all = Object.values(state.rides).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
-  const filtered = activeFilters.rides === 'all' ? all : all.filter(r=>r.status === activeFilters.rides);
+  let filtered = all;
+  if (activeFilters.rides === 'withPromo'){
+    filtered = all.filter(r => Number(r.discountAmount || 0) > 0);
+  } else if (activeFilters.rides !== 'all'){
+    filtered = all.filter(r=>r.status === activeFilters.rides);
+  }
   $('ridesCount').textContent = `${filtered.length} ride${filtered.length===1?'':'s'}`;
 
   if (!filtered.length){
@@ -2475,11 +2754,15 @@ function renderRides(){
       const drop = r.dropoff?.label || 'Drop-off';
       const stopTag = r.stop ? ' · stop' : '';
       const tier = r.chauffeurTier || r.providerTier || '';
+      const hasPromo = Number(r.discountAmount || 0) > 0;
       return `
         <div class="list-item" data-ride="${esc(r.rideId)}">
           <div class="li-avatar"><i class="fas fa-car-side"></i></div>
           <div class="li-body">
-            <div class="li-title">${esc(r.customerName || 'Customer')}</div>
+            <div class="li-title">
+              ${esc(r.customerName || 'Customer')}
+              ${hasPromo ? `<span class="claim-chip-code"><i class="fas fa-tag"></i> ${esc(r.promoCode || 'PROMO')}</span>` : ''}
+            </div>
             <div class="li-sub">${esc(pickup)} → ${esc(drop)}${stopTag}</div>
           </div>
           <div class="li-right">
@@ -2612,6 +2895,8 @@ async function openRideDetail(id){
     </div>
   `;
 
+  const promoBox = buildPromoInfoBox(r);
+
   $('drawerBody').innerHTML = `
     <div class="detail-section">
       <h3><i class="fas fa-circle-info"></i> Status</h3>
@@ -2623,6 +2908,8 @@ async function openRideDetail(id){
         <div class="detail-box full"><small>Created</small><strong>${esc(fmtDateTime(r.createdAt))} (${esc(timeAgo(r.createdAt))})</strong></div>
       </div>
     </div>
+
+    ${promoBox}
 
     <div class="detail-section">
       <h3><i class="fas fa-percent"></i> Commission</h3>
@@ -2763,7 +3050,12 @@ document.querySelectorAll('#deliveriesTabs .tab').forEach(t=>{
 
 function renderDeliveries(){
   const all = Object.values(state.deliveries).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
-  const filtered = activeFilters.deliveries === 'all' ? all : all.filter(d=>d.status === activeFilters.deliveries);
+  let filtered = all;
+  if (activeFilters.deliveries === 'withPromo'){
+    filtered = all.filter(d => Number(d.discountAmount || 0) > 0);
+  } else if (activeFilters.deliveries !== 'all'){
+    filtered = all.filter(d=>d.status === activeFilters.deliveries);
+  }
   $('deliveriesCount').textContent = `${filtered.length} deliver${filtered.length===1?'y':'ies'}`;
 
   if (!filtered.length){
@@ -2773,11 +3065,15 @@ function renderDeliveries(){
       const pickup = d.pickup?.label || 'Pickup';
       const drop = d.dropoff?.label || 'Drop-off';
       const stopTag = d.stop ? ' · stop' : '';
+      const hasPromo = Number(d.discountAmount || 0) > 0;
       return `
         <div class="list-item" data-delivery="${esc(d.deliveryId)}">
           <div class="li-avatar"><i class="fas fa-box"></i></div>
           <div class="li-body">
-            <div class="li-title">${esc(d.parcelName || 'Parcel')}</div>
+            <div class="li-title">
+              ${esc(d.parcelName || 'Parcel')}
+              ${hasPromo ? `<span class="claim-chip-code"><i class="fas fa-tag"></i> ${esc(d.promoCode || 'PROMO')}</span>` : ''}
+            </div>
             <div class="li-sub">${esc(pickup)} → ${esc(drop)}${stopTag}</div>
           </div>
           <div class="li-right">
@@ -2907,6 +3203,8 @@ function openDeliveryDetail(id){
     </div>
   `;
 
+  const promoBox = buildPromoInfoBox(d);
+
   $('drawerBody').innerHTML = `
     <div class="detail-section">
       <h3><i class="fas fa-circle-info"></i> Status</h3>
@@ -2918,6 +3216,8 @@ function openDeliveryDetail(id){
         <div class="detail-box full"><small>Created</small><strong>${esc(fmtDateTime(d.createdAt))} (${esc(timeAgo(d.createdAt))})</strong></div>
       </div>
     </div>
+
+    ${promoBox}
 
     <div class="detail-section">
       <h3><i class="fas fa-percent"></i> Commission</h3>
@@ -3300,7 +3600,6 @@ function renderProviders(){
   if (f === 'banned'){
     filtered = all.filter(p => p.banned === true);
   } else if (TIER_IDS.includes(f)){
-    // Chauffeur tier filters
     filtered = all.filter(p =>
       p.banned !== true &&
       isChauffeurRole(p.role) &&
@@ -3325,6 +3624,7 @@ function renderProviders(){
     const tier = getProviderTier(p);
     const chauffeur = isChauffeurRole(role);
     const needsTier = chauffeur && !tier && !isBanned;
+    const claimCount = p.claims ? Object.values(p.claims).filter(c => c.status === 'pending').length : 0;
     return `
       <div class="list-item" data-provider="${esc(p._id)}">
         <div class="li-avatar">${p.profileUrl?`<img src="${esc(p.profileUrl)}" alt="">`:`<i class="fas fa-user"></i>`}</div>
@@ -3334,6 +3634,7 @@ function renderProviders(){
             ${role ? roleChip(role) : ''}
             ${tier ? tierChip(tier) : ''}
             ${needsTier ? `<span class="status-chip pending" title="No category assigned"><i class="fas fa-triangle-exclamation"></i> No tier</span>` : ''}
+            ${claimCount > 0 ? `<span class="claim-chip-code"><i class="fas fa-hand-holding-dollar"></i> ${claimCount}</span>` : ''}
           </div>
           <div class="li-sub">${esc(p.email||'')} · ${esc(p.phone||'')}</div>
         </div>
@@ -3423,8 +3724,20 @@ function openProviderDetail(id){
     </div>
   ` : '';
 
-  /* ---- Chauffeur detection + tier section ---- */
-  /* Show tier picker if the role is a chauffeur OR if a tier already exists (legacy safety) */
+  const providerClaims = p.claims ? Object.entries(p.claims).map(([cid,c]) => ({...c, _id:cid})) : [];
+  const claimsBlock = providerClaims.length ? `
+    <div class="detail-section">
+      <h3><i class="fas fa-hand-holding-dollar"></i> Claims (${providerClaims.length})</h3>
+      <div class="detail-grid">
+        <div class="detail-box"><small>Pending</small><strong>K ${esc(fmtPrice(providerClaims.filter(c=>c.status==='pending').reduce((s,c)=>s+Number(c.discount||0),0)))}</strong></div>
+        <div class="detail-box"><small>Paid</small><strong>K ${esc(fmtPrice(providerClaims.filter(c=>c.status==='paid').reduce((s,c)=>s+Number(c.discount||0),0)))}</strong></div>
+      </div>
+      <button class="btn btn-green btn-sm" id="openProviderClaimsBtn" style="width:100%;margin-top:10px;">
+        <i class="fas fa-list"></i> View claims
+      </button>
+    </div>
+  ` : '';
+
   const chauffeur = isChauffeurRole(p.role) || !!getProviderTier(p);
   let selectedTier = getProviderTier(p);
 
@@ -3459,6 +3772,8 @@ function openProviderDetail(id){
     ${tierSection}
 
     ${ratingsBlock}
+
+    ${claimsBlock}
 
     <div class="detail-section">
       <h3><i class="fas fa-percent"></i> Float rule eligibility</h3>
@@ -3500,7 +3815,6 @@ function openProviderDetail(id){
     ` : ''}
   `;
 
-  /* ---- Footer buttons ---- */
   const foot = [];
   const alreadyApproved = p.status === 'approved' && !isBanned;
 
@@ -3521,12 +3835,10 @@ function openProviderDetail(id){
 
   openDrawer();
 
-  /* ---- Wire up lightbox ---- */
   $('drawerBody').querySelectorAll('[data-lightbox]').forEach(el=>{
     el.addEventListener('click', ()=>openLightbox(el.dataset.lightbox));
   });
 
-  /* ---- Wire up tier picker ---- */
   const tierPicker = $('tierPicker');
   if (tierPicker){
     tierPicker.querySelectorAll('[data-tier]').forEach(el=>{
@@ -3557,7 +3869,6 @@ function openProviderDetail(id){
           tierUpdatedAt: Date.now(),
           tierUpdatedBy: currentAdmin ? currentAdmin.uid : 'admin'
         });
-        // keep local state in sync so the drawer reflects the change instantly
         if (state.providers[id]) state.providers[id].chauffeurTier = selectedTier;
         const catBox = $('drawerBody').querySelector('[data-tier-display]');
         if (catBox) catBox.innerHTML = tierChip(selectedTier);
@@ -3570,7 +3881,20 @@ function openProviderDetail(id){
     });
   }
 
-  /* ---- Approval flow (requires tier for chauffeurs) ---- */
+  const openProvClaimsBtn = $('openProviderClaimsBtn');
+  if (openProvClaimsBtn){
+    openProvClaimsBtn.addEventListener('click', ()=>{
+      closeDrawer();
+      setTimeout(()=>{
+        switchView('claims');
+        // Pre-filter to this provider's claims via hash-like state
+        activeFilters.claims = 'all';
+        document.querySelectorAll('#claimsTabs .tab').forEach(x=>x.classList.toggle('active', x.dataset.filter === 'all'));
+        renderClaims(uid => uid === id);
+      }, 300);
+    });
+  }
+
   const approveBtn = $('provApproveBtn');
   if (approveBtn){
     approveBtn.addEventListener('click', ()=>{
@@ -3599,7 +3923,6 @@ function openProviderDetail(id){
   $('provDeleteBtn').addEventListener('click', ()=>deleteProvider(id, true));
   $('provCloseBtn').addEventListener('click', closeDrawer);
 
-  /* ---- Float adjustment ---- */
   const adjBtn = $('floatAdjustBtn');
   if (adjBtn) adjBtn.addEventListener('click', async ()=>{
     const input = $('floatAdjustInput');
@@ -3618,7 +3941,6 @@ function openProviderDetail(id){
   });
 }
 
-/* ---- Approve a provider (with optional chauffeur tier) ---- */
 async function approveProvider(id, tier){
   try {
     const updates = {
@@ -3947,7 +4269,6 @@ function renderPromotions(){
   });
 }
 
-/* ---- Promo form: value field adapts to selected type ---- */
 function syncPromoValueField(){
   const t = $('promoType').value;
   const field = $('promoValueField');
@@ -3969,7 +4290,6 @@ function syncPromoValueField(){
 $('promoType').addEventListener('change', syncPromoValueField);
 syncPromoValueField();
 
-/* ---- Create promo handler ---- */
 $('createPromoBtn').addEventListener('click', async () => {
   const rawCode = ($('promoCode').value || '').trim().toUpperCase().replace(/\s+/g, '');
   const type = $('promoType').value;
@@ -3988,7 +4308,6 @@ $('createPromoBtn').addEventListener('click', async () => {
   if (type === 'percent' && (value <= 0 || value > 100)){ toast('Percentage must be between 1 and 100'); return; }
   if (type === 'fixed' && value <= 0){ toast('Enter a valid amount'); return; }
 
-  // Uniqueness check
   const exists = Object.values(state.promoCodes).some(p => String(p.code || '').toUpperCase() === rawCode);
   if (exists){ toast('That code already exists'); return; }
 
@@ -4016,7 +4335,6 @@ $('createPromoBtn').addEventListener('click', async () => {
   try {
     await push(ref(database, 'system/promoCodes'), promo);
     toast(`Promo ${rawCode} created`);
-    // reset form
     $('promoCode').value = '';
     $('promoValue').value = '';
     $('promoMinFare').value = '';
@@ -4031,7 +4349,6 @@ $('createPromoBtn').addEventListener('click', async () => {
   }
 });
 
-/* ---- Promo detail drawer ---- */
 function openPromoDetail(id){
   const p = state.promoCodes[id];
   if (!p){ toast('Promo not found'); return; }
@@ -4049,6 +4366,22 @@ function openPromoDetail(id){
     : p.type === 'fixed' ? 'Fixed amount off'
     : p.type === 'free' ? 'Free ride / delivery'
     : p.type;
+
+  // Count usage in rides/deliveries
+  const codeUpper = String(p.code || '').toUpperCase();
+  let usedInRides = 0, usedInDeliveries = 0, totalDiscountGiven = 0;
+  Object.values(state.rides).forEach(r => {
+    if (String(r.promoCode || '').toUpperCase() === codeUpper) {
+      usedInRides++;
+      totalDiscountGiven += Number(r.discountAmount || 0);
+    }
+  });
+  Object.values(state.deliveries).forEach(d => {
+    if (String(d.promoCode || '').toUpperCase() === codeUpper) {
+      usedInDeliveries++;
+      totalDiscountGiven += Number(d.discountAmount || 0);
+    }
+  });
 
   $('drawerBody').innerHTML = `
     <div class="detail-section">
@@ -4069,6 +4402,20 @@ function openPromoDetail(id){
     </div>
 
     <div class="detail-section">
+      <h3><i class="fas fa-chart-simple"></i> Usage Summary</h3>
+      <div class="detail-grid">
+        <div class="detail-box"><small>Rides used</small><strong>${usedInRides}</strong></div>
+        <div class="detail-box"><small>Deliveries used</small><strong>${usedInDeliveries}</strong></div>
+        <div class="detail-box full"><small>Total discount given</small><strong>K ${esc(fmtPrice(totalDiscountGiven))}</strong></div>
+      </div>
+      ${(usedInRides + usedInDeliveries) > 0 ? `
+        <button class="btn btn-ghost btn-sm" id="viewPromoUsageBtn" style="width:100%;margin-top:10px;">
+          <i class="fas fa-list"></i> View transactions that used this code
+        </button>
+      ` : ''}
+    </div>
+
+    <div class="detail-section">
       <h3><i class="fas fa-calendar"></i> Dates</h3>
       <div class="detail-grid">
         <div class="detail-box full"><small>Created</small><strong>${esc(fmtDateTime(p.createdAt))}</strong></div>
@@ -4080,7 +4427,7 @@ function openPromoDetail(id){
       <div class="ib-ico"><i class="fas fa-circle-info"></i></div>
       <div class="ib-body">
         <strong>How customers use it</strong>
-        <p>They enter the code on the checkout screen. If the fare qualifies (meets the minimum and the code applies to that service), the discount is applied automatically.</p>
+        <p>They enter the code on the checkout screen. If the fare qualifies (meets the minimum and the code applies to that service), the discount is applied automatically. Providers then claim the discount back from admin.</p>
       </div>
     </div>
   `;
@@ -4096,6 +4443,14 @@ function openPromoDetail(id){
   $('promoToggleBtn').addEventListener('click', () => togglePromo(id, !p.active));
   $('promoDeleteBtn').addEventListener('click', () => deletePromo(id, true));
   $('promoCloseBtn').addEventListener('click', closeDrawer);
+
+  const usageBtn = $('viewPromoUsageBtn');
+  if (usageBtn){
+    usageBtn.addEventListener('click', ()=>{
+      closeDrawer();
+      setTimeout(()=>{ switchView('rides'); activeFilters.rides = 'withPromo'; document.querySelectorAll('#ridesTabs .tab').forEach(x=>x.classList.toggle('active', x.dataset.filter === 'withPromo')); renderRides(); }, 250);
+    });
+  }
 }
 
 async function togglePromo(id, active){
@@ -4290,6 +4645,223 @@ async function deleteFloatRequest(id, fromDrawer){
 }
 
 /* ============================================================
+   CLAIMS
+   ============================================================ */
+document.querySelectorAll('#claimsTabs .tab').forEach(t=>{
+  t.addEventListener('click', ()=>{
+    document.querySelectorAll('#claimsTabs .tab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    activeFilters.claims = t.dataset.filter;
+    renderClaims();
+  });
+});
+
+function renderClaims(filterFn){
+  const all = state.claims.slice();
+
+  // Compute totals for the hero cards (always on full dataset)
+  const t = claimTotals();
+  $('claimsPendingAmount').textContent = fmtMoney(t.pending);
+  $('claimsPaidAmount').textContent = fmtMoney(t.paid);
+  $('claimsUnclaimedAmount').textContent = fmtMoney(t.unclaimed);
+
+  let filtered = all;
+  if (typeof filterFn === 'function'){
+    filtered = all.filter(c => filterFn(c._providerId));
+  } else if (activeFilters.claims !== 'all'){
+    filtered = all.filter(c => c.status === activeFilters.claims);
+  }
+
+  $('claimsCount').textContent = `${filtered.length} claim${filtered.length===1?'':'s'}`;
+
+  if (!filtered.length){
+    $('claimsList').innerHTML = `
+      <div class="empty">
+        <i class="fas fa-hand-holding-dollar"></i>
+        <h3>No claims</h3>
+        <p>When providers complete promo-discounted rides or deliveries, their discount claims will appear here.</p>
+      </div>`;
+    return;
+  }
+
+  $('claimsList').innerHTML = filtered.map(c => {
+    const status = CLAIM_STATUSES.includes(c.status) ? c.status : 'pending';
+    const amount = Number(c.discount || 0);
+    const typeLabel = c.type === 'ride' ? 'Ride' : c.type === 'delivery' ? 'Delivery' : (c.type || 'Request');
+    const typeIcon = c.type === 'ride' ? 'fa-car-side' : c.type === 'delivery' ? 'fa-box' : 'fa-clipboard-list';
+    const photo = c._providerPhoto;
+
+    return `
+      <div class="list-item" data-claim="${esc(c._id)}" data-claim-provider="${esc(c._providerId)}">
+        <div class="li-avatar">${photo ? `<img src="${esc(photo)}" alt="">` : `<i class="fas ${typeIcon}"></i>`}</div>
+        <div class="li-body">
+          <div class="li-title">
+            ${esc(c._providerName)}
+            ${c.promoCode ? `<span class="claim-chip-code"><i class="fas fa-tag"></i> ${esc(c.promoCode)}</span>` : ''}
+          </div>
+          <div class="li-sub">
+            <i class="fas ${typeIcon}" style="font-size:.7rem;color:var(--tt);margin-right:4px;"></i>
+            ${esc(typeLabel)} · ${esc(timeAgo(c.createdAt))}
+          </div>
+        </div>
+        <div class="li-right">
+          <strong>K ${esc(fmtPrice(amount))}</strong>
+          <div>${statusChip(status)}</div>
+        </div>
+        <div class="li-actions">
+          <button class="li-del-btn" data-claim-del="${esc(c._id)}" data-claim-provider-del="${esc(c._providerId)}" title="Delete claim"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  $('claimsList').querySelectorAll('[data-claim]').forEach(el=>{
+    el.addEventListener('click', (e)=>{
+      if (e.target.closest('[data-claim-del]')) return;
+      openClaimDetail(el.dataset.claimProvider, el.dataset.claim);
+    });
+  });
+  $('claimsList').querySelectorAll('[data-claim-del]').forEach(btn=>{
+    btn.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      deleteClaim(btn.dataset.claimProviderDel, btn.dataset.claimDel);
+    });
+  });
+}
+
+function openClaimDetail(providerId, claimId){
+  const provider = state.providers[providerId];
+  if (!provider){ toast('Provider not found'); return; }
+  const claim = (provider.claims || {})[claimId];
+  if (!claim){ toast('Claim not found'); return; }
+
+  destroyDetailMap();
+  $('drawerTitle').textContent = 'Claim details';
+  $('drawerSub').textContent = (provider.fullName || provider.name || 'Provider') + ' · ' + (claim.promoCode || 'Discount');
+
+  const status = CLAIM_STATUSES.includes(claim.status) ? claim.status : 'pending';
+  const amount = Number(claim.discount || 0);
+  const fare = Number(claim.fare || 0);
+  const originalFare = fare + amount;
+  const typeLabel = claim.type === 'ride' ? 'Ride' : claim.type === 'delivery' ? 'Delivery' : (claim.type || 'Request');
+
+  $('drawerBody').innerHTML = `
+    <div class="detail-section">
+      <div class="claim-hero-code">
+        <div class="chc-amount"><small>K</small>${esc(fmtPrice(amount))}</div>
+        <div class="chc-sub">Discount amount claimable from NTUMENI</div>
+        ${claim.promoCode ? `<div class="chc-code">${esc(claim.promoCode)}</div>` : ''}
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <h3><i class="fas fa-circle-info"></i> Claim</h3>
+      <div class="detail-grid">
+        <div class="detail-box"><small>Status</small><strong>${statusChip(status)}</strong></div>
+        <div class="detail-box"><small>Type</small><strong>${esc(typeLabel)}</strong></div>
+        <div class="detail-box"><small>Original fare</small><strong>K ${esc(fmtPrice(originalFare))}</strong></div>
+        <div class="detail-box"><small>Customer paid</small><strong>K ${esc(fmtPrice(fare))}</strong></div>
+        <div class="detail-box"><small>Discount given</small><strong>K ${esc(fmtPrice(amount))}</strong></div>
+        <div class="detail-box"><small>Reference</small><strong style="font-family:monospace;font-size:.72rem;">${esc(String(claim.referenceId || '—')).slice(0, 12)}…</strong></div>
+        <div class="detail-box full"><small>Created</small><strong>${esc(fmtDateTime(claim.createdAt))}</strong></div>
+        ${claim.submittedAt ? `<div class="detail-box full"><small>Submitted by provider</small><strong>${esc(fmtDateTime(claim.submittedAt))}</strong></div>` : ''}
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <h3><i class="fas fa-user"></i> Provider</h3>
+      <div class="detail-grid">
+        <div class="detail-box full"><small>Name</small><strong>${esc(provider.fullName || provider.name || 'Provider')}</strong></div>
+        <div class="detail-box full"><small>Phone</small><strong>${esc(provider.phone || '—')}</strong></div>
+        <div class="detail-box full"><small>Float balance</small><strong>K ${esc(fmtPrice(provider.floatBalance || 0))}</strong></div>
+        <div class="detail-box full"><small>UID</small><strong style="font-family:monospace;font-size:.72rem;">${esc(providerId)}</strong></div>
+      </div>
+    </div>
+
+    ${claim.note ? `
+      <div class="info-banner">
+        <div class="ib-ico"><i class="fas fa-circle-info"></i></div>
+        <div class="ib-body">
+          <strong>Note</strong>
+          <p>${esc(claim.note)}</p>
+        </div>
+      </div>
+    ` : ''}
+
+    ${claim.status === 'paid' ? `
+      <div class="info-banner green">
+        <div class="ib-ico"><i class="fas fa-check-circle"></i></div>
+        <div class="ib-body">
+          <strong>Paid</strong>
+          <p>
+            Paid on ${esc(fmtDateTime(claim.paidAt))}
+            ${claim.paidReference ? ` · Ref: ${esc(claim.paidReference)}` : ''}
+          </p>
+        </div>
+      </div>
+    ` : ''}
+  `;
+
+  const foot = [];
+  if (status === 'pending' || status === 'unclaimed'){
+    foot.push(`<button class="btn btn-green" id="claimMarkPaidBtn"><i class="fas fa-check"></i> Mark as paid</button>`);
+  }
+  foot.push(`<button class="btn btn-danger" id="claimDeleteBtn"><i class="fas fa-trash"></i> Delete claim</button>`);
+  foot.push(`<button class="btn btn-ghost" id="claimCloseBtn">Close</button>`);
+  $('drawerFoot').innerHTML = foot.join('');
+
+  openDrawer();
+
+  const markPaidBtn = $('claimMarkPaidBtn');
+  if (markPaidBtn) markPaidBtn.addEventListener('click', ()=>markClaimAsPaid(providerId, claimId));
+
+  $('claimDeleteBtn').addEventListener('click', ()=>deleteClaim(providerId, claimId, true));
+  $('claimCloseBtn').addEventListener('click', closeDrawer);
+}
+
+async function markClaimAsPaid(providerId, claimId){
+  const provider = state.providers[providerId];
+  if (!provider) return;
+  const claim = (provider.claims || {})[claimId];
+  if (!claim) return;
+
+  const amount = Number(claim.discount || 0);
+  const ref = prompt(
+    `Mark this claim as PAID?\n\nProvider: ${provider.fullName || provider.name || 'Provider'}\nAmount: K ${amount}\n\nOptional: enter a payment reference (e.g. mobile money txn ID, bank ref). Leave blank to skip.`,
+    ''
+  );
+  if (ref === null) return; // cancelled
+
+  const btn = $('claimMarkPaidBtn');
+  if (btn){ btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Marking…'; }
+
+  try {
+    await update(ref(database, `providers/${providerId}/claims/${claimId}`), {
+      status: 'paid',
+      paidAt: Date.now(),
+      paidBy: currentAdmin ? currentAdmin.uid : 'admin',
+      paidReference: (ref || '').trim()
+    });
+    toast(`Claim of K ${amount} marked as paid`);
+    closeDrawer();
+  } catch (err){
+    toast('Could not mark as paid: ' + err.message);
+    if (btn){ btn.disabled = false; btn.innerHTML = '<i class="fas fa-check"></i> Mark as paid'; }
+  }
+}
+
+async function deleteClaim(providerId, claimId, fromDrawer){
+  if (!confirm('Permanently DELETE this claim record? This cannot be undone.')) return;
+  try {
+    await remove(ref(database, `providers/${providerId}/claims/${claimId}`));
+    toast('Claim deleted');
+    if (fromDrawer) closeDrawer();
+  } catch (err){
+    toast('Could not delete: ' + err.message);
+  }
+}
+
+/* ============================================================
    TRANSACTIONS
    ============================================================ */
 document.querySelectorAll('#txTabs .tab').forEach(t=>{
@@ -4309,6 +4881,20 @@ function renderTransactions(){
   const f = activeFilters.transactions;
   if (f === 'ride' || f === 'delivery' || f === 'errand') filtered = all.filter(t=>t.type === f);
   else if (f === 'completed' || f === 'pending') filtered = all.filter(t=>t.status === f);
+  else if (f === 'withPromo'){
+    filtered = all.filter(t => {
+      // Check if referenced ride/delivery had a promo
+      if (t.type === 'ride'){
+        const r = state.rides[t.referenceId];
+        return r && Number(r.discountAmount || 0) > 0;
+      }
+      if (t.type === 'delivery'){
+        const d = state.deliveries[t.referenceId];
+        return d && Number(d.discountAmount || 0) > 0;
+      }
+      return false;
+    });
+  }
 
   const totalCompleted = all.filter(t=>t.status === 'completed').reduce((s,t)=>s+(t.amount||0),0);
   const totalPending = all.filter(t=>t.status === 'pending').reduce((s,t)=>s+(t.amount||0),0);
@@ -4346,12 +4932,39 @@ function renderTransactions(){
 
   $('txList').innerHTML = filtered.map(t=>{
     const icon = t.type==='ride'?'fa-car-side':t.type==='delivery'?'fa-box':'fa-clipboard-list';
+
+    // Determine if promo was used
+    let hasPromo = false;
+    let promoCode = '';
+    let discountAmt = 0;
+    if (t.type === 'ride'){
+      const r = state.rides[t.referenceId];
+      if (r && Number(r.discountAmount || 0) > 0){
+        hasPromo = true;
+        promoCode = r.promoCode || '';
+        discountAmt = Number(r.discountAmount || 0);
+      }
+    } else if (t.type === 'delivery'){
+      const d = state.deliveries[t.referenceId];
+      if (d && Number(d.discountAmount || 0) > 0){
+        hasPromo = true;
+        promoCode = d.promoCode || '';
+        discountAmt = Number(d.discountAmount || 0);
+      }
+    }
+
     return `
-      <div class="list-item">
+      <div class="list-item" data-tx-open="${esc(t.referenceId || '')}" data-tx-type="${esc(t.type || '')}">
         <div class="li-avatar"><i class="fas ${icon}"></i></div>
         <div class="li-body">
-          <div class="li-title">${esc(t.description||t.type||'Transaction')}</div>
-          <div class="li-sub">${esc(t.type||'')} · ${esc(fmtDateTime(t.createdAt))}</div>
+          <div class="li-title">
+            ${esc(t.description||t.type||'Transaction')}
+            ${hasPromo ? `<span class="claim-chip-code"><i class="fas fa-tag"></i> ${esc(promoCode || 'PROMO')}</span>` : ''}
+          </div>
+          <div class="li-sub">
+            ${esc(t.type||'')} · ${esc(fmtDateTime(t.createdAt))}
+            ${hasPromo ? ` · discount K ${esc(fmtPrice(discountAmt))}` : ''}
+          </div>
         </div>
         <div class="li-right">
           <strong>K ${esc(fmtPrice(t.amount))}</strong>
@@ -4368,6 +4981,17 @@ function renderTransactions(){
     btn.addEventListener('click', (e)=>{
       e.stopPropagation();
       deleteTransaction(btn.dataset.txDel);
+    });
+  });
+  $('txList').querySelectorAll('[data-tx-open]').forEach(el=>{
+    el.addEventListener('click', (e)=>{
+      if (e.target.closest('[data-tx-del]')) return;
+      const ref = el.dataset.txOpen;
+      const type = el.dataset.txType;
+      if (!ref) return;
+      if (type === 'ride' && state.rides[ref]) openRideDetail(ref);
+      else if (type === 'delivery' && state.deliveries[ref]) openDeliveryDetail(ref);
+      else if (type === 'errand' && state.errands[ref]) openErrandDetail(ref);
     });
   });
 }
@@ -4391,8 +5015,7 @@ function computeBufferzoneData(){
     .filter(t => t.status === 'completed' && isFinite(t.amount) && t.amount > 0)
     .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
 
-  // Group into 7-day buckets (Monday-start weeks)
-  const weekMap = new Map(); // weekStartTs -> { weekStart, weekEnd, txs:[], gross, owed }
+  const weekMap = new Map();
   allTx.forEach(t => {
     const ws = getWeekStart(t.createdAt || Date.now());
     const key = ws.getTime();
@@ -4420,7 +5043,6 @@ function computeBufferzoneData(){
   const totalGross = allTx.reduce((s, t) => s + (t.amount || 0), 0);
   const totalOwed = Math.round(totalGross * BUFFERZONE_PERCENT / 100);
 
-  // Current week
   const now = new Date();
   const curWeekStart = getWeekStart(now);
   const curWeekEnd = getWeekEnd(curWeekStart);
@@ -4451,7 +5073,6 @@ function computeBufferzoneData(){
 function renderBufferzone(){
   const data = computeBufferzoneData();
 
-  // Hero metrics
   $('bzMetrics').innerHTML = `
     <div class="metric bz">
       <div class="m-label">Total owed to BufferZone</div>
@@ -4479,7 +5100,6 @@ function renderBufferzone(){
     </div>
   `;
 
-  // Current period card
   $('bzCurrentPeriod').textContent =
     `${data.curWeekStart.toLocaleDateString(undefined, { day:'2-digit', month:'short', year:'numeric' })} → ` +
     `${data.curWeekEnd.toLocaleDateString(undefined, { day:'2-digit', month:'short', year:'numeric' })}`;
@@ -4487,7 +5107,6 @@ function renderBufferzone(){
   $('bzCurGross').textContent = fmtMoney(data.curWeekGross);
   $('bzCurOwed').textContent = fmtMoney(data.curWeekOwed);
 
-  // Weekly breakdown
   if (!data.weeks.length){
     $('bzWeeklyList').innerHTML = `<div class="empty"><i class="fas fa-calendar-week"></i><h3>No weekly data yet</h3><p>Completed transactions will appear here grouped by week.</p></div>`;
   } else {
@@ -4512,7 +5131,6 @@ function renderBufferzone(){
     }).join('');
   }
 
-  // Full ledger table
   $('bzLedgerCount').textContent =
     `${data.allTx.length} completed transaction${data.allTx.length===1?'':'s'} · 20% share each`;
 
@@ -4527,11 +5145,25 @@ function renderBufferzone(){
       const bzShare = Math.round((t.amount || 0) * BUFFERZONE_PERCENT / 100);
       const type = String(t.type || 'other').toLowerCase();
       const typeLabel = type.charAt(0).toUpperCase() + type.slice(1);
+
+      // Check promo
+      let hasPromo = false;
+      if (t.type === 'ride'){
+        const r = state.rides[t.referenceId];
+        hasPromo = !!(r && Number(r.discountAmount || 0) > 0);
+      } else if (t.type === 'delivery'){
+        const d = state.deliveries[t.referenceId];
+        hasPromo = !!(d && Number(d.discountAmount || 0) > 0);
+      }
+
       return `
         <tr>
           <td style="white-space:nowrap;">${esc(fmtDateTime(t.createdAt))}</td>
           <td><span class="tz-type ${esc(type)}">${esc(typeLabel)}</span></td>
-          <td style="max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(t.description || '—')}</td>
+          <td style="max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+            ${esc(t.description || '—')}
+            ${hasPromo ? '<span class="claim-chip-code" style="margin-left:6px;"><i class="fas fa-tag"></i> PROMO</span>' : ''}
+          </td>
           <td style="text-align:right;white-space:nowrap;"><span class="tz-amount">K ${esc(fmtMoney(t.amount))}</span></td>
           <td style="text-align:right;white-space:nowrap;">K ${esc(fmtMoney(bzShare))}</td>
         </tr>
@@ -4539,7 +5171,6 @@ function renderBufferzone(){
     }).join('');
   }
 
-  // Bottom summary strip
   $('bzTotalCount').textContent = String(data.allTx.length);
   $('bzTotalGross').textContent = fmtMoney(data.totalGross);
   $('bzTotalOwed').textContent = fmtMoney(data.totalOwed);
@@ -4567,7 +5198,6 @@ function downloadBufferzonePdf(){
   const grey = [110, 110, 115];
   const lightGrey = [244, 244, 245];
 
-  // ---------- Header ----------
   doc.setFillColor(...dark);
   doc.rect(0, 0, pageWidth, 110, 'F');
   doc.setTextColor(255, 255, 255);
@@ -4593,7 +5223,6 @@ function downloadBufferzonePdf(){
 
   y = 140;
 
-  // ---------- Summary boxes ----------
   const boxW = (pageWidth - margin * 2 - 12) / 3;
   const boxH = 70;
 
@@ -4633,7 +5262,6 @@ function downloadBufferzonePdf(){
 
   y += boxH + 30;
 
-  // ---------- Current period block ----------
   doc.setFillColor(...lightGrey);
   doc.roundedRect(margin, y, pageWidth - margin * 2, 60, 8, 8, 'F');
   doc.setFontSize(8);
@@ -4655,7 +5283,6 @@ function downloadBufferzonePdf(){
 
   y += 82;
 
-  // ---------- Weekly breakdown table ----------
   doc.setFontSize(11);
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(...dark);
@@ -4702,7 +5329,6 @@ function downloadBufferzonePdf(){
 
   y = doc.lastAutoTable.finalY + 26;
 
-  // ---------- Detailed transaction ledger ----------
   if (y > pageHeight - 220){
     doc.addPage();
     y = margin;
@@ -4759,7 +5385,6 @@ function downloadBufferzonePdf(){
 
   y = doc.lastAutoTable.finalY + 20;
 
-  // ---------- Total footer strip ----------
   if (y > pageHeight - 90){
     doc.addPage();
     y = margin;
@@ -4792,7 +5417,6 @@ function downloadBufferzonePdf(){
 
   y += 90;
 
-  // ---------- Footer note ----------
   doc.setTextColor(...grey);
   doc.setFontSize(7.5);
   doc.setFont('helvetica', 'normal');
@@ -4802,7 +5426,6 @@ function downloadBufferzonePdf(){
     margin, y, { maxWidth: pageWidth - margin * 2 }
   );
 
-  // ---------- Page numbers ----------
   const pageCount = doc.internal.getNumberOfPages();
   for (let i = 1; i <= pageCount; i++){
     doc.setPage(i);
@@ -4818,7 +5441,6 @@ function downloadBufferzonePdf(){
     );
   }
 
-  // ---------- Save ----------
   const filename = 'NTUMENI-BufferZone-Statement-' +
     new Date().toISOString().slice(0,10) + '.pdf';
   doc.save(filename);
