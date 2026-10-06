@@ -22,6 +22,9 @@
 }
 </script>
 <style>
+/* ==========================================================
+   ROOT TOKENS
+   ========================================================== */
 :root{
   --ink:#0a0a0a;--paper:#ffffff;
   --text-primary:#0a0a0a;--text-secondary:#6e6e73;--text-tertiary:#aeaeb2;
@@ -51,7 +54,9 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 input,textarea{font-family:inherit}
 .hidden{display:none !important}
 
-/* LOADING */
+/* ==========================================================
+   LOADING SCREEN
+   ========================================================== */
 #loadingScreen{
   position:fixed;inset:0;z-index:9000;
   background:#0a0a0a;color:#fff;
@@ -75,7 +80,9 @@ input,textarea{font-family:inherit}
 }
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* BLOCKING */
+/* ==========================================================
+   BLOCK OVERLAYS
+   ========================================================== */
 .block-overlay{
   position:fixed;inset:0;z-index:8000;
   background:#fff;
@@ -106,7 +113,9 @@ input,textarea{font-family:inherit}
 }
 .block-overlay.danger .block-btn{background:var(--danger)}
 
-/* TOPBAR */
+/* ==========================================================
+   TOPBAR
+   ========================================================== */
 .topbar{
   flex:0 0 auto;height:var(--topbar-h);
   display:flex;align-items:center;justify-content:space-between;
@@ -144,7 +153,9 @@ input,textarea{font-family:inherit}
 .topbar-logo img{width:28px;height:28px;object-fit:contain}
 .topbar-logo span{font-size:.5rem;font-weight:800;color:var(--ink)}
 
-/* MAIN */
+/* ==========================================================
+   MAIN LAYOUT
+   ========================================================== */
 .app-main{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;position:relative}
 .map-half{
   flex:1 1 50%;min-height:0;
@@ -173,12 +184,14 @@ input,textarea{font-family:inherit}
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
 
-/* ACTION HALF */
+/* ==========================================================
+   ACTION HALF
+   ========================================================== */
 .action-half{
   flex:1 1 50%;min-height:0;
   background:#fff;
   overflow-y:auto;-webkit-overflow-scrolling:touch;
-  padding:16px 16px 20px;
+  padding:14px 14px 18px;
   display:flex;flex-direction:column;
   border-top:1px solid var(--line);
   position:relative;
@@ -186,11 +199,15 @@ input,textarea{font-family:inherit}
 .action-pane{display:none;flex-direction:column;flex:1;min-height:0}
 .action-pane.active{display:flex;animation:paneIn .4s var(--ease-out)}
 @keyframes paneIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
 .home-greeting{font-size:1.12rem;font-weight:800;letter-spacing:-.4px;margin-bottom:3px}
 .home-sub{font-size:.8rem;color:var(--text-secondary);margin-bottom:14px}
 
+/* ==========================================================
+   HOME ACTION BUTTONS
+   ========================================================== */
 .btn-ride{
-  width:100%;padding:22px 20px;border-radius:var(--radius);
+  width:100%;padding:20px 18px;border-radius:var(--radius);
   background:linear-gradient(180deg,#26262a 0%,#0a0a0a 60%,#000 100%);
   color:#fff;display:flex;align-items:center;gap:14px;
   text-align:left;box-shadow:0 10px 28px -10px rgba(0,0,0,.55);
@@ -224,7 +241,9 @@ input,textarea{font-family:inherit}
 }
 .btn-square .sq-label{font-size:.84rem;font-weight:700;letter-spacing:-.2px;text-align:center}
 
-/* FLOATING ERRAND PROVIDER CARD */
+/* ==========================================================
+   FLOATING ERRAND PROVIDER CARD
+   ========================================================== */
 .floating-errand-card{
   position:fixed;
   left:12px;right:12px;
@@ -298,7 +317,9 @@ input,textarea{font-family:inherit}
   box-shadow:0 10px 24px -10px rgba(18,183,106,.75);
 }
 
-/* TRIP PANE */
+/* ==========================================================
+   TRIP PANE
+   ========================================================== */
 .trip-head{
   display:flex;align-items:center;justify-content:space-between;
   margin-bottom:10px;flex-shrink:0;
@@ -351,7 +372,9 @@ input,textarea{font-family:inherit}
 }
 .add-stop-btn:active{background:var(--warn-soft)}
 
-/* Chauffeur tier chooser */
+/* ==========================================================
+   CHAUFFEUR TIER CHOOSER
+   ========================================================== */
 .tier-chooser{
   display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;
   margin-bottom:12px;flex-shrink:0;
@@ -390,9 +413,9 @@ input,textarea{font-family:inherit}
   font-weight:700;letter-spacing:.3px;text-transform:uppercase;
 }
 
-/* ==================================================
+/* ==========================================================
    PROMO DROPDOWN
-   ================================================== */
+   ========================================================== */
 .promo-dropdown{
   margin-bottom:12px;flex-shrink:0;
   border-radius:14px;
@@ -446,9 +469,7 @@ input,textarea{font-family:inherit}
 .promo-body-inner .promo-available.vertical{
   flex-direction:column;overflow:visible;
 }
-.promo-input-row{
-  display:flex;gap:8px;
-}
+.promo-input-row{display:flex;gap:8px}
 .promo-input-row input{
   flex:1;
   padding:11px 14px;
@@ -520,9 +541,12 @@ input,textarea{font-family:inherit}
 .promo-strip .ps-val{font-weight:800;color:#027a48}
 .promo-strip .ps-val.minus{color:#d92d20}
 
+/* ==========================================================
+   FARE CARD
+   ========================================================== */
 .fare-card{
   background:#0a0a0a;color:#fff;
-  border-radius:var(--radius);padding:16px 18px;
+  border-radius:var(--radius);padding:14px 16px;
   margin-bottom:12px;flex-shrink:0;
   box-shadow:0 12px 30px -14px rgba(0,0,0,.55);
 }
@@ -533,23 +557,23 @@ input,textarea{font-family:inherit}
   color:rgba(255,255,255,.5);margin-bottom:5px;
 }
 .fare-top .fare-amount{
-  font-size:1.85rem;font-weight:800;letter-spacing:-1px;line-height:1;
+  font-size:1.75rem;font-weight:800;letter-spacing:-1px;line-height:1;
 }
-.fare-top .fare-amount small{font-size:.95rem;font-weight:700;opacity:.65;margin-right:3px}
+.fare-top .fare-amount small{font-size:.9rem;font-weight:700;opacity:.65;margin-right:3px}
 .fare-top .fare-amount.strike{
-  text-decoration:line-through;opacity:.55;font-size:1.15rem;
+  text-decoration:line-through;opacity:.55;font-size:1.1rem;
 }
 .fare-stats{display:flex;gap:7px}
 .fare-stat{
-  background:rgba(255,255,255,.09);border-radius:10px;padding:8px 11px;
-  min-width:68px;text-align:center;
+  background:rgba(255,255,255,.09);border-radius:10px;padding:7px 10px;
+  min-width:64px;text-align:center;
 }
 .fare-stat small{
   display:block;font-size:.54rem;font-weight:700;
   letter-spacing:1px;text-transform:uppercase;
   color:rgba(255,255,255,.48);margin-bottom:3px;
 }
-.fare-stat strong{font-size:.84rem;font-weight:700;letter-spacing:-.2px}
+.fare-stat strong{font-size:.82rem;font-weight:700;letter-spacing:-.2px}
 
 .confirm-btn{
   width:100%;padding:15px;border-radius:var(--radius);
@@ -563,7 +587,9 @@ input,textarea{font-family:inherit}
 .confirm-btn:active{transform:scale(.978)}
 .confirm-btn:disabled{opacity:.5;pointer-events:none}
 
-/* ACTIVE PANE */
+/* ==========================================================
+   ACTIVE PANE — SEARCHING + PROVIDER FOUND
+   ========================================================== */
 #paneActive{overflow:hidden;padding:0}
 .active-compact{
   display:flex;flex-direction:column;flex:1;min-height:0;gap:8px;
@@ -602,83 +628,90 @@ input,textarea{font-family:inherit}
 }
 .pane-cancel-btn:active{transform:scale(.97)}
 
-.provider-active{display:flex;flex-direction:column;flex:1;min-height:0;gap:8px}
+.provider-active{display:flex;flex-direction:column;flex:1;min-height:0;gap:6px}
 
-/* Provider card with vehicle photo */
+/* ==========================================================
+   COMPACT PROVIDER CARD (fits properly, no overflow)
+   ========================================================== */
 .pf-card{
-  display:flex;flex-direction:column;gap:8px;
-  padding:10px 12px;background:var(--fill-gray);
-  border-radius:14px;flex-shrink:0;
+  display:flex;flex-direction:column;gap:6px;
+  padding:8px;background:var(--fill-gray);
+  border-radius:12px;flex-shrink:0;
 }
 .pf-row{
-  display:flex;align-items:center;gap:11px;
+  display:flex;align-items:center;gap:10px;
+  padding:2px 4px;
 }
 .pf-avatar{
-  width:44px;height:44px;border-radius:50%;
+  width:38px;height:38px;border-radius:50%;
   background:#fff;overflow:hidden;flex-shrink:0;
   display:flex;align-items:center;justify-content:center;
-  box-shadow:0 0 0 2px #fff,0 0 0 4px rgba(0,0,0,.06);
+  box-shadow:0 0 0 2px #fff,0 0 0 3.5px rgba(0,0,0,.06);
 }
 .pf-avatar img{width:100%;height:100%;object-fit:cover}
-.pf-avatar i{font-size:1.1rem;color:var(--text-tertiary)}
+.pf-avatar i{font-size:.95rem;color:var(--text-tertiary)}
 .pf-body{flex:1;min-width:0}
 .pf-body strong{
-  display:block;font-size:.92rem;font-weight:800;letter-spacing:-.25px;margin-bottom:3px;
+  display:block;font-size:.86rem;font-weight:800;letter-spacing:-.2px;
+  margin-bottom:4px;line-height:1.15;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
-.pf-meta{display:flex;flex-wrap:wrap;gap:5px}
+.pf-meta{display:flex;flex-wrap:wrap;gap:4px}
 .pf-meta span{
   display:inline-flex;align-items:center;gap:4px;
-  font-size:.66rem;font-weight:700;color:var(--text-secondary);
-  background:#fff;padding:3px 8px;border-radius:999px;
+  font-size:.58rem;font-weight:700;color:var(--text-secondary);
+  background:#fff;padding:3px 7px;border-radius:999px;
+  max-width:100%;
 }
-.pf-meta span i{font-size:.6rem}
+.pf-meta span i{font-size:.55rem}
 .pf-call{
-  width:42px;height:42px;border-radius:50%;
+  width:36px;height:36px;border-radius:50%;
   background:var(--success);color:#fff;
   display:flex;align-items:center;justify-content:center;
-  font-size:1rem;flex-shrink:0;text-decoration:none;
+  font-size:.9rem;flex-shrink:0;text-decoration:none;
   box-shadow:0 6px 14px -4px rgba(18,183,106,.5);
+  transition:transform .28s var(--spring);
 }
 .pf-call:active{transform:scale(.92)}
 
-/* Vehicle picture inside provider card */
+/* Vehicle picture inside provider card — compact but visible */
 .pf-vehicle-pic{
   width:100%;
-  border-radius:12px;
+  border-radius:10px;
   overflow:hidden;
   background:#fff;
   box-shadow:0 0 0 1px var(--line);
   position:relative;
   display:none;
-  animation:vehiclePicIn .4s var(--ease-out);
 }
-.pf-vehicle-pic.show{display:block}
+.pf-vehicle-pic.show{display:block;animation:vehiclePicIn .35s var(--ease-out)}
 @keyframes vehiclePicIn{
-  from{opacity:0;transform:translateY(8px)}
+  from{opacity:0;transform:translateY(6px)}
   to{opacity:1;transform:translateY(0)}
 }
 .pf-vehicle-pic img{
-  width:100%;height:140px;object-fit:cover;display:block;
+  width:100%;height:110px;object-fit:cover;display:block;
 }
 .pf-vehicle-pic .vlabel{
-  position:absolute;left:10px;bottom:10px;
+  position:absolute;left:8px;bottom:8px;
   background:rgba(10,10,10,.85);color:#fff;
-  font-size:.6rem;font-weight:800;
+  font-size:.56rem;font-weight:800;
   letter-spacing:.9px;text-transform:uppercase;
-  padding:5px 9px;border-radius:999px;
+  padding:4px 8px;border-radius:999px;
 }
 
+/* Compact route block */
 .compact-route{
-  display:flex;align-items:center;gap:10px;
-  padding:9px 12px;background:var(--fill-gray);
+  display:flex;align-items:stretch;gap:10px;
+  padding:8px 10px;background:var(--fill-gray);
   border-radius:12px;flex-shrink:0;
 }
 .compact-route .cr-line{
-  display:flex;flex-direction:column;gap:8px;align-items:center;flex-shrink:0;
+  display:flex;flex-direction:column;gap:10px;align-items:center;
+  flex-shrink:0;padding:6px 0;
 }
 .compact-route .cr-dot{
-  width:9px;height:9px;border-radius:50%;background:#0a0a0a;
+  width:8px;height:8px;border-radius:50%;background:#0a0a0a;
   box-shadow:0 0 0 3px rgba(10,10,10,.13);
 }
 .compact-route .cr-dot.stop{
@@ -690,28 +723,31 @@ input,textarea{font-family:inherit}
   box-shadow:0 0 0 3px rgba(23,92,211,.15);
 }
 .compact-route .cr-info{
-  flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;
+  flex:1;min-width:0;display:flex;flex-direction:column;justify-content:space-between;
+  gap:2px;
 }
 .compact-route .cr-text{
-  font-size:.78rem;font-weight:600;
+  font-size:.76rem;font-weight:600;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2;
+  padding:2px 0;
 }
 .compact-route .cr-text small{
-  display:block;font-size:.54rem;font-weight:800;
+  display:block;font-size:.52rem;font-weight:800;
   letter-spacing:.9px;text-transform:uppercase;
-  color:var(--text-tertiary);margin-bottom:2px;
+  color:var(--text-tertiary);margin-bottom:1px;
 }
 
+/* Compact status bar */
 .compact-status{
-  display:flex;align-items:center;gap:12px;
-  padding:12px 14px;background:#0a0a0a;color:#fff;
-  border-radius:14px;flex-shrink:0;
+  display:flex;align-items:center;gap:10px;
+  padding:10px 12px;background:#0a0a0a;color:#fff;
+  border-radius:12px;flex-shrink:0;
 }
 .compact-status .cs-ico{
-  width:42px;height:42px;border-radius:50%;
+  width:36px;height:36px;border-radius:50%;
   background:rgba(255,255,255,.12);
   display:flex;align-items:center;justify-content:center;
-  font-size:1rem;flex-shrink:0;
+  font-size:.9rem;flex-shrink:0;
   animation:tripPulse 2s var(--ease-smooth) infinite;
 }
 @keyframes tripPulse{
@@ -719,16 +755,29 @@ input,textarea{font-family:inherit}
   50%{box-shadow:0 0 0 10px rgba(255,255,255,0)}
 }
 .compact-status .cs-body{flex:1;min-width:0}
-.compact-status .cs-body strong{display:block;font-size:.92rem;font-weight:800;letter-spacing:-.25px;margin-bottom:2px}
-.compact-status .cs-body span{display:block;font-size:.72rem;color:rgba(255,255,255,.65);line-height:1.3}
+.compact-status .cs-body strong{
+  display:block;font-size:.84rem;font-weight:800;letter-spacing:-.2px;
+  margin-bottom:2px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.compact-status .cs-body span{
+  display:block;font-size:.66rem;color:rgba(255,255,255,.65);
+  line-height:1.3;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
 .compact-status .cs-fare{text-align:right;flex-shrink:0}
-.compact-status .cs-fare strong{display:block;font-size:1.15rem;font-weight:800;letter-spacing:-.4px}
+.compact-status .cs-fare strong{
+  display:block;font-size:1rem;font-weight:800;letter-spacing:-.4px;
+}
 .compact-status .cs-fare small{
-  display:block;font-size:.6rem;font-weight:700;
-  color:rgba(255,255,255,.55);letter-spacing:.8px;text-transform:uppercase;margin-top:2px;
+  display:block;font-size:.54rem;font-weight:700;
+  color:rgba(255,255,255,.55);letter-spacing:.8px;text-transform:uppercase;
+  margin-top:1px;
 }
 
-/* SIDEBAR */
+/* ==========================================================
+   SIDEBAR
+   ========================================================== */
 #sidebarOverlay{
   position:fixed;inset:0;z-index:1900;
   background:rgba(0,0,0,.42);
@@ -793,7 +842,9 @@ input,textarea{font-family:inherit}
 }
 .logout-btn i{width:22px;text-align:center;font-size:1rem}
 
-/* PAGES */
+/* ==========================================================
+   FULLSCREEN PAGES
+   ========================================================== */
 #ridePage,#deliveryPage,#postErrandPage,#postedErrandsPage,
 #errandDetailsPage,#chatPage,#historyPage,#transactionsPage{
   position:fixed;inset:0;z-index:3000;background:#fff;
@@ -820,7 +871,9 @@ input,textarea{font-family:inherit}
 .page-body{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .page-scroll{max-width:620px;margin:0 auto;padding:16px 16px 40px}
 
-/* SEARCH */
+/* ==========================================================
+   SEARCH
+   ========================================================== */
 .ride-body{flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden}
 .ride-inputs{flex:0 0 auto;padding:14px 16px 12px;border-bottom:1px solid var(--line)}
 .input-card{background:var(--fill-gray);border-radius:var(--radius);padding:4px}
@@ -905,7 +958,9 @@ input,textarea{font-family:inherit}
   animation:spin .8s linear infinite;
 }
 
-/* FORMS */
+/* ==========================================================
+   FORMS
+   ========================================================== */
 .pill-input{
   width:100%;padding:12px 16px 12px 40px;font-size:.92rem;
   border:1.5px solid transparent;border-radius:var(--radius-sm);
@@ -976,7 +1031,9 @@ input,textarea{font-family:inherit}
   border-radius:50%;animation:spin .8s linear infinite;z-index:4;
 }
 
-/* Cards */
+/* ==========================================================
+   CARDS
+   ========================================================== */
 .fb-card{
   background:#fff;border-radius:14px;
   box-shadow:0 0 0 1px var(--line),0 2px 8px rgba(0,0,0,.04);
@@ -1046,7 +1103,9 @@ input,textarea{font-family:inherit}
 .empty-state h3{font-size:1.05rem;font-weight:800;color:var(--text-primary);margin-bottom:6px}
 .empty-state p{font-size:.84rem;line-height:1.55;max-width:320px;margin:0 auto}
 
-/* Offers */
+/* ==========================================================
+   OFFERS
+   ========================================================== */
 .offer-card{
   background:#fff;border-radius:14px;
   box-shadow:0 0 0 1px var(--line),0 2px 8px rgba(0,0,0,.04);
@@ -1106,7 +1165,9 @@ input,textarea{font-family:inherit}
   display:inline-flex;align-items:center;gap:6px;
 }
 
-/* Chat */
+/* ==========================================================
+   CHAT
+   ========================================================== */
 .chat-body{
   flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
   padding:16px 16px 12px;background:#f7f8fa;
@@ -1153,7 +1214,9 @@ input,textarea{font-family:inherit}
 }
 .chat-send-btn:active{transform:scale(.92)}
 
-/* Vehicle sheet */
+/* ==========================================================
+   VEHICLE SHEET
+   ========================================================== */
 .sheet-overlay{
   position:fixed;inset:0;z-index:3500;
   background:rgba(0,0,0,.55);
@@ -1203,7 +1266,9 @@ input,textarea{font-family:inherit}
   background:var(--fill-gray);font-size:.88rem;font-weight:700;
 }
 
-/* Markers */
+/* ==========================================================
+   MAP MARKERS
+   ========================================================== */
 .mk-dot{
   width:18px;height:18px;border-radius:50%;
   background:#0a0a0a;border:3.5px solid #fff;
@@ -1233,7 +1298,7 @@ input,textarea{font-family:inherit}
 }
 
 /* =========================================================
-   DRIVER MARKER (driver.png with heading)
+   DRIVER MARKER using driver.png with heading rotation
    ========================================================= */
 .driver-marker-wrap{background:none !important;border:none !important}
 .driver-marker{
@@ -1247,18 +1312,6 @@ input,textarea{font-family:inherit}
   width:100%;height:100%;object-fit:contain;
   user-select:none;pointer-events:none;-webkit-user-drag:none;
 }
-.driver-marker .driver-pulse{
-  position:absolute;inset:-2px;
-  border-radius:50%;
-  border:2px solid rgba(18,183,106,.55);
-  animation:driverPulse 2s var(--ease-smooth) infinite;
-  pointer-events:none;
-}
-@keyframes driverPulse{
-  0%{transform:scale(.6);opacity:.9}
-  70%{transform:scale(1.35);opacity:0}
-  100%{transform:scale(1.35);opacity:0}
-}
 
 .leaflet-tile-pane{filter:saturate(.85) contrast(1.05) brightness(1.02)}
 .leaflet-container{font-family:inherit;background:#e8eaed}
@@ -1270,7 +1323,9 @@ input,textarea{font-family:inherit}
 }
 .leaflet-control-attribution a{color:#6e6e73 !important}
 
-/* Toast */
+/* ==========================================================
+   TOAST
+   ========================================================== */
 #toast{
   position:fixed;left:50%;bottom:26px;z-index:6000;
   transform:translate(-50%,24px);
@@ -1285,7 +1340,9 @@ input,textarea{font-family:inherit}
 }
 #toast.show{opacity:1;visibility:visible;transform:translate(-50%,0)}
 
-/* History */
+/* ==========================================================
+   HISTORY
+   ========================================================== */
 .filter-tabs{
   display:flex;gap:8px;padding:12px 16px 8px;
   overflow-x:auto;border-bottom:1px solid var(--line);
@@ -1408,7 +1465,9 @@ input,textarea{font-family:inherit}
 .chip.in_progress{background:var(--success-soft);color:#027a48}
 .chip.arrived{background:var(--info-soft);color:#175cd3}
 
-/* Transactions */
+/* ==========================================================
+   TRANSACTIONS
+   ========================================================== */
 .tx-item{
   display:flex;align-items:center;gap:14px;
   padding:14px 16px;background:#fff;border-radius:14px;
@@ -1444,7 +1503,9 @@ input,textarea{font-family:inherit}
 .tx-status.failed{background:var(--danger-soft);color:#b42318}
 .tx-status.cancelled{background:#f4f4f5;color:#52525b}
 
-/* Rating modal */
+/* ==========================================================
+   RATING MODAL
+   ========================================================== */
 #ratingModal{z-index:6500;padding:18px}
 .rating-modal{
   background:#fff;border-radius:22px;
@@ -1511,15 +1572,19 @@ input,textarea{font-family:inherit}
 }
 .modal-overlay.open{display:flex}
 
+/* ==========================================================
+   RESPONSIVE
+   ========================================================== */
 @media (max-width:380px){
-  .btn-ride{padding:20px 16px}
+  .btn-ride{padding:18px 16px}
   .btn-ride .ride-ico{width:42px;height:42px}
-  .fare-top .fare-amount{font-size:1.6rem}
-  .compact-status{padding:10px 12px}
+  .fare-top .fare-amount{font-size:1.55rem}
+  .compact-status{padding:9px 10px}
   .compact-status .cs-fare strong{font-size:1rem}
   .rating-stars button{width:40px;height:40px;font-size:1.5rem}
   .tier-chooser{grid-template-columns:1fr 1fr}
   .tier-option.premium{grid-column:1/-1}
+  .pf-vehicle-pic img{height:90px}
 }
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{
@@ -1679,8 +1744,7 @@ input,textarea{font-family:inherit}
           </button>
         </div>
 
-        <!-- ===================== PROMO DROPDOWN ===================== -->
-        <!-- Only shown when there are promo codes available AND one is not yet applied -->
+        <!-- PROMO DROPDOWN (only shown if promos are available) -->
         <div class="promo-dropdown" id="promoDropdown" style="display:none">
           <button type="button" class="promo-toggle" id="promoToggleBtn">
             <span class="pt-ico"><i class="fas fa-tag"></i></span>
@@ -1750,7 +1814,7 @@ input,textarea{font-family:inherit}
             <button class="pane-cancel-btn" id="cancelSearchBtn">Cancel</button>
           </div>
 
-          <div id="activeProviderState" style="display:none;flex-direction:column;flex:1;min-height:0;gap:8px">
+          <div id="activeProviderState" style="display:none;flex-direction:column;flex:1;min-height:0;gap:6px">
 
             <div class="pf-card">
               <div class="pf-row">
@@ -1768,7 +1832,6 @@ input,textarea{font-family:inherit}
                   <i class="fas fa-phone"></i>
                 </a>
               </div>
-              <!-- Registered vehicle picture (car / bike / motorbike) -->
               <div class="pf-vehicle-pic" id="providerVehiclePic">
                 <img id="providerVehicleImg" src="" alt="Vehicle">
                 <span class="vlabel" id="providerVehicleLabel">Vehicle</span>
@@ -2139,7 +2202,7 @@ input,textarea{font-family:inherit}
   </div>
 </div>
 
-<!-- VEHICLE SHEET (delivery) -->
+<!-- VEHICLE SHEET -->
 <div class="sheet-overlay" id="vehicleSheet">
   <div class="sheet">
     <div class="sheet-handle"></div>
@@ -2246,7 +2309,7 @@ const SEARCH_MAX_RAW_RESULTS = 30;
 const SEARCH_SHOWN_RESULTS = 12;
 
 /* ============================================================
-   DOM
+   DOM REFERENCES
    ============================================================ */
 const $ = (id) => document.getElementById(id);
 
@@ -2302,7 +2365,6 @@ const fareOriginalValue = $('fareOriginalValue');
 
 const tierChooser   = $('tierChooser');
 
-/* Promo dropdown DOM */
 const promoDropdown = $('promoDropdown');
 const promoToggleBtn = $('promoToggleBtn');
 const promoToggleSub = $('promoToggleSub');
@@ -2528,7 +2590,7 @@ const RATING_LABELS = {
 };
 
 /* ============================================================
-   PANES
+   PANE SWITCHER
    ============================================================ */
 function showPane(which) {
   paneHome.classList.remove('active');
@@ -2635,7 +2697,7 @@ function vehicleLabelForRole(role) {
 }
 
 /* ============================================================
-   FARE
+   FARE CALCULATION
    ============================================================ */
 function computeRideFare(distanceMeters, durationSeconds, tier) {
   const cfg = CONFIG.pricing.ride;
@@ -2693,7 +2755,6 @@ function startConfigListeners() {
       arr.push({ ...p, _id: id, code: String(p.code).toUpperCase() });
     }
     availablePromos = arr;
-    // Reset any applied promo that is no longer valid
     if (appliedPromo && !availablePromos.find(p => p.code === appliedPromo.code)) {
       appliedPromo = null;
       appliedPromoDiscount = 0;
@@ -2706,15 +2767,13 @@ function startConfigListeners() {
 }
 
 /* ============================================================
-   PROMO DROPDOWN + HELPERS
+   PROMO DROPDOWN
    ============================================================ */
 function updatePromoDropdownVisibility() {
   if (!promoDropdown) return;
-  // Only show the promo dropdown if there are promo codes available AND no promo is currently applied
   const hasPromos = availablePromos && availablePromos.length > 0;
   if (hasPromos && !appliedPromo) {
     promoDropdown.style.display = 'block';
-    // Update subtitle with count
     const count = availablePromos.length;
     promoToggleSub.textContent = count === 1
       ? '1 promo available — tap to apply'
@@ -2784,14 +2843,9 @@ function applyPromoCode() {
     return;
   }
   appliedPromo = promo;
-
-  if (!currentRoute) {
-    refreshFareDisplay();
-    return;
-  }
+  if (!currentRoute) { refreshFareDisplay(); return; }
   const baseFare = computeRideFare(currentRoute.distance, currentRoute.duration, selectedTier).finalFare;
   appliedPromoDiscount = computePromoDiscount(promo, baseFare);
-
   if (appliedPromoDiscount <= 0) {
     if (promo.minFare && baseFare < Number(promo.minFare)) {
       showToast(`Min fare K${promo.minFare} required for this promo`);
@@ -2808,18 +2862,14 @@ function applyPromoCode() {
   showToast('Promo applied!');
   updatePromoDropdownVisibility();
   refreshFareDisplay();
-  // Collapse the dropdown after applying
   promoDropdown.classList.remove('open');
 }
 
 promoToggleBtn.addEventListener('click', () => {
   promoDropdown.classList.toggle('open');
 });
-
 applyPromoBtn.addEventListener('click', applyPromoCode);
-promoInput.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') { e.preventDefault(); applyPromoCode(); }
-});
+promoInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); applyPromoCode(); } });
 promoInput.addEventListener('input', () => {
   promoInput.value = promoInput.value.toUpperCase().replace(/\s+/g, '');
 });
@@ -2838,7 +2888,6 @@ function refreshFareDisplay() {
   if (!currentRoute) return;
   const base = computeRideFare(currentRoute.distance, currentRoute.duration, selectedTier);
   let finalFare = base.finalFare;
-
   if (appliedPromo) {
     const d = computePromoDiscount(appliedPromo, base.finalFare);
     if (d > 0) {
@@ -2857,7 +2906,6 @@ function refreshFareDisplay() {
     fareOriginal.classList.add('hidden');
     promoStrip.classList.remove('show');
   }
-
   fareTotal.textContent = formatPrice(finalFare);
   fareDistance.textContent = formatDistance(currentRoute.distance);
   fareDuration.textContent = formatDuration(currentRoute.duration);
@@ -2880,7 +2928,7 @@ function renderPromoStrip(originalFare, discount, finalFare) {
 }
 
 /* ============================================================
-   CLOUDINARY
+   CLOUDINARY UPLOAD
    ============================================================ */
 function openCloudUpload(opts) {
   return new Promise((resolve, reject) => {
@@ -2950,7 +2998,7 @@ function showBanned(reason) {
 }
 
 /* ============================================================
-   MAP
+   MAP INITIALISATION
    ============================================================ */
 function initMap() {
   if (map) return;
@@ -2964,6 +3012,9 @@ function initMap() {
   }).addTo(map);
 }
 
+/* ============================================================
+   MARKER HELPERS
+   ============================================================ */
 function setUserMarker(lat, lng) {
   if (!map) return;
   const icon = L.divIcon({
@@ -3001,7 +3052,9 @@ function setDropoffMarker(lat, lng) {
   else dropoffMarker = L.marker([lat, lng], { icon, zIndexOffset: 1000 }).addTo(map);
 }
 
-/* ---- Driver marker using driver.png with heading ---- */
+/* ============================================================
+   DRIVER MARKER with driver.png + heading
+   ============================================================ */
 function buildDriverIconHtml(heading) {
   return `<div class="driver-marker" style="transform:rotate(${heading}deg);">
     <img src="driver.png" alt=""
@@ -3010,8 +3063,6 @@ function buildDriverIconHtml(heading) {
 }
 function setDriverMarker(lat, lng, role, headingDeg) {
   if (!map) return;
-
-  // Compute heading from GPS or from movement
   let h = headingDeg;
   if (!isFinite(h)) {
     if (providerLastPos && haversineMeters(providerLastPos.lat, providerLastPos.lng, lat, lng) > 2) {
@@ -3020,12 +3071,10 @@ function setDriverMarker(lat, lng, role, headingDeg) {
       h = providerMarkerHeading;
     }
   }
-  // Apply the base image offset so the marker points the right way
   const visualHeading = (h + DRIVER_ICON_BASE_OFFSET + 360) % 360;
   providerMarkerHeading = visualHeading;
   providerLastPos = { lat, lng };
 
-  // Only chauffeur trips use driver.png; other roles keep the icon bubble
   const roleLower = String(role || '').toLowerCase();
   const isChauffeur = (currentTripKind === 'ride') || roleLower === 'driver' || roleLower === 'chauffeur';
 
@@ -3041,8 +3090,7 @@ function setDriverMarker(lat, lng, role, headingDeg) {
       const icon = L.divIcon({
         className: 'driver-marker-wrap',
         html: buildDriverIconHtml(visualHeading),
-        iconSize: [52, 52],
-        iconAnchor: [26, 26]
+        iconSize: [52, 52], iconAnchor: [26, 26]
       });
       providerMarker = L.marker([lat, lng], { icon, zIndexOffset: 1500 }).addTo(map);
     }
@@ -3066,13 +3114,24 @@ function removeProviderMarker() {
   providerLastPos = null;
 }
 
+/* ============================================================
+   CLEARING LAYERS — three-phase behaviour
+   ============================================================ */
+function clearMainRoute() {
+  if (routeLayer && map) { try { map.removeLayer(routeLayer); } catch(e){} }
+  routeLayer = null;
+}
+function clearProviderRoute() {
+  if (providerRouteLayer && map) { try { map.removeLayer(providerRouteLayer); } catch(e){} }
+  providerRouteLayer = null;
+}
 function clearTripLayers() {
   if (!map) return;
-  if (routeLayer) { map.removeLayer(routeLayer); routeLayer = null; }
-  if (providerRouteLayer) { map.removeLayer(providerRouteLayer); providerRouteLayer = null; }
-  if (dropoffMarker) { map.removeLayer(dropoffMarker); dropoffMarker = null; }
-  if (stopMarker) { map.removeLayer(stopMarker); stopMarker = null; }
-  if (pickupMarker) { map.removeLayer(pickupMarker); pickupMarker = null; }
+  clearMainRoute();
+  clearProviderRoute();
+  if (dropoffMarker) { try { map.removeLayer(dropoffMarker); } catch(e){} dropoffMarker = null; }
+  if (stopMarker)    { try { map.removeLayer(stopMarker);    } catch(e){} stopMarker = null; }
+  if (pickupMarker)  { try { map.removeLayer(pickupMarker);  } catch(e){} pickupMarker = null; }
   removeProviderMarker();
   currentRoute = null;
 }
@@ -3186,7 +3245,7 @@ async function doLogout() {
 }
 
 /* ============================================================
-   FUZZY SEARCH
+   FUZZY SEARCH with silent city restriction
    ============================================================ */
 function getSearchAnchor() {
   if (searchPage === 'errand') return userLocation || DEFAULT_LOCATION;
@@ -3801,7 +3860,7 @@ async function acceptOffer(errand, providerId) {
 }
 
 /* ============================================================
-   FLOATING ERRAND PROVIDER CARD
+   FLOATING ERRAND CARD
    ============================================================ */
 function showFloatingErrandCard(errand, providerId, offer) {
   floatingErrandId = errand.errandId;
@@ -3941,46 +4000,22 @@ function drawRoute(geometry, opts) {
   L.polyline(coords, { color: (opts?.color || '#0a0a0a'), weight: (opts?.weight2 || 4.5), opacity: 1, lineJoin: 'round', lineCap: 'round', dashArray: opts?.dash || null }).addTo(layer);
   return { layer, coords };
 }
-function clearMainRoute() {
-  if (routeLayer && map) { try { map.removeLayer(routeLayer); } catch(e){} }
-  routeLayer = null;
-}
-function clearProviderRoute() {
-  if (providerRouteLayer && map) { try { map.removeLayer(providerRouteLayer); } catch(e){} }
-  providerRouteLayer = null;
-}
 
-/* ============================================================
-   LAZY ROUTE DRAWING
-   Draws the pickup → destination polyline progressively.
-   ============================================================ */
 async function drawRouteAnimated(geometry, opts, durationMs) {
   if (!map || !geometry || !geometry.coordinates || !geometry.coordinates.length) return;
   clearMainRoute();
-
   const layer = L.layerGroup().addTo(map);
   const coords = geometry.coordinates.map(([lng, lat]) => [lat, lng]);
 
-  const shadow = L.polyline([], {
-    color: '#ffffff', weight: 8, opacity: .95,
-    lineJoin: 'round', lineCap: 'round'
-  });
-  const main = L.polyline([], {
-    color: (opts?.color || '#0a0a0a'), weight: (opts?.weight2 || 4.5),
-    opacity: 1, lineJoin: 'round', lineCap: 'round'
-  });
+  const shadow = L.polyline([], { color: '#ffffff', weight: 8, opacity: .95, lineJoin: 'round', lineCap: 'round' });
+  const main = L.polyline([], { color: (opts?.color || '#0a0a0a'), weight: (opts?.weight2 || 4.5), opacity: 1, lineJoin: 'round', lineCap: 'round' });
   shadow.addTo(layer); main.addTo(layer);
   routeLayer = layer;
 
-  // Fit bounds to the full route up front, so the animation happens
-  // on a stable camera. Then lock the view during the draw.
   try {
     map.fitBounds(L.latLngBounds(coords), {
-      paddingTopLeft: [30, 55],
-      paddingBottomRight: [30, 30],
-      maxZoom: 16,
-      animate: true,
-      duration: 0.9
+      paddingTopLeft: [30, 55], paddingBottomRight: [30, 30],
+      maxZoom: 16, animate: true, duration: 0.9
     });
   } catch (e) {}
   await new Promise(r => setTimeout(r, 950));
@@ -3992,13 +4027,12 @@ async function drawRouteAnimated(geometry, opts, durationMs) {
   await new Promise((resolve) => {
     function tick(now) {
       const t = Math.min(1, (now - t0) / duration);
-      const eased = t * t * (3 - 2 * t); // smoothstep
+      const eased = t * t * (3 - 2 * t);
       const count = Math.max(2, Math.floor(eased * total));
       const slice = coords.slice(0, count);
       shadow.setLatLngs(slice);
       main.setLatLngs(slice);
-      if (t < 1) requestAnimationFrame(tick);
-      else resolve();
+      if (t < 1) requestAnimationFrame(tick); else resolve();
     }
     requestAnimationFrame(tick);
   });
@@ -4016,7 +4050,7 @@ tierChooser.querySelectorAll('[data-tier]').forEach(btn => {
 });
 
 /* ============================================================
-   BUILD RIDE TRIP
+   BUILD RIDE TRIP (Preview pickup → destination)
    ============================================================ */
 async function buildRideTrip() {
   if (!pickupLocation || !dropoffLocation) { showPane('home'); return; }
@@ -4058,7 +4092,6 @@ async function buildRideTrip() {
     const route = await fetchRoute(pts);
     currentRoute = route;
 
-    // Light preview route: draw instantly so the trip pane has a visible line
     clearMainRoute();
     const preview = drawRoute(route.geometry, { color: '#0a0a0a' });
     if (preview) routeLayer = preview.layer;
@@ -4121,9 +4154,8 @@ addStopBtn.addEventListener('click', () => openRidePage('stop'));
 
 /* ============================================================
    CONFIRM RIDE
-   1) Save to Firebase
-   2) Lazy-draw the route for ROUTE_DRAW_DURATION_MS
-   3) THEN transition to the "Searching for a chauffeur…" state
+   Phase 1: save ride + lazy-draw pickup → destination for 3s
+   Then transition to searching
    ============================================================ */
 confirmRideBtn.addEventListener('click', async () => {
   if (!currentRoute) { showToast('Could not calculate route. Try again.'); return; }
@@ -4186,13 +4218,12 @@ confirmRideBtn.addEventListener('click', async () => {
     return;
   }
 
-  // Lazy draw the pickup → destination route BEFORE switching to searching pane.
+  /* PHASE 1: Lazy draw pickup → destination for 3s */
   confirmRideBtn.innerHTML = '<i class="fas fa-map"></i> Drawing route…';
 
   if (currentRoute && currentRoute.geometry) {
     await drawRouteAnimated(currentRoute.geometry, { color: '#0a0a0a' }, ROUTE_DRAW_DURATION_MS);
   } else if (currentRoute) {
-    // Fallback straight-line slow draw
     try {
       const pts = [pickupLocation];
       if (stopLocation) pts.push(stopLocation);
@@ -4221,7 +4252,7 @@ confirmRideBtn.addEventListener('click', async () => {
     } catch (e) {}
   }
 
-  // NOW transition to the "Searching for a chauffeur…" state.
+  /* PHASE 2: transition to searching pane */
   activeSearchKind = 'ride';
   currentTripKind = 'ride';
   currentTripId = rideId;
@@ -4234,7 +4265,7 @@ confirmRideBtn.addEventListener('click', async () => {
   showSearchingInPane('driver', currentTripMeta);
   startTripTracking('ride', rideId);
 
-  // Reset promo state for next trip
+  /* Reset promo state */
   appliedPromo = null;
   appliedPromoDiscount = 0;
   promoInput.value = '';
@@ -4393,7 +4424,6 @@ async function chooseDeliveryVehicle(price) {
     setPickupMarker(deliveryPickupLocation.lat, deliveryPickupLocation.lng);
     setDropoffMarker(deliveryDropoffLocation.lat, deliveryDropoffLocation.lng);
 
-    // Lazy-draw the delivery route for 3s, then switch to searching
     if (deliveryRoute.geometry) {
       await drawRouteAnimated(deliveryRoute.geometry, { color: '#0a0a0a' }, ROUTE_DRAW_DURATION_MS);
     } else {
@@ -4475,21 +4505,29 @@ function startTripTracking(kind, id) {
 
 async function handleTripUpdate(trip) {
   const status = trip.status;
+
   if ((status === 'accepted' || status === 'arrived' || status === 'in_progress') && !currentProviderId && trip.providerId) {
     currentProviderId = trip.providerId;
     showProviderInPane();
     await loadAndShowProvider(trip.providerId, trip);
   }
   updateCompactRoute(trip);
+
+  /* THREE-PHASE MAP LOGIC */
   if (status === 'accepted') {
     updateTripStatusUI('accepted');
-    showProviderToPickupRoute(trip);
+    /* PHASE 2: erase ALL routes; draw only driver → pickup */
+    await showOnlyDriverToPickupRoute(trip);
   } else if (status === 'arrived') {
-    showProviderInPane(); updateTripStatusUI('arrived');
-    showProviderToPickupRoute(trip);
+    showProviderInPane();
+    updateTripStatusUI('arrived');
+    /* keep the driver → pickup route visible */
+    await showOnlyDriverToPickupRoute(trip);
   } else if (status === 'in_progress') {
-    showProviderInPane(); updateTripStatusUI('in_progress');
-    showPickupToDestinationRoute(trip);
+    showProviderInPane();
+    updateTripStatusUI('in_progress');
+    /* PHASE 3: erase ALL routes; draw only pickup → destination */
+    await showOnlyPickupToDestinationRoute(trip);
   } else if (status === 'completed') {
     handleTripCompletion(trip);
   } else if (status === 'cancelled') {
@@ -4542,11 +4580,7 @@ async function loadAndShowProvider(providerId, trip) {
   if (phone) { providerCallBtn.href = 'tel:' + phone; providerCallBtn.style.display = 'flex'; }
   else providerCallBtn.style.display = 'none';
 
-  /* ---- Show the provider's registered vehicle picture ----
-     Priority for chauffeur: carUrls[0]
-     For rider: bikeUrls[0]
-     For walker: nothing specific (no vehicle picture)
-  */
+  /* Vehicle picture: chauffeur → carUrls[0], rider → bikeUrls[0] */
   const roleLower = String(role || '').toLowerCase();
   let vehiclePicUrl = '';
   let vehiclePicLabel = vehicleLabel;
@@ -4560,14 +4594,11 @@ async function loadAndShowProvider(providerId, trip) {
     else if (p.bikeUrl) vehiclePicUrl = p.bikeUrl;
     vehiclePicLabel = vehicleLabel || 'Motorbike';
   }
-  // Fall back to the trip's stored vehicle image if present
   if (!vehiclePicUrl && trip.vehicleImageUrl) vehiclePicUrl = trip.vehicleImageUrl;
 
   if (vehiclePicUrl) {
     providerVehicleImg.src = vehiclePicUrl;
-    providerVehicleImg.onerror = function() {
-      providerVehiclePic.classList.remove('show');
-    };
+    providerVehicleImg.onerror = function() { providerVehiclePic.classList.remove('show'); };
     providerVehicleLabel.textContent = vehiclePicLabel;
     providerVehiclePic.classList.add('show');
   } else {
@@ -4581,7 +4612,7 @@ async function loadAndShowProvider(providerId, trip) {
     if (loc && isFinite(loc.lat) && isFinite(loc.lng)) {
       setDriverMarker(loc.lat, loc.lng, role, loc.heading);
       if (currentTripData && currentTripData.status === 'accepted') {
-        drawProviderToPickup(loc, currentTripData.pickup);
+        drawDriverToPickupRoute(loc, currentTripData.pickup);
       }
     }
   });
@@ -4606,36 +4637,40 @@ function updateTripStatusUI(state) {
   }
 }
 
-async function showProviderToPickupRoute(trip) {
-  if (!map) return;
+/* ============================================================
+   THREE-PHASE MAP FUNCTIONS
+   ============================================================ */
+
+/* PHASE 2 — Driver → Pickup ONLY (erases everything else) */
+async function showOnlyDriverToPickupRoute(trip) {
+  if (!map || !trip) return;
   const pickup = trip.pickup;
   if (!pickup) return;
+
   clearMainRoute();
+  clearProviderRoute();
+
   setPickupMarker(pickup.lat, pickup.lng);
   if (trip.stop) setStopMarker(trip.stop.lat, trip.stop.lng);
-  setDropoffMarker(trip.dropoff.lat, trip.dropoff.lng);
-  try {
-    const pts = [pickup];
-    if (trip.stop) pts.push(trip.stop);
-    pts.push(trip.dropoff);
-    const route = await fetchRoute(pts);
-    const drawn = drawRoute(route.geometry, { color: '#0a0a0a' });
-    if (drawn) routeLayer = drawn.layer;
-  } catch (e) { console.warn('Main route failed:', e); }
+  if (trip.dropoff) setDropoffMarker(trip.dropoff.lat, trip.dropoff.lng);
+
   try {
     const provSnap = await get(ref(database, `providers/${trip.providerId}/location`));
     if (provSnap.exists()) {
       const provLoc = provSnap.val();
       if (provLoc && isFinite(provLoc.lat) && isFinite(provLoc.lng)) {
-        await drawProviderToPickup(provLoc, pickup);
+        setDriverMarker(provLoc.lat, provLoc.lng, trip.providerRole, provLoc.heading);
+        await drawDriverToPickupRoute(provLoc, pickup);
       }
     }
-  } catch (e) { console.warn('Provider route failed:', e); }
+  } catch (e) { console.warn('driver→pickup route failed:', e); }
 }
 
-async function drawProviderToPickup(providerLoc, pickup) {
+/* Draw (or redraw) the blue dashed driver → pickup route. */
+async function drawDriverToPickupRoute(providerLoc, pickup) {
   if (!map || !providerLoc || !pickup) return;
   clearProviderRoute();
+
   try {
     const route = await fetchRoute([{ lat: providerLoc.lat, lng: providerLoc.lng }, pickup]);
     const coords = route.geometry.coordinates.map(([lng, lat]) => [lat, lng]);
@@ -4643,52 +4678,59 @@ async function drawProviderToPickup(providerLoc, pickup) {
     L.polyline(coords, { color: '#ffffff', weight: 8, opacity: .95, lineJoin: 'round', lineCap: 'round' }).addTo(layer);
     L.polyline(coords, { color: '#2e90fa', weight: 4.5, opacity: 1, dashArray: '10 8', lineJoin: 'round', lineCap: 'round' }).addTo(layer);
     providerRouteLayer = layer;
+    try {
+      map.fitBounds(L.latLngBounds(coords), {
+        paddingTopLeft: [30, 55], paddingBottomRight: [30, 30],
+        maxZoom: 16, animate: true, duration: 0.9
+      });
+    } catch (e) {}
   } catch (e) {
     const layer = L.layerGroup().addTo(map);
     L.polyline([[providerLoc.lat, providerLoc.lng], [pickup.lat, pickup.lng]],
       { color: '#2e90fa', weight: 3.5, opacity: .85, dashArray: '8 8' }).addTo(layer);
     providerRouteLayer = layer;
+    try {
+      map.fitBounds(L.latLngBounds([
+        [providerLoc.lat, providerLoc.lng], [pickup.lat, pickup.lng]
+      ]), { paddingTopLeft: [30, 55], paddingBottomRight: [30, 30], maxZoom: 16 });
+    } catch (e2) {}
   }
-  try {
-    const allPts = [];
-    if (routeLayer) routeLayer.eachLayer(l => {
-      const ll = l.getLatLngs && l.getLatLngs();
-      if (ll && ll.length) {
-        const arr = Array.isArray(ll[0]) ? ll[0] : ll;
-        arr.forEach(p => allPts.push([p.lat, p.lng]));
-      }
-    });
-    if (providerRouteLayer) providerRouteLayer.eachLayer(l => {
-      const ll = l.getLatLngs && l.getLatLngs();
-      if (ll && ll.length) {
-        const arr = Array.isArray(ll[0]) ? ll[0] : ll;
-        arr.forEach(p => allPts.push([p.lat, p.lng]));
-      }
-    });
-    if (allPts.length > 1) {
-      map.fitBounds(L.latLngBounds(allPts), { paddingTopLeft: [30, 55], paddingBottomRight: [30, 30], maxZoom: 16, animate: true });
-    }
-  } catch (e) {}
 }
 
-async function showPickupToDestinationRoute(trip) {
-  if (!map) return;
-  removeProviderMarker();
-  clearProviderRoute();
+/* PHASE 3 — Pickup → Destination ONLY (during in-progress trip) */
+async function showOnlyPickupToDestinationRoute(trip) {
+  if (!map || !trip) return;
   const pickup = trip.pickup;
   const dropoff = trip.dropoff;
   if (!pickup || !dropoff) return;
+
   clearMainRoute();
+  clearProviderRoute();
+  removeProviderMarker();
+
   setPickupMarker(pickup.lat, pickup.lng);
   if (trip.stop) setStopMarker(trip.stop.lat, trip.stop.lng);
   setDropoffMarker(dropoff.lat, dropoff.lng);
+
   try {
     const pts = [pickup];
     if (trip.stop) pts.push(trip.stop);
     pts.push(dropoff);
     const route = await fetchRoute(pts);
+    currentRoute = route;
     await drawRouteAnimated(route.geometry, { color: '#0a0a0a' }, ROUTE_DRAW_DURATION_MS);
-  } catch (e) { console.warn('Route to destination failed:', e); }
+  } catch (e) { console.warn('pickup→dest route failed:', e); }
+}
+
+/* Legacy helper used by checkForActiveTrip for old behaviour — kept for compatibility */
+async function showProviderToPickupRoute(trip) {
+  return showOnlyDriverToPickupRoute(trip);
+}
+async function showPickupToDestinationRoute(trip) {
+  return showOnlyPickupToDestinationRoute(trip);
+}
+async function drawProviderToPickup(providerLoc, pickup) {
+  return drawDriverToPickupRoute(providerLoc, pickup);
 }
 
 /* ============================================================
@@ -5256,6 +5298,9 @@ function applyCustomerProfile(customer) {
   else sidebarAvatar.innerHTML = `<i class="fas fa-user"></i>`;
 }
 
+/* ============================================================
+   RESUME ANY ACTIVE TRIP ON LOAD
+   ============================================================ */
 async function checkForActiveTrip() {
   if (!currentUser) return;
   try {
@@ -5289,8 +5334,8 @@ async function checkForActiveTrip() {
             await loadAndShowProvider(r.providerId, r);
           }
           updateTripStatusUI(r.status);
-          if (r.status === 'accepted' || r.status === 'arrived') showProviderToPickupRoute(r);
-          else if (r.status === 'in_progress') showPickupToDestinationRoute(r);
+          if (r.status === 'accepted' || r.status === 'arrived') await showOnlyDriverToPickupRoute(r);
+          else if (r.status === 'in_progress') await showOnlyPickupToDestinationRoute(r);
         }
         startTripTracking('ride', id);
         return;
@@ -5321,8 +5366,8 @@ async function checkForActiveTrip() {
             await loadAndShowProvider(d.providerId, d);
           }
           updateTripStatusUI(d.status);
-          if (d.status === 'accepted' || d.status === 'arrived') showProviderToPickupRoute(d);
-          else if (d.status === 'in_progress') showPickupToDestinationRoute(d);
+          if (d.status === 'accepted' || d.status === 'arrived') await showOnlyDriverToPickupRoute(d);
+          else if (d.status === 'in_progress') await showOnlyPickupToDestinationRoute(d);
         }
         startTripTracking('delivery', id);
         return;
@@ -5342,6 +5387,9 @@ async function checkForActiveTrip() {
   }
 }
 
+/* ============================================================
+   AUTH STATE + BOOT
+   ============================================================ */
 let bootDone = false;
 onAuthStateChanged(auth, async (user) => {
   if (!user) { window.location.href = 'index.html'; return; }
@@ -5389,7 +5437,7 @@ function loadErrandsForBadge() {
 }
 
 /* ============================================================
-   MISC
+   MISC — Escape key + resize handling
    ============================================================ */
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
