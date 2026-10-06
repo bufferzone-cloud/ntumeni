@@ -157,7 +157,7 @@ input, textarea, select { font-family: inherit; }
 }
 body.has-panel #detailPanel {
   flex: 0 0 auto;
-  max-height: 70vh;
+  max-height: 72vh;
   overflow: hidden;
   box-shadow: 0 -8px 24px rgba(0,0,0,0.06);
   border-top: 1px solid var(--line);
@@ -165,7 +165,7 @@ body.has-panel #detailPanel {
 #detailPanel .dp-inner {
   max-width: 620px;
   margin: 0 auto;
-  padding: 12px 14px 16px;
+  padding: 10px 12px 12px;
 }
 
 /* ==========================================================
@@ -375,131 +375,185 @@ body.has-panel #mapControls {
 #navigateFloatBtn { background: #0a0a0a; color: #fff; }
 
 /* ==========================================================
-   COMPACT ACTIVE-TRIP PANEL
+   COMPACT ACTIVE-TRIP PANEL — every section tightened
    ========================================================== */
 .dp-c-head {
   display: flex; align-items: center; justify-content: space-between;
   gap: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 .dp-c-tag {
-  display: inline-flex; align-items: center; gap: 6px;
-  font-size: 0.62rem; font-weight: 800;
-  letter-spacing: 0.8px; text-transform: uppercase;
-  padding: 5px 10px; border-radius: 999px;
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 0.6rem; font-weight: 800;
+  letter-spacing: 0.7px; text-transform: uppercase;
+  padding: 4px 9px; border-radius: 999px;
   background: var(--info-soft); color: #175cd3;
 }
 .dp-c-fare {
-  font-size: 1.05rem; font-weight: 800;
+  font-size: 1rem; font-weight: 800;
   letter-spacing: -0.4px;
   color: var(--text-primary);
 }
 .dp-c-fare small {
-  font-size: 0.72rem; font-weight: 700;
+  font-size: 0.68rem; font-weight: 700;
   color: var(--text-tertiary); margin-right: 2px;
 }
 
 .dp-c-customer {
-  display: flex; align-items: center; gap: 11px;
-  padding: 10px 12px;
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px;
   background: var(--fill-gray);
-  border-radius: 12px;
-  margin-bottom: 8px;
+  border-radius: 10px;
+  margin-bottom: 6px;
 }
 .dp-c-avatar {
-  width: 40px; height: 40px; border-radius: 50%;
+  width: 34px; height: 34px; border-radius: 50%;
   background: #ffffff; overflow: hidden;
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
   box-shadow: 0 0 0 1px var(--line);
 }
 .dp-c-avatar img { width: 100%; height: 100%; object-fit: cover; }
-.dp-c-avatar i { color: var(--text-tertiary); font-size: 1rem; }
+.dp-c-avatar i { color: var(--text-tertiary); font-size: 0.9rem; }
 .dp-c-info { flex: 1; min-width: 0; }
 .dp-c-info strong {
-  display: block; font-size: 0.88rem; font-weight: 800;
+  display: block; font-size: 0.84rem; font-weight: 800;
   letter-spacing: -0.2px;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .dp-c-info span {
-  display: block; font-size: 0.72rem;
+  display: block; font-size: 0.68rem;
   color: var(--text-secondary); margin-top: 1px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .dp-c-call {
-  width: 38px; height: 38px; border-radius: 50%;
+  width: 34px; height: 34px; border-radius: 50%;
   background: var(--success); color: #fff;
   display: flex; align-items: center; justify-content: center;
-  font-size: 0.9rem; flex-shrink: 0;
+  font-size: 0.82rem; flex-shrink: 0;
   text-decoration: none;
   box-shadow: 0 5px 12px -4px rgba(18,183,106,0.5);
 }
 .dp-c-call:active { transform: scale(0.92); }
 
+/* Route — very compact rows */
 .dp-c-route {
   background: var(--fill-gray);
-  border-radius: 12px;
-  padding: 4px;
-  margin-bottom: 8px;
+  border-radius: 10px;
+  padding: 2px;
+  margin-bottom: 6px;
 }
 .dp-c-route .rr-row {
-  display: flex; align-items: center; gap: 10px;
-  padding: 8px 11px;
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 9px;
 }
 .dp-c-route .rr-row + .rr-row {
   border-top: 1px solid rgba(0,0,0,0.05);
 }
 .dp-c-route .rr-dot {
-  width: 10px; height: 10px; border-radius: 50%;
+  width: 8px; height: 8px; border-radius: 50%;
   background: #0a0a0a;
-  box-shadow: 0 0 0 3px rgba(10,10,10,0.13);
+  box-shadow: 0 0 0 2.5px rgba(10,10,10,0.13);
   flex-shrink: 0;
 }
 .dp-c-route .rr-dot.stop {
-  border-radius: 3px;
+  border-radius: 2.5px;
   background: var(--warn);
-  box-shadow: 0 0 0 3px rgba(247,144,9,0.15);
+  box-shadow: 0 0 0 2.5px rgba(247,144,9,0.15);
 }
 .dp-c-route .rr-dot.square {
-  border-radius: 3px;
+  border-radius: 2.5px;
   background: #175cd3;
-  box-shadow: 0 0 0 3px rgba(23,92,211,0.13);
+  box-shadow: 0 0 0 2.5px rgba(23,92,211,0.13);
 }
 .dp-c-route .rr-txt {
   flex: 1; min-width: 0;
-  font-size: 0.8rem; font-weight: 600;
+  font-size: 0.76rem; font-weight: 600;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  line-height: 1.2;
 }
 .dp-c-route .rr-txt small {
   display: block;
-  font-size: 0.56rem; font-weight: 800;
-  letter-spacing: 1px; text-transform: uppercase;
+  font-size: 0.52rem; font-weight: 800;
+  letter-spacing: 0.9px; text-transform: uppercase;
   color: var(--text-tertiary);
   margin-bottom: 1px;
 }
 
+/* =========================================================
+   COMPACT PROMO BLOCK — small, tidy, aligned
+   ========================================================= */
+.promo-block {
+  background: linear-gradient(135deg, #ecfdf3 0%, #d1fadf 100%);
+  border: 1px solid rgba(18,183,106,0.28);
+  border-radius: 10px;
+  padding: 7px 9px;
+  margin-bottom: 6px;
+}
+.promo-block .pb-head {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 0.56rem; font-weight: 800;
+  letter-spacing: 0.9px; text-transform: uppercase;
+  color: #027a48; margin-bottom: 5px;
+}
+.promo-block .pb-head i { font-size: 0.68rem; }
+.promo-block .pb-code {
+  background: #027a48; color: #fff;
+  padding: 1px 6px; border-radius: 5px;
+  font-family: 'SF Mono', ui-monospace, monospace;
+  font-size: 0.58rem; letter-spacing: 0.8px;
+  margin-left: auto;
+}
+.promo-block .pb-row {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px; padding: 1px 0;
+  font-size: 0.7rem;
+  line-height: 1.35;
+}
+.promo-block .pb-row + .pb-row {
+  border-top: 1px dashed rgba(2,122,72,0.14);
+  padding-top: 2px;
+  margin-top: 1px;
+}
+.promo-block .pb-row .pb-key {
+  color: #047857; font-weight: 600;
+  font-size: 0.68rem;
+}
+.promo-block .pb-row .pb-val {
+  font-weight: 800; color: #027a48;
+  font-size: 0.72rem;
+  white-space: nowrap;
+}
+.promo-block .pb-row.highlight .pb-val { font-size: 0.78rem; }
+.promo-block .pb-row.discount .pb-val { color: #d92d20; }
+
+/* Stats — 3 tight tiles in a row */
 .dp-c-stats {
-  display: flex;
-  gap: 6px;
-  margin-bottom: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 5px;
+  margin-bottom: 8px;
 }
 .dp-c-stat {
-  flex: 1;
   background: var(--fill-gray);
-  border-radius: 10px;
-  padding: 8px 6px;
+  border-radius: 9px;
+  padding: 6px 4px;
   text-align: center;
+  min-width: 0;
 }
 .dp-c-stat small {
   display: block;
-  font-size: 0.54rem; font-weight: 800;
-  letter-spacing: 0.9px; text-transform: uppercase;
+  font-size: 0.5rem; font-weight: 800;
+  letter-spacing: 0.8px; text-transform: uppercase;
   color: var(--text-tertiary);
-  margin-bottom: 3px;
+  margin-bottom: 2px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .dp-c-stat strong {
   display: block;
-  font-size: 0.82rem; font-weight: 800;
+  font-size: 0.76rem; font-weight: 800;
   letter-spacing: -0.2px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .dp-c-stat.price { background: #0a0a0a; color: #fff; }
 .dp-c-stat.price small { color: rgba(255,255,255,0.55); }
@@ -508,26 +562,27 @@ body.has-panel #mapControls {
 .dp-c-stat.discount small { color: #027a48; opacity: 0.75; }
 .dp-c-stat.discount strong { color: #027a48; }
 
-/* Actions row: Navigate | Details | Cancel */
+/* Actions row */
 .dp-c-actions {
   display: flex;
-  gap: 8px;
-  margin-bottom: 8px;
+  gap: 6px;
+  margin-bottom: 6px;
 }
 .dp-c-btn {
   flex: 1;
-  height: 48px;
-  border-radius: 12px;
-  font-size: 0.74rem;
+  height: 42px;
+  border-radius: 10px;
+  font-size: 0.68rem;
   font-weight: 800;
-  letter-spacing: 0.7px;
+  letter-spacing: 0.6px;
   text-transform: uppercase;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 5px;
   transition: transform 0.28s var(--spring), background 0.22s;
   min-width: 0;
+  padding: 0 6px;
 }
 .dp-c-btn:active { transform: scale(0.97); }
 .dp-c-btn.primary {
@@ -554,79 +609,79 @@ body.has-panel #mapControls {
   box-shadow: none;
 }
 .dp-c-btn.details .d-caret {
-  font-size: 0.7rem;
+  font-size: 0.62rem;
   transition: transform 0.3s var(--ease-out);
   margin-left: 2px;
 }
 .dp-c-btn.details.open .d-caret {
   transform: rotate(180deg);
 }
-.dp-c-btn i { font-size: 0.82rem; }
+.dp-c-btn i { font-size: 0.75rem; }
 
 /* Details dropdown panel */
 .dp-c-details {
   max-height: 0;
   overflow: hidden;
   background: var(--fill-gray);
-  border-radius: 12px;
-  margin-bottom: 8px;
+  border-radius: 10px;
+  margin-bottom: 6px;
   transition: max-height 0.4s var(--ease-out), opacity 0.3s, margin 0.3s;
   opacity: 0;
 }
 .dp-c-details.open {
   max-height: 560px;
   opacity: 1;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
-.dp-c-details-inner { padding: 10px 12px; }
+.dp-c-details-inner { padding: 8px 10px; }
 .dd-section + .dd-section {
-  margin-top: 10px;
-  padding-top: 10px;
+  margin-top: 8px;
+  padding-top: 8px;
   border-top: 1px dashed rgba(0,0,0,0.08);
 }
 .dd-label {
-  display: flex; align-items: center; gap: 6px;
-  font-size: 0.6rem; font-weight: 800;
-  letter-spacing: 1.1px; text-transform: uppercase;
+  display: flex; align-items: center; gap: 5px;
+  font-size: 0.56rem; font-weight: 800;
+  letter-spacing: 1px; text-transform: uppercase;
   color: var(--text-tertiary);
-  margin-bottom: 6px;
+  margin-bottom: 5px;
 }
-.dd-label i { font-size: 0.68rem; }
+.dd-label i { font-size: 0.62rem; }
 .dd-row {
-  display: flex; align-items: center; gap: 10px;
+  display: flex; align-items: center; gap: 9px;
   background: #ffffff;
-  border-radius: 10px;
-  padding: 9px 11px;
+  border-radius: 8px;
+  padding: 7px 10px;
   box-shadow: 0 0 0 1px var(--line);
 }
-.dd-row + .dd-row { margin-top: 6px; }
+.dd-row + .dd-row { margin-top: 5px; }
 .dd-row-txt { flex: 1; min-width: 0; }
 .dd-row-txt small {
   display: block;
-  font-size: 0.55rem; font-weight: 800;
+  font-size: 0.52rem; font-weight: 800;
   letter-spacing: 0.9px; text-transform: uppercase;
   color: var(--text-tertiary);
-  margin-bottom: 2px;
+  margin-bottom: 1px;
 }
 .dd-row-txt strong {
   display: block;
-  font-size: 0.84rem; font-weight: 700;
+  font-size: 0.8rem; font-weight: 700;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   color: var(--text-primary);
 }
 .dd-row-txt .dd-multiline {
-  font-size: 0.8rem; font-weight: 500;
+  font-size: 0.76rem; font-weight: 500;
   color: var(--text-secondary);
-  line-height: 1.5;
+  line-height: 1.45;
   white-space: pre-wrap;
   word-break: break-word;
   overflow: visible;
 }
 .dd-call-btn {
-  width: 40px; height: 40px; border-radius: 50%;
+  width: 34px; height: 34px; border-radius: 50%;
   background: var(--success); color: #fff;
   display: flex; align-items: center; justify-content: center;
-  font-size: 0.92rem; flex-shrink: 0;
+  font-size: 0.82rem; flex-shrink: 0;
   text-decoration: none;
   box-shadow: 0 5px 12px -4px rgba(18,183,106,0.5);
   transition: transform 0.24s var(--spring);
@@ -639,12 +694,12 @@ body.has-panel #mapControls {
 }
 
 /* ==========================================================
-   SLIDE BUTTONS (Green = Arrive, Blue = Start, Red = End)
+   SLIDE BUTTONS — slightly shorter so panel fits
    ========================================================== */
 .slide-btn {
   position: relative;
   width: 100%;
-  height: 62px;
+  height: 56px;
   border-radius: 999px;
   color: #ffffff;
   overflow: hidden;
@@ -657,7 +712,6 @@ body.has-panel #mapControls {
 .slide-btn.start  { background: linear-gradient(135deg, #175cd3 0%, #0a3a8c 55%, #06234f 100%); }
 .slide-btn.end    { background: linear-gradient(135deg, #f04438 0%, #b42318 55%, #5b0d08 100%); }
 
-/* Animation when a new slide button renders after a stage change */
 .slide-btn.slide-enter {
   animation: slideBtnIn 0.55s var(--spring) both;
 }
@@ -669,7 +723,7 @@ body.has-panel #mapControls {
 
 .slide-btn .slide-fill {
   position: absolute; top: 0; left: 0; bottom: 0;
-  width: 62px;
+  width: 56px;
   background: rgba(255,255,255,0.14);
   border-radius: 999px;
   pointer-events: none;
@@ -678,20 +732,20 @@ body.has-panel #mapControls {
 .slide-btn .slide-label {
   position: absolute; inset: 0;
   display: flex; align-items: center; justify-content: center;
-  font-size: 0.84rem; font-weight: 800;
-  letter-spacing: 1.3px; text-transform: uppercase;
+  font-size: 0.78rem; font-weight: 800;
+  letter-spacing: 1.2px; text-transform: uppercase;
   pointer-events: none;
-  padding-left: 42px;
+  padding-left: 40px;
   text-shadow: 0 1px 5px rgba(0,0,0,0.35);
 }
-.slide-btn .slide-label i { margin-right: 8px; }
+.slide-btn .slide-label i { margin-right: 7px; }
 .slide-btn .slide-handle {
   position: absolute; top: 5px; left: 5px;
-  width: 52px; height: 52px;
+  width: 46px; height: 46px;
   border-radius: 50%;
   background: #ffffff;
   display: flex; align-items: center; justify-content: center;
-  font-size: 1rem;
+  font-size: 0.95rem;
   cursor: grab;
   box-shadow: 0 6px 16px -4px rgba(0,0,0,0.4);
   transition: transform 0.22s var(--spring);
@@ -705,7 +759,7 @@ body.has-panel #mapControls {
 .slide-btn.is-busy { opacity: 0.7; pointer-events: none; }
 
 /* ==========================================================
-   REQUEST POPUP
+   REQUEST POPUP — compact too
    ========================================================== */
 #requestModal {
   z-index: 5500;
@@ -764,18 +818,18 @@ body.has-panel #mapControls {
   min-height: 0;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  padding: 16px 18px 18px;
+  padding: 14px 16px 16px;
 }
 .req-actions {
   display: flex;
   gap: 10px;
-  margin-top: 14px;
+  margin-top: 12px;
 }
 .req-actions button {
   flex: 1;
-  height: 56px;
-  border-radius: 16px;
-  font-size: 0.86rem;
+  height: 52px;
+  border-radius: 14px;
+  font-size: 0.84rem;
   font-weight: 800;
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -798,39 +852,7 @@ body.has-panel #mapControls {
   box-shadow: 0 12px 26px -10px rgba(18,183,106,0.75);
 }
 
-/* Promo / discount block inside request popup and panel */
-.promo-block {
-  background: linear-gradient(135deg, #ecfdf3 0%, #d1fadf 100%);
-  border: 1px solid rgba(18,183,106,0.28);
-  border-radius: 12px;
-  padding: 10px 12px;
-  margin-bottom: 12px;
-}
-.promo-block .pb-head {
-  display: flex; align-items: center; gap: 7px;
-  font-size: 0.62rem; font-weight: 800;
-  letter-spacing: 0.9px; text-transform: uppercase;
-  color: #027a48; margin-bottom: 8px;
-}
-.promo-block .pb-head i { font-size: 0.75rem; }
-.promo-block .pb-code {
-  background: #027a48; color: #fff;
-  padding: 2px 8px; border-radius: 6px;
-  font-family: 'SF Mono', ui-monospace, monospace;
-  font-size: 0.66rem; letter-spacing: 1px;
-}
-.promo-block .pb-row {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 10px; padding: 4px 0;
-  font-size: 0.82rem;
-}
-.promo-block .pb-row + .pb-row { border-top: 1px dashed rgba(2,122,72,0.16); }
-.promo-block .pb-row .pb-key { color: #047857; font-weight: 600; }
-.promo-block .pb-row .pb-val { font-weight: 800; color: #027a48; }
-.promo-block .pb-row.highlight .pb-val { font-size: 0.95rem; }
-.promo-block .pb-row.discount .pb-val { color: #d92d20; }
-
-/* Popup customer/route reuse styles */
+/* Popup customer/route */
 .dp-tag {
   display: inline-flex; align-items: center; gap: 6px;
   font-size: 0.64rem; font-weight: 800;
@@ -841,49 +863,49 @@ body.has-panel #mapControls {
 }
 .dp-customer {
   display: flex; align-items: center; gap: 13px;
-  padding: 12px;
+  padding: 10px;
   background: var(--fill-gray);
-  border-radius: 14px;
-  margin-bottom: 12px;
+  border-radius: 12px;
+  margin-bottom: 10px;
 }
 .dp-customer .dc-avatar {
-  width: 44px; height: 44px; border-radius: 50%;
+  width: 40px; height: 40px; border-radius: 50%;
   background: #ffffff; overflow: hidden;
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
   box-shadow: 0 0 0 1px var(--line);
 }
 .dp-customer .dc-avatar img { width: 100%; height: 100%; object-fit: cover; }
-.dp-customer .dc-avatar i { color: var(--text-tertiary); font-size: 1.1rem; }
+.dp-customer .dc-avatar i { color: var(--text-tertiary); font-size: 1rem; }
 .dp-customer .dc-body { flex: 1; min-width: 0; }
 .dp-customer .dc-body strong {
-  display: block; font-size: 0.92rem; font-weight: 800;
+  display: block; font-size: 0.88rem; font-weight: 800;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .dp-customer .dc-body span {
-  display: block; font-size: 0.74rem;
+  display: block; font-size: 0.72rem;
   color: var(--text-secondary); margin-top: 2px;
 }
 .dp-customer .dc-call {
-  width: 40px; height: 40px; border-radius: 50%;
+  width: 36px; height: 36px; border-radius: 50%;
   background: var(--success); color: #fff;
   display: flex; align-items: center; justify-content: center;
-  font-size: 0.9rem; flex-shrink: 0;
+  font-size: 0.86rem; flex-shrink: 0;
   text-decoration: none;
 }
 .dp-route {
   background: var(--fill-gray);
-  border-radius: 14px;
-  padding: 4px;
-  margin-bottom: 12px;
+  border-radius: 12px;
+  padding: 3px;
+  margin-bottom: 10px;
 }
 .dp-route .rr-row {
-  display: flex; align-items: center; gap: 11px;
-  padding: 10px 12px;
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 11px;
 }
 .dp-route .rr-row + .rr-row { border-top: 1px solid rgba(0,0,0,0.05); }
 .dp-route .rr-dot {
-  width: 11px; height: 11px; border-radius: 50%;
+  width: 10px; height: 10px; border-radius: 50%;
   background: #0a0a0a;
   box-shadow: 0 0 0 3px rgba(10,10,10,0.13);
   flex-shrink: 0;
@@ -901,50 +923,50 @@ body.has-panel #mapControls {
 .dp-route .rr-txt { flex: 1; min-width: 0; }
 .dp-route .rr-txt small {
   display: block;
-  font-size: 0.58rem; font-weight: 800;
+  font-size: 0.56rem; font-weight: 800;
   letter-spacing: 1.1px; text-transform: uppercase;
   color: var(--text-tertiary);
-  margin-bottom: 2px;
+  margin-bottom: 1px;
 }
 .dp-route .rr-txt strong {
   display: block;
-  font-size: 0.84rem; font-weight: 600;
+  font-size: 0.8rem; font-weight: 600;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .dp-stats {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 8px;
-  margin-bottom: 12px;
+  gap: 6px;
+  margin-bottom: 10px;
 }
 .dp-stat {
   background: var(--fill-gray);
-  border-radius: 12px;
-  padding: 10px 8px;
+  border-radius: 10px;
+  padding: 8px 6px;
   text-align: center;
 }
 .dp-stat small {
-  display: block; font-size: 0.54rem; font-weight: 800;
+  display: block; font-size: 0.52rem; font-weight: 800;
   letter-spacing: 1px; text-transform: uppercase;
   color: var(--text-tertiary);
-  margin-bottom: 4px;
+  margin-bottom: 3px;
 }
 .dp-stat strong {
-  display: block; font-size: 0.88rem; font-weight: 800;
+  display: block; font-size: 0.82rem; font-weight: 800;
 }
 .dp-stat.price { background: #0a0a0a; color: #fff; }
 .dp-stat.price small { color: rgba(255,255,255,0.55); }
-.dp-stat.price strong { color: #fff; font-size: 0.98rem; }
+.dp-stat.price strong { color: #fff; font-size: 0.92rem; }
 .dp-commission {
-  display: flex; align-items: center; gap: 9px;
-  padding: 9px 12px;
-  border-radius: 11px;
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 11px;
+  border-radius: 10px;
   background: var(--warn-soft);
   border: 1px solid rgba(247,144,9,0.22);
-  font-size: 0.74rem;
+  font-size: 0.72rem;
   font-weight: 700;
   color: #b54708;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 /* ==========================================================
@@ -1739,7 +1761,7 @@ body.has-panel #mapControls {
 .chip.unclaimed { background: #f4f4f5;             color: #52525b; }
 .chip.paid      { background: var(--success-soft); color: #027a48; }
 
-/* Stars display */
+/* Stars */
 .stars-row {
   display: inline-flex; align-items: center; gap: 2px;
   color: #f7b955; font-size: 0.82rem;
@@ -2156,7 +2178,7 @@ body.has-panel #mapControls {
   pointer-events: none;
 }
 body.has-panel #toast {
-  bottom: 70vh;
+  bottom: 72vh;
 }
 #toast.show { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
 
@@ -2169,9 +2191,14 @@ body.has-panel #toast {
   .online-slide .os-handle { width: 52px; height: 52px; }
   .online-slide .os-label { font-size: 0.72rem; letter-spacing: 1.2px; padding-left: 42px; }
   .req-modal { height: 90vh; }
-  .dp-c-btn { font-size: 0.66rem; gap: 4px; }
-  .dp-c-btn i { font-size: 0.72rem; }
+  .dp-c-btn { font-size: 0.62rem; gap: 4px; padding: 0 4px; }
+  .dp-c-btn i { font-size: 0.68rem; }
   .rating-stars button { width: 40px; height: 40px; font-size: 1.5rem; }
+  .slide-btn { height: 52px; }
+  .slide-btn .slide-handle { width: 42px; height: 42px; font-size: 0.88rem; }
+  .slide-btn .slide-label { font-size: 0.72rem; padding-left: 36px; }
+  .promo-block .pb-row { font-size: 0.66rem; }
+  .promo-block .pb-val { font-size: 0.68rem; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -2596,7 +2623,6 @@ const DEFAULT_FLOAT_RULES = {
   minFloatPerErrand: 5
 };
 
-/* Chauffeur tier ranking: economy (1) < standard (2) < premium (3) */
 const TIER_RANK = { economy: 1, standard: 2, premium: 3 };
 const TIER_LABELS = { economy: 'Economy', standard: 'Standard', premium: 'Premium' };
 
@@ -2669,7 +2695,6 @@ const mapModalRecenter= $('mapModalRecenter');
 const mapModalTitle   = $('mapModalTitle');
 const toastEl = $('toast');
 
-/* Rating modal DOM */
 const ratingModal     = $('ratingModal');
 const ratingAvatar    = $('ratingAvatar');
 const ratingSubtitle  = $('ratingSubtitle');
@@ -2678,7 +2703,6 @@ const ratingComment   = $('ratingComment');
 const ratingSkipBtn   = $('ratingSkipBtn');
 const ratingSubmitBtn = $('ratingSubmitBtn');
 
-/* Arrival modal DOM */
 const arrivalModal    = $('arrivalModal');
 const arrivalAvatar   = $('arrivalAvatar');
 const arrivalName     = $('arrivalName');
@@ -2701,7 +2725,6 @@ let pickupMarker = null;
 let stopMarker = null;
 let destMarker = null;
 
-/* Heading tracking for the car marker */
 let currentHeading = 0;
 let lastPositionForHeading = null;
 
@@ -2747,7 +2770,6 @@ let detailsOpen = false;
 let locationPingInterval = null;
 let locationWatchId = null;
 
-/* Rating state */
 let ratingTripKind = null;
 let ratingTripId = null;
 let ratingCustomerId = null;
@@ -2755,7 +2777,6 @@ let ratingCustomerName = null;
 let ratingCustomerPhoto = null;
 let currentRatingValue = 0;
 
-/* Claims */
 let claimsUnsub = null;
 let claimsCache = [];
 
@@ -3107,7 +3128,6 @@ function initMap() {
   setTimeout(() => { if (map) map.invalidateSize(); }, 200);
 }
 
-/* ---- Car marker with heading rotation ---- */
 function buildCarIconHtml(heading) {
   return `<div class="car-marker" style="transform: rotate(${heading}deg);">
     <img src="driver.png" alt="" onerror="this.style.display='none';this.parentNode.classList.add('no-img');">
@@ -3239,7 +3259,6 @@ async function drawRouteThroughWaypoints(waypoints, profile, padding) {
   }
 }
 
-/* ---- Animated route drawing: zoom in, then slowly draw the polyline ---- */
 async function drawRouteAnimated(waypoints, profile) {
   if (!map || !waypoints || waypoints.length < 2) return;
   clearMainRoute();
@@ -3253,11 +3272,9 @@ async function drawRouteAnimated(waypoints, profile) {
   }
   if (!coords || coords.length < 2) return;
 
-  // Step 1: zoom into the starting point
   map.flyTo(coords[0], 17, { duration: 1.0, easeLinearity: 0.25 });
   await new Promise(r => setTimeout(r, 1050));
 
-  // Step 2: create empty polylines that will be filled progressively
   const shadow = L.polyline([], {
     color: '#ffffff', weight: 8, opacity: 0.95, lineJoin: 'round', lineCap: 'round'
   });
@@ -3266,7 +3283,6 @@ async function drawRouteAnimated(waypoints, profile) {
   });
   mainRouteLayer = L.layerGroup([shadow, main]).addTo(map);
 
-  // Step 3: slowly draw the polyline over ~2 seconds with smoothstep easing
   const total = coords.length;
   const duration = 2000;
   const t0 = performance.now();
@@ -3274,7 +3290,7 @@ async function drawRouteAnimated(waypoints, profile) {
   await new Promise((resolve) => {
     function tick(now) {
       const t = Math.min(1, (now - t0) / duration);
-      const eased = t * t * (3 - 2 * t); // smoothstep
+      const eased = t * t * (3 - 2 * t);
       const count = Math.max(2, Math.floor(eased * total));
       const slice = coords.slice(0, count);
       shadow.setLatLngs(slice);
@@ -3285,7 +3301,6 @@ async function drawRouteAnimated(waypoints, profile) {
     requestAnimationFrame(tick);
   });
 
-  // Step 4: fit the whole route once drawing is done
   try {
     map.fitBounds(main.getBounds(), { padding: [60, 60], maxZoom: 17, animate: true, duration: 0.9 });
   } catch (e) {}
@@ -3657,7 +3672,6 @@ function canAcceptKind(kind, request) {
 
   if (kind === 'ride') {
     if (role !== 'driver') return false;
-    // Tier-based matching: provider must match or outrank the ride's required tier
     const requiredTier = String(request.chauffeurTier || '').toLowerCase();
     if (requiredTier && TIER_RANK[requiredTier]) {
       const providerTier = String(providerRecord.chauffeurTier || '').toLowerCase();
@@ -3780,15 +3794,15 @@ function buildPromoBlock(data) {
     <div class="promo-block">
       <div class="pb-head">
         <i class="fas fa-tag"></i>
-        Promo applied
+        <span>Promo applied</span>
         ${promoCode ? `<span class="pb-code">${escapeHtml(promoCode)}</span>` : ''}
       </div>
       <div class="pb-row">
-        <span class="pb-key">Original fare</span>
+        <span class="pb-key">Original</span>
         <span class="pb-val">K ${escapeHtml(formatPrice(fare))}</span>
       </div>
       <div class="pb-row discount">
-        <span class="pb-key">Discount to customer</span>
+        <span class="pb-key">Discount</span>
         <span class="pb-val">− K ${escapeHtml(formatPrice(discount))}</span>
       </div>
       <div class="pb-row highlight">
@@ -3796,7 +3810,7 @@ function buildPromoBlock(data) {
         <span class="pb-val">K ${escapeHtml(formatPrice(customerPays))}</span>
       </div>
       <div class="pb-row highlight">
-        <span class="pb-key">You can claim from admin</span>
+        <span class="pb-key">Claim from admin</span>
         <span class="pb-val">K ${escapeHtml(formatPrice(discount))}</span>
       </div>
     </div>
@@ -3845,7 +3859,6 @@ function openRequestModal() {
        </div>`
     : '';
 
-  /* Tier badge for rides */
   const tierBadge = (kind === 'ride' && data.chauffeurTier)
     ? `<span class="dp-tag" style="background:#175cd3;margin-bottom:10px;">
          <i class="fas fa-layer-group"></i> ${escapeHtml(TIER_LABELS[String(data.chauffeurTier).toLowerCase()] || data.chauffeurTier)} tier
@@ -4081,19 +4094,19 @@ function renderActiveTrip() {
     tagIcon = 'fa-car';
     tagText = 'Heading to pickup';
     navTarget = data.pickup;
-    slideStageClass = 'arrive';       // green
+    slideStageClass = 'arrive';
     slideStageLabel = '<i class="fas fa-location-dot"></i> Slide to arrive';
   } else if (activeStage === 'arrived') {
     tagIcon = 'fa-map-pin';
     tagText = 'At pickup';
     navTarget = data.pickup;
-    slideStageClass = 'start';        // blue
+    slideStageClass = 'start';
     slideStageLabel = '<i class="fas fa-play"></i> Slide to start';
   } else if (activeStage === 'in_progress') {
     tagIcon = 'fa-route';
     tagText = 'In progress';
     navTarget = data.stop ? data.stop : data.dropoff;
-    slideStageClass = 'end';          // red
+    slideStageClass = 'end';
     slideStageLabel = '<i class="fas fa-flag-checkered"></i> Slide to end';
   } else {
     return;
@@ -4122,7 +4135,6 @@ function renderActiveTrip() {
        </div>`
     : '';
 
-  /* Details panel for deliveries */
   let detailsPanelHtml = '';
   if (isDelivery) {
     const senderName = data.senderName || '—';
@@ -4201,12 +4213,10 @@ function renderActiveTrip() {
     `;
   }
 
-  /* Promo / discount block */
   const promoHtml = buildPromoBlock(data);
   const { discount, customerPays } = getDiscountInfo(data);
   const hasDiscount = discount > 0;
 
-  /* Third stat becomes discount when applicable */
   const thirdStatHtml = hasDiscount
     ? `<div class="dp-c-stat discount">
          <small>Your claim</small>
@@ -4350,7 +4360,7 @@ function wireSlideButton() {
 
   slideIsBusy = false;
   handle.style.transform = '';
-  fill.style.width = '62px';
+  fill.style.width = '56px';
   label.style.opacity = '';
   handle.classList.remove('dragging');
 
@@ -4368,7 +4378,7 @@ function wireSlideButton() {
     if (!slideDragging) return;
     const dx = Math.max(0, Math.min(slideMaxX, e.clientX - slideStartX));
     handle.style.transform = `translateX(${dx}px)`;
-    fill.style.width = (62 + dx) + 'px';
+    fill.style.width = (56 + dx) + 'px';
     label.style.opacity = String(Math.max(0, 1 - dx / slideMaxX * 1.1));
     if (dx >= slideMaxX * 0.88) {
       slideDragging = false;
@@ -4382,7 +4392,7 @@ function wireSlideButton() {
     slideDragging = false;
     handle.classList.remove('dragging');
     handle.style.transform = '';
-    fill.style.width = '62px';
+    fill.style.width = '56px';
     label.style.opacity = '';
   };
   handle.addEventListener('pointerup', release);
@@ -4399,7 +4409,7 @@ function setSlideBusy(text) {
   slideIsBusy = true;
   if (label) label.innerHTML = text;
   if (handle) handle.style.transform = '';
-  if (fill) fill.style.width = '62px';
+  if (fill) fill.style.width = '56px';
 }
 
 async function triggerSlideAction() {
@@ -4452,7 +4462,7 @@ arrivalModal.addEventListener('click', (e) => {
 });
 
 /* ============================================================
-   RATING MODAL LOGIC
+   RATING MODAL
    ============================================================ */
 function updateStarDisplay(value) {
   const buttons = document.querySelectorAll('#ratingStars button');
@@ -4635,7 +4645,6 @@ async function handleArrive() {
   renderDetailPanel();
   showToast('Marked as arrived at pickup');
 
-  // Pop up the arrival confirmation form
   setTimeout(() => openArrivalModal(data), 350);
 }
 
@@ -4668,7 +4677,6 @@ async function handleStartTrip() {
     if (stop && isFinite(stop.lat) && isFinite(stop.lng)) wps.push({ lat: stop.lat, lng: stop.lng });
     wps.push({ lat: dropoff.lat, lng: dropoff.lng });
 
-    // Zoom into the current position and slowly draw the route
     await drawRouteAnimated(wps, osrmProfileForRole(providerRecord?.role || 'driver'));
   }
 
@@ -4708,7 +4716,6 @@ async function handleEndTrip() {
     });
   } catch (err) { console.warn('Could not deduct commission:', err); }
 
-  /* ---- Create a claim if a discount was applied ---- */
   if (discount > 0) {
     try {
       const claimRef = push(ref(database, `providers/${currentUser.uid}/claims`));
@@ -5157,7 +5164,6 @@ function renderClaims() {
     const isUnclaimed = c.status === 'unclaimed';
     const statusClass = isPaid ? 'paid' : (isPending ? 'pending' : 'unclaimed');
     const statusLabelText = isPaid ? 'Paid' : (isPending ? 'Awaiting admin' : 'Unclaimed');
-    const iconClass = c.type === 'ride' ? 'ride' : 'delivery';
     const typeTitle = c.type === 'ride' ? 'Ride discount' : 'Delivery discount';
 
     html += `
