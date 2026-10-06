@@ -390,42 +390,71 @@ input,textarea{font-family:inherit}
   font-weight:700;letter-spacing:.3px;text-transform:uppercase;
 }
 
-/* Promo strip */
-.promo-strip{
-  background:linear-gradient(135deg,#ecfdf3 0%,#d1fadf 100%);
-  border:1px solid rgba(18,183,106,.28);
-  border-radius:14px;
-  padding:12px 14px;
+/* ==================================================
+   PROMO DROPDOWN
+   ================================================== */
+.promo-dropdown{
   margin-bottom:12px;flex-shrink:0;
-  display:none;
-  animation:paneIn .3s var(--ease-out);
+  border-radius:14px;
+  overflow:hidden;
+  background:#fff;
+  box-shadow:0 0 0 1px var(--line);
 }
-.promo-strip.show{display:block}
-.promo-strip .ps-head{
-  display:flex;align-items:center;gap:8px;
-  font-size:.62rem;font-weight:800;
-  letter-spacing:.9px;text-transform:uppercase;
-  color:#027a48;margin-bottom:8px;
+.promo-toggle{
+  width:100%;
+  display:flex;align-items:center;gap:10px;
+  padding:12px 14px;
+  background:#fff;
+  font-size:.82rem;font-weight:800;
+  text-align:left;
+  transition:background .2s;
 }
-.promo-strip .ps-head i{font-size:.85rem}
-.promo-strip .ps-row{
-  display:flex;align-items:center;justify-content:space-between;
-  gap:8px;padding:4px 0;font-size:.82rem;
+.promo-toggle:active{background:var(--fill-gray)}
+.promo-toggle .pt-ico{
+  width:32px;height:32px;border-radius:10px;
+  background:var(--success-soft);color:#027a48;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.85rem;flex-shrink:0;
 }
-.promo-strip .ps-row+.ps-row{border-top:1px dashed rgba(2,122,72,.16)}
-.promo-strip .ps-key{color:#047857;font-weight:600}
-.promo-strip .ps-val{font-weight:800;color:#027a48}
-.promo-strip .ps-val.minus{color:#d92d20}
+.promo-toggle .pt-text{flex:1;min-width:0}
+.promo-toggle .pt-text strong{display:block;font-size:.82rem;font-weight:800}
+.promo-toggle .pt-text span{
+  display:block;font-size:.68rem;color:var(--text-secondary);
+  font-weight:600;margin-top:2px;
+}
+.promo-toggle .pt-caret{
+  font-size:.75rem;color:var(--text-tertiary);
+  transition:transform .3s var(--ease-out);
+}
+.promo-dropdown.open .pt-caret{transform:rotate(180deg)}
 
+.promo-body{
+  max-height:0;overflow:hidden;
+  transition:max-height .4s var(--ease-out);
+  background:var(--fill-gray);
+}
+.promo-dropdown.open .promo-body{max-height:520px}
+.promo-body-inner{padding:12px}
+.promo-body-inner .promo-input-row{margin-bottom:10px}
+.promo-body-inner .promo-available{
+  display:flex;gap:8px;overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  padding-bottom:2px;
+  scrollbar-width:none;
+}
+.promo-body-inner .promo-available::-webkit-scrollbar{display:none}
+.promo-body-inner .promo-available.vertical{
+  flex-direction:column;overflow:visible;
+}
 .promo-input-row{
-  display:flex;gap:8px;margin-bottom:10px;flex-shrink:0;
+  display:flex;gap:8px;
 }
 .promo-input-row input{
   flex:1;
   padding:11px 14px;
   border-radius:12px;
   border:1.5px solid transparent;
-  background:var(--fill-gray);
+  background:#fff;
   font-size:.86rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;
   outline:none;
 }
@@ -438,23 +467,58 @@ input,textarea{font-family:inherit}
 }
 .promo-input-row button:active{transform:scale(.96)}
 .promo-input-row button:disabled{opacity:.5;pointer-events:none}
-.promo-available{
-  display:flex;gap:8px;overflow-x:auto;
-  -webkit-overflow-scrolling:touch;
-  padding-bottom:2px;margin-bottom:10px;
-  scrollbar-width:none;flex-shrink:0;
-}
-.promo-available::-webkit-scrollbar{display:none}
 .promo-chip{
   flex-shrink:0;display:inline-flex;align-items:center;gap:6px;
-  padding:7px 12px;border-radius:999px;
-  background:var(--success-soft);color:#027a48;
+  padding:8px 12px;border-radius:999px;
+  background:#fff;color:#027a48;
   font-family:'SF Mono',ui-monospace,'Monaco','Courier New',monospace;
   font-size:.68rem;font-weight:800;letter-spacing:1px;
   border:1px solid rgba(18,183,106,.3);
   transition:transform .28s var(--spring);
 }
 .promo-chip:active{transform:scale(.95)}
+.promo-chip .pc-detail{
+  font-family:inherit;font-size:.6rem;color:#6e6e73;
+  letter-spacing:0;text-transform:none;font-weight:600;
+}
+.promo-chip.full{
+  width:100%;justify-content:space-between;
+  border-radius:12px;padding:10px 14px;
+  margin-bottom:6px;
+}
+.promo-chip.full:last-child{margin-bottom:0}
+
+.promo-strip{
+  background:linear-gradient(135deg,#ecfdf3 0%,#d1fadf 100%);
+  border:1px solid rgba(18,183,106,.28);
+  border-radius:14px;
+  padding:12px 14px;
+  margin-bottom:12px;flex-shrink:0;
+  display:none;
+  animation:paneIn .3s var(--ease-out);
+}
+.promo-strip.show{display:block}
+.promo-strip .ps-head{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  font-size:.62rem;font-weight:800;
+  letter-spacing:.9px;text-transform:uppercase;
+  color:#027a48;margin-bottom:8px;
+}
+.promo-strip .ps-head span{display:flex;align-items:center;gap:8px}
+.promo-strip .ps-head i{font-size:.85rem}
+.promo-strip .ps-remove{
+  font-size:.68rem;color:#027a48;font-weight:800;
+  text-transform:uppercase;letter-spacing:.4px;
+  background:rgba(2,122,72,.1);padding:4px 9px;border-radius:999px;
+}
+.promo-strip .ps-row{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:8px;padding:4px 0;font-size:.82rem;
+}
+.promo-strip .ps-row+.ps-row{border-top:1px dashed rgba(2,122,72,.16)}
+.promo-strip .ps-key{color:#047857;font-weight:600}
+.promo-strip .ps-val{font-weight:800;color:#027a48}
+.promo-strip .ps-val.minus{color:#d92d20}
 
 .fare-card{
   background:#0a0a0a;color:#fff;
@@ -539,10 +603,15 @@ input,textarea{font-family:inherit}
 .pane-cancel-btn:active{transform:scale(.97)}
 
 .provider-active{display:flex;flex-direction:column;flex:1;min-height:0;gap:8px}
-.pf-row{
-  display:flex;align-items:center;gap:11px;
+
+/* Provider card with vehicle photo */
+.pf-card{
+  display:flex;flex-direction:column;gap:8px;
   padding:10px 12px;background:var(--fill-gray);
   border-radius:14px;flex-shrink:0;
+}
+.pf-row{
+  display:flex;align-items:center;gap:11px;
 }
 .pf-avatar{
   width:44px;height:44px;border-radius:50%;
@@ -572,6 +641,33 @@ input,textarea{font-family:inherit}
   box-shadow:0 6px 14px -4px rgba(18,183,106,.5);
 }
 .pf-call:active{transform:scale(.92)}
+
+/* Vehicle picture inside provider card */
+.pf-vehicle-pic{
+  width:100%;
+  border-radius:12px;
+  overflow:hidden;
+  background:#fff;
+  box-shadow:0 0 0 1px var(--line);
+  position:relative;
+  display:none;
+  animation:vehiclePicIn .4s var(--ease-out);
+}
+.pf-vehicle-pic.show{display:block}
+@keyframes vehiclePicIn{
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.pf-vehicle-pic img{
+  width:100%;height:140px;object-fit:cover;display:block;
+}
+.pf-vehicle-pic .vlabel{
+  position:absolute;left:10px;bottom:10px;
+  background:rgba(10,10,10,.85);color:#fff;
+  font-size:.6rem;font-weight:800;
+  letter-spacing:.9px;text-transform:uppercase;
+  padding:5px 9px;border-radius:999px;
+}
 
 .compact-route{
   display:flex;align-items:center;gap:10px;
@@ -1136,18 +1232,32 @@ input,textarea{font-family:inherit}
   100%{transform:scale(1.25);opacity:0}
 }
 
-/* CHAUFFEUR CAR MARKER using car.png */
-.car-marker-wrap{background:none !important;border:none !important}
-.car-marker{
-  width:44px;height:44px;
+/* =========================================================
+   DRIVER MARKER (driver.png with heading)
+   ========================================================= */
+.driver-marker-wrap{background:none !important;border:none !important}
+.driver-marker{
+  width:52px;height:52px;
   display:flex;align-items:center;justify-content:center;
   transform-origin:50% 50%;
   transition:transform .55s var(--ease-out);
-  filter:drop-shadow(0 3px 7px rgba(0,0,0,.45));
+  filter:drop-shadow(0 4px 8px rgba(0,0,0,.45));
 }
-.car-marker img{
+.driver-marker img{
   width:100%;height:100%;object-fit:contain;
   user-select:none;pointer-events:none;-webkit-user-drag:none;
+}
+.driver-marker .driver-pulse{
+  position:absolute;inset:-2px;
+  border-radius:50%;
+  border:2px solid rgba(18,183,106,.55);
+  animation:driverPulse 2s var(--ease-smooth) infinite;
+  pointer-events:none;
+}
+@keyframes driverPulse{
+  0%{transform:scale(.6);opacity:.9}
+  70%{transform:scale(1.35);opacity:0}
+  100%{transform:scale(1.35);opacity:0}
 }
 
 .leaflet-tile-pane{filter:saturate(.85) contrast(1.05) brightness(1.02)}
@@ -1401,23 +1511,6 @@ input,textarea{font-family:inherit}
 }
 .modal-overlay.open{display:flex}
 
-/* Chauffeur sheet option */
-.chauffeur-sheet-option{
-  width:100%;
-  display:flex;align-items:center;gap:14px;
-  padding:14px 15px;border-radius:var(--radius-sm);
-  background:#fff;box-shadow:0 0 0 1.5px var(--line);text-align:left;
-  margin-bottom:9px;
-  transition:transform .28s var(--spring),box-shadow .25s;
-}
-.chauffeur-sheet-option:active{transform:scale(.98)}
-.chauffeur-sheet-option.selected{
-  box-shadow:0 0 0 2px #0a0a0a,0 10px 22px -10px rgba(0,0,0,.35);
-}
-.chauffeur-sheet-option.selected.economy{box-shadow:0 0 0 2px #12b76a,0 10px 22px -10px rgba(18,183,106,.5)}
-.chauffeur-sheet-option.selected.standard{box-shadow:0 0 0 2px #175cd3,0 10px 22px -10px rgba(23,92,211,.5)}
-.chauffeur-sheet-option.selected.premium{box-shadow:0 0 0 2px #7c3aed,0 10px 22px -10px rgba(124,58,237,.5)}
-
 @media (max-width:380px){
   .btn-ride{padding:20px 16px}
   .btn-ride .ride-ico{width:42px;height:42px}
@@ -1586,12 +1679,28 @@ input,textarea{font-family:inherit}
           </button>
         </div>
 
-        <!-- Promo section -->
-        <div class="promo-available" id="promoAvailable" style="display:none"></div>
-        <div class="promo-input-row">
-          <input type="text" id="promoInput" placeholder="Promo code" maxlength="20" autocomplete="off">
-          <button id="applyPromoBtn">Apply</button>
+        <!-- ===================== PROMO DROPDOWN ===================== -->
+        <!-- Only shown when there are promo codes available AND one is not yet applied -->
+        <div class="promo-dropdown" id="promoDropdown" style="display:none">
+          <button type="button" class="promo-toggle" id="promoToggleBtn">
+            <span class="pt-ico"><i class="fas fa-tag"></i></span>
+            <span class="pt-text">
+              <strong>Have a promo code?</strong>
+              <span id="promoToggleSub">Tap to add and save on this trip</span>
+            </span>
+            <i class="fas fa-chevron-down pt-caret"></i>
+          </button>
+          <div class="promo-body">
+            <div class="promo-body-inner">
+              <div class="promo-input-row">
+                <input type="text" id="promoInput" placeholder="Enter code" maxlength="20" autocomplete="off">
+                <button id="applyPromoBtn">Apply</button>
+              </div>
+              <div class="promo-available vertical" id="promoAvailable"></div>
+            </div>
+          </div>
         </div>
+
         <div class="promo-strip" id="promoStrip"></div>
 
         <div class="fare-card">
@@ -1643,20 +1752,27 @@ input,textarea{font-family:inherit}
 
           <div id="activeProviderState" style="display:none;flex-direction:column;flex:1;min-height:0;gap:8px">
 
-            <div class="pf-row">
-              <div class="pf-avatar" id="providerFoundAvatar">
-                <i class="fas fa-user"></i>
-              </div>
-              <div class="pf-body">
-                <strong id="providerFoundName">Chauffeur</strong>
-                <div class="pf-meta">
-                  <span id="providerFoundRole"><i class="fas fa-id-badge"></i> Chauffeur</span>
-                  <span id="providerFoundVehicle"><i class="fas fa-car"></i> Vehicle</span>
+            <div class="pf-card">
+              <div class="pf-row">
+                <div class="pf-avatar" id="providerFoundAvatar">
+                  <i class="fas fa-user"></i>
                 </div>
+                <div class="pf-body">
+                  <strong id="providerFoundName">Chauffeur</strong>
+                  <div class="pf-meta">
+                    <span id="providerFoundRole"><i class="fas fa-id-badge"></i> Chauffeur</span>
+                    <span id="providerFoundVehicle"><i class="fas fa-car"></i> Vehicle</span>
+                  </div>
+                </div>
+                <a class="pf-call" id="providerCallBtn" href="#" style="display:none">
+                  <i class="fas fa-phone"></i>
+                </a>
               </div>
-              <a class="pf-call" id="providerCallBtn" href="#" style="display:none">
-                <i class="fas fa-phone"></i>
-              </a>
+              <!-- Registered vehicle picture (car / bike / motorbike) -->
+              <div class="pf-vehicle-pic" id="providerVehiclePic">
+                <img id="providerVehicleImg" src="" alt="Vehicle">
+                <span class="vlabel" id="providerVehicleLabel">Vehicle</span>
+              </div>
             </div>
 
             <div class="compact-route">
@@ -2069,7 +2185,7 @@ input,textarea{font-family:inherit}
 <script type="module">
 import { initializeApp } from "firebase/app";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
-import { getDatabase, ref, set, get, update, push, onValue, remove } from "firebase/database";
+import { getDatabase, ref, set, get, update, push, onValue } from "firebase/database";
 
 /* ============================================================
    FIREBASE
@@ -2103,13 +2219,22 @@ const CONFIG = {
 };
 
 /* Chauffeur tier multiplier on base ride price */
-const TIER_MULTIPLIER = {
-  economy:  1.00,
-  standard: 1.20,
-  premium:  1.55
-};
-
+const TIER_MULTIPLIER = { economy: 1.00, standard: 1.20, premium: 1.55 };
 const TIER_LABELS = { economy: 'Economy', standard: 'Standard', premium: 'Premium' };
+
+/* ------------------------------------------------------------------
+   DRIVER MARKER ORIENTATION
+   driver.png points UP (north) by default in the source image.
+   If your image points a different way, adjust this offset:
+     - image points up (north)     → offset   0
+     - image points right (east)   → offset -90
+     - image points down (south)   → offset 180
+     - image points left (west)    → offset  90
+   ------------------------------------------------------------------ */
+const DRIVER_ICON_BASE_OFFSET = 0;
+
+/* Lazily draw pickup → destination over this many milliseconds */
+const ROUTE_DRAW_DURATION_MS = 3000;
 
 const DELIVERY_VEHICLES = {
   motorbike: { id: 'motorbike', label: 'Motorbike', description: 'Fastest for small parcels', icon: 'fa-motorcycle' },
@@ -2175,11 +2300,16 @@ const fareDuration = $('fareDuration');
 const fareOriginal = $('fareOriginal');
 const fareOriginalValue = $('fareOriginalValue');
 
-const tierChooser  = $('tierChooser');
+const tierChooser   = $('tierChooser');
+
+/* Promo dropdown DOM */
+const promoDropdown = $('promoDropdown');
+const promoToggleBtn = $('promoToggleBtn');
+const promoToggleSub = $('promoToggleSub');
+const promoInput    = $('promoInput');
+const applyPromoBtn = $('applyPromoBtn');
 const promoAvailable = $('promoAvailable');
-const promoInput   = $('promoInput');
-const applyPromoBtn= $('applyPromoBtn');
-const promoStrip   = $('promoStrip');
+const promoStrip    = $('promoStrip');
 
 const ridePage       = $('ridePage');
 const rideBackBtn    = $('rideBackBtn');
@@ -2272,6 +2402,9 @@ const providerFoundName     = $('providerFoundName');
 const providerFoundRole     = $('providerFoundRole');
 const providerFoundVehicle  = $('providerFoundVehicle');
 const providerCallBtn       = $('providerCallBtn');
+const providerVehiclePic    = $('providerVehiclePic');
+const providerVehicleImg    = $('providerVehicleImg');
+const providerVehicleLabel  = $('providerVehicleLabel');
 const crDot1 = $('crDot1');
 const crDot2 = $('crDot2');
 const crPickup = $('crPickup');
@@ -2315,7 +2448,6 @@ let pickupMarker = null;
 let stopMarker = null;
 let dropoffMarker = null;
 let providerMarker = null;
-let providerMarkerLayer = null;
 let providerMarkerHeading = 0;
 let providerLastPos = null;
 let routeLayer = null;
@@ -2364,9 +2496,9 @@ let configPricingUnsub = null;
 let configSettingsUnsub = null;
 let promoCodesUnsub = null;
 
-let availablePromos = [];      // list from system/promoCodes
-let appliedPromo = null;        // currently applied promo object
-let appliedPromoDiscount = 0;   // discount amount in K
+let availablePromos = [];
+let appliedPromo = null;
+let appliedPromoDiscount = 0;
 
 let historyCache = { rides: [], deliveries: [], errands: [] };
 let historyFilter = 'all';
@@ -2375,7 +2507,6 @@ let txFilter = 'all';
 let historyListenerUnsub = null;
 let txListenerUnsub = null;
 
-/* Floating errand tracking */
 let floatingErrandId = null;
 let floatingErrandData = null;
 let floatingErrandListenerUnsub = null;
@@ -2391,14 +2522,9 @@ let ratingProviderPhoto = null;
 let currentRatingValue = 0;
 
 const DEFAULT_LOCATION = { lat: -15.4167, lng: 28.2833 };
-
 const RATING_LABELS = {
-  0: 'Tap a star to rate',
-  1: 'Poor',
-  2: 'Fair',
-  3: 'Good',
-  4: 'Very good',
-  5: 'Excellent!'
+  0: 'Tap a star to rate', 1: 'Poor', 2: 'Fair',
+  3: 'Good', 4: 'Very good', 5: 'Excellent!'
 };
 
 /* ============================================================
@@ -2554,7 +2680,6 @@ function startConfigListeners() {
     if (s.searchRadiusKm && isFinite(s.searchRadiusKm)) CONFIG.searchRadiusKm = s.searchRadiusKm;
   }, () => {});
 
-  /* Promo codes from admin */
   promoCodesUnsub = onValue(ref(database, 'system/promoCodes'), (snap) => {
     const data = snap.val() || {};
     const arr = [];
@@ -2568,13 +2693,38 @@ function startConfigListeners() {
       arr.push({ ...p, _id: id, code: String(p.code).toUpperCase() });
     }
     availablePromos = arr;
+    // Reset any applied promo that is no longer valid
+    if (appliedPromo && !availablePromos.find(p => p.code === appliedPromo.code)) {
+      appliedPromo = null;
+      appliedPromoDiscount = 0;
+      promoInput.value = '';
+    }
+    updatePromoDropdownVisibility();
     renderAvailablePromos();
+    refreshFareDisplay();
   }, () => {});
 }
 
 /* ============================================================
-   PROMO HELPERS
+   PROMO DROPDOWN + HELPERS
    ============================================================ */
+function updatePromoDropdownVisibility() {
+  if (!promoDropdown) return;
+  // Only show the promo dropdown if there are promo codes available AND no promo is currently applied
+  const hasPromos = availablePromos && availablePromos.length > 0;
+  if (hasPromos && !appliedPromo) {
+    promoDropdown.style.display = 'block';
+    // Update subtitle with count
+    const count = availablePromos.length;
+    promoToggleSub.textContent = count === 1
+      ? '1 promo available — tap to apply'
+      : `${count} promos available — tap to apply`;
+  } else {
+    promoDropdown.style.display = 'none';
+    promoDropdown.classList.remove('open');
+  }
+}
+
 function renderAvailablePromos() {
   if (!promoAvailable) return;
   const relevant = availablePromos.filter(p => {
@@ -2582,14 +2732,16 @@ function renderAvailablePromos() {
     return sc === 'all' || sc === 'ride';
   });
   if (!relevant.length) {
-    promoAvailable.style.display = 'none';
+    promoAvailable.innerHTML = '';
     return;
   }
-  promoAvailable.style.display = 'flex';
   promoAvailable.innerHTML = relevant.slice(0, 8).map(p => {
-    const label = p.type === 'free' ? 'FREE' : (p.type === 'percent' ? `${p.value}% OFF` : `K${p.value} OFF`);
-    return `<button type="button" class="promo-chip" data-promo="${escapeHtml(p.code)}">
-      <i class="fas fa-tag"></i> ${escapeHtml(p.code)} · ${escapeHtml(label)}
+    const label = p.type === 'free'
+      ? 'FREE'
+      : (p.type === 'percent' ? `${p.value}% OFF` : `K${p.value} OFF`);
+    return `<button type="button" class="promo-chip full" data-promo="${escapeHtml(p.code)}">
+      <span>${escapeHtml(p.code)}</span>
+      <span class="pc-detail">${escapeHtml(label)}</span>
     </button>`;
   }).join('');
   promoAvailable.querySelectorAll('[data-promo]').forEach(btn => {
@@ -2617,6 +2769,7 @@ function applyPromoCode() {
     appliedPromo = null;
     appliedPromoDiscount = 0;
     promoStrip.classList.remove('show');
+    updatePromoDropdownVisibility();
     refreshFareDisplay();
     return;
   }
@@ -2626,13 +2779,13 @@ function applyPromoCode() {
     appliedPromo = null;
     appliedPromoDiscount = 0;
     promoStrip.classList.remove('show');
+    updatePromoDropdownVisibility();
     refreshFareDisplay();
     return;
   }
   appliedPromo = promo;
 
   if (!currentRoute) {
-    // Defer calculation until route exists
     refreshFareDisplay();
     return;
   }
@@ -2648,18 +2801,38 @@ function applyPromoCode() {
     appliedPromo = null;
     appliedPromoDiscount = 0;
     promoStrip.classList.remove('show');
+    updatePromoDropdownVisibility();
     refreshFareDisplay();
     return;
   }
   showToast('Promo applied!');
+  updatePromoDropdownVisibility();
   refreshFareDisplay();
+  // Collapse the dropdown after applying
+  promoDropdown.classList.remove('open');
 }
 
+promoToggleBtn.addEventListener('click', () => {
+  promoDropdown.classList.toggle('open');
+});
+
 applyPromoBtn.addEventListener('click', applyPromoCode);
-promoInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); applyPromoCode(); } });
+promoInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') { e.preventDefault(); applyPromoCode(); }
+});
 promoInput.addEventListener('input', () => {
   promoInput.value = promoInput.value.toUpperCase().replace(/\s+/g, '');
 });
+
+function clearAppliedPromo() {
+  appliedPromo = null;
+  appliedPromoDiscount = 0;
+  promoInput.value = '';
+  promoStrip.classList.remove('show');
+  fareOriginal.classList.add('hidden');
+  updatePromoDropdownVisibility();
+  refreshFareDisplay();
+}
 
 function refreshFareDisplay() {
   if (!currentRoute) return;
@@ -2693,12 +2866,17 @@ function refreshFareDisplay() {
 function renderPromoStrip(originalFare, discount, finalFare) {
   if (!appliedPromo) { promoStrip.classList.remove('show'); return; }
   promoStrip.innerHTML = `
-    <div class="ps-head"><i class="fas fa-tag"></i> Promo applied · ${escapeHtml(appliedPromo.code)}</div>
+    <div class="ps-head">
+      <span><i class="fas fa-tag"></i> Promo · ${escapeHtml(appliedPromo.code)}</span>
+      <button type="button" class="ps-remove" id="removePromoBtn">Remove</button>
+    </div>
     <div class="ps-row"><span class="ps-key">Original fare</span><span class="ps-val">K ${escapeHtml(formatPrice(originalFare))}</span></div>
     <div class="ps-row"><span class="ps-key">Discount</span><span class="ps-val minus">− K ${escapeHtml(formatPrice(discount))}</span></div>
     <div class="ps-row"><span class="ps-key">You pay</span><span class="ps-val">K ${escapeHtml(formatPrice(finalFare))}</span></div>
   `;
   promoStrip.classList.add('show');
+  const removeBtn = $('removePromoBtn');
+  if (removeBtn) removeBtn.addEventListener('click', clearAppliedPromo);
 }
 
 /* ============================================================
@@ -2823,47 +3001,52 @@ function setDropoffMarker(lat, lng) {
   else dropoffMarker = L.marker([lat, lng], { icon, zIndexOffset: 1000 }).addTo(map);
 }
 
-/* ---- Chauffeur car marker using car.png with heading ---- */
-function buildCarIconHtml(heading) {
-  return `<div class="car-marker" style="transform:rotate(${heading}deg);">
-    <img src="car.png" alt="" onerror="this.style.display='none';this.parentNode.classList.add('no-img');">
+/* ---- Driver marker using driver.png with heading ---- */
+function buildDriverIconHtml(heading) {
+  return `<div class="driver-marker" style="transform:rotate(${heading}deg);">
+    <img src="driver.png" alt=""
+         onerror="this.style.display='none';this.parentNode.classList.add('no-img');">
   </div>`;
 }
-function setProviderMarker(lat, lng, role, headingDeg) {
+function setDriverMarker(lat, lng, role, headingDeg) {
   if (!map) return;
+
+  // Compute heading from GPS or from movement
   let h = headingDeg;
   if (!isFinite(h)) {
-    if (providerLastPos && (haversineMeters(providerLastPos.lat, providerLastPos.lng, lat, lng) > 3)) {
+    if (providerLastPos && haversineMeters(providerLastPos.lat, providerLastPos.lng, lat, lng) > 2) {
       h = computeBearing(providerLastPos.lat, providerLastPos.lng, lat, lng);
     } else {
       h = providerMarkerHeading;
     }
   }
-  providerMarkerHeading = ((h % 360) + 360) % 360;
+  // Apply the base image offset so the marker points the right way
+  const visualHeading = (h + DRIVER_ICON_BASE_OFFSET + 360) % 360;
+  providerMarkerHeading = visualHeading;
   providerLastPos = { lat, lng };
 
-  // For non-chauffeur roles (bike, walker) use the generic icon.
-  const isChauffeur = (currentTripKind === 'ride') || String(role || '').toLowerCase() === 'driver' || String(role || '').toLowerCase() === 'chauffeur';
+  // Only chauffeur trips use driver.png; other roles keep the icon bubble
+  const roleLower = String(role || '').toLowerCase();
+  const isChauffeur = (currentTripKind === 'ride') || roleLower === 'driver' || roleLower === 'chauffeur';
 
   if (isChauffeur) {
     if (providerMarker) {
       providerMarker.setLatLng([lat, lng]);
       const el = providerMarker.getElement();
       if (el) {
-        const car = el.querySelector('.car-marker');
-        if (car) car.style.transform = `rotate(${providerMarkerHeading}deg)`;
+        const d = el.querySelector('.driver-marker');
+        if (d) d.style.transform = `rotate(${visualHeading}deg)`;
       }
     } else {
       const icon = L.divIcon({
-        className: 'car-marker-wrap',
-        html: buildCarIconHtml(providerMarkerHeading),
-        iconSize: [44, 44],
-        iconAnchor: [22, 22]
+        className: 'driver-marker-wrap',
+        html: buildDriverIconHtml(visualHeading),
+        iconSize: [52, 52],
+        iconAnchor: [26, 26]
       });
       providerMarker = L.marker([lat, lng], { icon, zIndexOffset: 1500 }).addTo(map);
     }
   } else {
-    // Non-chauffeur: use vehicle icon bubble
     const icon = L.divIcon({
       className: '',
       html: `<div style="width:42px;height:42px;border-radius:50%;background:#0a0a0a;color:#fff;
@@ -3504,7 +3687,7 @@ function renderErrandCard(e, withActions) {
 }
 
 /* ============================================================
-   ERRAND DETAILS + OFFER ACCEPT → FLOATING CARD + CHAT
+   ERRAND DETAILS
    ============================================================ */
 function openErrandDetails(errandId) {
   const errand = postedErrandsCache[errandId];
@@ -3608,10 +3791,8 @@ async function acceptOffer(errand, providerId) {
     showToast('✅ Offer accepted!');
     errand.status = 'accepted';
     postedErrandsCache[errand.errandId] = errand;
-
     closeErrandDetailsPage();
     showFloatingErrandCard(errand, providerId, offer);
-    // Chat opens only after acceptance.
     setTimeout(() => openChat(errand, providerId), 800);
   } catch (err) {
     console.error(err);
@@ -3625,18 +3806,15 @@ async function acceptOffer(errand, providerId) {
 function showFloatingErrandCard(errand, providerId, offer) {
   floatingErrandId = errand.errandId;
   floatingErrandData = { errand, providerId, offer };
-
   const name  = offer?.providerName || errand.acceptedProviderName || 'Provider';
   const photo = offer?.providerPhoto || '';
   const phone = offer?.providerPhone || errand.acceptedProviderPhone || '';
-
   fecName.textContent = name;
   if (photo) fecAvatar.innerHTML = `<img src="${escapeHtml(photo)}" alt="">`;
   else fecAvatar.innerHTML = `<i class="fas fa-user"></i>`;
   if (phone) { fecCall.href = 'tel:' + phone; fecCall.style.display = 'flex'; }
   else fecCall.style.display = 'none';
   fecTitle.textContent = errand.title || 'Errand';
-
   floatingErrandCard.classList.add('open');
 
   if (floatingErrandListenerUnsub) { floatingErrandListenerUnsub(); floatingErrandListenerUnsub = null; }
@@ -3649,28 +3827,23 @@ function showFloatingErrandCard(errand, providerId, offer) {
     }
   });
 }
-
 function hideFloatingErrandCard() {
   floatingErrandCard.classList.remove('open');
   if (floatingErrandListenerUnsub) { floatingErrandListenerUnsub(); floatingErrandListenerUnsub = null; }
   floatingErrandId = null;
   floatingErrandData = null;
 }
-
 fecChat.addEventListener('click', () => {
   if (!floatingErrandData) return;
   const { errand, providerId } = floatingErrandData;
   openChat(errand, providerId);
 });
-
 fecDone.addEventListener('click', async () => {
   if (!floatingErrandId) return;
   if (!confirm('Mark this errand as complete? The provider will be notified.')) return;
   try {
     await update(ref(database, `errands/${floatingErrandId}`), {
-      status: 'completed',
-      completedAt: Date.now(),
-      completedBy: 'customer'
+      status: 'completed', completedAt: Date.now(), completedBy: 'customer'
     });
     await completeErrandTransaction(floatingErrandId);
     showToast('✅ Errand completed');
@@ -3682,22 +3855,20 @@ fecDone.addEventListener('click', async () => {
 });
 
 /* ============================================================
-   CHAT — only used after offer accepted
+   CHAT
    ============================================================ */
 function openChat(errand, providerId) {
   if (!errand || !providerId || !currentUser) return;
   activeChatErrandId = errand.errandId;
   activeChatProviderId = providerId;
   const offer = (errand.offers && errand.offers[providerId]) || {};
-  const providerName = offer.providerName || 'Provider';
-  chatTitle.textContent = providerName;
+  chatTitle.textContent = offer.providerName || 'Provider';
   chatSubtitle.textContent = errand.title || 'Errand chat';
   chatMessages.innerHTML = '<div class="chat-empty"><i class="fas fa-comments"></i>Say hi to your provider…</div>';
   chatPage.classList.add('open');
   setTimeout(() => { chatInput.focus(); scrollChatToBottom(); }, 480);
   if (chatUnsub) { chatUnsub(); chatUnsub = null; }
-  const messagesRef = ref(database, `errands/${errand.errandId}/chat`);
-  chatUnsub = onValue(messagesRef, (snap) => {
+  chatUnsub = onValue(ref(database, `errands/${errand.errandId}/chat`), (snap) => {
     const data = snap.val() || {};
     const msgs = Object.entries(data).map(([id, m]) => ({ ...m, id }))
       .sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
@@ -3779,24 +3950,49 @@ function clearProviderRoute() {
   providerRouteLayer = null;
 }
 
-/* Animated route draw: fade in segments progressively */
-async function drawRouteAnimated(geometry, opts) {
+/* ============================================================
+   LAZY ROUTE DRAWING
+   Draws the pickup → destination polyline progressively.
+   ============================================================ */
+async function drawRouteAnimated(geometry, opts, durationMs) {
   if (!map || !geometry || !geometry.coordinates || !geometry.coordinates.length) return;
   clearMainRoute();
+
   const layer = L.layerGroup().addTo(map);
   const coords = geometry.coordinates.map(([lng, lat]) => [lat, lng]);
-  const shadow = L.polyline([], { color: '#ffffff', weight: 8, opacity: .95, lineJoin: 'round', lineCap: 'round' });
-  const main   = L.polyline([], { color: (opts?.color || '#0a0a0a'), weight: (opts?.weight2 || 4.5), opacity: 1, lineJoin: 'round', lineCap: 'round' });
+
+  const shadow = L.polyline([], {
+    color: '#ffffff', weight: 8, opacity: .95,
+    lineJoin: 'round', lineCap: 'round'
+  });
+  const main = L.polyline([], {
+    color: (opts?.color || '#0a0a0a'), weight: (opts?.weight2 || 4.5),
+    opacity: 1, lineJoin: 'round', lineCap: 'round'
+  });
   shadow.addTo(layer); main.addTo(layer);
   routeLayer = layer;
 
+  // Fit bounds to the full route up front, so the animation happens
+  // on a stable camera. Then lock the view during the draw.
+  try {
+    map.fitBounds(L.latLngBounds(coords), {
+      paddingTopLeft: [30, 55],
+      paddingBottomRight: [30, 30],
+      maxZoom: 16,
+      animate: true,
+      duration: 0.9
+    });
+  } catch (e) {}
+  await new Promise(r => setTimeout(r, 950));
+
   const total = coords.length;
-  const duration = 1800;
+  const duration = durationMs || ROUTE_DRAW_DURATION_MS;
   const t0 = performance.now();
+
   await new Promise((resolve) => {
     function tick(now) {
       const t = Math.min(1, (now - t0) / duration);
-      const eased = t * t * (3 - 2 * t);
+      const eased = t * t * (3 - 2 * t); // smoothstep
       const count = Math.max(2, Math.floor(eased * total));
       const slice = coords.slice(0, count);
       shadow.setLatLngs(slice);
@@ -3806,9 +4002,6 @@ async function drawRouteAnimated(geometry, opts) {
     }
     requestAnimationFrame(tick);
   });
-  try {
-    map.fitBounds(L.latLngBounds(coords), { paddingTopLeft: [30, 50], paddingBottomRight: [30, 30], maxZoom: 17, animate: true, duration: .9 });
-  } catch (e) {}
 }
 
 /* ============================================================
@@ -3823,18 +4016,21 @@ tierChooser.querySelectorAll('[data-tier]').forEach(btn => {
 });
 
 /* ============================================================
-   RIDE TRIP
+   BUILD RIDE TRIP
    ============================================================ */
 async function buildRideTrip() {
   if (!pickupLocation || !dropoffLocation) { showPane('home'); return; }
   if (!map) initMap();
+
   setPickupMarker(pickupLocation.lat, pickupLocation.lng);
   if (stopLocation) setStopMarker(stopLocation.lat, stopLocation.lng);
   setDropoffMarker(dropoffLocation.lat, dropoffLocation.lng);
+
   tripTitle.textContent = 'Your Ride';
   confirmRideBtn.innerHTML = '<i class="fas fa-circle-check"></i> Confirm Request';
   summaryPickup.textContent  = pickupLocation.label || 'Pickup';
   summaryDropoff.textContent = dropoffLocation.label || 'Drop-off';
+
   if (stopLocation) {
     stopRowBtn.style.display = 'flex';
     stopDivider.style.display = 'block';
@@ -3845,7 +4041,9 @@ async function buildRideTrip() {
     stopDivider.style.display = 'none';
     addStopRow.style.display = 'block';
   }
+
   showPane('trip');
+
   fareTotal.textContent = '…';
   fareDistance.textContent = '…';
   fareDuration.textContent = '…';
@@ -3859,10 +4057,19 @@ async function buildRideTrip() {
     pts.push(dropoffLocation);
     const route = await fetchRoute(pts);
     currentRoute = route;
+
+    // Light preview route: draw instantly so the trip pane has a visible line
     clearMainRoute();
-    // Smooth animated draw
-    await drawRouteAnimated(route.geometry, { color: '#0a0a0a' });
+    const preview = drawRoute(route.geometry, { color: '#0a0a0a' });
+    if (preview) routeLayer = preview.layer;
+    if (preview && preview.coords.length > 1) {
+      map.fitBounds(L.latLngBounds(preview.coords), {
+        paddingTopLeft: [30, 55], paddingBottomRight: [30, 30],
+        maxZoom: 16, animate: true, duration: 0.9
+      });
+    }
     refreshFareDisplay();
+    updatePromoDropdownVisibility();
   } catch (err) {
     console.warn('Route fetch failed:', err);
     let total = 0;
@@ -3882,8 +4089,9 @@ async function buildRideTrip() {
       const coords = straightPts.map(p => [p.lat, p.lng]);
       L.polyline(coords, { color: '#0a0a0a', weight: 3, opacity: .85, dashArray: '6 8' }).addTo(layer);
       routeLayer = layer;
-      map.fitBounds(L.latLngBounds(coords), { padding: [40, 60], maxZoom: 16 });
+      map.fitBounds(L.latLngBounds(coords), { paddingTopLeft: [30, 55], paddingBottomRight: [30, 30], maxZoom: 16 });
       refreshFareDisplay();
+      updatePromoDropdownVisibility();
       showToast('Showing an estimate route.');
     }
   }
@@ -3895,11 +4103,7 @@ cancelTripBtn.addEventListener('click', () => {
   stopLocation = null;
   stopInput.value = '';
   summaryStop.textContent = '—';
-  appliedPromo = null;
-  appliedPromoDiscount = 0;
-  promoInput.value = '';
-  promoStrip.classList.remove('show');
-  fareOriginal.classList.add('hidden');
+  clearAppliedPromo();
   showPane('home');
   if (userLocation && map) map.setView([userLocation.lat, userLocation.lng], 18, { animate: true });
 });
@@ -3915,6 +4119,12 @@ removeStopBtn.addEventListener('click', (e) => {
 });
 addStopBtn.addEventListener('click', () => openRidePage('stop'));
 
+/* ============================================================
+   CONFIRM RIDE
+   1) Save to Firebase
+   2) Lazy-draw the route for ROUTE_DRAW_DURATION_MS
+   3) THEN transition to the "Searching for a chauffeur…" state
+   ============================================================ */
 confirmRideBtn.addEventListener('click', async () => {
   if (!currentRoute) { showToast('Could not calculate route. Try again.'); return; }
   if (!pickupLocation || !dropoffLocation) { showToast('Missing pickup or drop-off.'); return; }
@@ -3924,12 +4134,13 @@ confirmRideBtn.addEventListener('click', async () => {
   const orig = confirmRideBtn.innerHTML;
   confirmRideBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving…';
 
+  let rideId = null;
   try {
     const base = computeRideFare(currentRoute.distance, currentRoute.duration, selectedTier);
     const finalFare = Math.max(0, base.finalFare - appliedPromoDiscount);
 
     const rideRef = push(ref(database, 'rides'));
-    const rideId = rideRef.key;
+    rideId = rideRef.key;
     activeRideId = rideId;
 
     const rideData = {
@@ -3960,7 +4171,6 @@ confirmRideBtn.addEventListener('click', async () => {
       status: 'pending'
     });
 
-    // Increment promo usage
     if (appliedPromo && appliedPromo._id) {
       try {
         await update(ref(database, `system/promoCodes/${appliedPromo._id}`), {
@@ -3968,27 +4178,73 @@ confirmRideBtn.addEventListener('click', async () => {
         });
       } catch (e) {}
     }
-
-    activeSearchKind = 'ride';
-    currentTripKind = 'ride';
-    currentTripId = rideId;
-    currentTripMeta = { icon: 'fa-car', title: `Searching for a ${TIER_LABELS[selectedTier]} chauffeur`, vehicleLabel: 'Car', providerType: 'driver' };
-    showSearchingInPane('driver', currentTripMeta);
-    startTripTracking('ride', rideId);
-
-    // Cleanup applied promo state for next trip
-    appliedPromo = null;
-    appliedPromoDiscount = 0;
-    promoInput.value = '';
-    promoStrip.classList.remove('show');
-    fareOriginal.classList.add('hidden');
   } catch (err) {
     console.error(err);
     showToast('Could not submit ride: ' + (err.message || err));
-  } finally {
     confirmRideBtn.disabled = false;
     confirmRideBtn.innerHTML = orig;
+    return;
   }
+
+  // Lazy draw the pickup → destination route BEFORE switching to searching pane.
+  confirmRideBtn.innerHTML = '<i class="fas fa-map"></i> Drawing route…';
+
+  if (currentRoute && currentRoute.geometry) {
+    await drawRouteAnimated(currentRoute.geometry, { color: '#0a0a0a' }, ROUTE_DRAW_DURATION_MS);
+  } else if (currentRoute) {
+    // Fallback straight-line slow draw
+    try {
+      const pts = [pickupLocation];
+      if (stopLocation) pts.push(stopLocation);
+      pts.push(dropoffLocation);
+      const coords = pts.map(p => [p.lat, p.lng]);
+      clearMainRoute();
+      const layer = L.layerGroup().addTo(map);
+      const shadow = L.polyline([], { color: '#ffffff', weight: 8, opacity: .95, lineJoin: 'round', lineCap: 'round' });
+      const main = L.polyline([], { color: '#0a0a0a', weight: 4.5, opacity: 1, lineJoin: 'round', lineCap: 'round', dashArray: '6 8' });
+      shadow.addTo(layer); main.addTo(layer);
+      routeLayer = layer;
+      const total = coords.length;
+      const t0 = performance.now();
+      await new Promise((resolve) => {
+        function tick(now) {
+          const t = Math.min(1, (now - t0) / ROUTE_DRAW_DURATION_MS);
+          const eased = t * t * (3 - 2 * t);
+          const count = Math.max(2, Math.floor(eased * total));
+          const slice = coords.slice(0, count);
+          shadow.setLatLngs(slice);
+          main.setLatLngs(slice);
+          if (t < 1) requestAnimationFrame(tick); else resolve();
+        }
+        requestAnimationFrame(tick);
+      });
+    } catch (e) {}
+  }
+
+  // NOW transition to the "Searching for a chauffeur…" state.
+  activeSearchKind = 'ride';
+  currentTripKind = 'ride';
+  currentTripId = rideId;
+  currentTripMeta = {
+    icon: 'fa-car',
+    title: `Searching for a ${TIER_LABELS[selectedTier]} chauffeur`,
+    vehicleLabel: 'Car',
+    providerType: 'driver'
+  };
+  showSearchingInPane('driver', currentTripMeta);
+  startTripTracking('ride', rideId);
+
+  // Reset promo state for next trip
+  appliedPromo = null;
+  appliedPromoDiscount = 0;
+  promoInput.value = '';
+  promoStrip.classList.remove('show');
+  fareOriginal.classList.add('hidden');
+  updatePromoDropdownVisibility();
+  promoDropdown.classList.remove('open');
+
+  confirmRideBtn.disabled = false;
+  confirmRideBtn.innerHTML = orig;
 });
 
 /* ============================================================
@@ -4000,7 +4256,7 @@ requestRideBtn.addEventListener('click', () => {
     else { showToast('Waiting for your location…'); locateUser({ center: true }); return; }
   }
   dropoffLocation = null; stopLocation = null; currentRoute = null;
-  appliedPromo = null; appliedPromoDiscount = 0; promoInput.value = '';
+  clearAppliedPromo();
   clearTripLayers();
   openRidePage('destination');
 });
@@ -4131,24 +4387,38 @@ async function chooseDeliveryVehicle(price) {
     return;
   }
   closeDeliveryPage();
-  setTimeout(() => {
+  setTimeout(async () => {
     if (!map) initMap();
     clearTripLayers();
     setPickupMarker(deliveryPickupLocation.lat, deliveryPickupLocation.lng);
     setDropoffMarker(deliveryDropoffLocation.lat, deliveryDropoffLocation.lng);
+
+    // Lazy-draw the delivery route for 3s, then switch to searching
     if (deliveryRoute.geometry) {
-      const drawn = drawRoute(deliveryRoute.geometry);
-      if (drawn) routeLayer = drawn.layer;
+      await drawRouteAnimated(deliveryRoute.geometry, { color: '#0a0a0a' }, ROUTE_DRAW_DURATION_MS);
     } else {
       const layer = L.layerGroup().addTo(map);
-      L.polyline([[deliveryPickupLocation.lat, deliveryPickupLocation.lng], [deliveryDropoffLocation.lat, deliveryDropoffLocation.lng]],
-        { color: '#0a0a0a', weight: 3, opacity: .85, dashArray: '6 8' }).addTo(layer);
+      const coords = [[deliveryPickupLocation.lat, deliveryPickupLocation.lng], [deliveryDropoffLocation.lat, deliveryDropoffLocation.lng]];
+      const shadow = L.polyline([], { color: '#ffffff', weight: 8, opacity: .95, lineJoin: 'round', lineCap: 'round' });
+      const main = L.polyline([], { color: '#0a0a0a', weight: 4.5, opacity: 1, lineJoin: 'round', lineCap: 'round', dashArray: '6 8' });
+      shadow.addTo(layer); main.addTo(layer);
       routeLayer = layer;
-      map.fitBounds(L.latLngBounds([
-        [deliveryPickupLocation.lat, deliveryPickupLocation.lng],
-        [deliveryDropoffLocation.lat, deliveryDropoffLocation.lng]
-      ]), { padding: [40, 60], maxZoom: 17 });
+      const total = coords.length;
+      const t0 = performance.now();
+      await new Promise((resolve) => {
+        function tick(now) {
+          const t = Math.min(1, (now - t0) / ROUTE_DRAW_DURATION_MS);
+          const eased = t * t * (3 - 2 * t);
+          const count = Math.max(2, Math.floor(eased * total));
+          const slice = coords.slice(0, count);
+          shadow.setLatLngs(slice);
+          main.setLatLngs(slice);
+          if (t < 1) requestAnimationFrame(tick); else resolve();
+        }
+        requestAnimationFrame(tick);
+      });
     }
+
     const labels = {
       motorbike: { icon: 'fa-motorcycle', title: 'Searching for a motorbike rider', vehicleLabel: 'Motorbike', providerType: 'rider' },
       cyclist:   { icon: 'fa-bicycle',    title: 'Searching for a cyclist',         vehicleLabel: 'Bicycle',   providerType: 'cyclist' },
@@ -4161,7 +4431,7 @@ async function chooseDeliveryVehicle(price) {
     currentTripMeta = meta;
     showSearchingInPane('delivery', meta);
     startTripTracking('delivery', activeDeliveryId);
-  }, 420);
+  }, 320);
 }
 
 /* ============================================================
@@ -4258,8 +4528,9 @@ async function loadAndShowProvider(providerId, trip) {
   const vehicleLabel = trip.vehicleLabel || p.vehicleLabel || vehicleLabelForRole(role);
   const tier = p.chauffeurTier || trip.chauffeurTier || '';
 
-  // Use "Chauffeur" label for driver role
-  const roleDisplay = (role === 'driver' || role === 'chauffeur') ? 'Chauffeur' : (role.charAt(0).toUpperCase() + role.slice(1));
+  const roleDisplay = (role === 'driver' || role === 'chauffeur')
+    ? 'Chauffeur'
+    : (role.charAt(0).toUpperCase() + role.slice(1));
 
   providerFoundName.textContent = name;
   providerFoundRole.innerHTML = `<i class="fas fa-id-badge"></i> ${escapeHtml(roleDisplay)}${tier ? ' · ' + escapeHtml(TIER_LABELS[tier] || tier) : ''}`;
@@ -4271,12 +4542,44 @@ async function loadAndShowProvider(providerId, trip) {
   if (phone) { providerCallBtn.href = 'tel:' + phone; providerCallBtn.style.display = 'flex'; }
   else providerCallBtn.style.display = 'none';
 
+  /* ---- Show the provider's registered vehicle picture ----
+     Priority for chauffeur: carUrls[0]
+     For rider: bikeUrls[0]
+     For walker: nothing specific (no vehicle picture)
+  */
+  const roleLower = String(role || '').toLowerCase();
+  let vehiclePicUrl = '';
+  let vehiclePicLabel = vehicleLabel;
+
+  if (roleLower === 'driver' || roleLower === 'chauffeur') {
+    if (Array.isArray(p.carUrls) && p.carUrls.length) vehiclePicUrl = p.carUrls[0];
+    else if (p.carUrl) vehiclePicUrl = p.carUrl;
+    vehiclePicLabel = vehicleLabel || 'Car';
+  } else if (roleLower === 'rider' || roleLower === 'motorbike' || roleLower === 'cyclist') {
+    if (Array.isArray(p.bikeUrls) && p.bikeUrls.length) vehiclePicUrl = p.bikeUrls[0];
+    else if (p.bikeUrl) vehiclePicUrl = p.bikeUrl;
+    vehiclePicLabel = vehicleLabel || 'Motorbike';
+  }
+  // Fall back to the trip's stored vehicle image if present
+  if (!vehiclePicUrl && trip.vehicleImageUrl) vehiclePicUrl = trip.vehicleImageUrl;
+
+  if (vehiclePicUrl) {
+    providerVehicleImg.src = vehiclePicUrl;
+    providerVehicleImg.onerror = function() {
+      providerVehiclePic.classList.remove('show');
+    };
+    providerVehicleLabel.textContent = vehiclePicLabel;
+    providerVehiclePic.classList.add('show');
+  } else {
+    providerVehiclePic.classList.remove('show');
+  }
+
   if (activeProviderLocUnsub) { activeProviderLocUnsub(); activeProviderLocUnsub = null; }
   activeProviderLocUnsub = onValue(ref(database, `providers/${providerId}/location`), (s) => {
     if (!s.exists()) return;
     const loc = s.val();
     if (loc && isFinite(loc.lat) && isFinite(loc.lng)) {
-      setProviderMarker(loc.lat, loc.lng, role, loc.heading);
+      setDriverMarker(loc.lat, loc.lng, role, loc.heading);
       if (currentTripData && currentTripData.status === 'accepted') {
         drawProviderToPickup(loc, currentTripData.pickup);
       }
@@ -4363,7 +4666,7 @@ async function drawProviderToPickup(providerLoc, pickup) {
       }
     });
     if (allPts.length > 1) {
-      map.fitBounds(L.latLngBounds(allPts), { paddingTopLeft: [30, 50], paddingBottomRight: [30, 30], maxZoom: 16, animate: true });
+      map.fitBounds(L.latLngBounds(allPts), { paddingTopLeft: [30, 55], paddingBottomRight: [30, 30], maxZoom: 16, animate: true });
     }
   } catch (e) {}
 }
@@ -4384,8 +4687,7 @@ async function showPickupToDestinationRoute(trip) {
     if (trip.stop) pts.push(trip.stop);
     pts.push(dropoff);
     const route = await fetchRoute(pts);
-    // Animate the route drawing
-    await drawRouteAnimated(route.geometry, { color: '#0a0a0a' });
+    await drawRouteAnimated(route.geometry, { color: '#0a0a0a' }, ROUTE_DRAW_DURATION_MS);
   } catch (e) { console.warn('Route to destination failed:', e); }
 }
 
@@ -4954,7 +5256,6 @@ function applyCustomerProfile(customer) {
   else sidebarAvatar.innerHTML = `<i class="fas fa-user"></i>`;
 }
 
-/* Restore floating errand card / active trip on load */
 async function checkForActiveTrip() {
   if (!currentUser) return;
   try {
@@ -4968,7 +5269,6 @@ async function checkForActiveTrip() {
     const errands = errandsSnap.val() || {};
     const ACTIVE = ['searching','accepted','arrived','in_progress'];
 
-    // 1. Ride / delivery in progress
     for (const id in rides) {
       const r = rides[id];
       if (r.customerId === currentUser.uid && ACTIVE.includes(r.status)) {
@@ -5028,8 +5328,6 @@ async function checkForActiveTrip() {
         return;
       }
     }
-
-    // 2. Errand accepted — show floating card
     for (const id in errands) {
       const e = errands[id];
       if (e.customerId === currentUser.uid && e.status === 'accepted') {
