@@ -40,15 +40,192 @@
   --ease-smooth:cubic-bezier(0.4,0,0.2,1);
   --panel-ease:cubic-bezier(0.32,0.72,0,1);
   --topbar-h:56px;
+  --page-bg:#ffffff;
+  --body-bg:#ffffff;
+  --surface:#ffffff;
+  --surface-2:#f4f4f5;
 }
+
+/* ==========================================================
+   DARK THEME
+   ========================================================== */
+[data-theme="dark"]{
+  --ink:#f5f5f7;--paper:#0a0a0a;
+  --text-primary:#f5f5f7;--text-secondary:#a1a1a6;--text-tertiary:#6e6e73;
+  --fill-gray:#1c1c1e;--fill-gray-hover:#2c2c2e;--line:rgba(255,255,255,0.08);
+  --danger:#f04438;--danger-soft:#3b1210;
+  --success:#32d583;--success-soft:#0a2e1c;
+  --warn:#fdb022;--warn-soft:#3d2a09;
+  --info:#53b1fd;--info-soft:#0f2542;
+  --purple:#a78bfa;--purple-soft:#241640;
+  --page-bg:#0a0a0a;
+  --body-bg:#0a0a0a;
+  --surface:#1c1c1e;
+  --surface-2:#2c2c2e;
+}
+[data-theme="dark"] body{background:#0a0a0a;color:var(--text-primary);}
+[data-theme="dark"] .topbar{background:rgba(10,10,10,.94);border-bottom-color:var(--line);}
+[data-theme="dark"] .action-half{background:#0a0a0a;border-top-color:var(--line);}
+[data-theme="dark"] .btn-square{background:#1c1c1e;box-shadow:0 0 0 1px rgba(255,255,255,.06),0 4px 16px -8px rgba(0,0,0,.6);}
+[data-theme="dark"] .btn-square .sq-ico{background:#2c2c2e;color:var(--text-primary);}
+[data-theme="dark"] .icon-btn{background:#1c1c1e;color:var(--text-primary);}
+[data-theme="dark"] .topbar-logo{background:#1c1c1e;}
+[data-theme="dark"] .map-overlay-btn{background:#1c1c1e;color:var(--text-primary);box-shadow:0 4px 16px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.06);}
+[data-theme="dark"] .map-badge{background:rgba(255,255,255,.9);color:#0a0a0a;}
+[data-theme="dark"] .input-card{background:#1c1c1e;}
+[data-theme="dark"] .input-row input{color:var(--text-primary);}
+[data-theme="dark"] .input-row.focused{background:#0a0a0a;box-shadow:0 0 0 1.5px #f5f5f7;}
+[data-theme="dark"] .row-clear{background:rgba(255,255,255,.1);color:var(--text-secondary);}
+[data-theme="dark"] .input-divider{background:rgba(255,255,255,.07);}
+[data-theme="dark"] .pill-input{background:#1c1c1e;color:var(--text-primary);}
+[data-theme="dark"] .pill-input::placeholder{color:var(--text-tertiary);}
+[data-theme="dark"] .pill-input:focus{background:#0a0a0a;border-color:#f5f5f7;box-shadow:0 0 0 4px rgba(245,245,247,.14);}
+[data-theme="dark"] .fb-card{background:#1c1c1e;box-shadow:0 0 0 1px rgba(255,255,255,.06),0 2px 8px rgba(0,0,0,.4);}
+[data-theme="dark"] .fb-card-stats{border-top-color:var(--line);}
+[data-theme="dark"] .fb-card-footer{border-top-color:var(--line);}
+[data-theme="dark"] .fb-card-footer button+button{border-left-color:var(--line);}
+[data-theme="dark"] .fb-card-footer button.primary{background:#f5f5f7;color:#0a0a0a;}
+[data-theme="dark"] .fb-tag{background:#2c2c2e;color:var(--text-secondary);}
+[data-theme="dark"] .fb-tag.price{background:#f5f5f7;color:#0a0a0a;}
+[data-theme="dark"] .fb-image{background:#1c1c1e;}
+[data-theme="dark"] .fb-avatar{background:#2c2c2e;}
+[data-theme="dark"] .offer-card{background:#1c1c1e;box-shadow:0 0 0 1px rgba(255,255,255,.06);}
+[data-theme="dark"] .offer-avatar{background:#2c2c2e;}
+[data-theme="dark"] .offers-empty{background:#1c1c1e;}
+[data-theme="dark"] .detail-head-card{background:#1c1c1e;}
+[data-theme="dark"] .hist-card{background:#1c1c1e;box-shadow:0 0 0 1px rgba(255,255,255,.06);}
+[data-theme="dark"] .hist-details{background:#131315;}
+[data-theme="dark"] .hist-details .hd-route-block{background:#1c1c1e;box-shadow:0 0 0 1px rgba(255,255,255,.06);}
+[data-theme="dark"] .summary-tile{background:#1c1c1e;}
+[data-theme="dark"] .summary-tile.dark{background:#f5f5f7;color:#0a0a0a;}
+[data-theme="dark"] .summary-tile.dark small{color:rgba(0,0,0,.55);}
+[data-theme="dark"] .summary-tile.dark strong{color:#0a0a0a;}
+[data-theme="dark"] .filter-tabs{background:#0a0a0a;border-bottom-color:var(--line);}
+[data-theme="dark"] .filter-tab{background:#1c1c1e;color:var(--text-secondary);}
+[data-theme="dark"] .filter-tab.active{background:#f5f5f7;color:#0a0a0a;}
+[data-theme="dark"] .tx-item{background:#1c1c1e;box-shadow:0 0 0 1px rgba(255,255,255,.06);}
+[data-theme="dark"] .tx-item .tx-ico{background:#2c2c2e;}
+[data-theme="dark"] .tx-item .tx-ico.out{background:#3b1210;color:#f04438;}
+[data-theme="dark"] #sidebar{background:#1c1c1e;}
+[data-theme="dark"] .sidebar-head{border-bottom-color:var(--line);}
+[data-theme="dark"] .sidebar-foot{border-top-color:var(--line);}
+[data-theme="dark"] .sidebar-avatar{background:#2c2c2e;}
+[data-theme="dark"] .nav-item:hover{background:#2c2c2e;}
+[data-theme="dark"] .nav-item i{color:var(--text-secondary);}
+[data-theme="dark"] .page-head{background:rgba(10,10,10,.94);border-bottom-color:var(--line);}
+[data-theme="dark"] .chat-body{background:#0e0e10;}
+[data-theme="dark"] .chat-msg.them{background:#1c1c1e;color:var(--text-primary);box-shadow:0 1px 3px rgba(0,0,0,.4);}
+[data-theme="dark"] .chat-msg.me{background:#f5f5f7;color:#0a0a0a;}
+[data-theme="dark"] .chat-input-row{background:#0a0a0a;border-top-color:var(--line);}
+[data-theme="dark"] .chat-input-row textarea{background:#1c1c1e;color:var(--text-primary);}
+[data-theme="dark"] .chat-input-row textarea:focus{background:#000;border-color:#f5f5f7;}
+[data-theme="dark"] .chat-send-btn{background:#f5f5f7;color:#0a0a0a;}
+[data-theme="dark"] .sheet{background:#1c1c1e;}
+[data-theme="dark"] .sheet-handle{background:rgba(255,255,255,.16);}
+[data-theme="dark"] .vehicle-item{background:#1c1c1e;box-shadow:0 0 0 1.5px rgba(255,255,255,.08);}
+[data-theme="dark"] .vehicle-icon{background:#f5f5f7;color:#0a0a0a;}
+[data-theme="dark"] .sheet-cancel{background:#2c2c2e;color:var(--text-primary);}
+[data-theme="dark"] .upload-box{background:#1c1c1e;border-color:rgba(255,255,255,.14);}
+[data-theme="dark"] .upload-box.has-image{border-color:#f5f5f7;}
+[data-theme="dark"] .promo-dropdown{background:#1c1c1e;box-shadow:0 0 0 1px rgba(255,255,255,.06);}
+[data-theme="dark"] .promo-toggle{background:#1c1c1e;}
+[data-theme="dark"] .promo-toggle:active{background:#2c2c2e;}
+[data-theme="dark"] .promo-body{background:#131315;}
+[data-theme="dark"] .promo-input-row input{background:#1c1c1e;color:var(--text-primary);}
+[data-theme="dark"] .promo-input-row input:focus{background:#0a0a0a;border-color:#f5f5f7;}
+[data-theme="dark"] .promo-input-row button{background:#f5f5f7;color:#0a0a0a;}
+[data-theme="dark"] .promo-chip{background:#1c1c1e;}
+[data-theme="dark"] .promo-strip{background:linear-gradient(135deg,#0a2e1c 0%,#063a22 100%);border-color:rgba(50,213,131,.28);}
+[data-theme="dark"] .promo-strip .ps-head{color:#5ee9a4;}
+[data-theme="dark"] .promo-strip .ps-key{color:#5ee9a4;}
+[data-theme="dark"] .promo-strip .ps-val{color:#5ee9a4;}
+[data-theme="dark"] .promo-strip .ps-remove{color:#5ee9a4;background:rgba(94,233,164,.14);}
+[data-theme="dark"] .points-card{background:#1c1c1e;}
+[data-theme="dark"] .points-divider{background:rgba(255,255,255,.06);}
+[data-theme="dark"] .tier-option{background:#1c1c1e;box-shadow:0 0 0 1.5px rgba(255,255,255,.08);}
+[data-theme="dark"] .tier-option.selected{background:#1c1c1e;}
+[data-theme="dark"] .tier-option.selected.economy{box-shadow:0 0 0 2px #32d583,0 10px 22px -10px rgba(50,213,131,.5);}
+[data-theme="dark"] .tier-option.selected.standard{box-shadow:0 0 0 2px #53b1fd,0 10px 22px -10px rgba(83,177,253,.5);}
+[data-theme="dark"] .tier-option.selected.premium{box-shadow:0 0 0 2px #a78bfa,0 10px 22px -10px rgba(167,139,250,.5);}
+[data-theme="dark"] .add-stop-btn{color:#fdb022;border-color:rgba(253,176,34,.45);}
+[data-theme="dark"] .add-stop-btn:active{background:#3d2a09;}
+[data-theme="dark"] .pane-cancel-btn{background:#1c1c1e;color:var(--text-primary);}
+[data-theme="dark"] .block-overlay{background:#0a0a0a;color:var(--text-primary);}
+[data-theme="dark"] .block-icon{background:#f5f5f7;color:#0a0a0a;}
+[data-theme="dark"] .rating-modal{background:#1c1c1e;color:var(--text-primary);}
+[data-theme="dark"] .rating-avatar{background:#2c2c2e;}
+[data-theme="dark"] .rating-comment-wrap textarea{background:#2c2c2e;color:var(--text-primary);}
+[data-theme="dark"] .rating-comment-wrap textarea:focus{background:#0a0a0a;border-color:#f5f5f7;}
+[data-theme="dark"] .rating-skip{background:#2c2c2e;color:var(--text-primary);}
+[data-theme="dark"] .rating-submit{background:#f5f5f7;color:#0a0a0a;}
+[data-theme="dark"] .empty-state i{color:#3a3a3c;}
+[data-theme="dark"] .result-item:active{background:#1c1c1e;}
+[data-theme="dark"] .result-ico{background:#1c1c1e;}
+[data-theme="dark"] .result-dist{background:#1c1c1e;}
+[data-theme="dark"] .loader-row{color:var(--text-secondary);}
+[data-theme="dark"] .mini-spin{border-color:rgba(255,255,255,.14);border-top-color:#f5f5f7;}
+[data-theme="dark"] .results-hint{color:var(--text-tertiary);}
+[data-theme="dark"] .results-hint i{color:#3a3a3c;}
+[data-theme="dark"] .results-heading{color:var(--text-tertiary);}
+[data-theme="dark"] .trip-head button{background:#1c1c1e;color:var(--text-secondary);}
+[data-theme="dark"] .fare-card{background:#1c1c1e;}
+[data-theme="dark"] .fare-stat{background:rgba(255,255,255,.08);}
+[data-theme="dark"] .confirm-btn{background:#f5f5f7;color:#0a0a0a;box-shadow:0 10px 26px -12px rgba(255,255,255,.3);}
+[data-theme="dark"] .btn-primary{background:linear-gradient(180deg,#f5f5f7 0%,#e0e0e2 60%,#c8c8ca 100%);color:#0a0a0a;box-shadow:0 8px 20px -6px rgba(255,255,255,.25);}
+[data-theme="dark"] .btn-ride{background:linear-gradient(180deg,#f5f5f7 0%,#dcdce0 60%,#c0c0c4 100%);color:#0a0a0a;box-shadow:0 10px 28px -10px rgba(0,0,0,.7);}
+[data-theme="dark"] .btn-ride .ride-ico{background:rgba(0,0,0,.1);}
+[data-theme="dark"] .btn-ride .ride-txt strong{color:#0a0a0a;}
+[data-theme="dark"] .btn-ride .ride-txt span{color:rgba(10,10,10,.6);}
+[data-theme="dark"] .btn-ride .ride-arrow{color:rgba(10,10,10,.5);}
+[data-theme="dark"] .pf-card{background:#1c1c1e;}
+[data-theme="dark"] .pf-avatar{background:#2c2c2e;box-shadow:0 0 0 2px #1c1c1e,0 0 0 3.5px rgba(255,255,255,.08);}
+[data-theme="dark"] .pf-meta span{background:#2c2c2e;color:var(--text-secondary);}
+[data-theme="dark"] .pf-vehicle-pic{background:#1c1c1e;box-shadow:0 0 0 1px rgba(255,255,255,.06);}
+[data-theme="dark"] .compact-route{background:#1c1c1e;}
+[data-theme="dark"] .compact-status{background:#f5f5f7;color:#0a0a0a;}
+[data-theme="dark"] .compact-status .cs-ico{background:rgba(0,0,0,.1);}
+[data-theme="dark"] .compact-status .cs-body span{color:rgba(10,10,10,.65);}
+[data-theme="dark"] .compact-status .cs-fare small{color:rgba(10,10,10,.55);}
+[data-theme="dark"] .floating-errand-card{background:#f5f5f7;color:#0a0a0a;box-shadow:0 20px 44px -16px rgba(0,0,0,.7),0 0 0 1px rgba(0,0,0,.06) inset;}
+[data-theme="dark"] .floating-errand-card .fec-avatar{background:rgba(0,0,0,.1);color:rgba(0,0,0,.6);}
+[data-theme="dark"] .floating-errand-card .fec-info small{color:rgba(0,0,0,.5);}
+[data-theme="dark"] .floating-errand-card .fec-title{color:rgba(0,0,0,.65);}
+[data-theme="dark"] .floating-errand-card .fec-chat{background:rgba(0,0,0,.1);color:#0a0a0a;}
+[data-theme="dark"] .rating-stars button{color:#3a3a3c;}
+[data-theme="dark"] .rating-stars button.active{color:#f7b955;}
+[data-theme="dark"] .chip.pending{background:#3d2a09;color:#fdb022;}
+[data-theme="dark"] .chip.accepted{background:#0a2e1c;color:#32d583;}
+[data-theme="dark"] .chip.completed{background:#0f2542;color:#53b1fd;}
+[data-theme="dark"] .chip.cancelled{background:#2c2c2e;color:#a1a1a6;}
+[data-theme="dark"] .chip.rejected{background:#3b1210;color:#f04438;}
+[data-theme="dark"] .chip.searching{background:#0f2542;color:#53b1fd;}
+[data-theme="dark"] .chip.in_progress{background:#0a2e1c;color:#32d583;}
+[data-theme="dark"] .chip.arrived{background:#0f2542;color:#53b1fd;}
+[data-theme="dark"] .fb-status.pending{background:#3d2a09;color:#fdb022;}
+[data-theme="dark"] .fb-status.accepted{background:#0a2e1c;color:#32d583;}
+[data-theme="dark"] .fb-status.rejected{background:#3b1210;color:#f04438;}
+[data-theme="dark"] .fb-status.completed{background:#0f2542;color:#53b1fd;}
+[data-theme="dark"] .fb-status.cancelled{background:#2c2c2e;color:#a1a1a6;}
+[data-theme="dark"] .fb-status.searching{background:#0f2542;color:#53b1fd;}
+[data-theme="dark"] .fb-status.in_progress{background:#0a2e1c;color:#32d583;}
+[data-theme="dark"] .tx-status.completed{background:#0a2e1c;color:#32d583;}
+[data-theme="dark"] .tx-status.pending{background:#3d2a09;color:#fdb022;}
+[data-theme="dark"] .tx-status.failed{background:#3b1210;color:#f04438;}
+[data-theme="dark"] .tx-status.cancelled{background:#2c2c2e;color:#a1a1a6;}
+[data-theme="dark"] #loadingScreen{background:#0a0a0a;}
+[data-theme="dark"] .fare-stat small{color:rgba(255,255,255,.48);}
+[data-theme="dark"] .fare-top .fare-label{color:rgba(255,255,255,.5);}
+[data-theme="dark"] .fare-top .fare-amount{color:#f5f5f7;}
+
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;width:100%;overflow:hidden;-webkit-text-size-adjust:100%}
+html,body{height:100%;width:100%;overflow:hidden;-webkit-text-size-adjust:100%;overscroll-behavior:none}
 body{
   font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',Roboto,sans-serif;
-  color:var(--text-primary);background:#fff;
+  color:var(--text-primary);background:var(--body-bg);
   -webkit-font-smoothing:antialiased;
   display:flex;flex-direction:column;
   user-select:none;-webkit-user-select:none;
+  transition:background .3s var(--ease-out),color .3s var(--ease-out);
 }
 button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
 input,textarea{font-family:inherit}
@@ -124,6 +301,7 @@ input,textarea{font-family:inherit}
   backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
   border-bottom:1px solid var(--line);
   position:relative;z-index:500;
+  transition:background .3s var(--ease-out),border-color .3s var(--ease-out);
 }
 .icon-btn{
   width:40px;height:40px;border-radius:12px;
@@ -208,6 +386,7 @@ input,textarea{font-family:inherit}
   display:flex;flex-direction:column;
   border-top:1px solid var(--line);
   position:relative;
+  transition:background .3s var(--ease-out);
 }
 .action-pane{display:none;flex-direction:column;flex:1;min-height:0}
 .action-pane.active{display:flex;animation:paneIn .4s var(--ease-out)}
@@ -244,7 +423,7 @@ input,textarea{font-family:inherit}
   aspect-ratio:1/1;border-radius:var(--radius);background:#fff;
   box-shadow:0 0 0 1px var(--line),0 4px 16px -8px rgba(0,0,0,.18);
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
-  padding:14px;transition:transform .3s var(--spring);
+  padding:14px;transition:transform .3s var(--spring),background .3s;
 }
 .btn-square:active{transform:scale(.97)}
 .btn-square .sq-ico{
@@ -619,6 +798,7 @@ input,textarea{font-family:inherit}
   border:2.5px solid #0a0a0a;opacity:0;
   animation:radarPulse 2.4s var(--ease-smooth) infinite;
 }
+[data-theme="dark"] .pane-radar .radar-ring{border-color:#f5f5f7;}
 .pane-radar .radar-ring:nth-child(2){animation-delay:.8s}
 .pane-radar .radar-ring:nth-child(3){animation-delay:1.6s}
 @keyframes radarPulse{
@@ -632,6 +812,7 @@ input,textarea{font-family:inherit}
   font-size:1rem;z-index:2;
   box-shadow:0 0 0 5px rgba(255,255,255,.9);
 }
+[data-theme="dark"] .pane-radar .radar-center{background:#f5f5f7;color:#0a0a0a;box-shadow:0 0 0 5px rgba(10,10,10,.9);}
 .active-pane-head{text-align:center;margin-bottom:8px}
 .active-pane-head h2{font-size:1rem;font-weight:800;letter-spacing:-.35px;margin-bottom:4px}
 .active-pane-head p{font-size:.78rem;color:var(--text-secondary);line-height:1.5;max-width:300px;margin:0 auto}
@@ -644,7 +825,7 @@ input,textarea{font-family:inherit}
 .provider-active{display:flex;flex-direction:column;flex:1;min-height:0;gap:6px}
 
 /* ==========================================================
-   COMPACT PROVIDER CARD (fits properly, no overflow)
+   COMPACT PROVIDER CARD
    ========================================================== */
 .pf-card{
   display:flex;flex-direction:column;gap:6px;
@@ -687,7 +868,6 @@ input,textarea{font-family:inherit}
 }
 .pf-call:active{transform:scale(.92)}
 
-/* Vehicle picture inside provider card — compact but visible */
 .pf-vehicle-pic{
   width:100%;
   border-radius:10px;
@@ -713,7 +893,6 @@ input,textarea{font-family:inherit}
   padding:4px 8px;border-radius:999px;
 }
 
-/* Compact route block */
 .compact-route{
   display:flex;align-items:stretch;gap:10px;
   padding:8px 10px;background:var(--fill-gray);
@@ -727,6 +906,7 @@ input,textarea{font-family:inherit}
   width:8px;height:8px;border-radius:50%;background:#0a0a0a;
   box-shadow:0 0 0 3px rgba(10,10,10,.13);
 }
+[data-theme="dark"] .compact-route .cr-dot{background:#f5f5f7;box-shadow:0 0 0 3px rgba(245,245,247,.15);}
 .compact-route .cr-dot.stop{
   border-radius:2.5px;background:var(--warn);
   box-shadow:0 0 0 3px rgba(247,144,9,.18);
@@ -750,7 +930,6 @@ input,textarea{font-family:inherit}
   color:var(--text-tertiary);margin-bottom:1px;
 }
 
-/* Compact status bar */
 .compact-status{
   display:flex;align-items:center;gap:10px;
   padding:10px 12px;background:#0a0a0a;color:#fff;
@@ -804,7 +983,7 @@ input,textarea{font-family:inherit}
   width:292px;max-width:84vw;background:#fff;
   display:flex;flex-direction:column;
   transform:translateX(-100%);
-  transition:transform .46s var(--panel-ease);
+  transition:transform .46s var(--panel-ease),background .3s;
   box-shadow:14px 0 46px rgba(0,0,0,.20);
 }
 #sidebar.open{transform:translateX(0)}
@@ -818,6 +997,7 @@ input,textarea{font-family:inherit}
   display:flex;align-items:center;justify-content:center;
   box-shadow:0 0 0 2px #fff,0 0 0 3.5px rgba(0,0,0,.08);
 }
+[data-theme="dark"] .sidebar-avatar{box-shadow:0 0 0 2px #1c1c1e,0 0 0 3.5px rgba(255,255,255,.08);}
 .sidebar-avatar img{width:100%;height:100%;object-fit:cover}
 .sidebar-avatar i{font-size:1.4rem;color:var(--text-tertiary)}
 .sidebar-meta{min-width:0;flex:1}
@@ -845,6 +1025,7 @@ input,textarea{font-family:inherit}
   font-size:.62rem;font-weight:800;
   padding:3px 8px;border-radius:999px;
 }
+[data-theme="dark"] .nav-badge{background:#f5f5f7;color:#0a0a0a;}
 .sidebar-foot{
   padding:14px 12px 20px;border-top:1px solid var(--line);flex-shrink:0;
 }
@@ -863,18 +1044,19 @@ input,textarea{font-family:inherit}
   position:fixed;inset:0;z-index:3000;background:#fff;
   display:flex;flex-direction:column;
   transform:translateY(100%);
-  transition:transform .5s var(--panel-ease);
+  transition:transform .5s var(--panel-ease),background .3s;
   visibility:hidden;
 }
 #ridePage.open,#deliveryPage.open,#postErrandPage.open,
 #postedErrandsPage.open,#errandDetailsPage.open,#chatPage.open,
 #historyPage.open,#transactionsPage.open{transform:translateY(0);visibility:visible}
-#chatPage{z-index:3100}
+#chatPage{z-index:3100;height:100dvh;overflow:hidden;}
 .page-head{
   flex:0 0 auto;display:flex;align-items:center;gap:12px;
   padding:14px 16px;border-bottom:1px solid var(--line);
   background:rgba(255,255,255,.94);
-  backdrop-filter:blur(16px);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  z-index:2;
 }
 .page-head h2{font-size:1rem;font-weight:800;letter-spacing:-.3px}
 .page-head .page-head-sub{
@@ -978,6 +1160,7 @@ input,textarea{font-family:inherit}
   width:100%;padding:12px 16px 12px 40px;font-size:.92rem;
   border:1.5px solid transparent;border-radius:var(--radius-sm);
   background:var(--fill-gray);outline:none;
+  transition:background .25s,border-color .25s;
 }
 .pill-input::placeholder{color:var(--text-tertiary);font-weight:400}
 .pill-input:focus{background:#fff;border-color:#0a0a0a;box-shadow:0 0 0 4px rgba(0,0,0,.10)}
@@ -988,7 +1171,7 @@ input,textarea{font-family:inherit}
   color:var(--text-tertiary);font-size:.92rem;pointer-events:none;z-index:1;
 }
 .input-icon-group.textarea-group>i{top:20px;transform:none}
-.input-icon-group:focus-within>i{color:#0a0a0a}
+.input-icon-group:focus-within>i{color:var(--ink)}
 
 .section-label{
   font-size:.68rem;font-weight:700;color:var(--text-secondary);
@@ -1110,6 +1293,7 @@ input,textarea{font-family:inherit}
 }
 .fb-card-footer button+button{border-left:1px solid var(--line)}
 .fb-card-footer button.primary{background:#0a0a0a;color:#fff}
+.fb-card-footer button.danger{color:#d92d20;}
 
 .empty-state{text-align:center;padding:50px 24px;color:var(--text-secondary)}
 .empty-state i{font-size:3rem;color:#d8d8dc;margin-bottom:16px;display:block}
@@ -1184,6 +1368,7 @@ input,textarea{font-family:inherit}
 .chat-body{
   flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
   padding:16px 16px 12px;background:#f7f8fa;
+  overscroll-behavior:contain;
 }
 .chat-messages{
   display:flex;flex-direction:column;gap:8px;
@@ -1210,6 +1395,7 @@ input,textarea{font-family:inherit}
 .chat-input-row{
   flex:0 0 auto;display:flex;align-items:flex-end;gap:10px;
   padding:12px 16px 16px;background:#fff;border-top:1px solid var(--line);
+  position:relative;z-index:3;
 }
 .chat-input-row textarea{
   flex:1;min-height:44px;max-height:120px;padding:11px 14px;
@@ -1326,9 +1512,6 @@ input,textarea{font-family:inherit}
   user-select:none;pointer-events:none;-webkit-user-drag:none;
 }
 
-/* =========================================================
-   NEARBY DRIVER MARKERS (smaller, on home screen)
-   ========================================================= */
 .nearby-driver-wrap{background:none !important;border:none !important}
 .nearby-driver{
   width:38px;height:38px;
@@ -1348,13 +1531,16 @@ input,textarea{font-family:inherit}
 }
 
 .leaflet-tile-pane{filter:saturate(.85) contrast(1.05) brightness(1.02)}
+[data-theme="dark"] .leaflet-tile-pane{filter:saturate(.7) contrast(1.05) brightness(.72) invert(.02);}
 .leaflet-container{font-family:inherit;background:#e8eaed}
+[data-theme="dark"] .leaflet-container{background:#1a1a1c;}
 .leaflet-control-attribution{
   font-size:9px !important;
   background:rgba(255,255,255,.78) !important;
   color:#8e8e93 !important;
   padding:1px 5px !important;
 }
+[data-theme="dark"] .leaflet-control-attribution{background:rgba(10,10,10,.78) !important;color:#a1a1a6 !important;}
 .leaflet-control-attribution a{color:#6e6e73 !important}
 
 /* ==========================================================
@@ -1372,6 +1558,7 @@ input,textarea{font-family:inherit}
   max-width:88vw;text-align:center;line-height:1.4;
   pointer-events:none;
 }
+[data-theme="dark"] #toast{background:#f5f5f7;color:#0a0a0a;}
 #toast.show{opacity:1;visibility:visible;transform:translate(-50%,0)}
 
 /* ==========================================================
@@ -1782,7 +1969,6 @@ input,textarea{font-family:inherit}
           </button>
         </div>
 
-        <!-- PROMO DROPDOWN (only shown if promos are available) -->
         <div class="promo-dropdown" id="promoDropdown" style="display:none">
           <button type="button" class="promo-toggle" id="promoToggleBtn">
             <span class="pt-ico"><i class="fas fa-tag"></i></span>
@@ -1960,6 +2146,9 @@ input,textarea{font-family:inherit}
     <button class="nav-item" data-nav="postedErrands">
       <i class="fas fa-clipboard-list"></i> Posted Errands
       <span class="nav-badge" id="errandsBadge" style="display:none">0</span>
+    </button>
+    <button class="nav-item" id="themeToggleBtn">
+      <i class="fas fa-moon" id="themeToggleIcon"></i> <span id="themeToggleLabel">Dark mode</span>
     </button>
   </nav>
   <div class="sidebar-foot">
@@ -2150,6 +2339,10 @@ input,textarea{font-family:inherit}
     </div>
   </div>
   <div class="page-body">
+    <div class="filter-tabs" id="errandsTabs">
+      <button class="filter-tab active" data-filter="active">Active</button>
+      <button class="filter-tab" data-filter="completed">Completed</button>
+    </div>
     <div class="page-scroll" id="postedErrandsList">
       <div class="loader-row" style="padding:60px 20px">
         <span class="mini-spin"></span> Loading your errands…
@@ -2286,7 +2479,7 @@ input,textarea{font-family:inherit}
 <script type="module">
 import { initializeApp } from "firebase/app";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
-import { getDatabase, ref, set, get, update, push, onValue } from "firebase/database";
+import { getDatabase, ref, set, get, update, push, onValue, remove } from "firebase/database";
 
 /* ============================================================
    FIREBASE
@@ -2319,23 +2512,12 @@ const CONFIG = {
   searchRadiusKm: 15
 };
 
-/* Chauffeur tier multiplier on base ride price */
 const TIER_MULTIPLIER = { economy: 1.00, standard: 1.20, premium: 1.55 };
 const TIER_LABELS = { economy: 'Economy', standard: 'Standard', premium: 'Premium' };
 
-/* ------------------------------------------------------------------
-   DRIVER MARKER ORIENTATION
-   driver.png points UP (north) by default in the source image.
-   If your image points a different way, adjust this offset:
-     - image points up (north)     → offset   0
-     - image points right (east)   → offset -90
-     - image points down (south)   → offset 180
-     - image points left (west)    → offset  90
-   ------------------------------------------------------------------ */
 const DRIVER_ICON_BASE_OFFSET = 0;
-
-/* Lazily draw pickup → destination over this many milliseconds */
 const ROUTE_DRAW_DURATION_MS = 3000;
+const DRIVER_LOCATION_POLL_MS = 4000;
 
 const DELIVERY_VEHICLES = {
   motorbike: { id: 'motorbike', label: 'Motorbike', description: 'Fastest for small parcels', icon: 'fa-motorcycle' },
@@ -2369,6 +2551,9 @@ const sidebarPhone   = $('sidebarPhone');
 const sidebarAvatar  = $('sidebarAvatar');
 const logoutBtn      = $('logoutBtn');
 const errandsBadge   = $('errandsBadge');
+const themeToggleBtn = $('themeToggleBtn');
+const themeToggleIcon = $('themeToggleIcon');
+const themeToggleLabel = $('themeToggleLabel');
 
 const mapBadgeText = $('mapBadgeText');
 const locateBtn    = $('locateBtn');
@@ -2466,6 +2651,7 @@ const submitErrandBtn   = $('submitErrandBtn');
 const postedErrandsPage     = $('postedErrandsPage');
 const postedErrandsBackBtn  = $('postedErrandsBackBtn');
 const postedErrandsList     = $('postedErrandsList');
+const errandsTabs           = $('errandsTabs');
 const errandDetailsPage     = $('errandDetailsPage');
 const errandDetailsBackBtn  = $('errandDetailsBackBtn');
 const errandDetailsTitle    = $('errandDetailsTitle');
@@ -2556,7 +2742,6 @@ let providerLastPos = null;
 let routeLayer = null;
 let providerRouteLayer = null;
 
-/* Nearby drivers state */
 let nearbyDriversLayer = null;
 let nearbyDriversListenerUnsub = null;
 let nearbyDriversCache = {};
@@ -2584,6 +2769,7 @@ let searchAbort = null;
 let postedErrandsCache = {};
 let errandsListenerUnsub = null;
 let errandOffersUnsub = null;
+let errandsFilter = 'active';
 
 let activeChatErrandId = null;
 let activeChatProviderId = null;
@@ -2594,7 +2780,7 @@ let activeDeliveryId = null;
 let activeSearchKind = null;
 
 let activeTripListenerUnsub = null;
-let activeProviderLocUnsub = null;
+let activeProviderLocInterval = null;
 let currentProviderId = null;
 let currentTripKind = null;
 let currentTripId = null;
@@ -2635,6 +2821,82 @@ const RATING_LABELS = {
   0: 'Tap a star to rate', 1: 'Poor', 2: 'Fair',
   3: 'Good', 4: 'Very good', 5: 'Excellent!'
 };
+
+/* ============================================================
+   THEME (LIGHT / DARK)
+   ============================================================ */
+function applyTheme(theme) {
+  const isDark = theme === 'dark';
+  if (isDark) {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    if (themeToggleIcon) themeToggleIcon.className = 'fas fa-sun';
+    if (themeToggleLabel) themeToggleLabel.textContent = 'Light mode';
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', '#0a0a0a');
+  } else {
+    document.documentElement.removeAttribute('data-theme');
+    if (themeToggleIcon) themeToggleIcon.className = 'fas fa-moon';
+    if (themeToggleLabel) themeToggleLabel.textContent = 'Dark mode';
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', '#ffffff');
+  }
+}
+function initTheme() {
+  const saved = localStorage.getItem('ntumeni_theme');
+  const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  applyTheme(saved || (prefersDark ? 'dark' : 'light'));
+}
+if (themeToggleBtn) {
+  themeToggleBtn.addEventListener('click', () => {
+    const cur = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    const next = cur === 'dark' ? 'light' : 'dark';
+    localStorage.setItem('ntumeni_theme', next);
+    applyTheme(next);
+  });
+}
+initTheme();
+
+/* ============================================================
+   HISTORY / BACK BUTTON NAVIGATION
+   ============================================================ */
+let suppressPopstate = false;
+try { history.pushState({ ntumeni: true }, ''); } catch (e) {}
+
+function closeTopOverlay() {
+  if (ratingModal.classList.contains('open')) { closeRatingModal(); return true; }
+  if (vehicleSheet.classList.contains('open')) { vehicleSheet.classList.remove('open'); return true; }
+  if (chatPage.classList.contains('open')) { closeChatPage(); return true; }
+  if (errandDetailsPage.classList.contains('open')) { closeErrandDetailsPage(); return true; }
+  if (postedErrandsPage.classList.contains('open')) { closePostedErrandsPage(); return true; }
+  if (postErrandPage.classList.contains('open')) { closePostErrandPage(); return true; }
+  if (historyPage.classList.contains('open')) { closeHistoryPage(); return true; }
+  if (transactionsPage.classList.contains('open')) { closeTransactionsPage(); return true; }
+  if (deliveryPage.classList.contains('open')) { closeDeliveryPage(); return true; }
+  if (ridePage.classList.contains('open')) { closeRidePage(); return true; }
+  if (sidebar.classList.contains('open')) { closeSidebar(); return true; }
+  return false;
+}
+
+/* Call this when opening any overlay/page so back button has something to pop */
+function trackOverlayOpen() {
+  try { history.pushState({ ntumeni: true }, ''); } catch (e) {}
+}
+
+/* Call this when the UI close button is pressed - removes the pushed state */
+function trackOverlayClose() {
+  if (history.state && history.state.ntumeni) {
+    suppressPopstate = true;
+    setTimeout(() => { suppressPopstate = false; }, 250);
+    try { history.back(); } catch (e) { suppressPopstate = false; }
+  }
+}
+
+window.addEventListener('popstate', () => {
+  if (suppressPopstate) return;
+  const closed = closeTopOverlay();
+  /* Keep the user inside the app — push a fresh state so we always have something to pop */
+  try { history.pushState({ ntumeni: true }, ''); } catch (e) {}
+});
 
 /* ============================================================
    PANE SWITCHER
@@ -3104,7 +3366,7 @@ function setDropoffMarker(lat, lng) {
 }
 
 /* ============================================================
-   DRIVER MARKER with driver.png + heading
+   DRIVER MARKER
    ============================================================ */
 function buildDriverIconHtml(heading) {
   return `<div class="driver-marker" style="transform:rotate(${heading}deg);">
@@ -3166,7 +3428,7 @@ function removeProviderMarker() {
 }
 
 /* ============================================================
-   NEARBY DRIVERS (shown on the map while on the home screen)
+   NEARBY DRIVERS
    ============================================================ */
 function startNearbyDriversListener() {
   if (!currentUser) return;
@@ -3234,7 +3496,6 @@ function refreshNearbyDriverMarkers() {
     const p = nearbyDriversCache[uid];
     if (!p) continue;
 
-    /* Only approved, online, verified drivers */
     if (p.online !== true) continue;
     if (p.status !== 'approved') continue;
     if (!p.role) continue;
@@ -3251,7 +3512,6 @@ function refreshNearbyDriverMarkers() {
     updateNearbyDriverMarker(uid, loc);
   }
 
-  /* Remove markers that are no longer valid */
   for (const [uid, marker] of nearbyDriverMarkers) {
     if (!seen.has(uid)) {
       try { nearbyDriversLayer.removeLayer(marker); } catch (e) {}
@@ -3305,7 +3565,7 @@ function updateNearbyDriversVisibility() {
 }
 
 /* ============================================================
-   CLEARING LAYERS — three-phase behaviour
+   CLEARING LAYERS
    ============================================================ */
 function clearMainRoute() {
   if (routeLayer && map) { try { map.removeLayer(routeLayer); } catch(e){} }
@@ -3327,7 +3587,7 @@ function clearTripLayers() {
 }
 
 /* ============================================================
-   GEOLOCATION + REVERSE GEOCODING
+   GEOLOCATION
    ============================================================ */
 async function reverseGeocode(lat, lng) {
   try {
@@ -3415,10 +3675,18 @@ function locateUser({ center = true, silent = false } = {}) {
    SIDEBAR
    ============================================================ */
 function openSidebar() { sidebar.classList.add('open'); sidebarOverlay.classList.add('open'); }
-function closeSidebar() { sidebar.classList.remove('open'); sidebarOverlay.classList.remove('open'); }
-sidebarBtn.addEventListener('click', openSidebar);
+function closeSidebar() {
+  if (!sidebar.classList.contains('open')) return;
+  sidebar.classList.remove('open');
+  sidebarOverlay.classList.remove('open');
+  trackOverlayClose();
+}
+sidebarBtn.addEventListener('click', () => {
+  if (!sidebar.classList.contains('open')) trackOverlayOpen();
+  openSidebar();
+});
 sidebarOverlay.addEventListener('click', closeSidebar);
-document.querySelectorAll('.nav-item').forEach((btn) => {
+document.querySelectorAll('.nav-item[data-nav]').forEach((btn) => {
   btn.addEventListener('click', () => {
     const nav = btn.dataset.nav;
     closeSidebar();
@@ -3439,7 +3707,7 @@ async function doLogout() {
 }
 
 /* ============================================================
-   FUZZY SEARCH with silent city restriction
+   SEARCH
    ============================================================ */
 function getSearchAnchor() {
   if (searchPage === 'errand') return userLocation || DEFAULT_LOCATION;
@@ -3656,6 +3924,7 @@ async function runSearch(query, mode) {
    RIDE PAGE
    ============================================================ */
 function openRidePage(mode) {
+  const wasOpen = ridePage.classList.contains('open');
   searchPage = 'ride';
   searchField = mode || 'destination';
   if (pickupLocation) pickupInput.value = pickupLocation.label || '';
@@ -3663,6 +3932,7 @@ function openRidePage(mode) {
   if (dropoffLocation) destInput.value = dropoffLocation.label || '';
   syncClearButtons();
   ridePage.classList.add('open');
+  if (!wasOpen) trackOverlayOpen();
   setTimeout(() => {
     if (searchField === 'pickup') {
       pickupInput.focus(); pickupInput.select();
@@ -3680,7 +3950,12 @@ function openRidePage(mode) {
     if (map) map.invalidateSize();
   }, 480);
 }
-function closeRidePage() { ridePage.classList.remove('open'); setTimeout(() => { if (map) map.invalidateSize(); }, 500); }
+function closeRidePage() {
+  if (!ridePage.classList.contains('open')) return;
+  ridePage.classList.remove('open');
+  trackOverlayClose();
+  setTimeout(() => { if (map) map.invalidateSize(); }, 500);
+}
 rideBackBtn.addEventListener('click', closeRidePage);
 function showStopRow(show) {
   if (show) {
@@ -3739,6 +4014,7 @@ rideAddStopBtn.addEventListener('click', () => { showStopRow(true); setActiveRow
    DELIVERY PAGE
    ============================================================ */
 function openDeliveryPage() {
+  const wasOpen = deliveryPage.classList.contains('open');
   searchPage = 'delivery';
   if (deliveryPickupLocation) deliveryPickupInput.value = deliveryPickupLocation.label || '';
   else if (pickupLocation) { deliveryPickupInput.value = pickupLocation.label || ''; deliveryPickupLocation = { ...pickupLocation }; }
@@ -3749,9 +4025,15 @@ function openDeliveryPage() {
   deliveryFormArea.style.display = 'block';
   deliveryError.innerText = '';
   deliveryPage.classList.add('open');
+  if (!wasOpen) trackOverlayOpen();
   setTimeout(() => { if (map) map.invalidateSize(); }, 480);
 }
-function closeDeliveryPage() { deliveryPage.classList.remove('open'); setTimeout(() => { if (map) map.invalidateSize(); }, 500); }
+function closeDeliveryPage() {
+  if (!deliveryPage.classList.contains('open')) return;
+  deliveryPage.classList.remove('open');
+  trackOverlayClose();
+  setTimeout(() => { if (map) map.invalidateSize(); }, 500);
+}
 deliveryBackBtn.addEventListener('click', closeDeliveryPage);
 deliveryPickupInput.addEventListener('focus', () => { searchPage = 'delivery'; setActiveRow('pickup', 'delivery'); });
 deliveryDestInput.addEventListener('focus',   () => { searchPage = 'delivery'; setActiveRow('destination', 'delivery'); });
@@ -3772,15 +4054,22 @@ deliveryDestClear.addEventListener('click', (e) => {
    POST ERRAND
    ============================================================ */
 function openPostErrandPage() {
+  const wasOpen = postErrandPage.classList.contains('open');
   searchPage = 'errand';
   if (errandPickupLocation) errandPickupInput.value = errandPickupLocation.label || '';
   syncClearButtons();
   errandPickupResults.style.display = 'none';
   errandError.innerText = '';
   postErrandPage.classList.add('open');
+  if (!wasOpen) trackOverlayOpen();
   setTimeout(() => { if (map) map.invalidateSize(); }, 480);
 }
-function closePostErrandPage() { postErrandPage.classList.remove('open'); setTimeout(() => { if (map) map.invalidateSize(); }, 500); }
+function closePostErrandPage() {
+  if (!postErrandPage.classList.contains('open')) return;
+  postErrandPage.classList.remove('open');
+  trackOverlayClose();
+  setTimeout(() => { if (map) map.invalidateSize(); }, 500);
+}
 postErrandBackBtn.addEventListener('click', closePostErrandPage);
 errandPickupInput.addEventListener('focus', () => { searchPage = 'errand'; });
 errandPickupInput.addEventListener('click', () => { searchPage = 'errand'; });
@@ -3858,12 +4147,29 @@ async function submitErrand() {
 /* ============================================================
    POSTED ERRANDS
    ============================================================ */
-function openPostedErrandsPage() { postedErrandsPage.classList.add('open'); loadPostedErrands(); }
+function openPostedErrandsPage() {
+  const wasOpen = postedErrandsPage.classList.contains('open');
+  postedErrandsPage.classList.add('open');
+  if (!wasOpen) trackOverlayOpen();
+  loadPostedErrands();
+}
 function closePostedErrandsPage() {
+  if (!postedErrandsPage.classList.contains('open')) return;
   postedErrandsPage.classList.remove('open');
+  trackOverlayClose();
   if (errandsListenerUnsub) { errandsListenerUnsub(); errandsListenerUnsub = null; }
 }
 postedErrandsBackBtn.addEventListener('click', closePostedErrandsPage);
+
+errandsTabs.addEventListener('click', (e) => {
+  const btn = e.target.closest('.filter-tab');
+  if (!btn) return;
+  errandsTabs.querySelectorAll('.filter-tab').forEach(t => t.classList.toggle('active', t === btn));
+  errandsFilter = btn.dataset.filter || 'active';
+  renderPostedErrands();
+});
+
+let postedErrandsAll = [];
 
 function loadPostedErrands() {
   if (!currentUser) return;
@@ -3877,9 +4183,10 @@ function loadPostedErrands() {
       if (e && e.customerId === currentUser.uid) mine.push({ ...e, errandId: id });
     }
     mine.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+    postedErrandsAll = mine;
     postedErrandsCache = {};
     mine.forEach(e => { postedErrandsCache[e.errandId] = e; });
-    renderPostedErrands(mine);
+    renderPostedErrands();
     updateErrandsBadge(mine);
   });
 }
@@ -3893,26 +4200,58 @@ function updateErrandsBadge(errands) {
   } else errandsBadge.style.display = 'none';
 }
 
-function renderPostedErrands(errands) {
-  if (!errands.length) {
-    postedErrandsList.innerHTML = `<div class="empty-state"><i class="fas fa-clipboard-list"></i><h3>No errands yet</h3><p>Post your first errand and let providers bid for it.</p></div>`;
+function renderPostedErrands() {
+  let list = postedErrandsAll || [];
+  if (errandsFilter === 'active') {
+    list = list.filter(e => e.status === 'pending' || e.status === 'accepted');
+  } else if (errandsFilter === 'completed') {
+    list = list.filter(e => e.status === 'completed' || e.status === 'cancelled' || e.status === 'rejected');
+  }
+  if (!list.length) {
+    const label = errandsFilter === 'completed' ? 'No completed errands yet' : 'No active errands';
+    const sub = errandsFilter === 'completed'
+      ? 'Errands you complete will show up here for your records.'
+      : 'Post your first errand and let providers bid for it.';
+    postedErrandsList.innerHTML = `<div class="empty-state"><i class="fas fa-clipboard-list"></i><h3>${label}</h3><p>${sub}</p></div>`;
     return;
   }
   let html = '';
-  errands.forEach(e => { html += renderErrandCard(e, true); });
+  list.forEach(e => { html += renderErrandCard(e, true); });
   postedErrandsList.innerHTML = html;
+
   postedErrandsList.querySelectorAll('[data-open-errand]').forEach(btn => {
     btn.addEventListener('click', (ev) => { ev.stopPropagation(); openErrandDetails(btn.dataset.openErrand); });
+  });
+  postedErrandsList.querySelectorAll('[data-delete-errand]').forEach(btn => {
+    btn.addEventListener('click', (ev) => { ev.stopPropagation(); deleteErrand(btn.dataset.deleteErrand); });
   });
 }
 
 function renderErrandCard(e, withActions) {
-  const statusClass = ['pending','accepted','rejected','completed'].includes(e.status) ? e.status : 'pending';
+  const statusClass = ['pending','accepted','rejected','completed','cancelled'].includes(e.status) ? e.status : 'pending';
   const statusText = statusLabel(statusClass);
   const pickupLabel = e.pickup && e.pickup.label ? e.pickup.label : 'Pickup';
   const photo = e.customerPhoto ? `<img src="${escapeHtml(e.customerPhoto)}" alt="">` : `<i class="fas fa-user"></i>`;
   const imageBlock = e.imageUrl ? `<div class="fb-image"><img src="${escapeHtml(e.imageUrl)}" alt="Errand"></div>` : '';
-  const actions = withActions ? `<div class="fb-card-footer"><button data-open-errand="${escapeHtml(e.errandId)}"><i class="fas fa-comments"></i> View Offers</button></div>` : '';
+
+  let footer = '';
+  if (withActions) {
+    if (e.status === 'pending') {
+      footer = `<div class="fb-card-footer">
+        <button data-open-errand="${escapeHtml(e.errandId)}"><i class="fas fa-comments"></i> View Offers</button>
+        <button class="danger" data-delete-errand="${escapeHtml(e.errandId)}"><i class="fas fa-trash"></i> Delete</button>
+      </div>`;
+    } else if (e.status === 'accepted') {
+      footer = `<div class="fb-card-footer">
+        <button data-open-errand="${escapeHtml(e.errandId)}"><i class="fas fa-comments"></i> View Offers</button>
+      </div>`;
+    } else {
+      footer = `<div class="fb-card-footer">
+        <button data-open-errand="${escapeHtml(e.errandId)}"><i class="fas fa-circle-info"></i> View Details</button>
+      </div>`;
+    }
+  }
+
   return `<article class="fb-card" data-errand="${escapeHtml(e.errandId)}">
     <div class="fb-card-head">
       <div class="fb-avatar">${photo}</div>
@@ -3935,8 +4274,32 @@ function renderErrandCard(e, withActions) {
       <span><i class="fas fa-clock"></i> ${escapeHtml(timeAgo(e.createdAt))}</span>
       <span><i class="fas fa-comments"></i> Offers</span>
     </div>
-    ${actions}
+    ${footer}
   </article>`;
+}
+
+async function deleteErrand(errandId) {
+  if (!errandId) return;
+  if (!confirm('Delete this errand? This cannot be undone.')) return;
+  try {
+    await remove(ref(database, `errands/${errandId}`));
+    try {
+      const snap = await get(ref(database, 'transactions'));
+      const data = snap.val() || {};
+      const updates = {};
+      for (const id in data) {
+        const t = data[id];
+        if (t && t.type === 'errand' && t.referenceId === errandId) {
+          updates[`transactions/${id}`] = null;
+        }
+      }
+      if (Object.keys(updates).length) await update(ref(database), updates);
+    } catch (e) {}
+    showToast('Errand deleted');
+  } catch (err) {
+    console.error(err);
+    showToast('Could not delete errand.');
+  }
 }
 
 /* ============================================================
@@ -3945,9 +4308,11 @@ function renderErrandCard(e, withActions) {
 function openErrandDetails(errandId) {
   const errand = postedErrandsCache[errandId];
   if (!errand) { showToast('Errand not found'); return; }
+  const wasOpen = errandDetailsPage.classList.contains('open');
   errandDetailsTitle.textContent = errand.title || 'Errand';
   errandDetailsBody.innerHTML = '<div class="loader-row" style="padding:40px;"><span class="mini-spin"></span> Loading offers…</div>';
   errandDetailsPage.classList.add('open');
+  if (!wasOpen) trackOverlayOpen();
   if (errandOffersUnsub) { errandOffersUnsub(); errandOffersUnsub = null; }
   errandOffersUnsub = onValue(ref(database, `errands/${errandId}/offers`), (snap) => {
     const data = snap.val() || {};
@@ -3956,13 +4321,15 @@ function openErrandDetails(errandId) {
   });
 }
 function closeErrandDetailsPage() {
+  if (!errandDetailsPage.classList.contains('open')) return;
   errandDetailsPage.classList.remove('open');
+  trackOverlayClose();
   if (errandOffersUnsub) { errandOffersUnsub(); errandOffersUnsub = null; }
 }
 errandDetailsBackBtn.addEventListener('click', closeErrandDetailsPage);
 
 function renderErrandDetails(errand, offers) {
-  const statusClass = ['pending','accepted','rejected','completed'].includes(errand.status) ? errand.status : 'pending';
+  const statusClass = ['pending','accepted','rejected','completed','cancelled'].includes(errand.status) ? errand.status : 'pending';
   const statusText = statusLabel(statusClass);
   const pickupLabel = errand.pickup && errand.pickup.label ? errand.pickup.label : 'Pickup';
   const headCard = `<div class="detail-head-card">
@@ -4112,6 +4479,7 @@ fecDone.addEventListener('click', async () => {
    ============================================================ */
 function openChat(errand, providerId) {
   if (!errand || !providerId || !currentUser) return;
+  const wasOpen = chatPage.classList.contains('open');
   activeChatErrandId = errand.errandId;
   activeChatProviderId = providerId;
   const offer = (errand.offers && errand.offers[providerId]) || {};
@@ -4119,6 +4487,7 @@ function openChat(errand, providerId) {
   chatSubtitle.textContent = errand.title || 'Errand chat';
   chatMessages.innerHTML = '<div class="chat-empty"><i class="fas fa-comments"></i>Say hi to your provider…</div>';
   chatPage.classList.add('open');
+  if (!wasOpen) trackOverlayOpen();
   setTimeout(() => { chatInput.focus(); scrollChatToBottom(); }, 480);
   if (chatUnsub) { chatUnsub(); chatUnsub = null; }
   chatUnsub = onValue(ref(database, `errands/${errand.errandId}/chat`), (snap) => {
@@ -4129,7 +4498,9 @@ function openChat(errand, providerId) {
   });
 }
 function closeChatPage() {
+  if (!chatPage.classList.contains('open')) return;
   chatPage.classList.remove('open');
+  trackOverlayClose();
   if (chatUnsub) { chatUnsub(); chatUnsub = null; }
   activeChatErrandId = null;
   activeChatProviderId = null;
@@ -4244,7 +4615,7 @@ tierChooser.querySelectorAll('[data-tier]').forEach(btn => {
 });
 
 /* ============================================================
-   BUILD RIDE TRIP (Preview pickup → destination)
+   BUILD RIDE TRIP
    ============================================================ */
 async function buildRideTrip() {
   if (!pickupLocation || !dropoffLocation) { showPane('home'); return; }
@@ -4348,8 +4719,6 @@ addStopBtn.addEventListener('click', () => openRidePage('stop'));
 
 /* ============================================================
    CONFIRM RIDE
-   Phase 1: save ride + lazy-draw pickup → destination for 3s
-   Then transition to searching
    ============================================================ */
 confirmRideBtn.addEventListener('click', async () => {
   if (!currentRoute) { showToast('Could not calculate route. Try again.'); return; }
@@ -4412,7 +4781,6 @@ confirmRideBtn.addEventListener('click', async () => {
     return;
   }
 
-  /* PHASE 1: Lazy draw pickup → destination for 3s */
   confirmRideBtn.innerHTML = '<i class="fas fa-map"></i> Drawing route…';
 
   if (currentRoute && currentRoute.geometry) {
@@ -4446,7 +4814,6 @@ confirmRideBtn.addEventListener('click', async () => {
     } catch (e) {}
   }
 
-  /* PHASE 2: transition to searching pane */
   activeSearchKind = 'ride';
   currentTripKind = 'ride';
   currentTripId = rideId;
@@ -4459,7 +4826,6 @@ confirmRideBtn.addEventListener('click', async () => {
   showSearchingInPane('driver', currentTripMeta);
   startTripTracking('ride', rideId);
 
-  /* Reset promo state */
   appliedPromo = null;
   appliedPromoDiscount = 0;
   promoInput.value = '';
@@ -4537,6 +4903,7 @@ requestDeliveryBtn.addEventListener('click', async () => {
     });
     renderVehicleSheet(prices);
     vehicleSheet.classList.add('open');
+    trackOverlayOpen();
   } catch (err) {
     console.warn(err);
     const straight = haversineMeters(deliveryPickupLocation.lat, deliveryPickupLocation.lng, deliveryDropoffLocation.lat, deliveryDropoffLocation.lng);
@@ -4548,6 +4915,7 @@ requestDeliveryBtn.addEventListener('click', async () => {
     });
     renderVehicleSheet(prices);
     vehicleSheet.classList.add('open');
+    trackOverlayOpen();
     showToast('Showing an estimate route.');
   } finally {
     requestDeliveryBtn.disabled = false;
@@ -4569,12 +4937,13 @@ function renderVehicleSheet(prices) {
     vehicleList.appendChild(btn);
   });
 }
-vehicleSheetCancel.addEventListener('click', () => vehicleSheet.classList.remove('open'));
-vehicleSheet.addEventListener('click', (e) => { if (e.target === vehicleSheet) vehicleSheet.classList.remove('open'); });
+vehicleSheetCancel.addEventListener('click', () => { vehicleSheet.classList.remove('open'); trackOverlayClose(); });
+vehicleSheet.addEventListener('click', (e) => { if (e.target === vehicleSheet) { vehicleSheet.classList.remove('open'); trackOverlayClose(); } });
 
 async function chooseDeliveryVehicle(price) {
   if (!deliveryVehicle || !deliveryRoute) return;
   vehicleSheet.classList.remove('open');
+  trackOverlayClose();
   try {
     const fare = Math.round(price || computeDeliveryFare(deliveryVehicle, deliveryRoute.distance, deliveryRoute.duration).finalFare);
     const deliveryRef = push(ref(database, 'deliveries'));
@@ -4697,6 +5066,35 @@ function startTripTracking(kind, id) {
   });
 }
 
+/* Poll provider location every 4 seconds */
+function startProviderLocationPolling(providerId, role) {
+  stopProviderLocationPolling();
+  if (!providerId) return;
+  const poll = async () => {
+    try {
+      const snap = await get(ref(database, `providers/${providerId}/location`));
+      if (!snap.exists()) return;
+      const loc = snap.val();
+      if (!loc || !isFinite(loc.lat) || !isFinite(loc.lng)) return;
+      setDriverMarker(loc.lat, loc.lng, role, loc.heading);
+      if (currentTripData && currentTripData.status === 'accepted') {
+        drawDriverToPickupRoute(loc, currentTripData.pickup);
+      } else if (currentTripData && currentTripData.status === 'arrived') {
+        drawDriverToPickupRoute(loc, currentTripData.pickup);
+      }
+    } catch (e) { /* ignore */ }
+  };
+  poll();
+  activeProviderLocInterval = setInterval(poll, DRIVER_LOCATION_POLL_MS);
+}
+
+function stopProviderLocationPolling() {
+  if (activeProviderLocInterval) {
+    clearInterval(activeProviderLocInterval);
+    activeProviderLocInterval = null;
+  }
+}
+
 async function handleTripUpdate(trip) {
   const status = trip.status;
 
@@ -4707,20 +5105,16 @@ async function handleTripUpdate(trip) {
   }
   updateCompactRoute(trip);
 
-  /* THREE-PHASE MAP LOGIC */
   if (status === 'accepted') {
     updateTripStatusUI('accepted');
-    /* PHASE 2: erase ALL routes; draw only driver → pickup */
     await showOnlyDriverToPickupRoute(trip);
   } else if (status === 'arrived') {
     showProviderInPane();
     updateTripStatusUI('arrived');
-    /* keep the driver → pickup route visible */
     await showOnlyDriverToPickupRoute(trip);
   } else if (status === 'in_progress') {
     showProviderInPane();
     updateTripStatusUI('in_progress');
-    /* PHASE 3: erase ALL routes; draw only pickup → destination */
     await showOnlyPickupToDestinationRoute(trip);
   } else if (status === 'completed') {
     handleTripCompletion(trip);
@@ -4774,7 +5168,6 @@ async function loadAndShowProvider(providerId, trip) {
   if (phone) { providerCallBtn.href = 'tel:' + phone; providerCallBtn.style.display = 'flex'; }
   else providerCallBtn.style.display = 'none';
 
-  /* Vehicle picture: chauffeur → carUrls[0], rider → bikeUrls[0] */
   const roleLower = String(role || '').toLowerCase();
   let vehiclePicUrl = '';
   let vehiclePicLabel = vehicleLabel;
@@ -4799,17 +5192,8 @@ async function loadAndShowProvider(providerId, trip) {
     providerVehiclePic.classList.remove('show');
   }
 
-  if (activeProviderLocUnsub) { activeProviderLocUnsub(); activeProviderLocUnsub = null; }
-  activeProviderLocUnsub = onValue(ref(database, `providers/${providerId}/location`), (s) => {
-    if (!s.exists()) return;
-    const loc = s.val();
-    if (loc && isFinite(loc.lat) && isFinite(loc.lng)) {
-      setDriverMarker(loc.lat, loc.lng, role, loc.heading);
-      if (currentTripData && currentTripData.status === 'accepted') {
-        drawDriverToPickupRoute(loc, currentTripData.pickup);
-      }
-    }
-  });
+  /* Poll location every 4 seconds instead of real-time listener */
+  startProviderLocationPolling(providerId, role);
 }
 
 function updateTripStatusUI(state) {
@@ -4834,8 +5218,6 @@ function updateTripStatusUI(state) {
 /* ============================================================
    THREE-PHASE MAP FUNCTIONS
    ============================================================ */
-
-/* PHASE 2 — Driver → Pickup ONLY (erases everything else) */
 async function showOnlyDriverToPickupRoute(trip) {
   if (!map || !trip) return;
   const pickup = trip.pickup;
@@ -4860,7 +5242,6 @@ async function showOnlyDriverToPickupRoute(trip) {
   } catch (e) { console.warn('driver→pickup route failed:', e); }
 }
 
-/* Draw (or redraw) the blue dashed driver → pickup route. */
 async function drawDriverToPickupRoute(providerLoc, pickup) {
   if (!map || !providerLoc || !pickup) return;
   clearProviderRoute();
@@ -4891,7 +5272,6 @@ async function drawDriverToPickupRoute(providerLoc, pickup) {
   }
 }
 
-/* PHASE 3 — Pickup → Destination ONLY (during in-progress trip) */
 async function showOnlyPickupToDestinationRoute(trip) {
   if (!map || !trip) return;
   const pickup = trip.pickup;
@@ -4914,17 +5294,6 @@ async function showOnlyPickupToDestinationRoute(trip) {
     currentRoute = route;
     await drawRouteAnimated(route.geometry, { color: '#0a0a0a' }, ROUTE_DRAW_DURATION_MS);
   } catch (e) { console.warn('pickup→dest route failed:', e); }
-}
-
-/* Legacy helper used by checkForActiveTrip for old behaviour — kept for compatibility */
-async function showProviderToPickupRoute(trip) {
-  return showOnlyDriverToPickupRoute(trip);
-}
-async function showPickupToDestinationRoute(trip) {
-  return showOnlyPickupToDestinationRoute(trip);
-}
-async function drawProviderToPickup(providerLoc, pickup) {
-  return drawDriverToPickupRoute(providerLoc, pickup);
 }
 
 /* ============================================================
@@ -4977,7 +5346,7 @@ function handleTripCancellation() {
 
 function cleanupTripTracking() {
   if (activeTripListenerUnsub) { activeTripListenerUnsub(); activeTripListenerUnsub = null; }
-  if (activeProviderLocUnsub) { activeProviderLocUnsub(); activeProviderLocUnsub = null; }
+  stopProviderLocationPolling();
   currentProviderId = null;
 }
 
@@ -5004,9 +5373,12 @@ function showRatingModal(trip, kind, id, providerId, providerName, providerPhoto
   ratingSubmitBtn.disabled = true;
   ratingSubmitBtn.textContent = 'Submit';
   ratingModal.classList.add('open');
+  trackOverlayOpen();
 }
 function closeRatingModal() {
+  if (!ratingModal.classList.contains('open')) return;
   ratingModal.classList.remove('open');
+  trackOverlayClose();
   ratingTripKind = null; ratingTripId = null;
   ratingProviderId = null; ratingProviderName = null; ratingProviderPhoto = null;
   currentRatingValue = 0;
@@ -5165,9 +5537,16 @@ async function completeErrandTransaction(errandId) {
 /* ============================================================
    HISTORY PAGE
    ============================================================ */
-function openHistoryPage() { historyPage.classList.add('open'); loadHistory(); }
+function openHistoryPage() {
+  const wasOpen = historyPage.classList.contains('open');
+  historyPage.classList.add('open');
+  if (!wasOpen) trackOverlayOpen();
+  loadHistory();
+}
 function closeHistoryPage() {
+  if (!historyPage.classList.contains('open')) return;
   historyPage.classList.remove('open');
+  trackOverlayClose();
   if (historyListenerUnsub) { historyListenerUnsub(); historyListenerUnsub = null; }
 }
 historyBackBtn.addEventListener('click', closeHistoryPage);
@@ -5398,9 +5777,16 @@ function renderHistoryErrand(e) {
 /* ============================================================
    TRANSACTIONS PAGE
    ============================================================ */
-function openTransactionsPage() { transactionsPage.classList.add('open'); loadTransactions(); }
+function openTransactionsPage() {
+  const wasOpen = transactionsPage.classList.contains('open');
+  transactionsPage.classList.add('open');
+  if (!wasOpen) trackOverlayOpen();
+  loadTransactions();
+}
 function closeTransactionsPage() {
+  if (!transactionsPage.classList.contains('open')) return;
   transactionsPage.classList.remove('open');
+  trackOverlayClose();
   if (txListenerUnsub) { txListenerUnsub(); txListenerUnsub = null; }
 }
 transactionsBackBtn.addEventListener('click', closeTransactionsPage);
@@ -5640,7 +6026,7 @@ function loadErrandsForBadge() {
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     if (ratingModal.classList.contains('open')) closeRatingModal();
-    else if (vehicleSheet.classList.contains('open')) vehicleSheet.classList.remove('open');
+    else if (vehicleSheet.classList.contains('open')) { vehicleSheet.classList.remove('open'); trackOverlayClose(); }
     else if (chatPage.classList.contains('open')) closeChatPage();
     else if (errandDetailsPage.classList.contains('open')) closeErrandDetailsPage();
     else if (postedErrandsPage.classList.contains('open')) closePostedErrandsPage();
