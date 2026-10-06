@@ -780,7 +780,7 @@ input,textarea{font-family:inherit}
 .confirm-btn:disabled{opacity:.5;pointer-events:none}
 
 /* ==========================================================
-   ACTIVE PANE — SEARCHING + PROVIDER FOUND
+   ACTIVE PANE
    ========================================================== */
 #paneActive{overflow:hidden;padding:0}
 .active-compact{
@@ -1496,9 +1496,6 @@ input,textarea{font-family:inherit}
   100%{transform:scale(1.25);opacity:0}
 }
 
-/* =========================================================
-   DRIVER MARKER using driver.png with heading rotation
-   ========================================================= */
 .driver-marker-wrap{background:none !important;border:none !important}
 .driver-marker{
   width:52px;height:52px;
@@ -2877,12 +2874,10 @@ function closeTopOverlay() {
   return false;
 }
 
-/* Call this when opening any overlay/page so back button has something to pop */
 function trackOverlayOpen() {
   try { history.pushState({ ntumeni: true }, ''); } catch (e) {}
 }
 
-/* Call this when the UI close button is pressed - removes the pushed state */
 function trackOverlayClose() {
   if (history.state && history.state.ntumeni) {
     suppressPopstate = true;
@@ -2893,8 +2888,7 @@ function trackOverlayClose() {
 
 window.addEventListener('popstate', () => {
   if (suppressPopstate) return;
-  const closed = closeTopOverlay();
-  /* Keep the user inside the app — push a fresh state so we always have something to pop */
+  closeTopOverlay();
   try { history.pushState({ ntumeni: true }, ''); } catch (e) {}
 });
 
@@ -3587,27 +3581,155 @@ function clearTripLayers() {
 }
 
 /* ============================================================
-   GEOLOCATION
+   GEOLOCATION — PRECISE REVERSE GEOCODING
+   ============================================================
+   Uses Nominatim with highest zoom (19), addressdetails,
+   namedetails, extratags and English language preference to
+   extract the most precise location possible:
+     • POI / building name (mall, school, hospital)
+     • house_number (street number)
+     • road / pedestrian / footway name
+     • neighbourhood / quarter
+     • suburb / city_district
+     • city / town / village
+     • postcode and country
+
+   It then composes a 3-tier label:
+     primary   → best single-line descriptor  e.g. "East Park Mall"
+                 or "House 12, Great East Road"
+     secondary → context                      e.g. "Kabulonga, Lusaka"
+     label     → primary + secondary combined
+     full      → full chained address for anchors/search
    ============================================================ */
 async function reverseGeocode(lat, lng) {
   try {
-    const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&zoom=18&addressdetails=1`;
-    const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+    const url =
+      `https://nominatim.openstreetmap.org/reverse` +
+      `?lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lng)}` +
+      `&format=json&zoom=19&addressdetails=1&namedetails=1&extratags=1` +
+      `&accept-language=en`;
+    const res = await fetch(url, {
+      headers: {
+        'Accept': 'application/json'
+      }
+    });
     if (!res.ok) return null;
     const data = await res.json();
-    if (!data || !data.display_name) return null;
-    const addr = data.address || {};
-    const detectedCity = addr.city || addr.town || addr.village || addr.municipality || addr.county || '';
-    const detectedCountry = addr.country || '';
-    if (detectedCity) userCity = detectedCity;
-    if (detectedCountry) userCountry = detectedCountry;
+    if (!data) return null;
 
-    const primary = addr.road || addr.pedestrian || addr.footway || addr.neighbourhood || '';
-    const suburb = addr.suburb || addr.neighbourhood || '';
-    let label;
-    if (primary && suburb && primary.toLowerCase() !== suburb.toLowerCase()) label = primary;
-    else label = primary || suburb || 'My current location';
-    return { lat, lng, label: label.trim(), address: data.display_name };
+    const addr = data.address || {};
+    const nd = data.namedetails || {};
+    const extra = data.extratags || {};
+
+    /* ------- POI / building / infrastructure ------- */
+    const poiName =
+      data.name ||
+      nd.name ||
+      nd['name:en'] ||
+      extra['name:en'] ||
+      addr.amenity ||
+      addr.building ||
+      addr.shop ||
+      addr.tourism ||
+      addr.office ||
+      addr.leisure ||
+      addr.industrial ||
+      addr.healthcare ||
+      addr.place ||
+      '';
+
+    /* ------- Street level ------- */
+    const houseNumber = addr.house_number || '';
+    const road =
+      addr.road ||
+      addr.pedestrian ||
+      addr.footway ||
+      addr.path ||
+      addr.street ||
+      addr.residential ||
+      addr.living_street ||
+      addr.service ||
+      '';
+
+    /* ------- Area level ------- */
+    const neighbourhood = addr.neighbourhood || addr.quarter || addr.hamlet || '';
+    const suburb = addr.suburb || addr.city_district || addr.district || '';
+    const city =
+      addr.city || addr.town || addr.village ||
+      addr.municipality || addr.county || '';
+    const postcode = addr.postcode || '';
+    const country = addr.country || '';
+
+    /* Save for search anchoring */
+    if (city) userCity = city;
+    if (country) userCountry = country;
+
+    /* ------- Build the PRIMARY line (most precise) ------- */
+    let primary = '';
+    if (poiName && houseNumber && road) {
+      /* "House 12, Great East Road" or "East Park Mall" */
+      primary = poiName;
+    } else if (poiName) {
+      primary = poiName;
+    } else if (houseNumber && road) {
+      primary = `${houseNumber} ${road}`;
+    } else if (road) {
+      primary = road;
+    } else if (neighbourhood) {
+      primary = neighbourhood;
+    } else if (suburb) {
+      primary = suburb;
+    } else if (city) {
+      primary = city;
+    } else {
+      primary = 'My current location';
+    }
+
+    /* ------- Build the SECONDARY context line ------- */
+    const secondaryParts = [];
+    /* If primary is a POI/building, add the street for context */
+    if (poiName && (houseNumber || road)) {
+      if (houseNumber && road) secondaryParts.push(`${houseNumber} ${road}`);
+      else if (road) secondaryParts.push(road);
+    }
+    if (neighbourhood && neighbourhood !== primary) secondaryParts.push(neighbourhood);
+    if (suburb && suburb !== neighbourhood && suburb !== primary) secondaryParts.push(suburb);
+    if (city && city !== suburb && city !== primary) secondaryParts.push(city);
+    const secondary = secondaryParts.join(', ');
+
+    /* ------- Build the FULL chained address ------- */
+    const fullParts = [];
+    if (poiName) fullParts.push(poiName);
+    if (houseNumber && road) fullParts.push(`${houseNumber} ${road}`);
+    else if (road) fullParts.push(road);
+    if (neighbourhood) fullParts.push(neighbourhood);
+    if (suburb && suburb !== neighbourhood) fullParts.push(suburb);
+    if (city && city !== suburb) fullParts.push(city);
+    if (postcode) fullParts.push(postcode);
+    const full = fullParts.join(', ') || data.display_name || primary;
+
+    /* ------- Compose the final label shown to the user ------- */
+    let label = primary;
+    if (secondary && !label.toLowerCase().includes(secondary.toLowerCase())) {
+      label = `${primary}, ${secondary}`;
+    }
+
+    return {
+      lat, lng,
+      label: label.trim(),
+      primary: primary.trim(),
+      secondary: secondary.trim(),
+      full,
+      address: data.display_name || full,
+      houseNumber,
+      road,
+      neighbourhood,
+      suburb,
+      city,
+      postcode,
+      country,
+      poiName
+    };
   } catch (e) {
     console.warn('Reverse geocode failed:', e);
     return null;
@@ -3642,12 +3764,33 @@ function locateUser({ center = true, silent = false } = {}) {
       const label = place ? place.label : 'My current location';
       mapBadgeText.textContent = label;
       if (!pickupLocation) {
-        pickupLocation = { lat: latitude, lng: longitude, label, address: place?.address || '' };
+        pickupLocation = {
+          lat: latitude, lng: longitude,
+          label,
+          primary: place?.primary || '',
+          secondary: place?.secondary || '',
+          full: place?.full || '',
+          address: place?.address || '',
+          houseNumber: place?.houseNumber || '',
+          road: place?.road || '',
+          neighbourhood: place?.neighbourhood || '',
+          suburb: place?.suburb || '',
+          city: place?.city || '',
+          postcode: place?.postcode || '',
+          poiName: place?.poiName || ''
+        };
         summaryPickup.textContent = pickupLocation.label;
         pickupInput.value = pickupLocation.label;
       }
       if (!deliveryPickupLocation) {
-        deliveryPickupLocation = { lat: latitude, lng: longitude, label, address: place?.address || '' };
+        deliveryPickupLocation = {
+          lat: latitude, lng: longitude,
+          label,
+          primary: place?.primary || '',
+          secondary: place?.secondary || '',
+          full: place?.full || '',
+          address: place?.address || ''
+        };
         deliveryPickupInput.value = deliveryPickupLocation.label;
       }
       refreshNearbyDriverMarkers();
@@ -3814,13 +3957,41 @@ function renderResults(rankedPlaces, mode) {
     });
   });
 }
+function extractAddressParts(p) {
+  const addr = p.address || {};
+  const houseNumber = addr.house_number || '';
+  const road = addr.road || addr.pedestrian || addr.footway || addr.path || addr.street || '';
+  const neighbourhood = addr.neighbourhood || addr.quarter || '';
+  const suburb = addr.suburb || addr.city_district || '';
+  const city = addr.city || addr.town || addr.village || addr.municipality || addr.county || '';
+  const postcode = addr.postcode || '';
+  let primary = p.name || '';
+  if (!primary && houseNumber && road) primary = `${houseNumber} ${road}`;
+  else if (!primary && road) primary = road;
+  else if (!primary && neighbourhood) primary = neighbourhood;
+  const secondaryParts = [];
+  if (road && primary !== road && !primary.includes(road)) secondaryParts.push(road);
+  if (neighbourhood && primary !== neighbourhood) secondaryParts.push(neighbourhood);
+  if (suburb && suburb !== neighbourhood) secondaryParts.push(suburb);
+  if (city && city !== suburb) secondaryParts.push(city);
+  const secondary = secondaryParts.join(', ');
+  const label = secondary && !primary.toLowerCase().includes(secondary.toLowerCase())
+    ? `${primary}, ${secondary}`
+    : primary;
+  return {
+    lat: parseFloat(p.lat), lng: parseFloat(p.lon),
+    label: label || (p.display_name || '').split(',')[0] || 'Selected place',
+    primary, secondary,
+    address: p.display_name || label,
+    houseNumber, road, neighbourhood, suburb, city, postcode
+  };
+}
 function handlePlaceSelected(place, mode) {
-  const lat = parseFloat(place.lat), lon = parseFloat(place.lon);
-  const label = place.name || (place.display_name || '').split(',')[0] || 'Selected place';
-  const address = place.display_name || label;
+  const picked = extractAddressParts(place);
+  const { lat, lng, label, address } = picked;
 
   if (searchPage === 'errand') {
-    errandPickupLocation = { lat, lng: lon, label, address };
+    errandPickupLocation = { ...picked };
     errandPickupInput.value = label;
     errandPickupResults.style.display = 'none';
     errandPickupClear.style.display = 'flex';
@@ -3828,7 +3999,7 @@ function handlePlaceSelected(place, mode) {
   }
   if (searchPage === 'delivery') {
     if (mode === 'pickup') {
-      deliveryPickupLocation = { lat, lng: lon, label, address };
+      deliveryPickupLocation = { ...picked };
       deliveryPickupInput.value = label;
       deliveryResultsArea.style.display = 'none';
       deliveryFormArea.style.display = 'block';
@@ -3837,7 +4008,7 @@ function handlePlaceSelected(place, mode) {
       deliveryDestInput.focus();
       return;
     }
-    deliveryDropoffLocation = { lat, lng: lon, label, address };
+    deliveryDropoffLocation = { ...picked };
     deliveryDestInput.value = label;
     deliveryResultsArea.style.display = 'none';
     deliveryFormArea.style.display = 'block';
@@ -3846,7 +4017,7 @@ function handlePlaceSelected(place, mode) {
     return;
   }
   if (mode === 'pickup') {
-    pickupLocation = { lat, lng: lon, label, address };
+    pickupLocation = { ...picked };
     pickupInput.value = label;
     syncClearButtons();
     const nextField = (stopInputRow.style.display !== 'none' && !stopLocation) ? 'stop' : 'destination';
@@ -3858,7 +4029,7 @@ function handlePlaceSelected(place, mode) {
     return;
   }
   if (mode === 'stop') {
-    stopLocation = { lat, lng: lon, label, address };
+    stopLocation = { ...picked };
     stopInput.value = label;
     summaryStop.textContent = label;
     syncClearButtons();
@@ -3868,7 +4039,7 @@ function handlePlaceSelected(place, mode) {
     if (q.length >= 2) runSearch(q, 'destination'); else showSearchHint('ride');
     return;
   }
-  dropoffLocation = { lat, lng: lon, label, address };
+  dropoffLocation = { ...picked };
   destInput.value = label;
   syncClearButtons();
   closeRidePage();
@@ -4078,14 +4249,35 @@ errandPickupClear.addEventListener('click', (e) => {
   e.stopPropagation(); errandPickupInput.value = ''; errandPickupLocation = null;
   syncClearButtons(); errandPickupResults.style.display = 'none'; errandPickupInput.focus();
 });
-errandUseCurrentBtn.addEventListener('click', () => {
+errandUseCurrentBtn.addEventListener('click', async () => {
   if (!userLocation) { showToast('Waiting for your location…'); locateUser({ center: false }); return; }
   const label = mapBadgeText.textContent || 'Current location';
-  errandPickupLocation = { lat: userLocation.lat, lng: userLocation.lng, label };
+  errandPickupLocation = {
+    lat: userLocation.lat, lng: userLocation.lng,
+    label, primary: '', secondary: '',
+    full: label, address: label
+  };
   errandPickupInput.value = label;
   errandPickupResults.style.display = 'none';
   syncClearButtons();
   showToast('Using current location');
+  /* Try to upgrade the label with precise reverse geocode */
+  const place = await reverseGeocode(userLocation.lat, userLocation.lng);
+  if (place) {
+    errandPickupLocation = {
+      lat: userLocation.lat, lng: userLocation.lng,
+      label: place.label,
+      primary: place.primary,
+      secondary: place.secondary,
+      full: place.full,
+      address: place.address,
+      houseNumber: place.houseNumber, road: place.road,
+      neighbourhood: place.neighbourhood, suburb: place.suburb,
+      city: place.city, postcode: place.postcode, poiName: place.poiName
+    };
+    errandPickupInput.value = place.label;
+    mapBadgeText.textContent = place.label;
+  }
 });
 wireUploadBox(errandUpload, errandImageUrl, errandError);
 submitErrandBtn.addEventListener('click', submitErrand);
@@ -5066,7 +5258,6 @@ function startTripTracking(kind, id) {
   });
 }
 
-/* Poll provider location every 4 seconds */
 function startProviderLocationPolling(providerId, role) {
   stopProviderLocationPolling();
   if (!providerId) return;
@@ -5192,7 +5383,6 @@ async function loadAndShowProvider(providerId, trip) {
     providerVehiclePic.classList.remove('show');
   }
 
-  /* Poll location every 4 seconds instead of real-time listener */
   startProviderLocationPolling(providerId, role);
 }
 
