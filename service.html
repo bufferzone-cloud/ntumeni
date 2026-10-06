@@ -39,6 +39,9 @@
   --warn-soft: #fffaeb;
   --info: #2e90fa;
   --info-soft: #eff8ff;
+  --green: #12b76a;
+  --blue:  #175cd3;
+  --red:   #d92d20;
   --radius: 16px;
   --radius-sm: 12px;
   --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -116,6 +119,31 @@ input, textarea, select { font-family: inherit; }
 .leaflet-control-attribution a { color: #6e6e73 !important; }
 
 /* ==========================================================
+   CAR MARKER (driver position)
+   ========================================================== */
+.car-marker-wrap { background: none !important; border: none !important; }
+.car-marker {
+  width: 44px; height: 44px;
+  display: flex; align-items: center; justify-content: center;
+  transform-origin: 50% 50%;
+  transition: transform 0.5s var(--ease-out);
+  filter: drop-shadow(0 3px 6px rgba(0,0,0,0.35));
+}
+.car-marker img {
+  width: 100%; height: 100%;
+  object-fit: contain;
+  user-select: none; pointer-events: none;
+  -webkit-user-drag: none;
+}
+.car-marker.no-img::after {
+  content: '\f1b9';
+  font-family: 'Font Awesome 6 Free';
+  font-weight: 900;
+  font-size: 1.4rem;
+  color: #0a0a0a;
+}
+
+/* ==========================================================
    DETAIL PANEL
    ========================================================== */
 #detailPanel {
@@ -129,7 +157,7 @@ input, textarea, select { font-family: inherit; }
 }
 body.has-panel #detailPanel {
   flex: 0 0 auto;
-  max-height: 68vh;
+  max-height: 70vh;
   overflow: hidden;
   box-shadow: 0 -8px 24px rgba(0,0,0,0.06);
   border-top: 1px solid var(--line);
@@ -476,6 +504,9 @@ body.has-panel #mapControls {
 .dp-c-stat.price { background: #0a0a0a; color: #fff; }
 .dp-c-stat.price small { color: rgba(255,255,255,0.55); }
 .dp-c-stat.price strong { color: #fff; }
+.dp-c-stat.discount { background: var(--success-soft); color: #027a48; }
+.dp-c-stat.discount small { color: #027a48; opacity: 0.75; }
+.dp-c-stat.discount strong { color: #027a48; }
 
 /* Actions row: Navigate | Details | Cancel */
 .dp-c-actions {
@@ -547,9 +578,7 @@ body.has-panel #mapControls {
   opacity: 1;
   margin-bottom: 10px;
 }
-.dp-c-details-inner {
-  padding: 10px 12px;
-}
+.dp-c-details-inner { padding: 10px 12px; }
 .dd-section + .dd-section {
   margin-top: 10px;
   padding-top: 10px;
@@ -571,9 +600,7 @@ body.has-panel #mapControls {
   box-shadow: 0 0 0 1px var(--line);
 }
 .dd-row + .dd-row { margin-top: 6px; }
-.dd-row-txt {
-  flex: 1; min-width: 0;
-}
+.dd-row-txt { flex: 1; min-width: 0; }
 .dd-row-txt small {
   display: block;
   font-size: 0.55rem; font-weight: 800;
@@ -611,26 +638,39 @@ body.has-panel #mapControls {
   pointer-events: none;
 }
 
-/* Slide-to-action (trip stages) */
+/* ==========================================================
+   SLIDE BUTTONS (Green = Arrive, Blue = Start, Red = End)
+   ========================================================== */
 .slide-btn {
   position: relative;
   width: 100%;
   height: 62px;
   border-radius: 999px;
-  background: linear-gradient(135deg, #0f5132 0%, #0a0a0a 100%);
   color: #ffffff;
   overflow: hidden;
   user-select: none;
   touch-action: none;
-  transition: background 0.3s;
+  box-shadow: 0 10px 24px -10px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.08) inset;
+  transition: background 0.4s var(--ease-smooth), box-shadow 0.4s;
 }
-.slide-btn.arrive { background: linear-gradient(135deg, #b54708 0%, #0a0a0a 100%); }
-.slide-btn.start  { background: linear-gradient(135deg, #175cd3 0%, #0a0a0a 100%); }
-.slide-btn.end    { background: linear-gradient(135deg, #d92d20 0%, #0a0a0a 100%); }
+.slide-btn.arrive { background: linear-gradient(135deg, #12b76a 0%, #067647 55%, #043a24 100%); }
+.slide-btn.start  { background: linear-gradient(135deg, #175cd3 0%, #0a3a8c 55%, #06234f 100%); }
+.slide-btn.end    { background: linear-gradient(135deg, #f04438 0%, #b42318 55%, #5b0d08 100%); }
+
+/* Animation when a new slide button renders after a stage change */
+.slide-btn.slide-enter {
+  animation: slideBtnIn 0.55s var(--spring) both;
+}
+@keyframes slideBtnIn {
+  0%   { transform: translateX(110%) scale(0.94); opacity: 0; }
+  60%  { transform: translateX(-6%) scale(1.01); opacity: 1; }
+  100% { transform: translateX(0) scale(1); opacity: 1; }
+}
+
 .slide-btn .slide-fill {
   position: absolute; top: 0; left: 0; bottom: 0;
   width: 62px;
-  background: rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.14);
   border-radius: 999px;
   pointer-events: none;
   transition: width 0.06s linear;
@@ -642,13 +682,14 @@ body.has-panel #mapControls {
   letter-spacing: 1.3px; text-transform: uppercase;
   pointer-events: none;
   padding-left: 42px;
+  text-shadow: 0 1px 5px rgba(0,0,0,0.35);
 }
 .slide-btn .slide-label i { margin-right: 8px; }
 .slide-btn .slide-handle {
   position: absolute; top: 5px; left: 5px;
   width: 52px; height: 52px;
   border-radius: 50%;
-  background: #ffffff; color: #0a0a0a;
+  background: #ffffff;
   display: flex; align-items: center; justify-content: center;
   font-size: 1rem;
   cursor: grab;
@@ -657,6 +698,9 @@ body.has-panel #mapControls {
   touch-action: none;
   z-index: 2;
 }
+.slide-btn.arrive .slide-handle { color: #067647; }
+.slide-btn.start  .slide-handle { color: #175cd3; }
+.slide-btn.end    .slide-handle { color: #b42318; }
 .slide-btn .slide-handle.dragging { transition: none; }
 .slide-btn.is-busy { opacity: 0.7; pointer-events: none; }
 
@@ -684,8 +728,8 @@ body.has-panel #mapControls {
 }
 .req-map-wrap {
   position: relative;
-  flex: 0 0 44%;
-  min-height: 190px;
+  flex: 0 0 40%;
+  min-height: 170px;
   background: #e8eaed;
   border-bottom: 1px solid var(--line);
 }
@@ -753,6 +797,38 @@ body.has-panel #mapControls {
   color: #ffffff;
   box-shadow: 0 12px 26px -10px rgba(18,183,106,0.75);
 }
+
+/* Promo / discount block inside request popup and panel */
+.promo-block {
+  background: linear-gradient(135deg, #ecfdf3 0%, #d1fadf 100%);
+  border: 1px solid rgba(18,183,106,0.28);
+  border-radius: 12px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+}
+.promo-block .pb-head {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 0.62rem; font-weight: 800;
+  letter-spacing: 0.9px; text-transform: uppercase;
+  color: #027a48; margin-bottom: 8px;
+}
+.promo-block .pb-head i { font-size: 0.75rem; }
+.promo-block .pb-code {
+  background: #027a48; color: #fff;
+  padding: 2px 8px; border-radius: 6px;
+  font-family: 'SF Mono', ui-monospace, monospace;
+  font-size: 0.66rem; letter-spacing: 1px;
+}
+.promo-block .pb-row {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; padding: 4px 0;
+  font-size: 0.82rem;
+}
+.promo-block .pb-row + .pb-row { border-top: 1px dashed rgba(2,122,72,0.16); }
+.promo-block .pb-row .pb-key { color: #047857; font-weight: 600; }
+.promo-block .pb-row .pb-val { font-weight: 800; color: #027a48; }
+.promo-block .pb-row.highlight .pb-val { font-size: 0.95rem; }
+.promo-block .pb-row.discount .pb-val { color: #d92d20; }
 
 /* Popup customer/route reuse styles */
 .dp-tag {
@@ -941,6 +1017,7 @@ body.has-panel #mapControls {
   text-align: left;
   transition: background 0.22s var(--ease-smooth);
   margin-bottom: 3px;
+  position: relative;
 }
 .nav-item:hover  { background: var(--fill-gray); }
 .nav-item i {
@@ -948,6 +1025,16 @@ body.has-panel #mapControls {
   font-size: 1rem; color: var(--text-secondary);
 }
 .nav-item:hover i { color: var(--ink); }
+.nav-item .nav-badge {
+  position: absolute; right: 12px; top: 50%;
+  transform: translateY(-50%);
+  background: #12b76a; color: #fff;
+  font-size: 0.6rem; font-weight: 800;
+  padding: 2px 8px; border-radius: 999px;
+  min-width: 20px; text-align: center;
+}
+.nav-item .nav-badge.zero { display: none; }
+.nav-item .nav-badge.gold { background: #f79009; }
 .sidebar-foot {
   padding: 14px 12px 20px;
   border-top: 1px solid var(--line);
@@ -1076,6 +1163,9 @@ body.has-panel #mapControls {
 .btn-primary:active:not(:disabled) { transform: translateY(0) scale(0.975); }
 .btn:disabled { opacity: 0.55; cursor: not-allowed; }
 .btn-ghost { background: var(--fill-gray); color: var(--text-primary); }
+.btn-green { background: linear-gradient(135deg, #12b76a 0%, #067647 100%); color:#fff; }
+.btn-blue  { background: linear-gradient(135deg, #175cd3 0%, #0a3a8c 100%); color:#fff; }
+.btn-red   { background: linear-gradient(135deg, #f04438 0%, #b42318 100%); color:#fff; }
 
 .error-msg {
   color: #d92d20; font-size: 0.78rem; font-weight: 500;
@@ -1468,17 +1558,20 @@ body.has-panel #mapControls {
   background: var(--fill-gray); border-radius: 14px; padding: 14px 16px;
 }
 .summary-tile.dark { background: #0a0a0a; color: #fff; }
+.summary-tile.green { background: linear-gradient(135deg, #12b76a 0%, #067647 100%); color:#fff; }
 .summary-tile small {
   display: block; font-size: 0.64rem; font-weight: 700;
   letter-spacing: 1.1px; text-transform: uppercase;
   color: var(--text-tertiary); margin-bottom: 6px;
 }
 .summary-tile.dark small { color: rgba(255,255,255,0.55); }
+.summary-tile.green small { color: rgba(255,255,255,0.75); }
 .summary-tile strong {
   display: block; font-size: 1.35rem; font-weight: 800;
   letter-spacing: -0.6px;
 }
 .summary-tile.dark strong { color: #fff; }
+.summary-tile.green strong { color: #fff; }
 
 .hist-card {
   background: #ffffff;
@@ -1506,6 +1599,7 @@ body.has-panel #mapControls {
 .hist-summary .h-ico.delivery { background: #175cd3; }
 .hist-summary .h-ico.offer    { background: #027a48; }
 .hist-summary .h-ico.float    { background: #b54708; }
+.hist-summary .h-ico.claim    { background: #12b76a; }
 .hist-summary .h-body { flex: 1; min-width: 0; }
 .hist-summary .h-title {
   font-size: 0.92rem; font-weight: 800;
@@ -1642,6 +1736,8 @@ body.has-panel #mapControls {
 .chip.rejected  { background: var(--danger-soft);  color: #b42318; }
 .chip.searching { background: var(--info-soft);    color: #175cd3; }
 .chip.approved  { background: var(--success-soft); color: #027a48; }
+.chip.unclaimed { background: #f4f4f5;             color: #52525b; }
+.chip.paid      { background: var(--success-soft); color: #027a48; }
 
 /* Stars display */
 .stars-row {
@@ -1894,6 +1990,155 @@ body.has-panel #mapControls {
 .rating-submit:active:not(:disabled) { transform: scale(0.97); }
 
 /* ==========================================================
+   ARRIVAL CONFIRMATION MODAL
+   ========================================================== */
+#arrivalModal { z-index: 6400; padding: 18px; }
+.arrival-modal {
+  background: #ffffff;
+  border-radius: 22px;
+  width: 100%;
+  max-width: 400px;
+  padding: 26px 22px 20px;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.4);
+  animation: modalIn 0.42s var(--spring);
+  text-align: center;
+}
+.arrival-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 0.64rem; font-weight: 800;
+  letter-spacing: 1px; text-transform: uppercase;
+  padding: 5px 12px; border-radius: 999px;
+  background: var(--success-soft); color: #027a48;
+  margin-bottom: 14px;
+}
+.arrival-avatar {
+  width: 84px; height: 84px; border-radius: 50%;
+  background: var(--fill-gray);
+  overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 14px;
+  box-shadow: 0 0 0 4px #fff, 0 0 0 6px rgba(18,183,106,0.18);
+}
+.arrival-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.arrival-avatar i { font-size: 2rem; color: var(--text-tertiary); }
+.arrival-modal h3 {
+  font-size: 1.15rem; font-weight: 800;
+  letter-spacing: -0.35px; margin-bottom: 6px;
+  color: var(--text-primary);
+}
+.arrival-modal .arrival-name {
+  font-size: 0.92rem; font-weight: 700;
+  color: var(--text-primary); margin-bottom: 4px;
+}
+.arrival-modal .arrival-msg {
+  font-size: 0.84rem; color: var(--text-secondary);
+  line-height: 1.55; margin-bottom: 20px;
+}
+.arrival-modal .arrival-phone {
+  font-size: 0.9rem; font-weight: 800;
+  color: #0a0a0a; letter-spacing: 0.4px;
+  margin-bottom: 18px;
+}
+.arrival-call-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 16px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #12b76a 0%, #067647 55%, #043a24 100%);
+  color: #ffffff;
+  font-size: 0.94rem;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  text-decoration: none;
+  box-shadow: 0 12px 26px -10px rgba(18,183,106,0.65);
+  margin-bottom: 10px;
+  transition: transform 0.28s var(--spring);
+}
+.arrival-call-btn:active { transform: scale(0.97); }
+.arrival-call-btn i { font-size: 1.05rem; }
+.arrival-ok-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 14px;
+  background: var(--fill-gray);
+  color: var(--text-primary);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+/* ==========================================================
+   CLAIMS PAGE
+   ========================================================== */
+.claim-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.claim-tile {
+  background: var(--fill-gray);
+  border-radius: 14px;
+  padding: 14px 16px;
+}
+.claim-tile.pending { background: linear-gradient(135deg, #f79009 0%, #b54708 100%); color: #fff; }
+.claim-tile.paid    { background: linear-gradient(135deg, #12b76a 0%, #067647 100%); color: #fff; }
+.claim-tile small {
+  display: block; font-size: 0.62rem; font-weight: 800;
+  letter-spacing: 1px; text-transform: uppercase;
+  color: var(--text-tertiary); margin-bottom: 5px;
+}
+.claim-tile.pending small,
+.claim-tile.paid small { color: rgba(255,255,255,0.75); }
+.claim-tile strong {
+  display: block; font-size: 1.25rem; font-weight: 800;
+  letter-spacing: -0.4px;
+}
+.claim-tile.pending strong,
+.claim-tile.paid strong { color: #fff; }
+
+.claim-submit-bar {
+  background: #0a0a0a;
+  color: #fff;
+  border-radius: 16px;
+  padding: 16px 18px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.claim-submit-bar .csb-info { flex: 1; min-width: 0; }
+.claim-submit-bar .csb-info small {
+  display: block; font-size: 0.6rem; font-weight: 800;
+  letter-spacing: 1.1px; text-transform: uppercase;
+  color: rgba(255,255,255,0.55); margin-bottom: 4px;
+}
+.claim-submit-bar .csb-info strong {
+  display: block; font-size: 1.3rem; font-weight: 800;
+  letter-spacing: -0.5px;
+}
+.claim-submit-bar button {
+  background: linear-gradient(135deg, #12b76a 0%, #067647 100%);
+  color: #fff;
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  box-shadow: 0 10px 24px -10px rgba(18,183,106,0.75);
+  transition: transform 0.28s var(--spring);
+}
+.claim-submit-bar button:active { transform: scale(0.96); }
+.claim-submit-bar button:disabled { opacity: 0.55; pointer-events: none; }
+
+/* ==========================================================
    TOAST
    ========================================================== */
 #toast {
@@ -1911,7 +2156,7 @@ body.has-panel #mapControls {
   pointer-events: none;
 }
 body.has-panel #toast {
-  bottom: 68vh;
+  bottom: 70vh;
 }
 #toast.show { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
 
@@ -2007,6 +2252,10 @@ body.has-panel #toast {
   <nav class="sidebar-nav">
     <button class="nav-item" data-nav="account"><i class="fas fa-user-gear"></i> Account</button>
     <button class="nav-item" data-nav="errands"><i class="fas fa-clipboard-list"></i> Errands</button>
+    <button class="nav-item" data-nav="claims">
+      <i class="fas fa-hand-holding-dollar"></i> Claims
+      <span class="nav-badge zero" id="claimsBadge">0</span>
+    </button>
     <button class="nav-item" data-nav="history"><i class="fas fa-clock-rotate-left"></i> History</button>
     <button class="nav-item" data-nav="buyfloat"><i class="fas fa-wallet"></i> Buy Float</button>
     <button class="nav-item" data-nav="settings"><i class="fas fa-gear"></i> Settings</button>
@@ -2089,6 +2338,22 @@ body.has-panel #toast {
   </div>
   <div class="page-body">
     <div class="page-scroll" id="errandDetailBody"></div>
+  </div>
+</div>
+
+<!-- CLAIMS PAGE -->
+<div class="page" id="claimsPage">
+  <div class="page-head">
+    <button class="icon-btn" data-close-page="claimsPage" aria-label="Back"><i class="fas fa-arrow-left"></i></button>
+    <div style="flex:1;">
+      <h2>Claims</h2>
+      <div class="page-head-sub">Discount refunds from admin</div>
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="page-scroll" id="claimsList">
+      <div class="loader-row"><span class="mini-spin"></span> Loading claims…</div>
+    </div>
   </div>
 </div>
 
@@ -2268,6 +2533,24 @@ body.has-panel #toast {
   </div>
 </div>
 
+<!-- ARRIVAL CONFIRMATION MODAL -->
+<div class="modal-overlay" id="arrivalModal">
+  <div class="arrival-modal">
+    <div class="arrival-badge"><i class="fas fa-circle-check"></i> Arrived at pickup</div>
+    <div class="arrival-avatar" id="arrivalAvatar">
+      <i class="fas fa-user"></i>
+    </div>
+    <h3>You've arrived!</h3>
+    <div class="arrival-name" id="arrivalName">Customer</div>
+    <div class="arrival-msg">Please call the customer to let them know you have arrived at the pickup point.</div>
+    <div class="arrival-phone" id="arrivalPhone">—</div>
+    <a class="arrival-call-btn" id="arrivalCallBtn" href="#">
+      <i class="fas fa-phone"></i> Call Customer
+    </a>
+    <button type="button" class="arrival-ok-btn" id="arrivalOkBtn">Okay, got it</button>
+  </div>
+</div>
+
 <script type="module">
 import { initializeApp } from "firebase/app";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
@@ -2313,6 +2596,10 @@ const DEFAULT_FLOAT_RULES = {
   minFloatPerErrand: 5
 };
 
+/* Chauffeur tier ranking: economy (1) < standard (2) < premium (3) */
+const TIER_RANK = { economy: 1, standard: 2, premium: 3 };
+const TIER_LABELS = { economy: 'Economy', standard: 'Standard', premium: 'Premium' };
+
 const ACTIVE_TRIP_STATUSES = ['accepted', 'arrived', 'in_progress'];
 
 const RATING_LABELS = {
@@ -2340,6 +2627,7 @@ const sidebarName     = $('sidebarName');
 const sidebarPhone    = $('sidebarPhone');
 const sidebarRoleChip = $('sidebarRoleChip');
 const logoutBtn       = $('logoutBtn');
+const claimsBadge     = $('claimsBadge');
 const floatBalancePill  = $('floatBalancePill');
 const floatBalanceValue = $('floatBalanceValue');
 const detailPanel = $('detailPanel');
@@ -2361,6 +2649,8 @@ const errandsList     = $('errandsList');
 const errandDetailPage   = $('errandDetailPage');
 const errandDetailTitle  = $('errandDetailTitle');
 const errandDetailBody   = $('errandDetailBody');
+const claimsPage      = $('claimsPage');
+const claimsList      = $('claimsList');
 const historyPage     = $('historyPage');
 const historyTabs     = $('historyTabs');
 const historyList     = $('historyList');
@@ -2388,6 +2678,14 @@ const ratingComment   = $('ratingComment');
 const ratingSkipBtn   = $('ratingSkipBtn');
 const ratingSubmitBtn = $('ratingSubmitBtn');
 
+/* Arrival modal DOM */
+const arrivalModal    = $('arrivalModal');
+const arrivalAvatar   = $('arrivalAvatar');
+const arrivalName     = $('arrivalName');
+const arrivalPhone    = $('arrivalPhone');
+const arrivalCallBtn  = $('arrivalCallBtn');
+const arrivalOkBtn    = $('arrivalOkBtn');
+
 /* ============================================================
    STATE
    ============================================================ */
@@ -2402,6 +2700,10 @@ let mainRouteLayer = null;
 let pickupMarker = null;
 let stopMarker = null;
 let destMarker = null;
+
+/* Heading tracking for the car marker */
+let currentHeading = 0;
+let lastPositionForHeading = null;
 
 let modalMap = null;
 let modalUserMarker = null;
@@ -2437,10 +2739,9 @@ let activeStage = null;
 let activeTrip = null;
 let tripUnsub = null;
 let tripLocationUnsub = null;
+let lastRenderedStage = null;
 
 let isAcceptingRequest = false;
-
-/* Details dropdown state */
 let detailsOpen = false;
 
 let locationPingInterval = null;
@@ -2453,6 +2754,10 @@ let ratingCustomerId = null;
 let ratingCustomerName = null;
 let ratingCustomerPhoto = null;
 let currentRatingValue = 0;
+
+/* Claims */
+let claimsUnsub = null;
+let claimsCache = [];
 
 const DEFAULT_LOCATION = { lat: -15.4167, lng: 28.2833 };
 
@@ -2516,6 +2821,17 @@ function haversineMeters(lat1, lon1, lat2, lon2) {
   const dl = (lon2 - lon1) * Math.PI / 180;
   const a = Math.sin(dp/2)**2 + Math.cos(p1)*Math.cos(p2)*Math.sin(dl/2)**2;
   return 2 * R * Math.asin(Math.min(1, Math.sqrt(a)));
+}
+
+function computeBearing(lat1, lng1, lat2, lng2) {
+  const toRad = Math.PI / 180;
+  const dLng = (lng2 - lng1) * toRad;
+  const la1 = lat1 * toRad;
+  const la2 = lat2 * toRad;
+  const y = Math.sin(dLng) * Math.cos(la2);
+  const x = Math.cos(la1) * Math.sin(la2) - Math.sin(la1) * Math.cos(la2) * Math.cos(dLng);
+  const brng = Math.atan2(y, x) * 180 / Math.PI;
+  return (brng + 360) % 360;
 }
 
 function formatDistance(m) {
@@ -2791,14 +3107,56 @@ function initMap() {
   setTimeout(() => { if (map) map.invalidateSize(); }, 200);
 }
 
-function setUserMarker(lat, lng) {
+/* ---- Car marker with heading rotation ---- */
+function buildCarIconHtml(heading) {
+  return `<div class="car-marker" style="transform: rotate(${heading}deg);">
+    <img src="car.png" alt="" onerror="this.style.display='none';this.parentNode.classList.add('no-img');">
+  </div>`;
+}
+
+function setUserMarker(lat, lng, heading) {
   if (!map) return;
-  const icon = L.divIcon({
-    className: '', html: '<div class="mk-user"></div>',
-    iconSize: [18,18], iconAnchor: [9,9]
-  });
-  if (userMarker) userMarker.setLatLng([lat, lng]);
-  else userMarker = L.marker([lat, lng], { icon, zIndexOffset: 800, interactive: false }).addTo(map);
+  let h = heading;
+  if (!isFinite(h)) h = currentHeading;
+  h = ((h % 360) + 360) % 360;
+
+  if (userMarker) {
+    userMarker.setLatLng([lat, lng]);
+    const el = userMarker.getElement();
+    if (el) {
+      const car = el.querySelector('.car-marker');
+      if (car) car.style.transform = `rotate(${h}deg)`;
+    }
+  } else {
+    const icon = L.divIcon({
+      className: 'car-marker-wrap',
+      html: buildCarIconHtml(h),
+      iconSize: [44, 44],
+      iconAnchor: [22, 22]
+    });
+    userMarker = L.marker([lat, lng], { icon, zIndexOffset: 800, interactive: false }).addTo(map);
+  }
+}
+
+function updateUserLocation(lat, lng, rawHeading) {
+  userLocation = { lat, lng };
+
+  let heading = rawHeading;
+  if (!isFinite(heading) || heading < 0 || heading > 360) {
+    if (lastPositionForHeading) {
+      const dist = haversineMeters(lastPositionForHeading.lat, lastPositionForHeading.lng, lat, lng);
+      if (dist > 3) {
+        heading = computeBearing(lastPositionForHeading.lat, lastPositionForHeading.lng, lat, lng);
+      } else {
+        heading = currentHeading;
+      }
+    } else {
+      heading = currentHeading;
+    }
+  }
+  currentHeading = ((heading % 360) + 360) % 360;
+  lastPositionForHeading = { lat, lng };
+  setUserMarker(lat, lng, currentHeading);
 }
 
 function setPickupMarker(lat, lng) {
@@ -2845,19 +3203,22 @@ function clearTripLayers() {
   if (destMarker && map) { try { map.removeLayer(destMarker); } catch(e){} destMarker = null; }
 }
 
+async function fetchRouteCoords(waypoints, profile) {
+  const coordStr = waypoints.map(w => `${w.lng},${w.lat}`).join(';');
+  const url = `https://router.project-osrm.org/route/v1/${profile}/${coordStr}?overview=full&geometries=geojson&steps=false`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error('Routing failed');
+  const data = await res.json();
+  if (!data.routes || !data.routes[0]) throw new Error('No route');
+  return data.routes[0].geometry.coordinates.map(([lng, lat]) => [lat, lng]);
+}
+
 async function drawRouteThroughWaypoints(waypoints, profile, padding) {
   if (!map || !waypoints || waypoints.length < 2) return;
   clearMainRoute();
 
-  const coordStr = waypoints.map(w => `${w.lng},${w.lat}`).join(';');
   try {
-    const url = `https://router.project-osrm.org/route/v1/${profile}/${coordStr}?overview=full&geometries=geojson&steps=false`;
-    const res = await fetch(url);
-    if (!res.ok) throw new Error('Routing failed');
-    const data = await res.json();
-    if (!data.routes || !data.routes[0]) throw new Error('No route');
-
-    const coords = data.routes[0].geometry.coordinates.map(([lng, lat]) => [lat, lng]);
+    const coords = await fetchRouteCoords(waypoints, profile);
     mainRouteLayer = L.layerGroup().addTo(map);
     L.polyline(coords, { color:'#ffffff', weight: 8, opacity: 0.95, lineJoin:'round', lineCap:'round' }).addTo(mainRouteLayer);
     L.polyline(coords, { color:'#0a0a0a', weight: 4.5, opacity: 1, lineJoin:'round', lineCap:'round' }).addTo(mainRouteLayer);
@@ -2878,8 +3239,56 @@ async function drawRouteThroughWaypoints(waypoints, profile, padding) {
   }
 }
 
-async function drawMainRoute(from, to, profile = 'driving', padding = [60, 60]) {
-  return drawRouteThroughWaypoints([from, to], profile, padding);
+/* ---- Animated route drawing: zoom in, then slowly draw the polyline ---- */
+async function drawRouteAnimated(waypoints, profile) {
+  if (!map || !waypoints || waypoints.length < 2) return;
+  clearMainRoute();
+
+  let coords;
+  try {
+    coords = await fetchRouteCoords(waypoints, profile);
+  } catch (err) {
+    console.warn('Animated route fetch failed:', err);
+    coords = waypoints.map(w => [w.lat, w.lng]);
+  }
+  if (!coords || coords.length < 2) return;
+
+  // Step 1: zoom into the starting point
+  map.flyTo(coords[0], 17, { duration: 1.0, easeLinearity: 0.25 });
+  await new Promise(r => setTimeout(r, 1050));
+
+  // Step 2: create empty polylines that will be filled progressively
+  const shadow = L.polyline([], {
+    color: '#ffffff', weight: 8, opacity: 0.95, lineJoin: 'round', lineCap: 'round'
+  });
+  const main = L.polyline([], {
+    color: '#0a0a0a', weight: 4.5, opacity: 1, lineJoin: 'round', lineCap: 'round'
+  });
+  mainRouteLayer = L.layerGroup([shadow, main]).addTo(map);
+
+  // Step 3: slowly draw the polyline over ~2 seconds with smoothstep easing
+  const total = coords.length;
+  const duration = 2000;
+  const t0 = performance.now();
+
+  await new Promise((resolve) => {
+    function tick(now) {
+      const t = Math.min(1, (now - t0) / duration);
+      const eased = t * t * (3 - 2 * t); // smoothstep
+      const count = Math.max(2, Math.floor(eased * total));
+      const slice = coords.slice(0, count);
+      shadow.setLatLngs(slice);
+      main.setLatLngs(slice);
+      if (t < 1) requestAnimationFrame(tick);
+      else resolve();
+    }
+    requestAnimationFrame(tick);
+  });
+
+  // Step 4: fit the whole route once drawing is done
+  try {
+    map.fitBounds(main.getBounds(), { padding: [60, 60], maxZoom: 17, animate: true, duration: 0.9 });
+  } catch (e) {}
 }
 
 /* ============================================================
@@ -2889,7 +3298,7 @@ function locateUser({ center = true, silent = false } = {}) {
   if (!navigator.geolocation) {
     if (!silent) showToast('Geolocation not supported.');
     userLocation = { ...DEFAULT_LOCATION };
-    setUserMarker(DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lng);
+    setUserMarker(DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lng, currentHeading);
     if (center && map) map.setView([DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lng], PROVIDER_ZOOM);
     return;
   }
@@ -2904,20 +3313,19 @@ function locateUser({ center = true, silent = false } = {}) {
   }
   navigator.geolocation.getCurrentPosition(
     (pos) => {
-      const { latitude, longitude } = pos.coords;
-      userLocation = { lat: latitude, lng: longitude };
-      setUserMarker(latitude, longitude);
+      const { latitude, longitude, heading } = pos.coords;
+      updateUserLocation(latitude, longitude, heading);
       if (center && map) map.setView([latitude, longitude], PROVIDER_ZOOM, { animate: true });
       if (currentUser) {
         update(ref(database, `providers/${currentUser.uid}`), {
-          location: { lat: latitude, lng: longitude, updatedAt: Date.now() }
+          location: { lat: latitude, lng: longitude, heading: currentHeading, updatedAt: Date.now() }
         }).catch(() => {});
       }
     },
     (err) => {
       console.warn('Geolocation error:', err);
       userLocation = { ...DEFAULT_LOCATION };
-      setUserMarker(DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lng);
+      setUserMarker(DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lng, currentHeading);
       if (!silent) {
         if (err.code === 1) showToast('Location denied — enable permission for exact position.');
         else showToast('Could not get exact location — using approximate.');
@@ -2935,9 +3343,10 @@ function pingLocationOnce() {
   if (!currentUser || !navigator.geolocation) return;
   navigator.geolocation.getCurrentPosition(
     (pos) => {
-      const { latitude, longitude } = pos.coords;
+      const { latitude, longitude, heading } = pos.coords;
+      updateUserLocation(latitude, longitude, heading);
       update(ref(database, `providers/${currentUser.uid}`), {
-        location: { lat: latitude, lng: longitude, updatedAt: Date.now() }
+        location: { lat: latitude, lng: longitude, heading: currentHeading, updatedAt: Date.now() }
       }).catch(() => {});
     },
     () => {},
@@ -2953,12 +3362,11 @@ function startLocationPing() {
     try {
       locationWatchId = navigator.geolocation.watchPosition(
         (pos) => {
-          const { latitude, longitude } = pos.coords;
-          userLocation = { lat: latitude, lng: longitude };
-          setUserMarker(latitude, longitude);
+          const { latitude, longitude, heading } = pos.coords;
+          updateUserLocation(latitude, longitude, heading);
           if (currentUser) {
             update(ref(database, `providers/${currentUser.uid}`), {
-              location: { lat: latitude, lng: longitude, updatedAt: Date.now() }
+              location: { lat: latitude, lng: longitude, heading: currentHeading, updatedAt: Date.now() }
             }).catch(() => {});
           }
         },
@@ -3008,6 +3416,7 @@ document.querySelectorAll('.nav-item').forEach(btn => {
     setTimeout(() => {
       if (nav === 'account')       openAccountPage();
       else if (nav === 'errands')  openErrandsPage();
+      else if (nav === 'claims')   openClaimsPage();
       else if (nav === 'history')  openHistoryPage();
       else if (nav === 'buyfloat') openBuyFloatPage();
       else if (nav === 'settings') openSettingsPage();
@@ -3202,7 +3611,7 @@ async function toggleOnline() {
 }
 
 /* ============================================================
-   REQUEST LISTENERS
+   REQUEST LISTENERS + TIER MATCHING
    ============================================================ */
 function detachRequestListeners() {
   if (requestsRidesUnsub) { requestsRidesUnsub(); requestsRidesUnsub = null; }
@@ -3245,7 +3654,19 @@ function attachRequestListeners() {
 function canAcceptKind(kind, request) {
   const role = providerRecord && providerRecord.role;
   if (!role) return false;
-  if (kind === 'ride') return role === 'driver';
+
+  if (kind === 'ride') {
+    if (role !== 'driver') return false;
+    // Tier-based matching: provider must match or outrank the ride's required tier
+    const requiredTier = String(request.chauffeurTier || '').toLowerCase();
+    if (requiredTier && TIER_RANK[requiredTier]) {
+      const providerTier = String(providerRecord.chauffeurTier || '').toLowerCase();
+      if (!providerTier || !TIER_RANK[providerTier]) return false;
+      if (TIER_RANK[providerTier] < TIER_RANK[requiredTier]) return false;
+    }
+    return true;
+  }
+
   if (kind === 'delivery') {
     const v = String(request.vehicleId || '').toLowerCase();
     if (role === 'driver') return v === 'motorbike';
@@ -3335,7 +3756,51 @@ function renderDetailPanel() {
   }
   setPanelVisible(false);
   dpInner.innerHTML = '';
+  lastRenderedStage = null;
   updateFloatingNavButton();
+}
+
+/* ============================================================
+   DISCOUNT HELPERS
+   ============================================================ */
+function getDiscountInfo(data) {
+  const fare = Number(data.fare || 0);
+  const discount = Number(data.discountAmount || 0);
+  const promoCode = data.promoCode || '';
+  const customerPays = data.customerPays != null
+    ? Number(data.customerPays)
+    : Math.max(0, fare - discount);
+  return { fare, discount, promoCode, customerPays };
+}
+
+function buildPromoBlock(data) {
+  const { fare, discount, promoCode, customerPays } = getDiscountInfo(data);
+  if (!discount || discount <= 0) return '';
+  return `
+    <div class="promo-block">
+      <div class="pb-head">
+        <i class="fas fa-tag"></i>
+        Promo applied
+        ${promoCode ? `<span class="pb-code">${escapeHtml(promoCode)}</span>` : ''}
+      </div>
+      <div class="pb-row">
+        <span class="pb-key">Original fare</span>
+        <span class="pb-val">K ${escapeHtml(formatPrice(fare))}</span>
+      </div>
+      <div class="pb-row discount">
+        <span class="pb-key">Discount to customer</span>
+        <span class="pb-val">− K ${escapeHtml(formatPrice(discount))}</span>
+      </div>
+      <div class="pb-row highlight">
+        <span class="pb-key">Customer pays</span>
+        <span class="pb-val">K ${escapeHtml(formatPrice(customerPays))}</span>
+      </div>
+      <div class="pb-row highlight">
+        <span class="pb-key">You can claim from admin</span>
+        <span class="pb-val">K ${escapeHtml(formatPrice(discount))}</span>
+      </div>
+    </div>
+  `;
 }
 
 /* ============================================================
@@ -3380,12 +3845,25 @@ function openRequestModal() {
        </div>`
     : '';
 
+  /* Tier badge for rides */
+  const tierBadge = (kind === 'ride' && data.chauffeurTier)
+    ? `<span class="dp-tag" style="background:#175cd3;margin-bottom:10px;">
+         <i class="fas fa-layer-group"></i> ${escapeHtml(TIER_LABELS[String(data.chauffeurTier).toLowerCase()] || data.chauffeurTier)} tier
+       </span>`
+    : '';
+
+  const promoHtml = buildPromoBlock(data);
+  const { customerPays } = getDiscountInfo(data);
+  const hasDiscount = Number(data.discountAmount || 0) > 0;
+
   const reqBody = $('reqBody');
   reqBody.innerHTML = `
     <div class="dp-tag">
       <i class="fas fa-bolt"></i>
       ${kind === 'ride' ? 'New ride request' : 'New delivery request'}
     </div>
+
+    ${tierBadge}
 
     <div class="dp-customer">
       <div class="dc-avatar">${avatarHtml}</div>
@@ -3414,10 +3892,15 @@ function openRequestModal() {
 
     ${parcelLine}
 
+    ${promoHtml}
+
     <div class="dp-stats">
       <div class="dp-stat"><small>Distance</small><strong>${escapeHtml(dist ? formatDistance(dist) : '—')}</strong></div>
       <div class="dp-stat"><small>Time</small><strong>${escapeHtml(dur ? formatDuration(dur) : '—')}</strong></div>
-      <div class="dp-stat price"><small>Earn</small><strong>K ${escapeHtml(formatPrice(fare))}</strong></div>
+      <div class="dp-stat ${hasDiscount ? '' : 'price'}">
+        <small>${hasDiscount ? 'Customer pays' : 'Earn'}</small>
+        <strong>K ${escapeHtml(formatPrice(hasDiscount ? customerPays : fare))}</strong>
+      </div>
     </div>
 
     ${commissionK > 0 ? `
@@ -3572,7 +4055,7 @@ function showIncomingRequest(kind, id, data) {
 }
 
 /* ============================================================
-   COMPACT ACTIVE TRIP PANEL — with details dropdown
+   COMPACT ACTIVE TRIP PANEL
    ============================================================ */
 function renderActiveTrip() {
   if (!activeTrip) return;
@@ -3598,19 +4081,19 @@ function renderActiveTrip() {
     tagIcon = 'fa-car';
     tagText = 'Heading to pickup';
     navTarget = data.pickup;
-    slideStageClass = 'arrive';
+    slideStageClass = 'arrive';       // green
     slideStageLabel = '<i class="fas fa-location-dot"></i> Slide to arrive';
   } else if (activeStage === 'arrived') {
     tagIcon = 'fa-map-pin';
     tagText = 'At pickup';
     navTarget = data.pickup;
-    slideStageClass = 'start';
+    slideStageClass = 'start';        // blue
     slideStageLabel = '<i class="fas fa-play"></i> Slide to start';
   } else if (activeStage === 'in_progress') {
     tagIcon = 'fa-route';
     tagText = 'In progress';
     navTarget = data.stop ? data.stop : data.dropoff;
-    slideStageClass = 'end';
+    slideStageClass = 'end';          // red
     slideStageLabel = '<i class="fas fa-flag-checkered"></i> Slide to end';
   } else {
     return;
@@ -3622,7 +4105,6 @@ function renderActiveTrip() {
        </button>`
     : '';
 
-  // Details button: only shown for deliveries
   const detailsBtnHtml = isDelivery
     ? `<button type="button" class="dp-c-btn details ${detailsOpen ? 'open' : ''}" id="dpDetailsBtn" aria-expanded="${detailsOpen ? 'true' : 'false'}">
          <i class="fas fa-circle-info"></i> Details
@@ -3640,7 +4122,7 @@ function renderActiveTrip() {
        </div>`
     : '';
 
-  // Details panel content (deliveries only)
+  /* Details panel for deliveries */
   let detailsPanelHtml = '';
   if (isDelivery) {
     const senderName = data.senderName || '—';
@@ -3665,7 +4147,6 @@ function renderActiveTrip() {
     detailsPanelHtml = `
       <div class="dp-c-details ${detailsOpen ? 'open' : ''}" id="dpDetailsPanel">
         <div class="dp-c-details-inner">
-
           <div class="dd-section">
             <div class="dd-label"><i class="fas fa-user"></i> Sender</div>
             <div class="dd-row">
@@ -3715,16 +4196,34 @@ function renderActiveTrip() {
               </div>
             </div>
           </div>
-
         </div>
       </div>
     `;
   }
 
+  /* Promo / discount block */
+  const promoHtml = buildPromoBlock(data);
+  const { discount, customerPays } = getDiscountInfo(data);
+  const hasDiscount = discount > 0;
+
+  /* Third stat becomes discount when applicable */
+  const thirdStatHtml = hasDiscount
+    ? `<div class="dp-c-stat discount">
+         <small>Your claim</small>
+         <strong>K ${escapeHtml(formatPrice(discount))}</strong>
+       </div>`
+    : `<div class="dp-c-stat ${commissionK > 0 ? '' : 'price'}">
+         <small>${commissionK > 0 ? 'Commission' : 'Fare'}</small>
+         <strong>K ${escapeHtml(formatPrice(commissionK > 0 ? commissionK : fare))}</strong>
+       </div>`;
+
+  const stageChanged = lastRenderedStage !== activeStage;
+  lastRenderedStage = activeStage;
+
   dpInner.innerHTML = `
     <div class="dp-c-head">
       <span class="dp-c-tag"><i class="fas ${tagIcon}"></i> ${escapeHtml(tagText)}</span>
-      <span class="dp-c-fare"><small>K</small>${escapeHtml(formatPrice(fare))}</span>
+      <span class="dp-c-fare"><small>K</small>${escapeHtml(formatPrice(hasDiscount ? customerPays : fare))}</span>
     </div>
 
     <div class="dp-c-customer">
@@ -3758,6 +4257,8 @@ function renderActiveTrip() {
       </div>
     </div>
 
+    ${promoHtml}
+
     <div class="dp-c-stats">
       <div class="dp-c-stat">
         <small>Distance</small>
@@ -3767,10 +4268,7 @@ function renderActiveTrip() {
         <small>Time</small>
         <strong>${escapeHtml(data.duration ? formatDuration(data.duration) : '—')}</strong>
       </div>
-      <div class="dp-c-stat ${commissionK > 0 ? '' : 'price'}">
-        <small>${commissionK > 0 ? 'Commission' : 'Fare'}</small>
-        <strong>K ${escapeHtml(formatPrice(commissionK > 0 ? commissionK : fare))}</strong>
-      </div>
+      ${thirdStatHtml}
     </div>
 
     <div class="dp-c-actions">
@@ -3792,9 +4290,16 @@ function renderActiveTrip() {
     </div>
   `;
 
+  if (stageChanged) {
+    const slide = $('slideBtn');
+    if (slide) {
+      slide.classList.add('slide-enter');
+      setTimeout(() => slide.classList.remove('slide-enter'), 700);
+    }
+  }
+
   wireSlideButton();
 
-  // Navigate button
   const navBtn = $('dpNavigateBtn');
   if (navBtn && navTarget) {
     navBtn.addEventListener('click', () => {
@@ -3802,7 +4307,6 @@ function renderActiveTrip() {
     });
   }
 
-  // Details button (deliveries only)
   const detailsBtn = $('dpDetailsBtn');
   const detailsPanel = $('dpDetailsPanel');
   if (detailsBtn && detailsPanel) {
@@ -3814,7 +4318,6 @@ function renderActiveTrip() {
     });
   }
 
-  // Cancel button
   const cancelBtn = $('dpCancelTripBtn');
   if (cancelBtn) cancelBtn.addEventListener('click', cancelActiveTrip);
 
@@ -3912,6 +4415,41 @@ async function triggerSlideAction() {
     renderActiveTrip();
   }
 }
+
+/* ============================================================
+   ARRIVAL CONFIRMATION MODAL
+   ============================================================ */
+function openArrivalModal(data) {
+  const name  = data.customerName  || data.senderName  || 'Customer';
+  const phone = data.customerPhone || data.senderPhone || '—';
+  const photo = data.customerPhoto || data.senderPhoto || '';
+
+  if (photo) {
+    arrivalAvatar.innerHTML = `<img src="${escapeHtml(photo)}" alt="">`;
+  } else {
+    arrivalAvatar.innerHTML = `<i class="fas fa-user"></i>`;
+  }
+  arrivalName.textContent = name;
+  arrivalPhone.textContent = phone;
+  if (phone && phone !== '—') {
+    arrivalCallBtn.href = `tel:${escapeHtml(phone)}`;
+    arrivalCallBtn.style.pointerEvents = '';
+    arrivalCallBtn.style.opacity = '1';
+  } else {
+    arrivalCallBtn.href = '#';
+    arrivalCallBtn.style.pointerEvents = 'none';
+    arrivalCallBtn.style.opacity = '0.5';
+  }
+  arrivalModal.classList.add('open');
+}
+
+function closeArrivalModal() {
+  arrivalModal.classList.remove('open');
+}
+arrivalOkBtn.addEventListener('click', closeArrivalModal);
+arrivalModal.addEventListener('click', (e) => {
+  if (e.target === arrivalModal) closeArrivalModal();
+});
 
 /* ============================================================
    RATING MODAL LOGIC
@@ -4041,6 +4579,7 @@ async function handleAccept() {
       providerPhone,
       providerPhoto,
       providerRole: role,
+      providerTier: providerRecord?.chauffeurTier || null,
       acceptedAt: Date.now(),
       vehicleLabel: kind === 'ride'
         ? vehicleLabelFor(role)
@@ -4059,6 +4598,7 @@ async function handleAccept() {
 
     activeStage = 'accepted';
     detailsOpen = false;
+    lastRenderedStage = null;
 
     closeRequestModal();
     renderDetailPanel();
@@ -4070,7 +4610,7 @@ async function handleAccept() {
       if (data.stop && isFinite(data.stop.lat) && isFinite(data.stop.lng)) {
         setStopMarker(data.stop.lat, data.stop.lng);
       }
-      await drawMainRoute(from, { lat: pickup.lat, lng: pickup.lng }, osrmProfileForRole(role));
+      await drawRouteThroughWaypoints([from, { lat: pickup.lat, lng: pickup.lng }], osrmProfileForRole(role));
     }
 
     attachTripWatcher(kind, id);
@@ -4082,7 +4622,7 @@ async function handleAccept() {
 
 async function handleArrive() {
   if (!activeTrip) return;
-  const { kind, id } = activeTrip;
+  const { kind, id, data } = activeTrip;
   setSlideBusy('<i class="fas fa-spinner fa-spin"></i> Marking arrived…');
 
   const path = kind === 'ride' ? `rides/${id}` : `deliveries/${id}`;
@@ -4094,11 +4634,14 @@ async function handleArrive() {
   activeStage = 'arrived';
   renderDetailPanel();
   showToast('Marked as arrived at pickup');
+
+  // Pop up the arrival confirmation form
+  setTimeout(() => openArrivalModal(data), 350);
 }
 
 async function handleStartTrip() {
   if (!activeTrip) return;
-  const { kind, id } = activeTrip;
+  const { kind, id, data } = activeTrip;
   setSlideBusy('<i class="fas fa-spinner fa-spin"></i> Starting trip…');
 
   const path = kind === 'ride' ? `rides/${id}` : `deliveries/${id}`;
@@ -4110,19 +4653,23 @@ async function handleStartTrip() {
   activeStage = 'in_progress';
   renderDetailPanel();
 
-  const pickup = activeTrip.data?.pickup;
-  const stop = activeTrip.data?.stop;
-  const dropoff = activeTrip.data?.dropoff;
+  const pickup  = data.pickup;
+  const stop    = data.stop;
+  const dropoff = data.dropoff;
+
   if (pickup && dropoff) {
     setPickupMarker(pickup.lat, pickup.lng);
     if (stop && isFinite(stop.lat) && isFinite(stop.lng)) {
       setStopMarker(stop.lat, stop.lng);
     }
     setDestMarker(dropoff.lat, dropoff.lng);
+
     const wps = [{ lat: pickup.lat, lng: pickup.lng }];
     if (stop && isFinite(stop.lat) && isFinite(stop.lng)) wps.push({ lat: stop.lat, lng: stop.lng });
     wps.push({ lat: dropoff.lat, lng: dropoff.lng });
-    await drawRouteThroughWaypoints(wps, osrmProfileForRole(providerRecord?.role || 'driver'));
+
+    // Zoom into the current position and slowly draw the route
+    await drawRouteAnimated(wps, osrmProfileForRole(providerRecord?.role || 'driver'));
   }
 
   showToast('Trip started');
@@ -4135,6 +4682,7 @@ async function handleEndTrip() {
 
   const path = kind === 'ride' ? `rides/${id}` : `deliveries/${id}`;
   const fare = Math.round(data.fare || 0);
+  const discount = Math.round(Number(data.discountAmount || 0));
 
   await update(ref(database, path), {
     status: 'completed',
@@ -4160,6 +4708,24 @@ async function handleEndTrip() {
     });
   } catch (err) { console.warn('Could not deduct commission:', err); }
 
+  /* ---- Create a claim if a discount was applied ---- */
+  if (discount > 0) {
+    try {
+      const claimRef = push(ref(database, `providers/${currentUser.uid}/claims`));
+      await set(claimRef, {
+        id: claimRef.key,
+        type: kind,
+        referenceId: id,
+        fare,
+        discount,
+        promoCode: data.promoCode || '',
+        status: 'unclaimed',
+        note: 'Discount applied to customer',
+        createdAt: Date.now()
+      });
+    } catch (err) { console.warn('Could not create claim:', err); }
+  }
+
   try {
     const txSnap = await get(ref(database, 'transactions'));
     const txs = txSnap.val() || {};
@@ -4181,13 +4747,15 @@ async function handleEndTrip() {
   const customerPhoto = data.customerPhoto || data.senderPhoto || '';
 
   clearTripLayers();
+  const claimMsg = discount > 0 ? ` — K ${discount} claim added` : '';
   showToast(deduction > 0
-    ? `Trip completed — K ${deduction} commission deducted`
-    : 'Trip completed');
+    ? `Trip completed — K ${deduction} commission deducted${claimMsg}`
+    : `Trip completed${claimMsg}`);
 
   activeTrip = null;
   activeStage = null;
   detailsOpen = false;
+  lastRenderedStage = null;
   detachTripWatcher();
   renderDetailPanel();
 
@@ -4226,6 +4794,7 @@ async function cancelActiveTrip() {
       providerPhone: null,
       providerPhoto: null,
       providerRole: null,
+      providerTier: null,
       acceptedAt: null,
       arrivedAt: null,
       startedAt: null,
@@ -4238,6 +4807,7 @@ async function cancelActiveTrip() {
   activeTrip = null;
   activeStage = null;
   detailsOpen = false;
+  lastRenderedStage = null;
   renderDetailPanel();
   showToast('Trip cancelled');
   setTimeout(evaluateQueue, 400);
@@ -4261,6 +4831,7 @@ function attachTripWatcher(kind, id) {
       activeTrip = null;
       activeStage = null;
       detailsOpen = false;
+      lastRenderedStage = null;
       renderDetailPanel();
       setTimeout(evaluateQueue, 400);
       return;
@@ -4270,6 +4841,7 @@ function attachTripWatcher(kind, id) {
       activeTrip = null;
       activeStage = null;
       detailsOpen = false;
+      lastRenderedStage = null;
       renderDetailPanel();
     }
   });
@@ -4319,6 +4891,7 @@ async function resumeActiveTrip() {
     activeTrip = found;
     activeStage = found.data.status;
     detailsOpen = false;
+    lastRenderedStage = null;
 
     if (!isOnline) {
       isOnline = true;
@@ -4351,7 +4924,7 @@ async function resumeActiveTrip() {
 
     if (activeStage === 'accepted' || activeStage === 'arrived') {
       if (pickup && userLocation) {
-        await drawMainRoute(userLocation, { lat: pickup.lat, lng: pickup.lng }, profile);
+        await drawRouteThroughWaypoints([userLocation, { lat: pickup.lat, lng: pickup.lng }], profile);
       }
     } else if (activeStage === 'in_progress' && pickup && dropoff) {
       const wps = [{ lat: pickup.lat, lng: pickup.lng }];
@@ -4441,6 +5014,7 @@ onAuthStateChanged(auth, async (user) => {
     loadSettings();
     listenFloatRules();
     listenFloatBalance(user.uid);
+    listenClaims(user.uid);
 
     if (providerRecord && providerRecord.online === true &&
         providerRecord.status === 'approved' && providerRecord.role) {
@@ -4486,11 +5060,191 @@ function loadSettings() {
 }
 
 /* ============================================================
+   CLAIMS LISTENER
+   ============================================================ */
+function listenClaims(uid) {
+  if (claimsUnsub) { claimsUnsub(); claimsUnsub = null; }
+  claimsUnsub = onValue(ref(database, `providers/${uid}/claims`), (snap) => {
+    const data = snap.val() || {};
+    const arr = [];
+    let pendingCount = 0;
+    for (const id in data) {
+      const c = data[id] || {};
+      const entry = { ...c, _id: id };
+      arr.push(entry);
+      if (c.status === 'unclaimed' || c.status === 'pending') pendingCount++;
+    }
+    arr.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+    claimsCache = arr;
+    renderClaimsBadge(pendingCount);
+    if (claimsPage.classList.contains('open')) renderClaims();
+  }, (err) => { console.warn('Claims listener error:', err); });
+}
+
+function renderClaimsBadge(count) {
+  if (!claimsBadge) return;
+  if (count > 0) {
+    claimsBadge.textContent = count > 99 ? '99+' : String(count);
+    claimsBadge.classList.remove('zero');
+  } else {
+    claimsBadge.classList.add('zero');
+  }
+}
+
+/* ============================================================
+   CLAIMS PAGE
+   ============================================================ */
+function openClaimsPage() {
+  openPage('claimsPage');
+  renderClaims();
+}
+
+function renderClaims() {
+  if (!claimsList) return;
+
+  if (!claimsCache.length) {
+    claimsList.innerHTML = `
+      <div class="empty-state">
+        <i class="fas fa-hand-holding-dollar"></i>
+        <h3>No claims yet</h3>
+        <p>When you complete a discounted trip, the discount amount will appear here so you can claim it from admin.</p>
+      </div>`;
+    return;
+  }
+
+  const totalUnclaimed = claimsCache
+    .filter(c => c.status === 'unclaimed')
+    .reduce((s, c) => s + Number(c.discount || 0), 0);
+  const totalPending = claimsCache
+    .filter(c => c.status === 'pending')
+    .reduce((s, c) => s + Number(c.discount || 0), 0);
+  const totalPaid = claimsCache
+    .filter(c => c.status === 'paid')
+    .reduce((s, c) => s + Number(c.discount || 0), 0);
+
+  let html = `
+    <div class="claim-summary">
+      <div class="claim-tile pending">
+        <small>Awaiting claim</small>
+        <strong>K ${escapeHtml(formatPrice(totalUnclaimed + totalPending))}</strong>
+      </div>
+      <div class="claim-tile paid">
+        <small>Paid to you</small>
+        <strong>K ${escapeHtml(formatPrice(totalPaid))}</strong>
+      </div>
+    </div>
+  `;
+
+  if (totalUnclaimed > 0) {
+    html += `
+      <div class="claim-submit-bar">
+        <div class="csb-info">
+          <small>Ready to claim</small>
+          <strong>K ${escapeHtml(formatPrice(totalUnclaimed))}</strong>
+        </div>
+        <button id="submitClaimsBtn">
+          <i class="fas fa-paper-plane"></i> Claim now
+        </button>
+      </div>
+    `;
+  }
+
+  html += `<div class="section-label">All claims</div>`;
+
+  claimsCache.forEach(c => {
+    const isPaid = c.status === 'paid';
+    const isPending = c.status === 'pending';
+    const isUnclaimed = c.status === 'unclaimed';
+    const statusClass = isPaid ? 'paid' : (isPending ? 'pending' : 'unclaimed');
+    const statusLabelText = isPaid ? 'Paid' : (isPending ? 'Awaiting admin' : 'Unclaimed');
+    const iconClass = c.type === 'ride' ? 'ride' : 'delivery';
+    const typeTitle = c.type === 'ride' ? 'Ride discount' : 'Delivery discount';
+
+    html += `
+      <div class="hist-card">
+        <div class="hist-summary">
+          <div class="h-ico claim"><i class="fas fa-hand-holding-dollar"></i></div>
+          <div class="h-body">
+            <div class="h-title">${escapeHtml(typeTitle)}</div>
+            <div class="h-sub">${escapeHtml(timeAgo(c.createdAt))}${c.promoCode ? ' · ' + escapeHtml(c.promoCode) : ''}</div>
+          </div>
+          <div class="h-right">
+            <strong>K ${escapeHtml(formatPrice(c.discount))}</strong>
+            <span class="chip ${statusClass}">${escapeHtml(statusLabelText)}</span>
+          </div>
+          <i class="fas fa-chevron-down h-chevron"></i>
+        </div>
+        <div class="hist-details">
+          <div class="hist-details-inner">
+            <div class="hd-section">
+              <div class="hd-label"><i class="fas fa-circle-info"></i> Claim details</div>
+              <div class="hd-row"><span class="hd-key">Reference</span><span class="hd-val">${escapeHtml(String(c.referenceId || '—'))}</span></div>
+              <div class="hd-row"><span class="hd-key">Original fare</span><span class="hd-val">K ${escapeHtml(formatPrice(c.fare))}</span></div>
+              <div class="hd-row"><span class="hd-key">Discount given</span><span class="hd-val">K ${escapeHtml(formatPrice(c.discount))}</span></div>
+              ${c.promoCode ? `<div class="hd-row"><span class="hd-key">Promo code</span><span class="hd-val">${escapeHtml(c.promoCode)}</span></div>` : ''}
+              <div class="hd-row"><span class="hd-key">Status</span><span class="hd-val">${escapeHtml(statusLabelText)}</span></div>
+              <div class="hd-row"><span class="hd-key">Created</span><span class="hd-val">${escapeHtml(formatDateTime(c.createdAt))}</span></div>
+              ${c.submittedAt ? `<div class="hd-row"><span class="hd-key">Submitted</span><span class="hd-val">${escapeHtml(formatDateTime(c.submittedAt))}</span></div>` : ''}
+              ${c.paidAt ? `<div class="hd-row"><span class="hd-key">Paid</span><span class="hd-val">${escapeHtml(formatDateTime(c.paidAt))}</span></div>` : ''}
+              ${c.paidReference ? `<div class="hd-row"><span class="hd-key">Payment ref</span><span class="hd-val">${escapeHtml(c.paidReference)}</span></div>` : ''}
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+
+  claimsList.innerHTML = html;
+
+  claimsList.querySelectorAll('.hist-card').forEach(card => {
+    const summary = card.querySelector('.hist-summary');
+    if (summary) {
+      summary.addEventListener('click', () => {
+        card.classList.toggle('expanded');
+      });
+    }
+  });
+
+  const submitBtn = $('submitClaimsBtn');
+  if (submitBtn) submitBtn.addEventListener('click', submitAllClaims);
+}
+
+async function submitAllClaims() {
+  if (!currentUser) return;
+  const unclaimed = claimsCache.filter(c => c.status === 'unclaimed');
+  if (!unclaimed.length) { showToast('Nothing to claim'); return; }
+
+  const btn = $('submitClaimsBtn');
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting…';
+  }
+
+  try {
+    const updates = {};
+    unclaimed.forEach(c => {
+      updates[`providers/${currentUser.uid}/claims/${c._id}/status`] = 'pending';
+      updates[`providers/${currentUser.uid}/claims/${c._id}/submittedAt`] = Date.now();
+    });
+    await update(ref(database), updates);
+    showToast(`✅ ${unclaimed.length} claim${unclaimed.length === 1 ? '' : 's'} submitted to admin`);
+  } catch (err) {
+    console.error(err);
+    showToast('Could not submit claims: ' + (err.message || err));
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-paper-plane"></i> Claim now';
+    }
+  }
+}
+
+/* ============================================================
    USER UI
    ============================================================ */
 function applyUserUI() {
   const role = providerRecord && providerRecord.role;
   const status = providerRecord && providerRecord.status;
+  const tier = providerRecord && providerRecord.chauffeurTier;
 
   if (userRecord && userRecord.profileUrl) {
     sidebarAvatar.innerHTML = `<img src="${escapeHtml(userRecord.profileUrl)}" alt="">`;
@@ -4509,9 +5263,11 @@ function applyUserUI() {
     detEmail.textContent     = userRecord.email;
   }
 
+  const tierSuffix = (role === 'driver' && tier && TIER_LABELS[tier]) ? ` · ${TIER_LABELS[tier]}` : '';
+
   if (status === 'approved' && role) {
     sidebarRoleChip.className = 'sidebar-role-chip approved';
-    sidebarRoleChip.textContent = `${roleLabel(role)} · Approved`;
+    sidebarRoleChip.textContent = `${roleLabel(role)}${tierSuffix} · Approved`;
   } else if (status === 'pending' && role) {
     sidebarRoleChip.className = 'sidebar-role-chip pending';
     sidebarRoleChip.textContent = `${roleLabel(role)} · Pending`;
@@ -4527,7 +5283,7 @@ function applyUserUI() {
   if (status === 'pending') {
     heroStatus.innerHTML = '<i class="fas fa-clock"></i> Pending Approval';
   } else if (status === 'approved') {
-    heroStatus.innerHTML = '<i class="fas fa-circle-check"></i> Approved · ' + roleLabel(role);
+    heroStatus.innerHTML = '<i class="fas fa-circle-check"></i> Approved · ' + roleLabel(role) + tierSuffix;
   } else if (status === 'rejected') {
     heroStatus.innerHTML = '<i class="fas fa-circle-xmark"></i> Rejected';
   } else {
@@ -5223,8 +5979,9 @@ async function openMapCheck(errandId) {
 
     if (userLocation) {
       const meIcon = L.divIcon({
-        className: '', html: '<div class="mk-user"></div>',
-        iconSize: [18,18], iconAnchor: [9,9]
+        className: 'car-marker-wrap',
+        html: buildCarIconHtml(currentHeading),
+        iconSize: [44, 44], iconAnchor: [22, 22]
       });
       modalUserMarker = L.marker([userLocation.lat, userLocation.lng], { icon: meIcon })
         .addTo(modalMap).bindPopup('You');
@@ -5478,6 +6235,7 @@ function renderTripCard(t) {
   const stop = t.stop?.label || '';
   const dropoff = t.dropoff?.label || 'Drop-off';
   const fare = t.fare || 0;
+  const discount = Number(t.discountAmount || 0);
   const deductions = isRide ? commissionFor('ride', fare) : commissionFor('delivery', fare);
 
   const pickupNav = (t.pickup && isFinite(t.pickup.lat) && isFinite(t.pickup.lng))
@@ -5493,7 +6251,6 @@ function renderTripCard(t) {
     <div class="rr-row"><span class="rr-dot stop"></span><span class="rr-txt">${escapeHtml(stop)}</span></div>
   ` : '';
 
-  // Sender / receiver / parcel block for deliveries
   const deliveryBlock = (!isRide) ? `
     <div class="hd-section">
       <div class="hd-label"><i class="fas fa-user"></i> Sender</div>
@@ -5512,6 +6269,16 @@ function renderTripCard(t) {
     </div>
   ` : '';
 
+  const discountBlock = discount > 0 ? `
+    <div class="hd-section">
+      <div class="hd-label"><i class="fas fa-tag"></i> Promo applied</div>
+      <div class="hd-row"><span class="hd-key">Original fare</span><span class="hd-val">K ${escapeHtml(formatPrice(fare))}</span></div>
+      <div class="hd-row"><span class="hd-key">Discount</span><span class="hd-val">− K ${escapeHtml(formatPrice(discount))}</span></div>
+      ${t.promoCode ? `<div class="hd-row"><span class="hd-key">Code</span><span class="hd-val">${escapeHtml(t.promoCode)}</span></div>` : ''}
+      <div class="hd-row"><span class="hd-key">Claimable from admin</span><span class="hd-val">K ${escapeHtml(formatPrice(discount))}</span></div>
+    </div>
+  ` : '';
+
   const ratingSection = t.providerRating ? `
     <div class="hd-section">
       <div class="hd-label"><i class="fas fa-star"></i> Your rating of customer</div>
@@ -5527,7 +6294,7 @@ function renderTripCard(t) {
           <i class="fas ${isRide ? 'fa-car-side' : 'fa-box'}"></i>
         </div>
         <div class="h-body">
-          <div class="h-title">${title}</div>
+          <div class="h-title">${title}${discount > 0 ? ' · <span style="color:#027a48;font-size:0.72rem;">PROMO</span>' : ''}</div>
           <div class="h-sub">${escapeHtml(pickup)} → ${escapeHtml(dropoff)}</div>
         </div>
         <div class="h-right">
@@ -5554,6 +6321,7 @@ function renderTripCard(t) {
             <div class="hd-row"><span class="hd-key">Fare</span><span class="hd-val">K ${escapeHtml(formatPrice(fare))}</span></div>
             <div class="hd-row"><span class="hd-key">Commission</span><span class="hd-val">K ${escapeHtml(formatPrice(deductions))}</span></div>
           </div>
+          ${discountBlock}
           ${deliveryBlock}
           ${ratingSection}
           <div class="hd-section">
@@ -5806,7 +6574,7 @@ $('settingsEditProfile').addEventListener('click', () => {
   setTimeout(openAccountPage, 200);
 });
 $('settingsSupport').addEventListener('click', () => showToast('Support: support@ntumeni.com'));
-$('settingsAbout').addEventListener('click', () => showToast('NTUMENI Service Provider · v1.7'));
+$('settingsAbout').addEventListener('click', () => showToast('NTUMENI Service Provider · v2.0'));
 $('settingsLogout').addEventListener('click', doLogout);
 logoutBtn.addEventListener('click', doLogout);
 
@@ -5819,12 +6587,14 @@ async function doLogout() {
   stopRingtone();
   closeRequestModal();
   closeRatingModal();
+  closeArrivalModal();
   stopLocationPing();
   detachRequestListeners();
   detachTripWatcher();
   if (providerLiveUnsub) { providerLiveUnsub(); providerLiveUnsub = null; }
   if (floatRulesUnsub) { floatRulesUnsub(); floatRulesUnsub = null; }
   if (settingsUnsub) { settingsUnsub(); settingsUnsub = null; }
+  if (claimsUnsub) { claimsUnsub(); claimsUnsub = null; }
   try { await signOut(auth); } catch (err) { console.warn(err); }
   localStorage.removeItem('providerUid');
   localStorage.removeItem('providerEmail');
@@ -5838,10 +6608,12 @@ async function doLogout() {
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     if (ratingModal.classList.contains('open')) closeRatingModal();
+    else if (arrivalModal.classList.contains('open')) closeArrivalModal();
     else if (mapModal.classList.contains('open')) mapModal.classList.remove('open');
     else if (applyPage.classList.contains('open')) closePage('applyPage');
     else if (errandDetailPage.classList.contains('open')) closePage('errandDetailPage');
     else if (errandsPage.classList.contains('open')) closePage('errandsPage');
+    else if (claimsPage.classList.contains('open')) closePage('claimsPage');
     else if (historyPage.classList.contains('open')) closePage('historyPage');
     else if (buyFloatPage.classList.contains('open')) closePage('buyFloatPage');
     else if (settingsPage.classList.contains('open')) closePage('settingsPage');
