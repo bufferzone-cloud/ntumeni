@@ -2842,7 +2842,9 @@ const TIER_MULTIPLIER = { economy: 1.00, standard: 1.20, premium: 1.55 };
 const TIER_LABELS = { economy: 'Economy', standard: 'Standard', premium: 'Premium' };
 
 const DRIVER_ICON_BASE_OFFSET = 0;
-const ROUTE_DRAW_DURATION_MS = 3000;
+/* Route drawing is intentionally slow — at least 4 seconds to draw the
+   full polyline so the user can clearly see the path being traced. */
+const ROUTE_DRAW_DURATION_MS = 4500;
 const DRIVER_LOCATION_POLL_MS = 4000;
 const LOCATION_REFRESH_MS = 60000; // auto-refresh every 60 seconds
 
@@ -3218,13 +3220,23 @@ initTheme();
 
 /* ============================================================
    HISTORY / BACK BUTTON NAVIGATION
-   ============================================================ */
+   ============================================================
+   Every overlay page (ride, delivery, picker, chat, history, etc.) pushes
+   one extra history entry when opened. When the user presses the device
+   back button (popstate), we close the top overlay and let the browser
+   land back on the underlying page — exactly like tapping the page's own
+   back arrow. When an overlay is closed by a UI button, we mirror that by
+   calling history.back() ourselves so the two paths stay in sync. */
 let suppressPopstate = false;
 try { history.pushState({ ntumeni: true }, ''); } catch (e) {}
 
 function closeTopOverlay() {
   if (ratingModal.classList.contains('open')) { closeRatingModal(); return true; }
-  if (vehicleSheet.classList.contains('open')) { vehicleSheet.classList.remove('open'); return true; }
+  if (vehicleSheet.classList.contains('open')) {
+    vehicleSheet.classList.remove('open');
+    trackOverlayClose();
+    return true;
+  }
   if (mapPickerPage.classList.contains('open')) { closeMapPicker(); return true; }
   if (chatPage.classList.contains('open')) { closeChatPage(); return true; }
   if (errandDetailsPage.classList.contains('open')) { closeErrandDetailsPage(); return true; }
@@ -3682,10 +3694,7 @@ function initMap() {
     subdomains: 'abc', maxZoom: 19, crossOrigin: true
   }).addTo(map);
 
-  /* ===== Manual pin-drop: tap anywhere on the map ===== */
   map.on('click', async (e) => {
-    /* Block pin-drop while an active trip is running – the map is
-       showing the trip and we don't want to interfere. */
     if (paneActive.classList.contains('active')) return;
     await handleTempPinAt(e.latlng.lat, e.latlng.lng);
   });
@@ -3708,7 +3717,6 @@ function setTempPin(lat, lng) {
     tempPinMarker = L.marker([lat, lng], {
       icon, zIndexOffset: 2500, draggable: true
     }).addTo(map);
-    /* Allow the user to drag the pin to fine-tune its position */
     tempPinMarker.on('dragend', async (e) => {
       const ll = e.target.getLatLng();
       await handleTempPinAt(ll.lat, ll.lng);
@@ -3727,7 +3735,6 @@ async function handleTempPinAt(lat, lng) {
   setTempPin(lat, lng);
   pinDropAddress.textContent = 'Locating…';
   pinDropCard.classList.add('open');
-  /* Hide the "tap map" hint after the first pin-drop */
   if (mapHint) mapHint.classList.add('hidden');
 
   const place = await reverseGeocode(lat, lng);
@@ -3768,7 +3775,7 @@ pinDropClose.addEventListener('click', removeTempPin);
 pinSetPickup.addEventListener('click', () => {
   if (!tempPinLocation) return;
   pickupLocation = { ...tempPinLocation };
-  pickupLocationIsAuto = false; // user chose it manually
+  pickupLocationIsAuto = false;
   pickupInput.value = pickupLocation.label;
   summaryPickup.textContent = pickupLocation.label;
   syncClearButtons();
@@ -3781,7 +3788,6 @@ pinSetPickup.addEventListener('click', () => {
 
 pinSetDest.addEventListener('click', () => {
   if (!tempPinLocation) return;
-  /* Ensure we have a pickup first */
   if (!pickupLocation) {
     if (userLocation) {
       pickupLocation = {
@@ -3804,7 +3810,6 @@ pinSetDest.addEventListener('click', () => {
   removeTempPin();
 
   if (paneTrip.classList.contains('active')) {
-    /* Already on trip pane – just rebuild with the new destination */
     buildRideTrip();
   } else {
     clearAppliedPromo();
@@ -4220,8 +4225,6 @@ function locateUser({ center = true, silent = false } = {}) {
     refreshNearbyDriverMarkers();
     return;
   }
-  /* Only show "Locating…" text for the initial user-facing call –
-     silent background refreshes should not cause visual flicker. */
   if (!silent) mapBadgeText.textContent = 'Locating…';
 
   navigator.geolocation.getCurrentPosition(
@@ -4236,8 +4239,6 @@ function locateUser({ center = true, silent = false } = {}) {
       const label = place ? place.label : 'My current location';
       mapBadgeText.textContent = label;
 
-      /* Determine whether we can safely overwrite auto-tracked pickup
-         locations without disrupting an in-flight search or trip. */
       const safeToUpdate =
         !ridePage.classList.contains('open') &&
         !deliveryPage.classList.contains('open') &&
@@ -4281,8 +4282,6 @@ function locateUser({ center = true, silent = false } = {}) {
     },
     async (err) => {
       console.warn('Geolocation error:', err);
-      /* On silent refresh, keep whatever location we had rather than
-         resetting the user to the default fallback. */
       if (silent && userLocation) return;
       userLocation = { ...DEFAULT_LOCATION };
       setUserMarker(DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lng);
@@ -4311,7 +4310,6 @@ function locateUser({ center = true, silent = false } = {}) {
 function startLocationRefresh() {
   if (locationRefreshInterval) clearInterval(locationRefreshInterval);
   locationRefreshInterval = setInterval(() => {
-    /* Pause when the page is hidden to save battery / bandwidth */
     if (document.hidden) return;
     locateUser({ center: false, silent: true });
   }, LOCATION_REFRESH_MS);
@@ -4503,7 +4501,7 @@ function handlePlaceSelected(place, mode) {
   if (searchPage === 'delivery') {
     if (mode === 'pickup') {
       deliveryPickupLocation = { ...picked };
-      deliveryPickupIsAuto = false; // manually chosen
+      deliveryPickupIsAuto = false;
       deliveryPickupInput.value = label;
       deliveryResultsArea.style.display = 'none';
       deliveryFormArea.style.display = 'block';
@@ -4522,7 +4520,7 @@ function handlePlaceSelected(place, mode) {
   }
   if (mode === 'pickup') {
     pickupLocation = { ...picked };
-    pickupLocationIsAuto = false; // manually chosen
+    pickupLocationIsAuto = false;
     pickupInput.value = label;
     syncClearButtons();
     const nextField = (stopInputRow.style.display !== 'none' && !stopLocation) ? 'stop' : 'destination';
@@ -5282,12 +5280,15 @@ async function drawRouteAnimated(geometry, opts, durationMs) {
   await new Promise(r => setTimeout(r, 950));
 
   const total = coords.length;
-  const duration = durationMs || ROUTE_DRAW_DURATION_MS;
+  /* Slow, deliberate route tracing — minimum 4 seconds so users can
+     clearly follow the animated polyline. */
+  const duration = Math.max(4000, durationMs || ROUTE_DRAW_DURATION_MS);
   const t0 = performance.now();
 
   await new Promise((resolve) => {
     function tick(now) {
       const t = Math.min(1, (now - t0) / duration);
+      /* Smooth ease-in-out curve for the drawing speed */
       const eased = t * t * (3 - 2 * t);
       const count = Math.max(2, Math.floor(eased * total));
       const slice = coords.slice(0, count);
@@ -5480,6 +5481,7 @@ confirmRideBtn.addEventListener('click', async () => {
   confirmRideBtn.innerHTML = '<i class="fas fa-map"></i> Drawing route…';
 
   if (currentRoute && currentRoute.geometry) {
+    /* Slow route animation — at least 4 seconds */
     await drawRouteAnimated(currentRoute.geometry, { color: '#0a0a0a' }, ROUTE_DRAW_DURATION_MS);
   } else if (currentRoute) {
     try {
@@ -5494,10 +5496,11 @@ confirmRideBtn.addEventListener('click', async () => {
       shadow.addTo(layer); main.addTo(layer);
       routeLayer = layer;
       const total = coords.length;
+      const duration = Math.max(4000, ROUTE_DRAW_DURATION_MS);
       const t0 = performance.now();
       await new Promise((resolve) => {
         function tick(now) {
-          const t = Math.min(1, (now - t0) / ROUTE_DRAW_DURATION_MS);
+          const t = Math.min(1, (now - t0) / duration);
           const eased = t * t * (3 - 2 * t);
           const count = Math.max(2, Math.floor(eased * total));
           const slice = coords.slice(0, count);
@@ -5699,10 +5702,11 @@ async function chooseDeliveryVehicle(price) {
       shadow.addTo(layer); main.addTo(layer);
       routeLayer = layer;
       const total = coords.length;
+      const duration = Math.max(4000, ROUTE_DRAW_DURATION_MS);
       const t0 = performance.now();
       await new Promise((resolve) => {
         function tick(now) {
-          const t = Math.min(1, (now - t0) / ROUTE_DRAW_DURATION_MS);
+          const t = Math.min(1, (now - t0) / duration);
           const eased = t * t * (3 - 2 * t);
           const count = Math.max(2, Math.floor(eased * total));
           const slice = coords.slice(0, count);
@@ -6746,7 +6750,6 @@ function applyPickerLocation(target) {
   }
   syncClearButtons();
 
-  /* Fall back to the user's current location if the pickup is still missing */
   if (!pickupLocation && userLocation) {
     pickupLocation = {
       lat: userLocation.lat, lng: userLocation.lng,
@@ -7060,12 +7063,9 @@ onAuthStateChanged(auth, async (user) => {
       initMap();
       if (map) map.invalidateSize();
       startNearbyDriversListener();
-      /* Initial precise location fetch */
       locateUser({ center: true, silent: false });
-      /* Start 60-second auto-refresh of precise location */
       startLocationRefresh();
       setTimeout(() => { checkForActiveTrip(); }, 700);
-      /* Auto-hide the "tap map" hint after 10 seconds */
       if (mapHint) setTimeout(() => mapHint.classList.add('hidden'), 10000);
     });
 
