@@ -72,6 +72,7 @@
 [data-theme="dark"] .topbar-logo{background:#1c1c1e;}
 [data-theme="dark"] .map-overlay-btn{background:#1c1c1e;color:var(--text-primary);box-shadow:0 4px 16px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.06);}
 [data-theme="dark"] .map-badge{background:rgba(255,255,255,.9);color:#0a0a0a;}
+[data-theme="dark"] .map-hint{background:rgba(255,255,255,.9);color:#0a0a0a;}
 [data-theme="dark"] .input-card{background:#1c1c1e;}
 [data-theme="dark"] .input-row input{color:var(--text-primary);}
 [data-theme="dark"] .input-row.focused{background:#0a0a0a;box-shadow:0 0 0 1.5px #f5f5f7;}
@@ -375,6 +376,25 @@ input,textarea{font-family:inherit}
 .map-driver-count.hidden-count{opacity:0;transform:translateY(-6px);pointer-events:none}
 .map-driver-count i{font-size:.7rem}
 
+/* Map pin-drop hint */
+.map-hint{
+  position:absolute;bottom:12px;left:12px;z-index:400;
+  background:rgba(10,10,10,.86);color:#fff;
+  font-size:.62rem;font-weight:700;letter-spacing:.5px;
+  padding:7px 12px;border-radius:999px;
+  display:inline-flex;align-items:center;gap:6px;
+  backdrop-filter:blur(6px);
+  pointer-events:none;
+  animation:hintFloat 2.4s var(--ease-smooth) infinite;
+  transition:opacity .4s var(--ease-out),transform .4s var(--ease-out);
+  box-shadow:0 4px 14px -4px rgba(0,0,0,.4);
+}
+.map-hint.hidden{opacity:0;transform:translateY(8px);pointer-events:none}
+@keyframes hintFloat{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-3px)}
+}
+
 /* ==========================================================
    ACTION HALF
    ========================================================== */
@@ -508,6 +528,74 @@ input,textarea{font-family:inherit}
   background:linear-gradient(135deg,#12b76a 0%,#067647 100%);color:#fff;
   box-shadow:0 10px 24px -10px rgba(18,183,106,.75);
 }
+
+/* ==========================================================
+   PIN DROP CARD
+   ========================================================== */
+.pin-drop-card{
+  position:fixed;
+  left:12px;right:12px;
+  bottom:16px;
+  z-index:760;
+  background:#0a0a0a;
+  color:#fff;
+  border-radius:18px;
+  padding:14px 16px;
+  box-shadow:0 20px 44px -16px rgba(0,0,0,.65),0 0 0 1px rgba(255,255,255,.06) inset;
+  display:none;
+  animation:floatCardIn .5s var(--spring);
+}
+.pin-drop-card.open{display:block}
+.pin-drop-card .pdc-row{
+  display:flex;align-items:center;gap:12px;margin-bottom:12px;
+}
+.pin-drop-card .pdc-ico{
+  width:44px;height:44px;border-radius:50%;
+  background:rgba(217,45,32,.16);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.05rem;flex-shrink:0;color:#ff6b5e;
+}
+.pin-drop-card .pdc-body{flex:1;min-width:0}
+.pin-drop-card .pdc-body small{
+  display:block;font-size:.58rem;font-weight:800;
+  letter-spacing:1.1px;text-transform:uppercase;
+  color:rgba(255,255,255,.5);margin-bottom:3px;
+}
+.pin-drop-card .pdc-body strong{
+  display:block;font-size:.9rem;font-weight:800;
+  letter-spacing:-.25px;line-height:1.25;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.pin-drop-card .pdc-close{
+  width:36px;height:36px;border-radius:50%;
+  background:rgba(255,255,255,.14);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.85rem;flex-shrink:0;
+}
+.pin-drop-card .pdc-actions{display:flex;gap:8px}
+.pin-drop-card .pdc-btn{
+  flex:1;padding:11px 12px;border-radius:12px;
+  font-size:.72rem;font-weight:800;letter-spacing:.6px;text-transform:uppercase;
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  background:rgba(255,255,255,.14);color:#fff;
+  transition:transform .28s var(--spring),background .2s;
+}
+.pin-drop-card .pdc-btn:active{transform:scale(.97)}
+.pin-drop-card .pdc-btn.primary{
+  background:linear-gradient(135deg,#12b76a 0%,#067647 100%);color:#fff;
+  box-shadow:0 10px 24px -10px rgba(18,183,106,.75);
+}
+[data-theme="dark"] .pin-drop-card{
+  background:#f5f5f7;color:#0a0a0a;
+  box-shadow:0 20px 44px -16px rgba(0,0,0,.7),0 0 0 1px rgba(0,0,0,.06) inset;
+}
+[data-theme="dark"] .pin-drop-card .pdc-ico{
+  background:rgba(217,45,32,.16);color:#d92d20;
+}
+[data-theme="dark"] .pin-drop-card .pdc-body small{color:rgba(0,0,0,.5);}
+[data-theme="dark"] .pin-drop-card .pdc-close{background:rgba(0,0,0,.1);}
+[data-theme="dark"] .pin-drop-card .pdc-btn{background:rgba(0,0,0,.1);color:#0a0a0a;}
+[data-theme="dark"] .pin-drop-card .pdc-btn.primary{background:#0a0a0a;color:#f5f5f7;}
 
 /* ==========================================================
    TRIP PANE
@@ -1496,6 +1584,23 @@ input,textarea{font-family:inherit}
   100%{transform:scale(1.25);opacity:0}
 }
 
+/* Temporary dropped pin */
+.mk-temp-pin-wrap{background:none !important;border:none !important}
+.mk-temp-pin{
+  width:34px;height:34px;border-radius:50%;
+  background:#d92d20;border:3.5px solid #fff;
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:.95rem;
+  box-shadow:0 4px 14px rgba(217,45,32,.55);
+  animation:tempPinPop .35s var(--spring);
+  cursor:grab;
+}
+.mk-temp-pin:active{cursor:grabbing;transform:scale(.95)}
+@keyframes tempPinPop{
+  from{transform:scale(.4);opacity:0}
+  to{transform:scale(1);opacity:1}
+}
+
 .driver-marker-wrap{background:none !important;border:none !important}
 .driver-marker{
   width:52px;height:52px;
@@ -1871,6 +1976,10 @@ input,textarea{font-family:inherit}
         <i class="fas fa-car"></i>
         <span id="mapDriverCountText">0 drivers nearby</span>
       </div>
+      <div class="map-hint" id="mapHint">
+        <i class="fas fa-hand-pointer"></i>
+        Tap map to drop a pin
+      </div>
       <button class="map-overlay-btn" id="locateBtn" aria-label="Recenter">
         <i class="fas fa-crosshairs"></i>
       </button>
@@ -1881,7 +1990,7 @@ input,textarea{font-family:inherit}
       <!-- HOME -->
       <div class="action-pane active" id="paneHome">
         <div class="home-greeting" id="homeGreeting">Hello 👋</div>
-        <div class="home-sub">Where are you headed today?</div>
+        <div class="home-sub">Where are you headed today? Tap the map to drop a pin.</div>
 
         <button class="btn-ride" id="requestRideBtn">
           <span class="ride-ico"><i class="fas fa-car-side"></i></span>
@@ -2120,6 +2229,26 @@ input,textarea{font-family:inherit}
   <div class="fec-actions">
     <button class="fec-chat" id="fecChat"><i class="fas fa-comments"></i> Chat</button>
     <button class="fec-done" id="fecDone"><i class="fas fa-check"></i> Complete</button>
+  </div>
+</div>
+
+<!-- DROPPED PIN CARD -->
+<div class="pin-drop-card" id="pinDropCard">
+  <div class="pdc-row">
+    <div class="pdc-ico"><i class="fas fa-thumbtack"></i></div>
+    <div class="pdc-body">
+      <small>Dropped pin</small>
+      <strong id="pinDropAddress">Locating…</strong>
+    </div>
+    <button class="pdc-close" id="pinDropClose" aria-label="Close"><i class="fas fa-xmark"></i></button>
+  </div>
+  <div class="pdc-actions">
+    <button type="button" class="pdc-btn" id="pinSetPickup">
+      <i class="fas fa-location-dot"></i> Pickup
+    </button>
+    <button type="button" class="pdc-btn primary" id="pinSetDest">
+      <i class="fas fa-flag-checkered"></i> Destination
+    </button>
   </div>
 </div>
 
@@ -2515,6 +2644,7 @@ const TIER_LABELS = { economy: 'Economy', standard: 'Standard', premium: 'Premiu
 const DRIVER_ICON_BASE_OFFSET = 0;
 const ROUTE_DRAW_DURATION_MS = 3000;
 const DRIVER_LOCATION_POLL_MS = 4000;
+const LOCATION_REFRESH_MS = 60000; // auto-refresh every 60 seconds
 
 const DELIVERY_VEHICLES = {
   motorbike: { id: 'motorbike', label: 'Motorbike', description: 'Fastest for small parcels', icon: 'fa-motorcycle' },
@@ -2554,6 +2684,7 @@ const themeToggleLabel = $('themeToggleLabel');
 
 const mapBadgeText = $('mapBadgeText');
 const locateBtn    = $('locateBtn');
+const mapHint      = $('mapHint');
 
 const mapDriverCount     = $('mapDriverCount');
 const mapDriverCountText = $('mapDriverCountText');
@@ -2712,6 +2843,12 @@ const fecTitle  = $('fecTitle');
 const fecChat   = $('fecChat');
 const fecDone   = $('fecDone');
 
+const pinDropCard     = $('pinDropCard');
+const pinDropAddress  = $('pinDropAddress');
+const pinDropClose    = $('pinDropClose');
+const pinSetPickup    = $('pinSetPickup');
+const pinSetDest      = $('pinSetDest');
+
 const ratingModal     = $('ratingModal');
 const ratingAvatar    = $('ratingAvatar');
 const ratingSubtitle  = $('ratingSubtitle');
@@ -2749,6 +2886,18 @@ let pickupLocation = null;
 let stopLocation = null;
 let dropoffLocation = null;
 let currentRoute = null;
+
+/* Auto-tracking flags — allows 60s location refresh to update pickup
+   when it hasn't been manually changed by the user. */
+let pickupLocationIsAuto = true;
+let deliveryPickupIsAuto = true;
+
+/* 60s location refresh */
+let locationRefreshInterval = null;
+
+/* Manual pin drop */
+let tempPinMarker = null;
+let tempPinLocation = null;
 
 let selectedTier = 'economy';
 
@@ -3317,7 +3466,137 @@ function initMap() {
     attribution: '&copy; OpenStreetMap contributors',
     subdomains: 'abc', maxZoom: 19, crossOrigin: true
   }).addTo(map);
+
+  /* ===== Manual pin-drop: tap anywhere on the map ===== */
+  map.on('click', async (e) => {
+    /* Block pin-drop while an active trip is running – the map is
+       showing the trip and we don't want to interfere. */
+    if (paneActive.classList.contains('active')) return;
+    await handleTempPinAt(e.latlng.lat, e.latlng.lng);
+  });
 }
+
+/* ============================================================
+   MANUAL PIN-DROP
+   ============================================================ */
+function setTempPin(lat, lng) {
+  if (!map) return;
+  const icon = L.divIcon({
+    className: 'mk-temp-pin-wrap',
+    html: '<div class="mk-temp-pin"><i class="fas fa-thumbtack"></i></div>',
+    iconSize: [34, 34],
+    iconAnchor: [17, 17]
+  });
+  if (tempPinMarker) {
+    tempPinMarker.setLatLng([lat, lng]);
+  } else {
+    tempPinMarker = L.marker([lat, lng], {
+      icon, zIndexOffset: 2500, draggable: true
+    }).addTo(map);
+    /* Allow the user to drag the pin to fine-tune its position */
+    tempPinMarker.on('dragend', async (e) => {
+      const ll = e.target.getLatLng();
+      await handleTempPinAt(ll.lat, ll.lng);
+    });
+  }
+}
+
+function removeTempPin() {
+  if (tempPinMarker && map) { try { map.removeLayer(tempPinMarker); } catch (e) {} }
+  tempPinMarker = null;
+  tempPinLocation = null;
+  pinDropCard.classList.remove('open');
+}
+
+async function handleTempPinAt(lat, lng) {
+  setTempPin(lat, lng);
+  pinDropAddress.textContent = 'Locating…';
+  pinDropCard.classList.add('open');
+  /* Hide the "tap map" hint after the first pin-drop */
+  if (mapHint) mapHint.classList.add('hidden');
+
+  const place = await reverseGeocode(lat, lng);
+  if (place) {
+    tempPinLocation = {
+      lat, lng,
+      label: place.label,
+      primary: place.primary,
+      secondary: place.secondary,
+      full: place.full,
+      address: place.address,
+      houseNumber: place.houseNumber,
+      road: place.road,
+      neighbourhood: place.neighbourhood,
+      suburb: place.suburb,
+      city: place.city,
+      postcode: place.postcode,
+      poiName: place.poiName
+    };
+    pinDropAddress.textContent = place.label;
+  } else {
+    const fallback = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+    tempPinLocation = {
+      lat, lng,
+      label: 'Dropped pin',
+      primary: 'Dropped pin',
+      secondary: '',
+      full: fallback,
+      address: fallback
+    };
+    pinDropAddress.textContent = 'Dropped pin';
+  }
+}
+
+/* ---- Pin card actions ---- */
+pinDropClose.addEventListener('click', removeTempPin);
+
+pinSetPickup.addEventListener('click', () => {
+  if (!tempPinLocation) return;
+  pickupLocation = { ...tempPinLocation };
+  pickupLocationIsAuto = false; // user chose it manually
+  pickupInput.value = pickupLocation.label;
+  summaryPickup.textContent = pickupLocation.label;
+  syncClearButtons();
+  removeTempPin();
+  if (paneTrip.classList.contains('active') && dropoffLocation) {
+    buildRideTrip();
+  }
+  showToast('Pickup set from dropped pin');
+});
+
+pinSetDest.addEventListener('click', () => {
+  if (!tempPinLocation) return;
+  /* Ensure we have a pickup first */
+  if (!pickupLocation) {
+    if (userLocation) {
+      pickupLocation = {
+        lat: userLocation.lat, lng: userLocation.lng,
+        label: mapBadgeText.textContent || 'Current location'
+      };
+      pickupLocationIsAuto = true;
+      summaryPickup.textContent = pickupLocation.label;
+      pickupInput.value = pickupLocation.label;
+    } else {
+      showToast('Waiting for your location…');
+      locateUser({ center: true });
+      return;
+    }
+  }
+
+  dropoffLocation = { ...tempPinLocation };
+  destInput.value = dropoffLocation.label;
+  syncClearButtons();
+  removeTempPin();
+
+  if (paneTrip.classList.contains('active')) {
+    /* Already on trip pane – just rebuild with the new destination */
+    buildRideTrip();
+  } else {
+    clearAppliedPromo();
+    clearTripLayers();
+    setTimeout(() => buildRideTrip(), 120);
+  }
+});
 
 /* ============================================================
    MARKER HELPERS
@@ -3577,29 +3856,12 @@ function clearTripLayers() {
   if (stopMarker)    { try { map.removeLayer(stopMarker);    } catch(e){} stopMarker = null; }
   if (pickupMarker)  { try { map.removeLayer(pickupMarker);  } catch(e){} pickupMarker = null; }
   removeProviderMarker();
+  removeTempPin();
   currentRoute = null;
 }
 
 /* ============================================================
    GEOLOCATION — PRECISE REVERSE GEOCODING
-   ============================================================
-   Uses Nominatim with highest zoom (19), addressdetails,
-   namedetails, extratags and English language preference to
-   extract the most precise location possible:
-     • POI / building name (mall, school, hospital)
-     • house_number (street number)
-     • road / pedestrian / footway name
-     • neighbourhood / quarter
-     • suburb / city_district
-     • city / town / village
-     • postcode and country
-
-   It then composes a 3-tier label:
-     primary   → best single-line descriptor  e.g. "East Park Mall"
-                 or "House 12, Great East Road"
-     secondary → context                      e.g. "Kabulonga, Lusaka"
-     label     → primary + secondary combined
-     full      → full chained address for anchors/search
    ============================================================ */
 async function reverseGeocode(lat, lng) {
   try {
@@ -3609,9 +3871,7 @@ async function reverseGeocode(lat, lng) {
       `&format=json&zoom=19&addressdetails=1&namedetails=1&extratags=1` +
       `&accept-language=en`;
     const res = await fetch(url, {
-      headers: {
-        'Accept': 'application/json'
-      }
+      headers: { 'Accept': 'application/json' }
     });
     if (!res.ok) return null;
     const data = await res.json();
@@ -3621,7 +3881,6 @@ async function reverseGeocode(lat, lng) {
     const nd = data.namedetails || {};
     const extra = data.extratags || {};
 
-    /* ------- POI / building / infrastructure ------- */
     const poiName =
       data.name ||
       nd.name ||
@@ -3638,7 +3897,6 @@ async function reverseGeocode(lat, lng) {
       addr.place ||
       '';
 
-    /* ------- Street level ------- */
     const houseNumber = addr.house_number || '';
     const road =
       addr.road ||
@@ -3651,7 +3909,6 @@ async function reverseGeocode(lat, lng) {
       addr.service ||
       '';
 
-    /* ------- Area level ------- */
     const neighbourhood = addr.neighbourhood || addr.quarter || addr.hamlet || '';
     const suburb = addr.suburb || addr.city_district || addr.district || '';
     const city =
@@ -3660,16 +3917,11 @@ async function reverseGeocode(lat, lng) {
     const postcode = addr.postcode || '';
     const country = addr.country || '';
 
-    /* Save for search anchoring */
     if (city) userCity = city;
     if (country) userCountry = country;
 
-    /* ------- Build the PRIMARY line (most precise) ------- */
     let primary = '';
-    if (poiName && houseNumber && road) {
-      /* "House 12, Great East Road" or "East Park Mall" */
-      primary = poiName;
-    } else if (poiName) {
+    if (poiName) {
       primary = poiName;
     } else if (houseNumber && road) {
       primary = `${houseNumber} ${road}`;
@@ -3685,9 +3937,7 @@ async function reverseGeocode(lat, lng) {
       primary = 'My current location';
     }
 
-    /* ------- Build the SECONDARY context line ------- */
     const secondaryParts = [];
-    /* If primary is a POI/building, add the street for context */
     if (poiName && (houseNumber || road)) {
       if (houseNumber && road) secondaryParts.push(`${houseNumber} ${road}`);
       else if (road) secondaryParts.push(road);
@@ -3697,7 +3947,6 @@ async function reverseGeocode(lat, lng) {
     if (city && city !== suburb && city !== primary) secondaryParts.push(city);
     const secondary = secondaryParts.join(', ');
 
-    /* ------- Build the FULL chained address ------- */
     const fullParts = [];
     if (poiName) fullParts.push(poiName);
     if (houseNumber && road) fullParts.push(`${houseNumber} ${road}`);
@@ -3708,7 +3957,6 @@ async function reverseGeocode(lat, lng) {
     if (postcode) fullParts.push(postcode);
     const full = fullParts.join(', ') || data.display_name || primary;
 
-    /* ------- Compose the final label shown to the user ------- */
     let label = primary;
     if (secondary && !label.toLowerCase().includes(secondary.toLowerCase())) {
       label = `${primary}, ${secondary}`;
@@ -3745,14 +3993,22 @@ function locateUser({ center = true, silent = false } = {}) {
     if (center && map) map.setView([DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lng], 18);
     if (!pickupLocation) {
       pickupLocation = { lat: DEFAULT_LOCATION.lat, lng: DEFAULT_LOCATION.lng, label: 'Approximate location' };
+      pickupLocationIsAuto = true;
       summaryPickup.textContent = pickupLocation.label;
       pickupInput.value = pickupLocation.label;
     }
-    if (!deliveryPickupLocation) deliveryPickupLocation = { lat: DEFAULT_LOCATION.lat, lng: DEFAULT_LOCATION.lng, label: 'Approximate location' };
+    if (!deliveryPickupLocation) {
+      deliveryPickupLocation = { lat: DEFAULT_LOCATION.lat, lng: DEFAULT_LOCATION.lng, label: 'Approximate location' };
+      deliveryPickupIsAuto = true;
+      deliveryPickupInput.value = deliveryPickupLocation.label;
+    }
     refreshNearbyDriverMarkers();
     return;
   }
-  mapBadgeText.textContent = 'Locating…';
+  /* Only show "Locating…" text for the initial user-facing call –
+     silent background refreshes should not cause visual flicker. */
+  if (!silent) mapBadgeText.textContent = 'Locating…';
+
   navigator.geolocation.getCurrentPosition(
     async (pos) => {
       const { latitude, longitude } = pos.coords;
@@ -3760,10 +4016,21 @@ function locateUser({ center = true, silent = false } = {}) {
       setUserMarker(latitude, longitude);
       if (center && map) map.setView([latitude, longitude], 18);
       refreshNearbyDriverMarkers();
+
       const place = await reverseGeocode(latitude, longitude);
       const label = place ? place.label : 'My current location';
       mapBadgeText.textContent = label;
-      if (!pickupLocation) {
+
+      /* Determine whether we can safely overwrite auto-tracked pickup
+         locations without disrupting an in-flight search or trip. */
+      const safeToUpdate =
+        !ridePage.classList.contains('open') &&
+        !deliveryPage.classList.contains('open') &&
+        !postErrandPage.classList.contains('open') &&
+        !paneTrip.classList.contains('active') &&
+        !paneActive.classList.contains('active');
+
+      if ((!pickupLocation || pickupLocationIsAuto) && safeToUpdate) {
         pickupLocation = {
           lat: latitude, lng: longitude,
           label,
@@ -3779,10 +4046,11 @@ function locateUser({ center = true, silent = false } = {}) {
           postcode: place?.postcode || '',
           poiName: place?.poiName || ''
         };
+        pickupLocationIsAuto = true;
         summaryPickup.textContent = pickupLocation.label;
         pickupInput.value = pickupLocation.label;
       }
-      if (!deliveryPickupLocation) {
+      if ((!deliveryPickupLocation || deliveryPickupIsAuto) && safeToUpdate) {
         deliveryPickupLocation = {
           lat: latitude, lng: longitude,
           label,
@@ -3791,27 +4059,46 @@ function locateUser({ center = true, silent = false } = {}) {
           full: place?.full || '',
           address: place?.address || ''
         };
+        deliveryPickupIsAuto = true;
         deliveryPickupInput.value = deliveryPickupLocation.label;
       }
-      refreshNearbyDriverMarkers();
     },
     async (err) => {
       console.warn('Geolocation error:', err);
+      /* On silent refresh, keep whatever location we had rather than
+         resetting the user to the default fallback. */
+      if (silent && userLocation) return;
       userLocation = { ...DEFAULT_LOCATION };
       setUserMarker(DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lng);
       mapBadgeText.textContent = 'Approximate location';
       if (!pickupLocation) {
         pickupLocation = { lat: DEFAULT_LOCATION.lat, lng: DEFAULT_LOCATION.lng, label: 'Approximate location' };
+        pickupLocationIsAuto = true;
         summaryPickup.textContent = pickupLocation.label;
         pickupInput.value = pickupLocation.label;
       }
-      if (!deliveryPickupLocation) deliveryPickupLocation = { lat: DEFAULT_LOCATION.lat, lng: DEFAULT_LOCATION.lng, label: 'Approximate location' };
+      if (!deliveryPickupLocation) {
+        deliveryPickupLocation = { lat: DEFAULT_LOCATION.lat, lng: DEFAULT_LOCATION.lng, label: 'Approximate location' };
+        deliveryPickupIsAuto = true;
+      }
       if (!silent) showToast('Location permission denied — using approximate.');
       if (center && map) map.setView([DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lng], 18);
       refreshNearbyDriverMarkers();
     },
     { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
   );
+}
+
+/* ============================================================
+   60-SECOND LOCATION REFRESH
+   ============================================================ */
+function startLocationRefresh() {
+  if (locationRefreshInterval) clearInterval(locationRefreshInterval);
+  locationRefreshInterval = setInterval(() => {
+    /* Pause when the page is hidden to save battery / bandwidth */
+    if (document.hidden) return;
+    locateUser({ center: false, silent: true });
+  }, LOCATION_REFRESH_MS);
 }
 
 /* ============================================================
@@ -4000,6 +4287,7 @@ function handlePlaceSelected(place, mode) {
   if (searchPage === 'delivery') {
     if (mode === 'pickup') {
       deliveryPickupLocation = { ...picked };
+      deliveryPickupIsAuto = false; // manually chosen
       deliveryPickupInput.value = label;
       deliveryResultsArea.style.display = 'none';
       deliveryFormArea.style.display = 'block';
@@ -4018,6 +4306,7 @@ function handlePlaceSelected(place, mode) {
   }
   if (mode === 'pickup') {
     pickupLocation = { ...picked };
+    pickupLocationIsAuto = false; // manually chosen
     pickupInput.value = label;
     syncClearButtons();
     const nextField = (stopInputRow.style.display !== 'none' && !stopLocation) ? 'stop' : 'destination';
@@ -4188,7 +4477,7 @@ function openDeliveryPage() {
   const wasOpen = deliveryPage.classList.contains('open');
   searchPage = 'delivery';
   if (deliveryPickupLocation) deliveryPickupInput.value = deliveryPickupLocation.label || '';
-  else if (pickupLocation) { deliveryPickupInput.value = pickupLocation.label || ''; deliveryPickupLocation = { ...pickupLocation }; }
+  else if (pickupLocation) { deliveryPickupInput.value = pickupLocation.label || ''; deliveryPickupLocation = { ...pickupLocation }; deliveryPickupIsAuto = pickupLocationIsAuto; }
   if (deliveryDropoffLocation) deliveryDestInput.value = deliveryDropoffLocation.label || '';
   else deliveryDestInput.value = '';
   syncClearButtons();
@@ -4261,7 +4550,6 @@ errandUseCurrentBtn.addEventListener('click', async () => {
   errandPickupResults.style.display = 'none';
   syncClearButtons();
   showToast('Using current location');
-  /* Try to upgrade the label with precise reverse geocode */
   const place = await reverseGeocode(userLocation.lat, userLocation.lng);
   if (place) {
     errandPickupLocation = {
@@ -5035,7 +5323,10 @@ confirmRideBtn.addEventListener('click', async () => {
    ============================================================ */
 requestRideBtn.addEventListener('click', () => {
   if (!pickupLocation) {
-    if (userLocation) pickupLocation = { lat: userLocation.lat, lng: userLocation.lng, label: mapBadgeText.textContent || 'Current location' };
+    if (userLocation) {
+      pickupLocation = { lat: userLocation.lat, lng: userLocation.lng, label: mapBadgeText.textContent || 'Current location' };
+      pickupLocationIsAuto = true;
+    }
     else { showToast('Waiting for your location…'); locateUser({ center: true }); return; }
   }
   dropoffLocation = null; stopLocation = null; currentRoute = null;
@@ -5045,8 +5336,11 @@ requestRideBtn.addEventListener('click', () => {
 });
 deliveryBtn.addEventListener('click', () => {
   if (!deliveryPickupLocation) {
-    if (userLocation) deliveryPickupLocation = { lat: userLocation.lat, lng: userLocation.lng, label: mapBadgeText.textContent || 'Current location' };
-    else if (pickupLocation) deliveryPickupLocation = { ...pickupLocation };
+    if (userLocation) {
+      deliveryPickupLocation = { lat: userLocation.lat, lng: userLocation.lng, label: mapBadgeText.textContent || 'Current location' };
+      deliveryPickupIsAuto = true;
+    }
+    else if (pickupLocation) { deliveryPickupLocation = { ...pickupLocation }; deliveryPickupIsAuto = pickupLocationIsAuto; }
     else { showToast('Waiting for your location…'); locateUser({ center: true }); return; }
   }
   deliveryDropoffLocation = null; deliveryRoute = null; deliveryVehicle = null;
@@ -5064,7 +5358,7 @@ locateBtn.addEventListener('click', () => locateUser({ center: true }));
 requestDeliveryBtn.addEventListener('click', async () => {
   deliveryError.innerText = '';
   if (!deliveryPickupLocation) {
-    if (pickupLocation) deliveryPickupLocation = { ...pickupLocation };
+    if (pickupLocation) { deliveryPickupLocation = { ...pickupLocation }; deliveryPickupIsAuto = pickupLocationIsAuto; }
     else { deliveryError.innerText = 'Please choose a pickup location.'; return; }
   }
   if (!deliveryDropoffLocation) { deliveryError.innerText = 'Please choose a drop-off location.'; return; }
@@ -5503,8 +5797,10 @@ async function handleTripCompletion(trip) {
     showPane('home');
     if (userLocation && map) map.setView([userLocation.lat, userLocation.lng], 17, { animate: true });
     pickupLocation = userLocation ? { lat: userLocation.lat, lng: userLocation.lng, label: mapBadgeText.textContent || 'Current location' } : null;
+    pickupLocationIsAuto = true;
     dropoffLocation = null; stopLocation = null;
     deliveryPickupLocation = userLocation ? { lat: userLocation.lat, lng: userLocation.lng, label: mapBadgeText.textContent || 'Current location' } : null;
+    deliveryPickupIsAuto = true;
     deliveryDropoffLocation = null; deliveryVehicle = null;
     activeRideId = null; activeDeliveryId = null; activeSearchKind = null;
     currentTripKind = null; currentTripId = null; currentTripData = null;
@@ -5524,8 +5820,10 @@ function handleTripCancellation() {
     showPane('home');
     if (userLocation && map) map.setView([userLocation.lat, userLocation.lng], 17, { animate: true });
     pickupLocation = userLocation ? { lat: userLocation.lat, lng: userLocation.lng, label: mapBadgeText.textContent || 'Current location' } : null;
+    pickupLocationIsAuto = true;
     dropoffLocation = null; stopLocation = null;
     deliveryPickupLocation = userLocation ? { lat: userLocation.lat, lng: userLocation.lng, label: mapBadgeText.textContent || 'Current location' } : null;
+    deliveryPickupIsAuto = true;
     deliveryDropoffLocation = null; deliveryVehicle = null;
     activeRideId = null; activeDeliveryId = null; activeSearchKind = null;
     currentTripKind = null; currentTripId = null; currentTripData = null;
@@ -5647,8 +5945,10 @@ async function cancelActiveTrip() {
     showPane('home');
     if (userLocation && map) map.setView([userLocation.lat, userLocation.lng], 17, { animate: true });
     pickupLocation = userLocation ? { lat: userLocation.lat, lng: userLocation.lng, label: mapBadgeText.textContent || 'Current location' } : null;
+    pickupLocationIsAuto = true;
     dropoffLocation = null; stopLocation = null;
     deliveryPickupLocation = userLocation ? { lat: userLocation.lat, lng: userLocation.lng, label: mapBadgeText.textContent || 'Current location' } : null;
+    deliveryPickupIsAuto = true;
     deliveryDropoffLocation = null; deliveryVehicle = null;
     activeRideId = null; activeDeliveryId = null; activeSearchKind = null;
     currentTripKind = null; currentTripId = null; currentTripData = null;
@@ -6183,8 +6483,13 @@ onAuthStateChanged(auth, async (user) => {
       initMap();
       if (map) map.invalidateSize();
       startNearbyDriversListener();
+      /* Initial precise location fetch */
       locateUser({ center: true, silent: false });
+      /* Start 60-second auto-refresh of precise location */
+      startLocationRefresh();
       setTimeout(() => { checkForActiveTrip(); }, 700);
+      /* Auto-hide the "tap map" hint after 10 seconds */
+      if (mapHint) setTimeout(() => mapHint.classList.add('hidden'), 10000);
     });
 
     loadErrandsForBadge();
