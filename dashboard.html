@@ -150,6 +150,8 @@
 [data-theme="dark"] .tier-option.selected.premium{box-shadow:0 0 0 2px #a78bfa,0 10px 22px -10px rgba(167,139,250,.5);}
 [data-theme="dark"] .add-stop-btn{color:#fdb022;border-color:rgba(253,176,34,.45);}
 [data-theme="dark"] .add-stop-btn:active{background:#3d2a09;}
+[data-theme="dark"] .map-pick-btn{background:#1c1c1e;color:#f5f5f7;box-shadow:0 0 0 1px rgba(255,255,255,.08);}
+[data-theme="dark"] .map-pick-wide{background:#1c1c1e;color:#f5f5f7;box-shadow:0 0 0 1px rgba(255,255,255,.08);}
 [data-theme="dark"] .pane-cancel-btn{background:#1c1c1e;color:var(--text-primary);}
 [data-theme="dark"] .block-overlay{background:#0a0a0a;color:var(--text-primary);}
 [data-theme="dark"] .block-icon{background:#f5f5f7;color:#0a0a0a;}
@@ -217,6 +219,17 @@
 [data-theme="dark"] .fare-stat small{color:rgba(255,255,255,.48);}
 [data-theme="dark"] .fare-top .fare-label{color:rgba(255,255,255,.5);}
 [data-theme="dark"] .fare-top .fare-amount{color:#f5f5f7;}
+[data-theme="dark"] #mapPickerPage{background:#0a0a0a;}
+[data-theme="dark"] .picker-head{background:rgba(10,10,10,.94);border-bottom-color:var(--line);}
+[data-theme="dark"] .picker-search{background:#1c1c1e;}
+[data-theme="dark"] .picker-search input{color:#f5f5f7;}
+[data-theme="dark"] .picker-search .picker-clear{background:rgba(255,255,255,.14);color:#a1a1a6;}
+[data-theme="dark"] #pickerResults{background:#1c1c1e;box-shadow:0 16px 40px -12px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.08);}
+[data-theme="dark"] .picker-bottom{background:rgba(10,10,10,.96);border-top-color:var(--line);}
+[data-theme="dark"] .picker-actions button{background:#2c2c2e;color:#f5f5f7;}
+[data-theme="dark"] .picker-actions button.primary{background:#f5f5f7;color:#0a0a0a;}
+[data-theme="dark"] .picker-locate{background:#1c1c1e;color:#f5f5f7;box-shadow:0 4px 16px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.08);}
+[data-theme="dark"] #pickerMap{background:#1a1a1c;}
 
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;width:100%;overflow:hidden;-webkit-text-size-adjust:100%;overscroll-behavior:none}
@@ -643,14 +656,34 @@ input,textarea{font-family:inherit}
 }
 .points-divider{height:1px;background:rgba(0,0,0,.06);margin:0 16px}
 
-.add-stop-row{margin-bottom:12px;flex-shrink:0}
+.add-stop-row{margin-bottom:12px;flex-shrink:0;display:flex;gap:8px;align-items:stretch}
 .add-stop-btn{
-  width:100%;padding:10px 14px;border-radius:12px;
+  flex:1;padding:10px 14px;border-radius:12px;
   background:transparent;border:1.5px dashed rgba(247,144,9,.45);
   color:#b54708;font-size:.78rem;font-weight:700;
   display:inline-flex;align-items:center;justify-content:center;gap:7px;
 }
 .add-stop-btn:active{background:var(--warn-soft)}
+
+/* Map pick buttons */
+.map-pick-btn{
+  width:46px;flex-shrink:0;border-radius:12px;
+  background:var(--fill-gray);color:var(--text-primary);
+  display:inline-flex;align-items:center;justify-content:center;
+  font-size:1rem;
+  box-shadow:0 0 0 1px var(--line);
+  transition:transform .28s var(--spring),background .2s;
+}
+.map-pick-btn:active{transform:scale(.94);background:var(--fill-gray-hover)}
+.map-pick-wide{
+  width:100%;padding:11px 14px;border-radius:12px;
+  background:var(--fill-gray);color:var(--text-primary);
+  font-size:.78rem;font-weight:700;
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  box-shadow:0 0 0 1px var(--line);
+  transition:transform .28s var(--spring);
+}
+.map-pick-wide:active{transform:scale(.98)}
 
 /* ==========================================================
    CHAUFFEUR TIER CHOOSER
@@ -1153,6 +1186,128 @@ input,textarea{font-family:inherit}
 }
 .page-body{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .page-scroll{max-width:620px;margin:0 auto;padding:16px 16px 40px}
+
+/* ==========================================================
+   MAP PICKER (fullscreen pin placement)
+   ========================================================== */
+#mapPickerPage{
+  position:fixed;inset:0;z-index:3200;background:#fff;
+  transform:translateY(100%);
+  transition:transform .5s var(--panel-ease),background .3s;
+  visibility:hidden;
+  overflow:hidden;
+}
+#mapPickerPage.open{transform:translateY(0);visibility:visible}
+
+#pickerMap{
+  position:absolute;inset:0;z-index:1;background:#e8eaed;
+}
+#pickerMap .leaflet-control-attribution{
+  margin-bottom:150px !important;
+}
+
+.picker-head{
+  position:absolute;top:0;left:0;right:0;z-index:20;
+  display:flex;align-items:center;gap:10px;
+  padding:calc(12px + env(safe-area-inset-top,0px)) 14px 12px;
+  background:rgba(255,255,255,.94);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--line);
+}
+.picker-search{
+  flex:1;position:relative;
+  display:flex;align-items:center;
+  background:var(--fill-gray);border-radius:999px;
+  padding:0 14px;height:44px;min-width:0;
+}
+.picker-search > i{color:var(--text-tertiary);font-size:.9rem;margin-right:9px;flex-shrink:0}
+.picker-search input{
+  flex:1;min-width:0;border:none;outline:none;background:transparent;
+  font-size:.9rem;font-weight:500;color:var(--text-primary);
+  padding:0;
+}
+.picker-search input::placeholder{color:var(--text-tertiary);font-weight:400}
+.picker-search .picker-clear{
+  width:24px;height:24px;border-radius:50%;
+  background:rgba(0,0,0,.1);color:var(--text-secondary);
+  display:none;align-items:center;justify-content:center;
+  font-size:.68rem;flex-shrink:0;margin-left:6px;
+}
+
+#pickerResults{
+  position:absolute;z-index:30;
+  top:calc(78px + env(safe-area-inset-top,0px));
+  left:12px;right:12px;
+  background:var(--surface);
+  border-radius:16px;
+  box-shadow:0 16px 40px -12px rgba(0,0,0,.35),0 0 0 1px var(--line);
+  max-height:52vh;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  display:none;
+}
+#pickerResults.open{display:block;animation:paneIn .25s var(--ease-out)}
+#pickerResults .result-item{border-bottom:1px solid var(--line)}
+#pickerResults .result-item:last-child{border-bottom:none}
+
+.picker-center-pin{
+  position:absolute;left:50%;top:50%;
+  transform:translate(-50%,-100%);
+  z-index:15;pointer-events:none;
+  color:#d92d20;font-size:2.1rem;line-height:1;
+  filter:drop-shadow(0 5px 12px rgba(0,0,0,.45));
+}
+.picker-center-pin::after{
+  content:'';position:absolute;
+  left:50%;bottom:-5px;transform:translateX(-50%);
+  width:16px;height:6px;border-radius:50%;
+  background:rgba(0,0,0,.22);filter:blur(2px);
+}
+
+.picker-locate{
+  position:absolute;right:14px;
+  bottom:calc(150px + env(safe-area-inset-bottom,0px));
+  z-index:18;
+  width:44px;height:44px;border-radius:12px;
+  background:#fff;color:var(--ink);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1rem;
+  box-shadow:0 4px 16px rgba(0,0,0,.18),0 0 0 1px var(--line);
+}
+.picker-locate:active{transform:scale(.94)}
+
+.picker-bottom{
+  position:absolute;left:0;right:0;bottom:0;z-index:20;
+  padding:14px 14px calc(14px + env(safe-area-inset-bottom,0px));
+  background:rgba(255,255,255,.96);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-top:1px solid var(--line);
+  border-radius:20px 20px 0 0;
+  box-shadow:0 -8px 30px -12px rgba(0,0,0,.18);
+}
+.picker-address{margin-bottom:12px}
+.picker-address small{
+  display:block;font-size:.58rem;font-weight:800;
+  letter-spacing:1.1px;text-transform:uppercase;
+  color:var(--text-tertiary);margin-bottom:3px;
+}
+.picker-address strong{
+  display:block;font-size:.9rem;font-weight:700;line-height:1.35;
+  color:var(--text-primary);
+  max-height:2.7em;overflow:hidden;
+}
+.picker-actions{display:flex;gap:8px}
+.picker-actions button{
+  flex:1;padding:12px 8px;border-radius:12px;
+  font-size:.72rem;font-weight:800;
+  letter-spacing:.5px;text-transform:uppercase;
+  background:var(--fill-gray);color:var(--text-primary);
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  transition:transform .28s var(--spring);
+}
+.picker-actions button:active{transform:scale(.97)}
+.picker-actions button.primary{
+  background:#0a0a0a;color:#fff;
+  box-shadow:0 10px 24px -10px rgba(0,0,0,.5);
+}
 
 /* ==========================================================
    SEARCH
@@ -1908,6 +2063,7 @@ input,textarea{font-family:inherit}
   .tier-chooser{grid-template-columns:1fr 1fr}
   .tier-option.premium{grid-column:1/-1}
   .pf-vehicle-pic img{height:90px}
+  .picker-actions button{font-size:.64rem;padding:11px 6px}
 }
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{
@@ -2072,6 +2228,9 @@ input,textarea{font-family:inherit}
         <div class="add-stop-row" id="addStopRow">
           <button class="add-stop-btn" id="addStopBtn">
             <i class="fas fa-plus"></i> Add a stop
+          </button>
+          <button type="button" class="map-pick-btn" id="tripMapPickBtn" aria-label="Pick location on map">
+            <i class="fas fa-map-location-dot"></i>
           </button>
         </div>
 
@@ -2324,6 +2483,9 @@ input,textarea{font-family:inherit}
         <button class="add-stop-btn" id="rideAddStopBtn">
           <i class="fas fa-plus"></i> Add a stop
         </button>
+        <button type="button" class="map-pick-btn" id="rideMapPickBtn" aria-label="Pick location on map">
+          <i class="fas fa-map-location-dot"></i>
+        </button>
       </div>
     </div>
     <div class="results-area" id="resultsArea">
@@ -2363,6 +2525,9 @@ input,textarea{font-family:inherit}
           </button>
         </div>
       </div>
+      <button type="button" class="map-pick-wide" id="deliveryMapPickBtn" style="margin-top:8px">
+        <i class="fas fa-map-location-dot"></i> Pick location on map
+      </button>
       <div id="deliveryResultsArea" style="display:none;margin-top:12px"></div>
       <div id="deliveryFormArea" style="margin-top:12px">
         <div class="section-label">Sender details</div>
@@ -2434,6 +2599,9 @@ input,textarea{font-family:inherit}
       <div class="pickup-actions">
         <button type="button" class="pickup-action-btn" id="errandUseCurrentBtn">
           <i class="fas fa-crosshairs"></i> Use current location
+        </button>
+        <button type="button" class="pickup-action-btn" id="errandMapPickBtn">
+          <i class="fas fa-map-location-dot"></i> Pick on map
         </button>
       </div>
       <div class="section-label">Errand photo (optional)</div>
@@ -2556,6 +2724,38 @@ input,textarea{font-family:inherit}
     <button class="chat-send-btn" id="chatSendBtn" aria-label="Send">
       <i class="fas fa-paper-plane"></i>
     </button>
+  </div>
+</div>
+
+<!-- MAP PICKER (fullscreen) -->
+<div id="mapPickerPage">
+  <div id="pickerMap"></div>
+
+  <div class="picker-head">
+    <button class="icon-btn" id="pickerBackBtn" aria-label="Back"><i class="fas fa-arrow-left"></i></button>
+    <div class="picker-search">
+      <i class="fas fa-magnifying-glass"></i>
+      <input type="text" id="pickerSearchInput" placeholder="Search anywhere…" autocomplete="off">
+      <button type="button" class="picker-clear" id="pickerSearchClear" aria-label="Clear">
+        <i class="fas fa-xmark"></i>
+      </button>
+    </div>
+  </div>
+
+  <div id="pickerResults"></div>
+
+  <div class="picker-center-pin"><i class="fas fa-location-dot"></i></div>
+
+  <button type="button" class="picker-locate" id="pickerLocateBtn" aria-label="My location">
+    <i class="fas fa-crosshairs"></i>
+  </button>
+
+  <div class="picker-bottom">
+    <div class="picker-address">
+      <small>Selected location</small>
+      <strong id="pickerAddressText">Move the map to choose a spot</strong>
+    </div>
+    <div class="picker-actions" id="pickerActions"></div>
   </div>
 </div>
 
@@ -2708,6 +2908,7 @@ const removeStopBtn = $('removeStopBtn');
 const stopDivider   = $('stopDivider');
 const addStopRow    = $('addStopRow');
 const addStopBtn    = $('addStopBtn');
+const tripMapPickBtn = $('tripMapPickBtn');
 const cancelTripBtn = $('cancelTripBtn');
 const confirmRideBtn= $('confirmRideBtn');
 
@@ -2741,6 +2942,7 @@ const destClearBtn   = $('destClearBtn');
 const rideStopDivider= $('rideStopDivider');
 const rideAddStopRow = $('rideAddStopRow');
 const rideAddStopBtn = $('rideAddStopBtn');
+const rideMapPickBtn = $('rideMapPickBtn');
 const resultsArea    = $('resultsArea');
 
 const deliveryPage        = $('deliveryPage');
@@ -2755,6 +2957,7 @@ const deliveryResultsArea = $('deliveryResultsArea');
 const deliveryFormArea    = $('deliveryFormArea');
 const deliveryError       = $('deliveryError');
 const requestDeliveryBtn  = $('requestDeliveryBtn');
+const deliveryMapPickBtn  = $('deliveryMapPickBtn');
 const delSenderName       = $('delSenderName');
 const delSenderPhone      = $('delSenderPhone');
 const delReceiverName     = $('delReceiverName');
@@ -2770,6 +2973,7 @@ const errandPickupInput = $('errandPickupInput');
 const errandPickupClear = $('errandPickupClear');
 const errandPickupResults = $('errandPickupResults');
 const errandUseCurrentBtn = $('errandUseCurrentBtn');
+const errandMapPickBtn    = $('errandMapPickBtn');
 const errandUpload      = $('errandUpload');
 const errandImageUrl    = $('errandImageUrl');
 const errandWillingToPay= $('errandWillingToPay');
@@ -2856,6 +3060,16 @@ const ratingLabel     = $('ratingLabel');
 const ratingComment   = $('ratingComment');
 const ratingSkipBtn   = $('ratingSkipBtn');
 const ratingSubmitBtn = $('ratingSubmitBtn');
+
+/* Map picker refs */
+const mapPickerPage    = $('mapPickerPage');
+const pickerBackBtn    = $('pickerBackBtn');
+const pickerSearchInput= $('pickerSearchInput');
+const pickerSearchClear= $('pickerSearchClear');
+const pickerResults    = $('pickerResults');
+const pickerAddressText= $('pickerAddressText');
+const pickerActions    = $('pickerActions');
+const pickerLocateBtn  = $('pickerLocateBtn');
 
 const toastEl = $('toast');
 
@@ -3011,6 +3225,7 @@ try { history.pushState({ ntumeni: true }, ''); } catch (e) {}
 function closeTopOverlay() {
   if (ratingModal.classList.contains('open')) { closeRatingModal(); return true; }
   if (vehicleSheet.classList.contains('open')) { vehicleSheet.classList.remove('open'); return true; }
+  if (mapPickerPage.classList.contains('open')) { closeMapPicker(); return true; }
   if (chatPage.classList.contains('open')) { closeChatPage(); return true; }
   if (errandDetailsPage.classList.contains('open')) { closeErrandDetailsPage(); return true; }
   if (postedErrandsPage.classList.contains('open')) { closePostedErrandsPage(); return true; }
@@ -4027,6 +4242,7 @@ function locateUser({ center = true, silent = false } = {}) {
         !ridePage.classList.contains('open') &&
         !deliveryPage.classList.contains('open') &&
         !postErrandPage.classList.contains('open') &&
+        !mapPickerPage.classList.contains('open') &&
         !paneTrip.classList.contains('active') &&
         !paneActive.classList.contains('active');
 
@@ -4421,11 +4637,11 @@ function showStopRow(show) {
   if (show) {
     stopInputRow.style.display = 'flex';
     rideStopDivider.style.display = 'block';
-    rideAddStopRow.style.display = 'none';
+    rideAddStopBtn.style.display = 'none';
   } else {
     stopInputRow.style.display = 'none';
     rideStopDivider.style.display = 'none';
-    rideAddStopRow.style.display = 'block';
+    rideAddStopBtn.style.display = 'inline-flex';
   }
 }
 function setActiveRow(which, page) {
@@ -5114,11 +5330,11 @@ async function buildRideTrip() {
     stopRowBtn.style.display = 'flex';
     stopDivider.style.display = 'block';
     summaryStop.textContent = stopLocation.label || 'Stop';
-    addStopRow.style.display = 'none';
+    addStopBtn.style.display = 'none';
   } else {
     stopRowBtn.style.display = 'none';
     stopDivider.style.display = 'none';
-    addStopRow.style.display = 'block';
+    addStopBtn.style.display = 'inline-flex';
   }
 
   showPane('trip');
@@ -5192,7 +5408,7 @@ removeStopBtn.addEventListener('click', (e) => {
   e.stopPropagation();
   stopLocation = null; stopInput.value = ''; summaryStop.textContent = '—';
   stopRowBtn.style.display = 'none'; stopDivider.style.display = 'none';
-  addStopRow.style.display = 'block';
+  addStopBtn.style.display = 'inline-flex';
   buildRideTrip();
 });
 addStopBtn.addEventListener('click', () => openRidePage('stop'));
@@ -6337,6 +6553,367 @@ function renderTransactionItem(t) {
 }
 
 /* ============================================================
+   MAP PICKER — fullscreen pin placement with search
+   ============================================================ */
+let pickerMap = null;
+let pickerContext = 'ride';
+let pickerAllowedTargets = ['destination'];
+let pickerLocation = null;
+let pickerMoveTimer = null;
+let pickerSearchAbort = null;
+let pickerGeoSeq = 0;
+
+const PICKER_TARGET_META = {
+  pickup:      { icon: 'fa-circle-dot',     text: 'Pickup' },
+  stop:        { icon: 'fa-location-dot',   text: 'Stop' },
+  destination: { icon: 'fa-flag-checkered', text: 'Destination' }
+};
+
+function initPickerMap() {
+  if (pickerMap) return;
+  pickerMap = L.map('pickerMap', {
+    zoomControl: false, attributionControl: true,
+    preferCanvas: true, maxZoom: 19, minZoom: 3
+  }).setView([DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lng], 17);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors',
+    subdomains: 'abc', maxZoom: 19, crossOrigin: true
+  }).addTo(pickerMap);
+
+  pickerMap.on('moveend', () => { schedulePickerGeocode(); });
+  pickerMap.on('click', (e) => {
+    pickerMap.panTo(e.latlng, { animate: true, duration: 0.35 });
+  });
+}
+
+function schedulePickerGeocode() {
+  if (!pickerMap) return;
+  clearTimeout(pickerMoveTimer);
+  const seq = ++pickerGeoSeq;
+  pickerMoveTimer = setTimeout(async () => {
+    if (!pickerMap) return;
+    const c = pickerMap.getCenter();
+    const lat = c.lat, lng = c.lng;
+    const place = await reverseGeocode(lat, lng);
+    if (seq !== pickerGeoSeq) return;
+    if (place) {
+      pickerLocation = { ...place };
+      pickerAddressText.textContent = place.label || 'Selected location';
+    } else {
+      const fallback = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+      pickerLocation = {
+        lat, lng,
+        label: fallback,
+        primary: 'Dropped pin',
+        secondary: '',
+        full: fallback,
+        address: fallback
+      };
+      pickerAddressText.textContent = fallback;
+    }
+  }, 420);
+}
+
+function renderPickerActions() {
+  if (!pickerActions) return;
+  pickerActions.innerHTML = pickerAllowedTargets.map((t, i) => {
+    const m = PICKER_TARGET_META[t] || PICKER_TARGET_META.destination;
+    const isPrimary = (i === pickerAllowedTargets.length - 1);
+    return `<button type="button" data-picker-target="${t}" class="${isPrimary ? 'primary' : ''}">
+      <i class="fas ${m.icon}"></i> ${m.text}
+    </button>`;
+  }).join('');
+  pickerActions.querySelectorAll('[data-picker-target]').forEach(btn => {
+    btn.addEventListener('click', () => applyPickerLocation(btn.dataset.pickerTarget));
+  });
+}
+
+function openMapPicker(context, opts) {
+  opts = opts || {};
+  pickerContext = context;
+  const defaults = {
+    ride: ['pickup', 'stop', 'destination'],
+    delivery: ['pickup', 'destination'],
+    errand: ['pickup']
+  };
+  pickerAllowedTargets = opts.targets || defaults[context] || ['destination'];
+
+  let center = opts.center || null;
+  if (!center) {
+    if (context === 'ride') center = dropoffLocation || pickupLocation || userLocation;
+    else if (context === 'delivery') center = deliveryDropoffLocation || deliveryPickupLocation || userLocation;
+    else if (context === 'errand') center = errandPickupLocation || userLocation;
+  }
+  if (!center || !isFinite(center.lat) || !isFinite(center.lng)) {
+    center = userLocation || DEFAULT_LOCATION;
+  }
+
+  renderPickerActions();
+
+  pickerSearchInput.value = '';
+  pickerSearchClear.style.display = 'none';
+  pickerResults.classList.remove('open');
+  pickerResults.innerHTML = '';
+  pickerLocation = null;
+  pickerAddressText.textContent = 'Move the map to choose a spot';
+  pickerGeoSeq++;
+
+  mapPickerPage.classList.add('open');
+  trackOverlayOpen();
+
+  setTimeout(() => {
+    initPickerMap();
+    if (!pickerMap) return;
+    pickerMap.invalidateSize();
+    pickerMap.setView([center.lat, center.lng], 17, { animate: false });
+    if (center.label) {
+      pickerLocation = { ...center };
+      pickerAddressText.textContent = center.label;
+    }
+    schedulePickerGeocode();
+  }, 90);
+
+  setTimeout(() => { if (pickerMap) pickerMap.invalidateSize(); }, 560);
+}
+
+function closeMapPicker() {
+  if (!mapPickerPage.classList.contains('open')) return;
+  mapPickerPage.classList.remove('open');
+  pickerResults.classList.remove('open');
+  pickerSearchAbort?.abort?.();
+  if (pickerSearchInput) pickerSearchInput.blur();
+  trackOverlayClose();
+}
+
+function applyPickerLocation(target) {
+  if (!pickerLocation) { showToast('Pick a location on the map first'); return; }
+  const loc = pickerLocation;
+  const chosen = {
+    lat: loc.lat, lng: loc.lng,
+    label: loc.label || 'Selected location',
+    primary: loc.primary || '', secondary: loc.secondary || '',
+    full: loc.full || loc.label || '',
+    address: loc.address || loc.label || '',
+    houseNumber: loc.houseNumber || '', road: loc.road || '',
+    neighbourhood: loc.neighbourhood || '', suburb: loc.suburb || '',
+    city: loc.city || '', postcode: loc.postcode || '', poiName: loc.poiName || ''
+  };
+
+  if (pickerContext === 'errand') {
+    errandPickupLocation = chosen;
+    errandPickupInput.value = chosen.label;
+    errandPickupResults.style.display = 'none';
+    syncClearButtons();
+    closeMapPicker();
+    showToast('Pickup location set');
+    return;
+  }
+
+  if (pickerContext === 'delivery') {
+    if (target === 'pickup') {
+      deliveryPickupLocation = chosen;
+      deliveryPickupIsAuto = false;
+      deliveryPickupInput.value = chosen.label;
+    } else {
+      deliveryDropoffLocation = chosen;
+      deliveryDestInput.value = chosen.label;
+    }
+    deliveryResultsArea.style.display = 'none';
+    deliveryFormArea.style.display = 'block';
+    syncClearButtons();
+    closeMapPicker();
+    showToast(target === 'pickup' ? 'Pickup set' : 'Drop-off set');
+    return;
+  }
+
+  /* ride */
+  if (target === 'pickup') {
+    pickupLocation = chosen;
+    pickupLocationIsAuto = false;
+    pickupInput.value = chosen.label;
+    summaryPickup.textContent = chosen.label;
+  } else if (target === 'stop') {
+    stopLocation = chosen;
+    stopInput.value = chosen.label;
+    summaryStop.textContent = chosen.label;
+    stopRowBtn.style.display = 'flex';
+    stopDivider.style.display = 'block';
+    addStopBtn.style.display = 'none';
+  } else {
+    dropoffLocation = chosen;
+    destInput.value = chosen.label;
+  }
+  syncClearButtons();
+
+  /* Fall back to the user's current location if the pickup is still missing */
+  if (!pickupLocation && userLocation) {
+    pickupLocation = {
+      lat: userLocation.lat, lng: userLocation.lng,
+      label: mapBadgeText.textContent || 'Current location'
+    };
+    pickupLocationIsAuto = true;
+    summaryPickup.textContent = pickupLocation.label;
+    pickupInput.value = pickupLocation.label;
+  }
+
+  closeMapPicker();
+
+  if (pickupLocation && dropoffLocation) {
+    closeRidePage();
+    setTimeout(() => buildRideTrip(), 340);
+  } else if (ridePage.classList.contains('open')) {
+    setActiveRow('destination', 'ride');
+    destInput.focus();
+    showSearchHint('ride');
+  } else {
+    openRidePage('destination');
+  }
+  showToast('Location set');
+}
+
+/* ---- Picker search ---- */
+function buildPickerSearchUrl(query, anchor) {
+  const params = new URLSearchParams({
+    format: 'json', addressdetails: '1',
+    limit: String(SEARCH_MAX_RAW_RESULTS), q: query, dedupe: '1'
+  });
+  if (anchor && isFinite(anchor.lat) && isFinite(anchor.lng)) {
+    const latD = 1.2;
+    const lngD = 1.2 / Math.max(0.25, Math.cos(anchor.lat * Math.PI / 180));
+    params.set('viewbox', [anchor.lng - lngD, anchor.lat + latD, anchor.lng + lngD, anchor.lat - latD].join(','));
+    params.set('bounded', '0');
+  }
+  return 'https://nominatim.openstreetmap.org/search?' + params.toString();
+}
+
+async function runPickerSearch(q) {
+  if (pickerSearchAbort) pickerSearchAbort.abort();
+  pickerSearchAbort = new AbortController();
+  const signal = pickerSearchAbort.signal;
+  const anchor = pickerMap ? pickerMap.getCenter() : (userLocation || DEFAULT_LOCATION);
+
+  pickerResults.classList.add('open');
+  pickerResults.innerHTML = '<div class="loader-row"><span class="mini-spin"></span> Searching…</div>';
+
+  let raw = [];
+  try {
+    raw = await fetchNominatim(buildPickerSearchUrl(q, anchor), signal);
+  } catch (e) {
+    if (e.name === 'AbortError') return;
+    raw = [];
+  }
+  if (signal.aborted) return;
+
+  if (!raw || !raw.length) {
+    try {
+      raw = await fetchNominatim(buildPickerSearchUrl(q, null), signal);
+    } catch (e) {
+      if (e.name === 'AbortError') return;
+      raw = [];
+    }
+  }
+  if (signal.aborted) return;
+
+  const ranked = [];
+  for (const p of (raw || [])) {
+    const lat = parseFloat(p.lat), lon = parseFloat(p.lon);
+    if (!isFinite(lat) || !isFinite(lon)) continue;
+    ranked.push({ raw: p, lat, lon, distanceMeters: haversineMeters(anchor.lat, anchor.lng, lat, lon) });
+  }
+  ranked.sort((a, b) => a.distanceMeters - b.distanceMeters);
+  renderPickerResults(ranked.slice(0, SEARCH_SHOWN_RESULTS));
+}
+
+function renderPickerResults(ranked) {
+  if (!ranked.length) {
+    pickerResults.innerHTML = '<div class="results-hint" style="padding:26px 18px;"><i class="fas fa-circle-question"></i>No places found. Try a different name.</div>';
+    return;
+  }
+  let html = `<div class="results-heading"><span>Search results</span><span class="rh-count">${ranked.length}</span></div>`;
+  ranked.forEach((item, idx) => {
+    const p = item.raw;
+    const primary = p.name || (p.display_name || '').split(',')[0] || 'Unknown place';
+    const secondary = p.display_name || '';
+    html += `<button type="button" class="result-item" data-pidx="${idx}">
+      <span class="result-ico"><i class="fas fa-location-dot"></i></span>
+      <span class="result-txt">
+        <strong>${escapeHtml(primary)}</strong>
+        <span>${escapeHtml(secondary)}</span>
+      </span>
+      <span class="result-dist">${escapeHtml(formatDistance(item.distanceMeters))}</span>
+    </button>`;
+  });
+  pickerResults.innerHTML = html;
+  pickerResults.querySelectorAll('[data-pidx]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = ranked[parseInt(btn.dataset.pidx, 10)];
+      if (!item || !pickerMap) return;
+      const picked = extractAddressParts(item.raw);
+      pickerLocation = { ...picked };
+      pickerAddressText.textContent = picked.label;
+      pickerResults.classList.remove('open');
+      pickerSearchInput.blur();
+      pickerMap.setView([item.lat, item.lon], 18, { animate: true });
+    });
+  });
+}
+
+const debouncedPickerSearch = debounce((q) => runPickerSearch(q), 320);
+
+pickerSearchInput.addEventListener('input', () => {
+  const v = pickerSearchInput.value.trim();
+  pickerSearchClear.style.display = v ? 'flex' : 'none';
+  if (v.length < 2) {
+    pickerResults.classList.remove('open');
+    pickerResults.innerHTML = '';
+    if (pickerSearchAbort) pickerSearchAbort.abort();
+    return;
+  }
+  debouncedPickerSearch(v);
+});
+
+pickerSearchInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') { e.preventDefault(); pickerSearchInput.blur(); }
+});
+
+pickerSearchClear.addEventListener('click', () => {
+  pickerSearchInput.value = '';
+  pickerSearchClear.style.display = 'none';
+  pickerResults.classList.remove('open');
+  pickerResults.innerHTML = '';
+  if (pickerSearchAbort) pickerSearchAbort.abort();
+  pickerSearchInput.focus();
+});
+
+pickerBackBtn.addEventListener('click', closeMapPicker);
+
+pickerLocateBtn.addEventListener('click', () => {
+  if (!pickerMap) return;
+  if (!userLocation) { showToast('Waiting for your location…'); locateUser({ center: false }); return; }
+  pickerMap.setView([userLocation.lat, userLocation.lng], 18, { animate: true });
+  pickerResults.classList.remove('open');
+  pickerSearchInput.blur();
+});
+
+/* Buttons that open the picker */
+tripMapPickBtn.addEventListener('click', () => {
+  if (!pickupLocation && userLocation) {
+    pickupLocation = {
+      lat: userLocation.lat, lng: userLocation.lng,
+      label: mapBadgeText.textContent || 'Current location'
+    };
+    pickupLocationIsAuto = true;
+    summaryPickup.textContent = pickupLocation.label;
+    pickupInput.value = pickupLocation.label;
+  }
+  openMapPicker('ride');
+});
+rideMapPickBtn.addEventListener('click', () => openMapPicker('ride'));
+deliveryMapPickBtn.addEventListener('click', () => openMapPicker('delivery'));
+errandMapPickBtn.addEventListener('click', () => openMapPicker('errand'));
+
+/* ============================================================
    AUTH + BOOT
    ============================================================ */
 async function checkMaintenance() {
@@ -6522,6 +7099,7 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     if (ratingModal.classList.contains('open')) closeRatingModal();
     else if (vehicleSheet.classList.contains('open')) { vehicleSheet.classList.remove('open'); trackOverlayClose(); }
+    else if (mapPickerPage.classList.contains('open')) closeMapPicker();
     else if (chatPage.classList.contains('open')) closeChatPage();
     else if (errandDetailsPage.classList.contains('open')) closeErrandDetailsPage();
     else if (postedErrandsPage.classList.contains('open')) closePostedErrandsPage();
@@ -6533,8 +7111,8 @@ document.addEventListener('keydown', (e) => {
     else if (sidebar.classList.contains('open')) closeSidebar();
   }
 });
-window.addEventListener('orientationchange', () => setTimeout(() => { if (map) map.invalidateSize(); }, 320));
-window.addEventListener('resize', () => { if (map) map.invalidateSize(); });
+window.addEventListener('orientationchange', () => setTimeout(() => { if (map) map.invalidateSize(); if (pickerMap) pickerMap.invalidateSize(); }, 320));
+window.addEventListener('resize', () => { if (map) map.invalidateSize(); if (pickerMap) pickerMap.invalidateSize(); });
 setTimeout(() => { if (!bootDone) hideLoading(); }, 12000);
 </script>
 </body>
